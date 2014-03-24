@@ -1,0 +1,50 @@
+{
+  "name": "frontend-starterkit-minimal",
+  "version": "0.0.1",
+  "description": "Frontend deveopment framework for node.",
+  "author": "Joe Johnston",
+  "homepage": "https://github.com/starterkits/frontend-starterkit-minimal",
+  "keywords": [
+    "node",
+    "coffeescript",
+    "starter kit",
+    "bootstrap"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/starterkits/frontend-starterkit-minimal.git"
+  },
+  "bugs": "https://github.com/starterkits/frontend-starterkit-minimal/issues",
+  "contributors": "https://github.com/starterkits/frontend-starterkit-minimal/graphs/contributors",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/starterkits/frontend-starterkit-minimal/master/LICENSE"
+    }
+  ],
+  "scripts": {
+    "start": "gulp",
+    "install": "bower install"
+  },
+  "engines": {
+    "node": "~0.10.0"
+  },
+  "engineStrict": true,
+  "dependencies": {},
+  "optionalDependencies": {},
+  "devDependencies": {
+    "gulp": "~3.5.5",
+    "gulp-sass": "~0.7",
+    "gulp-util": "~2.2",
+    "coffee-script": "~1.7",
+    "node-sass": "~0.7.0",
+    "webpack": "~1.0",
+    "webpack-dev-server": "~1.2",
+    "style-loader": "~0.6",
+    "coffee-loader": "~0.7",
+    "script-loader": "~0.5",
+    "sass-loader": "~0.0",
+    "jade-loader": "~0.6",
+    "parse": "~1.2"
+  }
+}
