@@ -10,12 +10,12 @@ path = require 'path'
 
 module.exports =
 
-  contentBase: "#{__dirname}/src/"
+  contentBase: "#{__dirname}/client/"
 
   cache: true
 
   entry:
-    bundle: './src/js/app'
+    bundle: './client/js/app'
 
   output:
     path: path.join(__dirname, 'dist')
@@ -68,7 +68,7 @@ module.exports =
 
   resolve:
     extensions: ['', '.webpack.js', '.web.js', '.coffee', '.js', '.scss']
-    modulesDirectories: ['src', 'src/js', 'web_modules', 'bower_components', 'node_modules']
+    modulesDirectories: ['client', 'client/js', 'lib', 'bower_components', 'node_modules']
 
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(true)
