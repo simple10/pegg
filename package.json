@@ -45,6 +45,7 @@
     "script-loader": "~0.5",
     "sass-loader": "~0.0",
     "jade-loader": "~0.6",
-    "parse": "~1.2"
+    "parse": "~1.2",
+    "react": ""
   }
 }
