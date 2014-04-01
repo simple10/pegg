@@ -48,6 +48,17 @@ Gulp could be dropped since it's mostly just passing through to webpack. But gul
 of useful plugins and example tasks that could be useful later on.
 
 
+# Debugging with React Developer Tools
+
+Install [Chrome Extention](https://github.com/facebook/react-devtools).
+
+React dev tools adds a React tab to Chrome's Developer Tools window. The tab will only
+appear when inspecting a page directly. It will not appear when using webpack's dev server.
+
+* Works: http://localhost:8080/index.html
+* Doesn't work: http://localhost:8080/webpack-dev-server/index.html
+
+
 # Directory Structure
 
 * **/bin**: startup and task scripts
