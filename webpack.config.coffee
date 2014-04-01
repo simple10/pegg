@@ -59,10 +59,11 @@ module.exports =
       #   test: /\.svg$/
       #   loader: 'file-loader?prefix=font/'
       # }
-      {
-        test: /\.jade$/
-        loader: 'jade-loader?self'
-      }
+      # {
+      #   # Add to package.json: "jade-loader": "~0.6",
+      #   test: /\.jade$/
+      #   loader: 'jade-loader?self'
+      # }
     ]
 
 
