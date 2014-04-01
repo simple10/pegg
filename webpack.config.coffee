@@ -15,7 +15,7 @@ module.exports =
   cache: true
 
   entry:
-    bundle: './client/js/app'
+    bundle: './client/app'
 
   output:
     path: path.join(__dirname, 'dist')
@@ -30,6 +30,10 @@ module.exports =
 
   module:
     loaders: [
+      {
+        test: /\.coffee$/
+        loader: 'jsx-loader'
+      }
       {
         test: /\.coffee$/
         loader: 'coffee-loader'
@@ -69,7 +73,7 @@ module.exports =
 
   resolve:
     extensions: ['', '.webpack.js', '.web.js', '.coffee', '.js', '.scss']
-    modulesDirectories: ['client', 'client/js', 'lib', 'bower_components', 'node_modules']
+    modulesDirectories: ['client', 'lib', 'bower_components', 'node_modules']
 
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(true)
