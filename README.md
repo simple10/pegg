@@ -105,6 +105,14 @@ Rest of deploy details TBD.
 This project uses concepts from [ReactHack](https://github.com/petehunt/ReactHack) but explicity includes
 files from [reacthack-core](petehunt/reacthack-core) to make code tracing and learning easier.
 
+## Of Interest:
+
+* https://github.com/facebook/react-devtools
+* https://github.com/johnthethird/react-starter-template
+* https://github.com/ericclemmons/genesis-skeleton
+* https://github.com/neebz/backbone-parse
+* https://usepropeller.com/blog/posts/from-backbone-to-react/
+
 
 
 
