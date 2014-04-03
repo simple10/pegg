@@ -8,9 +8,11 @@ require 'layout/foundation'
 ReactHack = require 'ReactHack'
 
 HomePage = require 'pages/home'
+UploadPage = require 'pages/upload'
 
 root = document.getElementById 'root'
 
 # Routes
 ReactHack.start root,
-  '': HomePage
+  '': HomePage,
+  'pages/upload': UploadPage

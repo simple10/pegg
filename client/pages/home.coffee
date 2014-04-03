@@ -11,7 +11,7 @@ HomePage = React.createClass
     alert('click')
 
   render: ->
-    links = ['Test', 'Test2', 'Test3'].map (name) =>
+    links = ['upload', 'Test2', 'Test3'].map (name) =>
       @transferPropsTo `
         <li key={name}><a href={'#/pages/' + name}>{name}</a></li>
       `
