@@ -13,7 +13,7 @@ UploadPage = React.createClass
     image = e.target.value
 
     $.ajax
-      url: Secrets.gatekeeper.s3policy + "/" + @state.filename.split("\\").pop()
+      url: Secrets.gatekeeper + "/s3policy/" + @state.filename.split("\\").pop()
       success: (creds) ->
 
         loc = "img/" + creds.filename
@@ -34,21 +34,16 @@ UploadPage = React.createClass
           if xhr.responseText
             console.log xhr.responseText
           else
-            $.ajax
-              url: Secrets.gatekeeper.blitlineSig
-              success: (signature) ->
-                #send json to blitline woth
-                #public_token : “YOUR_PUBLIC_TOKEN!”
-                #expires    : “Tue, 25 Dec 2012 00:00:00 -0800”
-                #signature : “SIGNATURE_FROM_ABOVE”
-                return
+            job =
+              url: res
+              filename: creds.filename
 
-              error: (res, status, error) ->
+            $.post(Secrets.blitline, job, (data) ->
+                console.log data
+                return
+            , "json").fail (error) ->
                 console.log error
-                #do some error handling here
-                #callback error
                 return
-
           return
 
         xhr.send fd
