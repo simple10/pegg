@@ -1,7 +1,7 @@
 # Modularize Parse
 
 Parse = require('../node_modules/parse').Parse
-config = require('config').secrets.parse
+config = require('config').public.parse
 
 Parse.initialize config.appId, config.jsKey
 

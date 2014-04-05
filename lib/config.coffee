@@ -1,3 +1,3 @@
 module.exports =
-  secrets: require '../config/secrets'
+  public: require '../config/public'
 

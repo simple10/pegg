@@ -1,3 +1,6 @@
+# Public config vars and tokens.
+# This file is committed to git and available to the client.
+
 module.exports =
   parse:
     appId: '08asqa4QvUyNIDTIl3BS70CLcKJGoh2mI1MXwJEf'
