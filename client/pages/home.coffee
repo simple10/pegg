@@ -2,6 +2,8 @@
 @jsx React.DOM
 ###
 
+require 'styles/home'
+
 React = require 'react'
 ReactHack = require 'ReactHack'
 Layout = require 'layout/Layout'
