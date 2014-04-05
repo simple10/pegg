@@ -10,10 +10,11 @@ Secrets = require '../../config/secrets'
 UploadPage = React.createClass
   handleSubmit: (e) ->
     e.preventDefault()
+    image = e.target.value
+
     $.ajax
-      url: Secrets.s3.credServer + "/creds/" + @state.filename.split("\\").pop()
+      url: Secrets.gatekeeper.s3policy + "/" + @state.filename.split("\\").pop()
       success: (creds) ->
-        console.log Secrets.s3.credServer + "/creds/  -  Returned successfully. "
 
         loc = "img/" + creds.filename
         fd = new FormData()
@@ -23,24 +24,34 @@ UploadPage = React.createClass
         fd.append "policy", creds.s3PolicyBase64
         fd.append "signature", creds.s3Signature
         fd.append "Content-Type", creds.s3Mime
-        #fd.append "file", image
+        fd.append "file", image
 
         xhr = new XMLHttpRequest()
-        xhr.open "POST", Secrets.s3.bucket
+        xhr.open "POST", Secrets.s3bucket
         xhr.onload = (res) ->
-          console.log xhr.responseText
+
           console.log res
           if xhr.responseText
-            callback xhr.responseText
+            console.log xhr.responseText
           else
-            callback "Success"
+            $.ajax
+              url: Secrets.gatekeeper.blitlineSig
+              success: (signature) ->
+                #send json to blitline woth
+                #public_token : “YOUR_PUBLIC_TOKEN!”
+                #expires    : “Tue, 25 Dec 2012 00:00:00 -0800”
+                #signature : “SIGNATURE_FROM_ABOVE”
+                return
+
+              error: (res, status, error) ->
+                console.log error
+                #do some error handling here
+                #callback error
+                return
+
           return
 
         xhr.send fd
-
-        console.log fd
-
-        #callback res
         return
 
       error: (res, status, error) ->
