@@ -5,7 +5,7 @@
 React = require 'react'
 ReactHack = require 'ReactHack'
 Layout = require 'layout/Layout'
-Secrets = require '../../config/secrets'
+Config = require('config').public
 
 UploadPage = React.createClass
   handleSubmit: (e) ->
@@ -13,7 +13,7 @@ UploadPage = React.createClass
     image = e.target.value
 
     $.ajax
-      url: Secrets.gatekeeper + "/s3policy/" + @state.filename.split("\\").pop()
+      url: Config.gatekeeper.server + "/s3policy/" + @state.filename.split("\\").pop()
       success: (creds) ->
 
         loc = "img/" + creds.filename
@@ -27,7 +27,7 @@ UploadPage = React.createClass
         fd.append "file", image
 
         xhr = new XMLHttpRequest()
-        xhr.open "POST", Secrets.s3bucket
+        xhr.open "POST", Config.upload.s3bucket
         xhr.onload = (res) ->
 
           console.log res
@@ -38,7 +38,7 @@ UploadPage = React.createClass
               url: res
               filename: creds.filename
 
-            $.post(Secrets.blitline, job, (data) ->
+            $.post(Config.upload.server, job, (data) ->
                 console.log data
                 return
             , "json").fail (error) ->
