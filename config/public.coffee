@@ -8,7 +8,7 @@ module.exports =
     jsKey: 'G19GjSAlnMOvTjcDqE6KxxKHsMnygHmbsfDYg8gm'
 
   facebook:
-    appId: '1391336964468203'
+    appId: '1410524409215955'
 
   # 3rd party authentication server
   gatekeeper:
