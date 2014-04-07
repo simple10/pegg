@@ -3,11 +3,9 @@
 ###
 
 React = require 'react'
-ReactHack = require 'ReactHack'
-Layout = require 'layout/Layout'
 Config = require('config').public
 
-UploadPage = React.createClass
+UploadImage = React.createClass
   handleSubmit: (e) ->
     e.preventDefault()
     image = e.target.value
@@ -59,7 +57,7 @@ UploadPage = React.createClass
     @setState filename: e.target.value
 
   render: ->
-    form = @transferPropsTo `
+    @transferPropsTo `
       <form onSubmit={this.handleSubmit}>
           <fieldset>
             <input type="file" name="image" onChange={this.handleChange}/>
@@ -67,11 +65,5 @@ UploadPage = React.createClass
           </fieldset>
         </form>
       `
-
-    @transferPropsTo `
-      <Layout active="home">
-        {form}
-      </Layout>
-    `
 
 module.exports = UploadPage

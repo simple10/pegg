@@ -6,13 +6,13 @@ require 'script!modernizr/modernizr'
 $ = require 'jquery'
 require 'layout/foundation'
 ReactHack = require 'ReactHack'
+require 'facebook'
+
 
 HomePage = require 'pages/home'
-UploadPage = require 'pages/upload'
 
 root = document.getElementById 'root'
 
 # Routes
 ReactHack.start root,
-  '': HomePage,
-  'pages/upload': UploadPage
+  '': HomePage
