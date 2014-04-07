@@ -3,11 +3,14 @@
 ###
 
 React = require 'react'
+TopNav = require 'components/topnav'
+Button = require 'components/button'
 
 Layout = React.createClass
   render: ->
     @transferPropsTo `
       <div>
+        <TopNav />
         <div className="container">
           <div className="content">
             {this.props.children}
