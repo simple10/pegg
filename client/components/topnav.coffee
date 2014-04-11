@@ -4,7 +4,7 @@
 
 React = require 'react'
 Parse = require 'parse'
-Login = require 'components/loginbutton'
+Login = require 'components/login'
 
 TopNav = React.createClass
   render: ->

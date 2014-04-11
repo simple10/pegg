@@ -7,7 +7,7 @@ window.Parse = Parse = require 'parse'
 Button = require 'components/button'
 Avatar = require 'components/avatar'
 
-LoginButton = React.createClass
+Login = React.createClass
   getInitialState: ->
     loggedIn: @isLoggedIn()
 
@@ -43,4 +43,4 @@ LoginButton = React.createClass
       </div>
     `
 
-module.exports = LoginButton
+module.exports = Login
