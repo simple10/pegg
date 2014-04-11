@@ -9,6 +9,6 @@ React = require 'react'
 
 Avatar = React.createClass
   render: ->
-    @transferPropsTo `<img class="avatar" />`
+    @transferPropsTo `<img className="avatar" />`
 
 module.exports = Avatar
