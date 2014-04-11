@@ -10,9 +10,12 @@ require 'facebook'
 
 
 HomePage = require 'pages/home'
+CreateQuestionPage = require 'pages/questions/create'
 
 root = document.getElementById 'root'
 
 # Routes
 ReactHack.start root,
   '': HomePage
+  'home': HomePage
+  'questions/new': CreateQuestionPage
