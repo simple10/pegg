@@ -1,9 +1,9 @@
 {
-  "name": "frontend-starterkit-minimal",
+  "name": "PEGG",
   "version": "0.0.1",
-  "description": "Frontend deveopment framework for node.",
+  "description": "Gratzi PEGG",
   "author": "Joe Johnston",
-  "homepage": "https://github.com/starterkits/frontend-starterkit-minimal",
+  "homepage": "https://github.com/auggernaut/pegg",
   "keywords": [
     "node",
     "coffeescript",
@@ -12,16 +12,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/starterkits/frontend-starterkit-minimal.git"
+    "url": "git://github.com/auggernaut/pegg.git"
   },
-  "bugs": "https://github.com/starterkits/frontend-starterkit-minimal/issues",
-  "contributors": "https://github.com/starterkits/frontend-starterkit-minimal/graphs/contributors",
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://raw.github.com/starterkits/frontend-starterkit-minimal/master/LICENSE"
-    }
-  ],
   "scripts": {
     "start": "gulp",
     "install": "bower install"
