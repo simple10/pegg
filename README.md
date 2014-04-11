@@ -126,5 +126,17 @@ files from [reacthack-core](petehunt/reacthack-core) to make code tracing and le
 
 
 
+# Notes
+
+Parse 1.2.18 and earlier has a bug with Facebook login. Facebook returns valid iso8601 dates for
+the token expires field but Parse._parseDate fails to parse it correctly and break login. Fucking great.
+A temp patch has been added to parse-1.2.18-fixed-parsedate.js. If the regex fails, the date is parsed
+using the browser's native date parser. This will only work in ECMAScript 5 browser.
+
+A permanent solution is to fix the regex.
+
+
+
+
 
 
