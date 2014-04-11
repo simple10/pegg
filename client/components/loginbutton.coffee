@@ -33,20 +33,14 @@ LoginButton = React.createClass
           Parse.User.logOut()
 
   render: ->
-    if @isLoggedIn()
-      # logout
-      @transferPropsTo `
-        <div>
-          <Avatar src={Parse.User.current().get('avatar_url')} />
-          <Button onClick={this.handleAuthClick}>Logout</Button>
-        </div>
-      `
-    else
-      # login
-      @transferPropsTo `
-        <div>
-          <Button onClick={this.handleAuthClick}>Login</Button>
-        </div>
-      `
+    avatar = if @isLoggedIn()
+      @transferPropsTo `<Avatar src={Parse.User.current().get('avatar_url')} />`
+
+    @transferPropsTo `
+      <div>
+        {avatar}
+        <Button onClick={this.handleAuthClick}>{this.isLoggedIn() ? 'Logout' : 'Login'}</Button>
+      </div>
+    `
 
 module.exports = LoginButton
