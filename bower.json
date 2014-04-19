@@ -1,7 +1,7 @@
 {
   "name": "frontend-starterkit-minimal",
   "dependencies": {
-    "jquery": "~2.1.0",
-    "foundation": "zurb/bower-foundation"
+    "famous-polyfills": "git+https://github.com/Famous/polyfills.git#0.1.1",
+    "famous": "git+https://github.com/Famous/famous.git#flat0.1.1"
   }
 }

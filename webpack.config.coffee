@@ -32,15 +32,11 @@ module.exports =
     loaders: [
       {
         test: /\.coffee$/
-        loader: 'jsx-loader'
-      }
-      {
-        test: /\.coffee$/
         loader: 'coffee-loader'
       }
       {
         test: /\.scss$/
-        loader: "style-loader!sass-loader?outputStyle=expanded&includePaths[]=./bower_components/foundation/scss/"
+        loader: "style-loader!sass-loader?outputStyle=expanded&includePaths[]=./bower_components/"
       }
       {
         # required to write 'require('./style.css')'

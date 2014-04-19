@@ -2,7 +2,7 @@ Frontend StarterKit is a barebones framework with [gulp](http://gulpjs.com/) and
 
 Webpack runs webpack-dev-server in development for on-the-fly compilation of source file changes. It can also compile assets for production.
 
-CoffeeScript, SCSS, Zurb Foundation, and Bower are installed and configured.
+Famous, CoffeeScript, SCSS and Bower are installed and configured.
 
 By default, CSS files are included by requiring them in JavaScript files via webpack magic. This reduces network latency and allows webpack to intelligently manage which files are actually required. See [src/js/head.coffee](https://github.com/starterkits/frontend-starterkit-minimal/blob/master/src/js/head.coffee).
 
@@ -48,16 +48,6 @@ Gulp could be dropped since it's mostly just passing through to webpack. But gul
 of useful plugins and example tasks that could be useful later on.
 
 
-# Debugging with React Developer Tools
-
-Install [Chrome Extention](https://github.com/facebook/react-devtools).
-
-React dev tools adds a React tab to Chrome's Developer Tools window. The tab will only
-appear when inspecting a page directly. It will not appear when using webpack's dev server.
-
-* Works: http://localhost:8080/index.html
-* Doesn't work: http://localhost:8080/webpack-dev-server/index.html
-
 
 # Directory Structure
 
@@ -81,17 +71,10 @@ webpack configuration. Any changes to app.scss or _settings.scss requires a rest
 development server.
 
 
-# Templates
-
-With React, templates are embedded in the view JavaScript file as either JSX syntax or React dom function calls.
-This is a bit unnatural for MVC developers, but it ends up making life much easier as the project size grows.
-
-
 # NPM vs Bower
 
 Use Bower for any dependencies that are only used in the browser. Use npm for everything else.
 
-React is installed via npm so it can render in node to speed up the first page render or for SEO.
 
 
 # Production
@@ -113,16 +96,10 @@ Rest of deploy details TBD.
 
 # Sources
 
-This project uses concepts from [ReactHack](https://github.com/petehunt/ReactHack) but explicity includes
-files from [reacthack-core](petehunt/reacthack-core) to make code tracing and learning easier.
-
 ## Of Interest:
 
-* https://github.com/facebook/react-devtools
-* https://github.com/johnthethird/react-starter-template
 * https://github.com/ericclemmons/genesis-skeleton
 * https://github.com/neebz/backbone-parse
-* https://usepropeller.com/blog/posts/from-backbone-to-react/
 
 
 
