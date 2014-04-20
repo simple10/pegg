@@ -1,0 +1,18 @@
+$nav-bg: #999;
+
+
+.header {
+  background-color: $nav-bg;
+  line-height: 100px;
+  text-align: center;
+}
+.footer {
+  background-color: $nav-bg;
+  line-height: 50px;
+  text-align: center;
+}
+
+button {
+  width: 100%;
+  height: 100%;
+}
