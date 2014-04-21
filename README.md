@@ -1,10 +1,11 @@
-Frontend StarterKit is a barebones framework with [gulp](http://gulpjs.com/) and [webpack](http://webpack.github.io/) fully configured for rapid development.
+# Famous
 
-Webpack runs webpack-dev-server in development for on-the-fly compilation of source file changes. It can also compile assets for production.
+See Taasky demo code for the best example of how to create forms and integrate with Backbone Model.
 
-Famous, CoffeeScript, SCSS and Bower are installed and configured.
+Also see Famous/examples on github.
 
-By default, CSS files are included by requiring them in JavaScript files via webpack magic. This reduces network latency and allows webpack to intelligently manage which files are actually required. See [src/js/head.coffee](https://github.com/starterkits/frontend-starterkit-minimal/blob/master/src/js/head.coffee).
+The docs on famo.us are pretty useless. Better to just read the code and comments.
+
 
 
 # Install
