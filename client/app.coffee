@@ -46,7 +46,6 @@ content = new ScrollView
 
 
 
-
 # Build layout
 
 layout = new HeaderFooterLayout
@@ -59,8 +58,12 @@ footer = new Surface
   content: "Footer"
   classes: ['footer']
 
-editQuestion = new EditQuestionView {}
+# Parse model
+model = {}
+
+editQuestion = new EditQuestionView model
 #imageUpload = new ImageUploadView
+
 content.sequenceFrom [
   editQuestion
 #  imageUpload

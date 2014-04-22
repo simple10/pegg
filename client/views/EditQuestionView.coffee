@@ -32,11 +32,13 @@ class EditQuestionView extends View
       size: [width, 50]
       content: '<button>Next</button>'
 
+    @button.on 'click', =>
+      alert('button clicked!')
+
     @editForm.sequenceFrom [@question, @button]
 
     @add(new Modifier
       transform: Transform.translate margin, margin, 0
     ).add @editForm
-
 
 module.exports = EditQuestionView
