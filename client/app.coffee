@@ -19,6 +19,7 @@ ScrollView = require 'famous/views/ScrollView'
 
 HeaderView = require 'views/HeaderView'
 EditQuestionView = require 'views/EditQuestionView'
+ImageUploadView = require 'views/ImageUploadView'
 
 #require 'facebook'
 
@@ -59,8 +60,10 @@ footer = new Surface
   classes: ['footer']
 
 editQuestion = new EditQuestionView {}
+#imageUpload = new ImageUploadView
 content.sequenceFrom [
   editQuestion
+#  imageUpload
 ]
 
 

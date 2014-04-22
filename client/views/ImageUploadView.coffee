@@ -1,0 +1,3 @@
+ImageUploadView = {}
+
+module.exports = ImageUploadView
