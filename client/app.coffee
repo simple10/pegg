@@ -62,11 +62,11 @@ footer = new Surface
 model = {}
 
 editQuestion = new EditQuestionView model
-#imageUpload = new ImageUploadView
+imageUpload = new ImageUploadView model
 
 content.sequenceFrom [
   editQuestion
-#  imageUpload
+  imageUpload
 ]
 
 

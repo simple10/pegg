@@ -15,7 +15,7 @@ class EditQuestionView extends View
 
   # Build view
   build: ->
-    margin = 50
+    #margin = 50
     width = window.innerWidth - 50*2
 
     @editForm = new SequentialLayout
@@ -38,7 +38,8 @@ class EditQuestionView extends View
     @editForm.sequenceFrom [@question, @button]
 
     @add(new Modifier
-      transform: Transform.translate margin, margin, 0
+      origin: [.5, 0]
+     ###### transform: Transform.translate margin, margin, 0
     ).add @editForm
 
 module.exports = EditQuestionView
