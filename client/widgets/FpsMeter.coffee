@@ -24,7 +24,8 @@ class FpsMeter extends View
     @surface = new Surface
       size: [100, 20]
       classes: 'fpsmeter'
-      content: @add new Modifier
+      content: ''
+    @add new Modifier
       origin: [1, 1]
     .add @surface
 
