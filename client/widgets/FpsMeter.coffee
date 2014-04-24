@@ -9,6 +9,7 @@ class FpsMeter extends View
   currTime: 0
   lastTime: 0
   frameTime: 0
+  state: true
 
   # How much to normalize frame rate readings
   # Bigger number means more normalization
@@ -25,12 +26,14 @@ class FpsMeter extends View
       size: [100, 20]
       classes: ['fpsmeter']
       content: ''
+
     @add new Modifier
       origin: [1, 1]
     .add @surface
 
-    Engine.on 'prerender', @tick
-    Timer.setInterval @update, @updateFrequency
+    @surface.on 'click', @toggleState
+
+    @start()
 
   initTime: ->
     perf = window.performance;
@@ -45,6 +48,21 @@ class FpsMeter extends View
     thisFrameTime = @currTime - @lastTime
     @frameTime += (thisFrameTime - @frameTime) / @filterStrength
     @lastTime = @currTime
+
+  toggleState: =>
+    if @state
+      @stop()
+    else
+      @start()
+    @state = not @state
+
+  start: ->
+    Engine.on 'prerender', @tick
+    @interval = Timer.setInterval @update, @updateFrequency
+
+  stop: ->
+    Engine.removeListener 'prerender', @tick
+    Timer.clear @interval
 
   update: =>
     @surface.setContent "#{ (1000 / @frameTime).toFixed 1} fps"
