@@ -32,6 +32,7 @@ ImageUploadView = require 'views/ImageUploadView'
 
 
 #globals define
+FpsMeter = require 'widgets/FpsMeter'
 
 
 # create the main context
@@ -82,3 +83,4 @@ mainContext.add layout
 
 
 
+mainContext.add new FpsMeter
