@@ -18,11 +18,11 @@ class ImageUploadView extends View
     @form = new Surface
       content: '
       <form>
-          <fieldset>
-            <input type="file" name="image" onChange=/>
-            <input type="submit" value="Upload" />
-          </fieldset>
-        </form>
+        <fieldset>
+          <input type="file" name="image" onChange=/>
+          <input type="submit" value="Upload" />
+        </fieldset>
+      </form>
       '
       classes: ["#{@cssPrefix}__form"]
       size: [width, 50]
@@ -33,10 +33,7 @@ class ImageUploadView extends View
     @form.on 'change', =>
       alert('image picked')
 
-    @add new Modifier
-      origin: [.5, 0]
-      #transform: Transform.translate 10, 10, 0
-    .add @form
+    @add @form
 
 
 module.exports = ImageUploadView

@@ -15,21 +15,18 @@ class EditQuestionView extends View
 
   # Build view
   build: ->
-    #margin = 50
-    width = window.innerWidth - 50*2
-
     @editForm = new SequentialLayout
       direction: Utility.Direction.Y
 
     @question = new InputSurface
-      size: [width, 50]
+      size: [undefined, 50]
       name: 'inputQuestion'
       placeholder: 'Type your question'
       value: ''
       type: 'text'
 
     @button = new Surface
-      size: [width, 50]
+      size: [undefined, 50]
       content: '<button>Next</button>'
 
     @button.on 'click', =>
@@ -37,9 +34,6 @@ class EditQuestionView extends View
 
     @editForm.sequenceFrom [@question, @button]
 
-    @add(new Modifier
-      origin: [.5, 0]
-     ###### transform: Transform.translate margin, margin, 0
-    ).add @editForm
+    @add @editForm
 
 module.exports = EditQuestionView
