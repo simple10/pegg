@@ -13,7 +13,7 @@ class Mascot extends View
 
     @image = new ImageSurface
       size: [417, 800]
-      content: 'images/mascot_medium.png'
+      content: '/images/mascot_medium.png'
 
     stateModifier = new StateModifier
 
