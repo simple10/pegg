@@ -1,8 +1,8 @@
 {
-  "name": "PEGG",
+  "name": "pegg",
   "version": "0.0.1",
-  "description": "Gratzi PEGG",
-  "author": "Joe Johnston",
+  "description": "Pegg: Spark Empathy, by Gratzi.",
+  "author": "Joe Johnston, Augustin Bralley",
   "homepage": "https://github.com/auggernaut/pegg",
   "keywords": [
     "node",

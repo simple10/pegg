@@ -11,15 +11,19 @@ require 'famous-polyfills/requestAnimationFrame'
 Engine = require 'famous/core/Engine'
 Utility = require 'famous/utilities/Utility'
 Surface = require 'famous/core/Surface'
-ScrollView = require 'famous/views/ScrollView'
+ScrollView = require 'famous/views/Scrollview'
 HeaderFooterLayout = require 'famous/views/HeaderFooterLayout'
 
 # Views
 HeaderView = require 'views/HeaderView'
 EditQuestionView = require 'views/EditQuestionView'
+ListQuestionsView = require 'views/ListQuestionsView'
 ImageUploadView = require 'views/ImageUploadView'
 FpsMeter = require 'widgets/FpsMeter'
 Mascot = require 'widgets/Mascot'
+
+# Models
+App = require 'models/App'
 
 
 # create the main context
@@ -28,13 +32,16 @@ mainContext = Engine.createContext()
 # Build main view
 content = new ScrollView
   direction: Utility.Direction.Y
-model = {}
+model = new App
 editQuestion = new EditQuestionView model
 imageUpload = new ImageUploadView model
+listQuestions = new ListQuestionsView model
 content.sequenceFrom [
-  editQuestion
-  imageUpload
+  #editQuestion
+  #imageUpload
+  listQuestions
 ]
+
 
 # Build layout
 layout = new HeaderFooterLayout
@@ -54,3 +61,4 @@ mainContext.add layout
 
 mainContext.add new Mascot
 mainContext.add new FpsMeter
+

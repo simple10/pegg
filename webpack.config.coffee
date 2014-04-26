@@ -70,6 +70,11 @@ module.exports =
   resolve:
     extensions: ['', '.webpack.js', '.web.js', '.coffee', '.js', '.scss']
     modulesDirectories: ['client', 'lib', 'bower_components', 'node_modules']
+    alias: {
+      jquery      : path.join(__dirname, "lib/jquery-1.11.0.min.js")
+      underscore  : path.join(__dirname, "lib/underscore-min.js")
+      backbone    : path.join(__dirname, "lib/backbone-min.js")
+    }
 
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(true)

@@ -1,7 +1,9 @@
 {
-  "name": "frontend-starterkit-minimal",
+  "name": "pegg",
   "dependencies": {
     "famous-polyfills": "git+https://github.com/Famous/polyfills.git#0.1.1",
-    "famous": "git+https://github.com/Famous/famous.git#flat0.1.1"
+    "famous": "git+https://github.com/Famous/famous.git#flat0.1.1"/*,
+    "backbone": "git+https://github.com/jashkenas/backbone/",
+    "jquery": "git+https://github.com/jquery/jquery.git"*/
   }
 }
