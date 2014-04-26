@@ -11,8 +11,8 @@ The docs on famo.us are pretty useless. Better to just read the code and comment
 # Install
 
 ```bash
-git clone https://github.com/starterkits/frontend-starterkit-minimal.git
-cd frontend-starterkit-minimal
+git clone https://github.com/auggernaut/pegg.git
+cd pegg
 npm install -g webpack-dev-server bower
 npm install
 ```
@@ -63,7 +63,7 @@ of useful plugins and example tasks that could be useful later on.
 
 With webpack, each JavaScript file must explicitly require its dependencies.
 
-By convention, each view should have a cooresponding CSS file in of the same name in /styles.
+By convention, each view should have a corresponding CSS file in of the same name in /styles.
 The CSS files should be explicitly required by the view vs assuming the CSS is already loaded.
 
 Any changes to explicity required files will be automatically picked up by webpack and updated
