@@ -38,7 +38,7 @@ imageUpload = new ImageUploadView {}
 
 questions = new Questions
 query = new Parse.Query Question
-query.equalTo 'group', Math.floor(Math.random() * 200) + 1
+query.exists 'title'
 questions.query = query;
 questions.fetch success: (collection) ->
   #console.log collection.toJSON()

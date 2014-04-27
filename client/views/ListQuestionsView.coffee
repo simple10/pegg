@@ -27,15 +27,14 @@ class ListQuestionsView extends View
 
     #debugger
     @questions.each (question) =>
-      link = question.get 'link'
+      #link = question.get 'link'
       title = question.get 'title'
       content = "
         <h2>#{title}</h2>
-        <img src='#{link}' />
       "
 
       temp = new Surface
-        size: [undefined, undefined]
+        size: [undefined, 50]
         content: content
         classes: ['question']
 
