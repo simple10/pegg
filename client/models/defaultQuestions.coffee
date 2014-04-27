@@ -1,4 +1,3 @@
-Backbone = require 'backbone'
 
 module.exports = [
   {

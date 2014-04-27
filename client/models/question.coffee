@@ -1,8 +1,8 @@
-Backbone = require 'backbone'
 
-class Question extends Backbone.Model
+class Question extends Parse.Object
   defaults:
     question: ''
     mood: ''
+  className: "Meme"
 
 module.exports = Question
