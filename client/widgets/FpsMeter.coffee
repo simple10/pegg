@@ -1,3 +1,5 @@
+require 'styles/widgets/fpsmeter'
+
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 Modifier = require 'famous/core/Modifier'
