@@ -1,36 +1,9 @@
-$darkblue: #0c0d2a;
-$cloud-lightblue: #d3e9eb;
-$cloud-blue: #9fcacf;
-$rainbow-blue: #00a5ff;
-$rainbow-green: #b9ff00;
-$rainbow-yellow: #ffd500;
-$rainbow-red: #ff513f;
-$white: #fff;
-$gray: #366469; // 'ish
-
-$nav-bg: $darkblue;
-$nav-color: $white;
-
+@import "settings";
+@import "header";
+@import "footer";
 
 body {
   font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-}
-.header__background, .footer {
-  background-color: $nav-bg;
-  color: $nav-color;
-  line-height: 100px;
-  text-align: center;
-}
-
-.header__title {
-  font-weight: bold;
-  font-size: 30px;
-  text-align: center;
-  color: $nav-color;
-}
-
-.footer {
-  line-height: 50px;
 }
 
 button {
@@ -38,8 +11,3 @@ button {
   height: 100%;
 }
 
-.fpsmeter {
-  color: $white;
-  z-index: 99999;
-  cursor: pointer;
-}
