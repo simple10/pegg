@@ -9,7 +9,7 @@ Transform = require 'famous/core/Transform'
 
 
 class HeaderView extends View
-  title: 'Create Question'
+  title: 'Pegg'
   cssPrefix: 'header'
 
   constructor: ->
