@@ -1,6 +1,8 @@
 Backbone = require 'backbone'
 
-module.exports = Backbone.Model.extend(defaults:
-  question: ""
-  mood: ""
-)
+class Question extends Backbone.Model
+  defaults:
+    question: ''
+    mood: ''
+
+module.exports = Question

@@ -23,8 +23,8 @@ FpsMeter = require 'widgets/FpsMeter'
 Mascot = require 'widgets/Mascot'
 
 # Models
-App = require 'models/App'
-
+Questions = require 'collections/Questions'
+defaultQuestions = require 'models/DefaultQuestions'
 
 # create the main context
 mainContext = Engine.createContext()
@@ -32,10 +32,12 @@ mainContext = Engine.createContext()
 # Build main view
 content = new ScrollView
   direction: Utility.Direction.Y
-model = new App
-editQuestion = new EditQuestionView model
-imageUpload = new ImageUploadView model
-listQuestions = new ListQuestionsView model
+
+editQuestion = new EditQuestionView {}
+imageUpload = new ImageUploadView {}
+
+questions = new Questions defaultQuestions
+listQuestions = new ListQuestionsView questions
 content.sequenceFrom [
   #editQuestion
   #imageUpload

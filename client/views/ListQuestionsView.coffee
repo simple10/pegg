@@ -1,3 +1,5 @@
+require 'styles/views/questions'
+
 View = require 'famous/core/View'
 Modifier  = require 'famous/core/Modifier'
 Transform = require 'famous/core/Transform'
@@ -7,15 +9,12 @@ Scrollview = require 'famous/views/Scrollview'
 
 class ListQuestionsView extends View
 
-  constructor: (model, options) ->
+  constructor: (collection, options) ->
     super options
-    @model = model
+    @questions = collection
     @build()
 
   build: ->
-
-    questions = @model.get('questions').models
-
     container = new ContainerSurface(
       size: [400, undefined]
       properties:
@@ -23,21 +22,13 @@ class ListQuestionsView extends View
     )
 
     surfaces = []
-    scrollview = new Scrollview()
-    i = 0
-
-    while i < questions.length
-      temp = new Surface(
+    @questions.each (question) ->
+      surfaces.push new Surface
         size: [undefined, 50]
-        content: questions[i].get('question')
-        classes: ["red-bg"]
-        properties:
-          textAlign: "center"
-          lineHeight: "50px"
-      )
-      temp.pipe scrollview
-      surfaces.push temp
-      i++
+        content: question.get('question')
+        classes: ['question']
+
+    scrollview = new Scrollview
     scrollview.sequenceFrom surfaces
     container.add scrollview
 
