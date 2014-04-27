@@ -24,38 +24,26 @@ class ListQuestionsView extends View
     surfaces = []
     scrollview = new Scrollview
     scrollview.sequenceFrom surfaces
-    i = 0
 
     #debugger
-    while i < @questions.models.length
-      question = @questions.models[i]
-      image = question.get 'link'
+    @questions.each (question) =>
+      link = question.get 'link'
       title = question.get 'title'
-      temp = new Surface(
-        #size: [undefined, 50]
-        content: "
-          <h2>#{title}</h2>
-          <img src='#{image}' />
-        "
+      content = "
+        <h2>#{title}</h2>
+        <img src='#{link}' />
+      "
+
+      temp = new Surface
+        size: [undefined, undefined]
+        content: content
         classes: ['question']
-      )
+
       temp.pipe scrollview
       surfaces.push temp
-      i++
 
     container.add scrollview
     @add scrollview
-
-###
-    @questions.each (question) =>
-      #link = question.get 'link'
-      #"<img src='#{link}' />"
-      surfaces.push new Surface(
-        size: [undefined, 50]
-        content: question.get 'title'
-        classes: ['question']
-      ).pipe(scrollview)
-###
 
 
 
