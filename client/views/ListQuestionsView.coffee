@@ -22,16 +22,41 @@ class ListQuestionsView extends View
     )
 
     surfaces = []
-    @questions.each (question) ->
-      surfaces.push new Surface
-        size: [undefined, 50]
-        content: question.get('question')
-        classes: ['question']
-
     scrollview = new Scrollview
     scrollview.sequenceFrom surfaces
-    container.add scrollview
+    i = 0
 
+    #debugger
+    while i < @questions.models.length
+      question = @questions.models[i]
+      image = question.get 'link'
+      title = question.get 'title'
+      temp = new Surface(
+        #size: [undefined, 50]
+        content: "
+          <h2>#{title}</h2>
+          <img src='#{image}' />
+        "
+        classes: ['question']
+      )
+      temp.pipe scrollview
+      surfaces.push temp
+      i++
+
+    container.add scrollview
     @add scrollview
+
+###
+    @questions.each (question) =>
+      #link = question.get 'link'
+      #"<img src='#{link}' />"
+      surfaces.push new Surface(
+        size: [undefined, 50]
+        content: question.get 'title'
+        classes: ['question']
+      ).pipe(scrollview)
+###
+
+
 
 module.exports = ListQuestionsView

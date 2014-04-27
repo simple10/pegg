@@ -24,7 +24,7 @@ Mascot = require 'widgets/Mascot'
 
 # Models
 Questions = require 'collections/Questions'
-defaultQuestions = require 'models/DefaultQuestions'
+Question = require 'models/Question'
 
 # create the main context
 mainContext = Engine.createContext()
@@ -36,31 +36,36 @@ content = new ScrollView
 editQuestion = new EditQuestionView {}
 imageUpload = new ImageUploadView {}
 
-questions = new Questions defaultQuestions
-listQuestions = new ListQuestionsView questions
-content.sequenceFrom [
-  #editQuestion
-  #imageUpload
-  listQuestions
-]
+questions = new Questions
+query = new Parse.Query Question
+query.equalTo 'group', Math.floor(Math.random() * 200) + 1
+questions.query = query;
+questions.fetch success: (collection) ->
+  #console.log collection.toJSON()
+  listQuestions = new ListQuestionsView questions
 
+  content.sequenceFrom [
+    #editQuestion
+    #imageUpload
+    listQuestions
+  ]
 
-# Build layout
-layout = new HeaderFooterLayout
-  headerSize: 60
-  footerSize: 50
-header = new HeaderView
-footer = new Surface
-  content: "Footer"
-  classes: ['footer']
+  # Build layout
+  layout = new HeaderFooterLayout
+    headerSize: 60
+    footerSize: 50
+  header = new HeaderView
+  footer = new Surface
+    content: 'by Gratzi'
+    classes: ['footer']
 
-layout.header.add header
-layout.content.add content
-layout.footer.add footer
+  layout.header.add header
+  layout.content.add content
+  layout.footer.add footer
 
-# Add views to context
-mainContext.add layout
+  # Add views to context
+  mainContext.add layout
 
-mainContext.add new Mascot
-mainContext.add new FpsMeter
+  # mainContext.add new Mascot
+  mainContext.add new FpsMeter
 
