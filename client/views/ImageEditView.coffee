@@ -1,5 +1,7 @@
+Config = require('config').public.aviary
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
+
 
 class ImageEditView extends View
   src: 'http://images.aviary.com/imagesv5/feather_default.jpg'
@@ -31,11 +33,11 @@ class ImageEditView extends View
 
   initEditor: ->
     @aviary = new Aviary.Feather
-      apiKey: "your-key-here"
+      apiKey: Config.apiKey
       apiVersion: 3
-      theme: "dark"
-      tools: "all"
-      appendTo: ""
+      theme: 'light'
+      tools: 'all'
+      appendTo: ''
       onSave: @onSave
       onError: @onError
 
