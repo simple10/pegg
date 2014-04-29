@@ -22,6 +22,8 @@ ImageUploadView = require 'views/ImageUploadView'
 FpsMeter = require 'widgets/FpsMeter'
 Mascot = require 'widgets/Mascot'
 
+ImageEditView = require 'views/ImageEditView'
+
 # Models
 Questions = require 'collections/Questions'
 Question = require 'models/Question'
@@ -35,6 +37,7 @@ content = new ScrollView
 
 editQuestion = new EditQuestionView {}
 imageUpload = new ImageUploadView {}
+imageEdit = new ImageEditView {}
 
 questions = new Questions
 query = new Parse.Query Question
@@ -47,7 +50,8 @@ questions.fetch success: (collection) ->
   content.sequenceFrom [
     #editQuestion
     #imageUpload
-    listQuestions
+    # listQuestions
+    imageEdit
   ]
 
   # Build layout

@@ -18,3 +18,6 @@ module.exports =
   upload:
     server: 'http://localhost:9998'
     s3bucket: 'http://pegg.s3.amazonaws.com'
+
+  aviary:
+    apiKey: 'cdef40f2d4f076a2'
