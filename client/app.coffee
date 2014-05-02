@@ -18,6 +18,7 @@ HeaderFooterLayout = require 'famous/views/HeaderFooterLayout'
 HeaderView = require 'views/HeaderView'
 EditQuestionView = require 'views/EditQuestionView'
 ListQuestionsView = require 'views/ListQuestionsView'
+QuestionView = require 'views/QuestionView'
 ImageUploadView = require 'views/ImageUploadView'
 FpsMeter = require 'widgets/FpsMeter'
 Mascot = require 'widgets/Mascot'
@@ -42,16 +43,21 @@ imageEdit = new ImageEditView {}
 questions = new Questions
 query = new Parse.Query Question
 query.exists 'title'
+#query.limit 1
+query.skip 10
 questions.query = query;
 questions.fetch success: (collection) ->
-  #console.log collection.toJSON()
-  listQuestions = new ListQuestionsView questions
+  console.log collection.toJSON()
+  #listQuestions = new ListQuestionsView questions
+  question = new QuestionView collection
+
 
   content.sequenceFrom [
     #editQuestion
     #imageUpload
-    # listQuestions
-    imageEdit
+    #listQuestions
+    #imageEdit
+    question
   ]
 
   # Build layout
