@@ -49,6 +49,12 @@ Gulp could be dropped since it's mostly just passing through to webpack. But gul
 of useful plugins and example tasks that could be useful later on.
 
 
+# Testing
+
+* [Jasmine](http://jasmine.github.io/)
+* [Karma](http://karma-runner.github.io/0.12/index.html)
+* [CasperJS](http://casperjs.org/)
+
 
 # Directory Structure
 
