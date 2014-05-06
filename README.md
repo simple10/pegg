@@ -109,6 +109,10 @@ Rest of deploy details TBD.
 * https://github.com/neebz/backbone-parse
 
 
+# Resources
+
+* [CSS 3D Matrix Transformations](http://www.eleqtriq.com/2010/05/css-3d-matrix-transformations/)
+
 
 # Notes
 
