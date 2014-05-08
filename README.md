@@ -54,6 +54,10 @@ of useful plugins and example tasks that could be useful later on.
 * [Jasmine](http://jasmine.github.io/)
 * [Karma](http://karma-runner.github.io/0.12/index.html)
 * [CasperJS](http://casperjs.org/)
+* [PhantomCSS](https://github.com/Huddle/PhantomCSS)
+
+Use [jasmine-npm](https://github.com/pivotal/jasmine-npm) once it's available.
+[Minijasminenode](https://github.com/juliemr/minijasminenode/issues/9) will eventually be deprecated.
 
 
 # Directory Structure
@@ -112,7 +116,7 @@ Rest of deploy details TBD.
 # Resources
 
 * [CSS 3D Matrix Transformations](http://www.eleqtriq.com/2010/05/css-3d-matrix-transformations/)
-
+* [Testing and Debugging Angular](http://www.yearofmoo.com/2013/09/advanced-testing-and-debugging-in-angularjs.html)
 
 # Notes
 
