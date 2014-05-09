@@ -5,44 +5,57 @@ Modifier  = require 'famous/core/Modifier'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Easing = require 'famous/transitions/Easing'
+Timer = require 'famous/utilities/Timer'
 
 
 class Mascot extends View
   constructor: ->
     super
 
-    @image = new ImageSurface
+    @stateModifier = new StateModifier
+
+    @modifier = @add(@stateModifier)
+
+    @modifier.add new ImageSurface
       size: [417, 800]
       content: '/images/mascot_medium.png'
 
-    stateModifier = new StateModifier
-
-    @add(stateModifier).add @image
-
-    stateModifier.setTransform(
+    @stateModifier.setTransform(
       Transform.translate 0, 300
       duration : 1000
       curve: Easing.inExpo
     )
 
-    stateModifier.setTransform(
+    @stateModifier.setTransform(
       Transform.translate 100, 300
-      duration : 800
-      curve: Easing.outElastic
+      {
+        duration : 800
+        curve: Easing.outElastic
+      }
       =>
         # Talk bubble
-        @add new Modifier
-          transform: Transform.translate 450, 250
+        @modifier.add new Modifier
+          transform: Transform.translate 400, 0
         .add new ImageSurface
           size: [192, 200]
           content: 'images/talk_medium.png'
-        @add new Modifier
-          transform: Transform.translate 530, 320
+        @modifier.add new Modifier
+          transform: Transform.translate 480, 60
         .add new Surface
           classes: ['talk']
           content: 'Sup?'
+        Timer.setTimeout =>
+          @fadeOut()
+        , 1000
+
     )
 
+  fadeOut: ->
+    @stateModifier.setOpacity(
+      0
+      duration: 500
+      curve: Easing.outCubic
+    )
 
 module.exports = Mascot
 
