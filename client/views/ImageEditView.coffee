@@ -2,6 +2,8 @@ Config = require('config').public.aviary
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 
+# todo: add script to dom and init view when loaded
+# <script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
 
 class ImageEditView extends View
   src: 'http://images.aviary.com/imagesv5/feather_default.jpg'
