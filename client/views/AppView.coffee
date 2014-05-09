@@ -53,6 +53,7 @@ class AppView extends View
   initMenu: ->
     @menuPosition = new Transitionable 0
     @menu = new MenuView
+    @menu.on 'toggleMenu', @toggleMenu
 
   initContent: ->
     # Determine which content to load and display
