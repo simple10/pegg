@@ -15,6 +15,7 @@ class HeaderView extends View
   constructor: ->
     super
     @build()
+    @initEvents()
 
   # Build view
   build: ->
@@ -40,5 +41,8 @@ class HeaderView extends View
       transform: Transform.translate 0, 10
     .add @title
 
+  initEvents: ->
+    @title.on 'click', =>
+      @_eventOutput.emit 'toggleMenu'
 
 module.exports = HeaderView
