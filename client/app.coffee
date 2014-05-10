@@ -15,8 +15,12 @@ AppView = require 'views/AppView'
 FpsMeter = require 'widgets/FpsMeter'
 Mascot = require 'widgets/Mascot'
 
-# create the main context
+# Create the main context
 mainContext = Engine.createContext()
+
+# Set perspective for 3D effects
+# Lower values make effects more pronounced and extreme
+mainContext.setPerspective 400
 
 mainContext.add new AppView
 mainContext.add new Mascot

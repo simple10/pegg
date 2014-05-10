@@ -18,6 +18,7 @@ Question = require 'models/Question'
 # Views
 HeaderView = require 'views/HeaderView'
 MenuView = require 'views/MenuView'
+CardView = require 'views/CardView'
 
 # EditQuestionView = require 'views/EditQuestionView'
 # ListQuestionsView = require 'views/ListQuestionsView'
@@ -56,14 +57,7 @@ class AppView extends View
     @menu.on 'toggleMenu', @toggleMenu
 
   initContent: ->
-    # Determine which content to load and display
-
-    # Build main view
-    # @content = new ScrollView
-    #   direction: Utility.Direction.Y
-    # @layout.content.add content
-    @content = new Surface
-      content: '<h1>YAY!</h1>'
+    @content = new CardView
     @page.content.add @content
 
   toggleMenu: =>

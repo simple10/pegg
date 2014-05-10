@@ -1,0 +1,21 @@
+@import "settings";
+@import "mixins";
+
+$cardBorderRadius: 30px;
+
+.card__front, .card__middle, .card__back {
+  @include border-radius($cardBorderRadius);
+  text-align: center;
+}
+
+.card__front {
+  background-color: $cloud-blue;
+}
+
+.card__middle {
+  @extend .backface-visible;
+}
+
+.card__back {
+  background-color: $rainbow-yellow;
+}
