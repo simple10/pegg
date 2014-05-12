@@ -23,7 +23,7 @@ mainContext = Engine.createContext()
 mainContext.setPerspective 400
 
 mainContext.add new AppView
-mainContext.add new Mascot
+# mainContext.add new Mascot
 mainContext.add new FpsMeter
 
 # questions = new Questions

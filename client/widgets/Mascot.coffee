@@ -42,7 +42,6 @@ class Mascot extends View
         @modifier.add new Modifier
           transform: Transform.translate 480, 60
         .add new Surface
-          classes: ['talk']
           content: 'Sup?'
         Timer.setTimeout =>
           @fadeOut()
