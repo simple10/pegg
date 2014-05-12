@@ -9,7 +9,7 @@ HeaderFooterLayout = require 'famous/views/HeaderFooterLayout'
 Surface = require 'famous/core/Surface'
 Transform = require 'famous/core/Transform'
 Transitionable  = require 'famous/transitions/Transitionable'
-
+Modifier = require 'famous/core/Modifier'
 
 # Models
 Questions = require 'collections/Questions'
@@ -58,7 +58,9 @@ class AppView extends View
 
   initContent: ->
     @content = new CardView
-    @page.content.add @content
+    modifier = new Modifier
+      origin: [0.5, 0.5]
+    @page.content.add(modifier).add @content
 
   toggleMenu: =>
     if @menuOpen

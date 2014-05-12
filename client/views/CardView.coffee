@@ -45,15 +45,8 @@ class CardView extends View
     # Using this middle card gives the illusion of depth without seeing through to the content of the other side.
     @addSurface
       size: [ width, height ]
-      content: ''
       classes: ['card__middle']
-      transform: Transform.multiply(
-        Transform.translate(0, 0, -depth / 2)
-        Transform.multiply(
-          Transform.rotateZ(Math.PI)
-          Transform.rotateX(Math.PI)
-        )
-      )
+      transform: Transform.translate(0, 0, -depth / 2)
 
     # Back
     @addSurface

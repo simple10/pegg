@@ -6,6 +6,7 @@ $cardBorderRadius: 30px;
 .card__front, .card__middle, .card__back {
   @include border-radius($cardBorderRadius);
   text-align: center;
+  cursor: pointer;
 }
 
 .card__front {
@@ -14,6 +15,7 @@ $cardBorderRadius: 30px;
 
 .card__middle {
   @extend .backface-visible;
+  background-color: $black;
 }
 
 .card__back {
