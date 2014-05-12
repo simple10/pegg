@@ -7,19 +7,17 @@ require 'styles/card'
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 Modifier = require 'famous/core/Modifier'
+StateModifer = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
-Transitionable = require 'famous/transitions/Transitionable'
 Utility = require 'famous/utilities/Utility'
 
 
 class CardView extends View
   @DEFAULT_OPTIONS:
-    width: 200
-    height: 300
+    width: 400
+    height: 600
     depth: 10
-    flip:
-      direction: Utility.Direction.Y
-      transition: true
+    borderRadius: 30
 
   constructor: ->
     super
@@ -30,29 +28,45 @@ class CardView extends View
     height = @options.height
     depth = @options.depth
 
-    @state = new Transitionable 0
-
+    @state = new StateModifer
+    @mainNode = @add @state
 
     # Front
     @addSurface
       size: [ width, height ]
       content: "<h2>Front of card.</h2>"
       classes: ['card__front']
-      transform: Transform.translate(0, 0, depth / 2)
-
-    # Middle
-    # This is a two sided card that sits in the middle of the front and back.
-    # Using this middle card gives the illusion of depth without seeing through to the content of the other side.
+      properties:
+        borderRadius: "#{@options.borderRadius}px"
+      transform: Transform.translate(0, 0, 0)
+    # Front Backing
     @addSurface
       size: [ width, height ]
-      classes: ['card__middle']
-      transform: Transform.translate(0, 0, -depth / 2)
-
+      classes: ['card__backing']
+      properties:
+        borderRadius: "#{@options.borderRadius}px"
+      transform: Transform.multiply(
+        Transform.translate(0, 0, -1)
+        Transform.multiply(
+          Transform.rotateZ(Math.PI)
+          Transform.rotateX(Math.PI)
+        )
+      )
+    # Shim
+    @addSurface
+      size: [depth-2, height]
+      classes: ['card__shim']
+      transform: Transform.multiply(
+        Transform.translate(-width/2+@options.borderRadius, 0, -depth/2+1)
+        Transform.rotateY(-Math.PI/2)
+      )
     # Back
     @addSurface
       size: [ width, height ]
       content: "<h3>Back of card</h3>"
       classes: ['card__back']
+      properties:
+        borderRadius: "#{@options.borderRadius}px"
       transform: Transform.multiply(
         Transform.translate(0, 0, -depth)
         Transform.multiply(
@@ -60,6 +74,14 @@ class CardView extends View
           Transform.rotateX(Math.PI)
         )
       )
+    # Back Backing
+    @addSurface
+      size: [ width, height ]
+      classes: ['card__backing']
+      properties:
+        borderRadius: "#{@options.borderRadius}px"
+      transform: Transform.translate(0, 0, -depth+1)
+
 
   addSurface: (params) ->
     surface = new Surface
@@ -70,7 +92,7 @@ class CardView extends View
     modifier = new Modifier
       transform: params.transform
     surface.on 'click', @flip
-    @add(modifier).add surface
+    @mainNode.add(modifier).add surface
 
   flip: (side) =>
     @currentSide ?= 0
@@ -78,17 +100,13 @@ class CardView extends View
       @currentSide = side
     else
       @currentSide = if @currentSide is 1 then 0 else 1
-    @state.set @currentSide, @options.flip.transition
 
-  render: ->
-    pos = @state.get()
-    axis = @options.flip.direction
-    rotation = [0, 0, 0]
-    rotation[axis] = Math.PI * pos
-    [
-      transform: Transform.rotate.apply null, rotation
-      target: @_node.render()
-    ]
+    @state.setTransform(
+      Transform.rotateY Math.PI * @currentSide
+      duration : 500
+      curve: 'easeInOut'
+    )
+
 
 module.exports = CardView
 

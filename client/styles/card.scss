@@ -1,10 +1,7 @@
 @import "settings";
 @import "mixins";
 
-$cardBorderRadius: 30px;
-
 .card__front, .card__middle, .card__back {
-  @include border-radius($cardBorderRadius);
   text-align: center;
   cursor: pointer;
 }
@@ -13,7 +10,11 @@ $cardBorderRadius: 30px;
   background-color: $cloud-blue;
 }
 
-.card__middle {
+.card__backing {
+  background-color: $black;
+}
+
+.card__shim {
   @extend .backface-visible;
   background-color: $black;
 }

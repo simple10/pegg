@@ -20,7 +20,7 @@ mainContext = Engine.createContext()
 
 # Set perspective for 3D effects
 # Lower values make effects more pronounced and extreme
-mainContext.setPerspective 400
+mainContext.setPerspective 2000
 
 mainContext.add new AppView
 # mainContext.add new Mascot
