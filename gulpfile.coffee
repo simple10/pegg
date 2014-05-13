@@ -9,8 +9,12 @@ webpackConfig = require './webpack.config.coffee'
 
 
 # Default task
-gulp.task 'default', ['webpack-dev-server'], ->
+gulp.task 'default', ['help'], ->
 
+gulp.task 'help', ->
+  gutil.log "\n\nUsage:\n\n" \
+  + "    gulp serve        (build and run dev server)\n" \
+  + "    gulp build        (production build)\n"
 
 conf = Object.create webpackConfig
 
