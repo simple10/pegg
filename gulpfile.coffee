@@ -13,7 +13,6 @@ gulp.task 'default', ['webpack-dev-server'], ->
 
 
 conf = Object.create webpackConfig
-conf.devtool = 'source-map'
 
 
 ############################################################
