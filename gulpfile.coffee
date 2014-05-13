@@ -3,6 +3,7 @@
 
 gulp = require 'gulp'
 gutil = require 'gulp-util'
+clean = require 'gulp-clean'
 webpack = require 'webpack'
 WebpackDevServer = require 'webpack-dev-server'
 webpackConfig = require './webpack.config.coffee'
@@ -17,6 +18,9 @@ gulp.task 'help', ->
   + "    gulp build        (production build)\n"
 
 conf = Object.create webpackConfig
+gulp.task 'clean', ->
+  gulp.src(conf.output.publicPath, {read: false})
+  .pipe(clean())
 
 
 ############################################################

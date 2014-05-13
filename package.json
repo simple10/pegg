@@ -38,6 +38,7 @@
     "coffee-loader": "^0.7",
     "script-loader": "^0.5",
     "sass-loader": "^0.0",
-    "css-loader": "^0.6.12"
+    "css-loader": "^0.6.12",
+    "gulp-clean": "^0.2.4"
   }
 }
