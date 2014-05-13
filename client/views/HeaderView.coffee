@@ -26,6 +26,7 @@ class HeaderView extends View
 
     @logo = new ImageSurface
       size: [55, 40]
+      classes: ["#{@cssPrefix}__logo"]
       content: 'images/mark_tiny.png'
 
     @title = new Surface
@@ -44,7 +45,7 @@ class HeaderView extends View
     .add @title
 
   initEvents: ->
-    @title.on 'click', =>
+    @logo.on 'click', =>
       @_eventOutput.emit 'toggleMenu'
 
 module.exports = HeaderView

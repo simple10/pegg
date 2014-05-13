@@ -13,3 +13,8 @@
   text-align: center;
   color: $nav-color;
 }
+
+.header__logo {
+  z-index: 100;
+  cursor: pointer;
+}
