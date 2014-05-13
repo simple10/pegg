@@ -38,7 +38,7 @@ class CardView extends View
       classes: ['card__front']
       properties:
         borderRadius: "#{@options.borderRadius}px"
-      transform: Transform.translate(0, 0, 0)
+      transform: Transform.translate 0, 0, depth/2
     # Front Backing
     @addSurface
       size: [ width, height ]
@@ -46,10 +46,10 @@ class CardView extends View
       properties:
         borderRadius: "#{@options.borderRadius}px"
       transform: Transform.multiply(
-        Transform.translate(0, 0, -1)
+        Transform.translate 0, 0, depth/2-1
         Transform.multiply(
-          Transform.rotateZ(Math.PI)
-          Transform.rotateX(Math.PI)
+          Transform.rotateZ Math.PI
+          Transform.rotateX Math.PI
         )
       )
     # Shim
@@ -57,8 +57,8 @@ class CardView extends View
       size: [depth-2, height]
       classes: ['card__shim']
       transform: Transform.multiply(
-        Transform.translate(-width/2+@options.borderRadius, 0, -depth/2+1)
-        Transform.rotateY(-Math.PI/2)
+        Transform.translate -width/2+@options.borderRadius, 0, 1
+        Transform.rotateY -Math.PI/2
       )
     # Back
     @addSurface
@@ -68,10 +68,10 @@ class CardView extends View
       properties:
         borderRadius: "#{@options.borderRadius}px"
       transform: Transform.multiply(
-        Transform.translate(0, 0, -depth)
+        Transform.translate(0, 0, -depth/2)
         Transform.multiply(
-          Transform.rotateZ(Math.PI)
-          Transform.rotateX(Math.PI)
+          Transform.rotateZ Math.PI
+          Transform.rotateX Math.PI
         )
       )
     # Back Backing
@@ -80,7 +80,7 @@ class CardView extends View
       classes: ['card__backing']
       properties:
         borderRadius: "#{@options.borderRadius}px"
-      transform: Transform.translate(0, 0, -depth+1)
+      transform: Transform.translate 0, 0, -depth/2+1
 
 
   addSurface: (params) ->
