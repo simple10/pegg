@@ -1,5 +1,7 @@
 # TODO: use NavigationBar widget when it's fixed https://github.com/Famous/widgets/pull/1
 
+require 'styles/header'
+
 View = require 'famous/core/View'
 Utility = require 'famous/utilities/Utility'
 Surface = require 'famous/core/Surface'
