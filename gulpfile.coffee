@@ -32,7 +32,7 @@ gulp.task 'webpack-dev-server', (callback) ->
     watchDelay: 300
     stats:
       colors: true
-  .listen 8080, 'localhost', (err) ->
+  .listen 8080, '', (err) ->
     throw new gutil.PluginError('webpack-dev-server', err) if err
     gutil.log '[webpack-dev-server]', 'http://localhost:8080/webpack-dev-server/index.html'
 
