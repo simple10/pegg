@@ -5,6 +5,7 @@ Surface = require 'famous/core/Surface'
 Modifier = require 'famous/core/Modifier'
 Engine = require 'famous/core/Engine'
 Timer = require 'famous/utilities/Timer'
+Transform = require 'famous/core/Transform'
 
 
 class FpsMeter extends View
@@ -31,6 +32,7 @@ class FpsMeter extends View
 
     @add new Modifier
       origin: [1, 1]
+      transform: Transform.inFront
     .add @surface
 
     @surface.on 'click', @toggleState

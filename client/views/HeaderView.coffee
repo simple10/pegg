@@ -37,7 +37,10 @@ class HeaderView extends View
 
     @add new Modifier
       origin: [0, 0]
-      transform: Transform.translate 10, 10
+      transform: Transform.multiply(
+        Transform.inFront
+        Transform.translate 10, 10
+      )
     .add @logo
 
     @add new Modifier
