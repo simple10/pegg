@@ -38,6 +38,7 @@
     "script-loader": "^0.5",
     "sass-loader": "^0.0",
     "css-loader": "^0.6.12",
-    "gulp-clean": "^0.2.4"
+    "gulp-clean": "^0.2.4",
+    "gulp-gzip": "0.0.8"
   }
 }
