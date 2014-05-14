@@ -1,4 +1,4 @@
-require 'styles/views/questions'
+require 'css/views/questions'
 
 View = require 'famous/core/View'
 Modifier  = require 'famous/core/Modifier'

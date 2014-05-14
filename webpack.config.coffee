@@ -10,12 +10,12 @@ path = require 'path'
 
 module.exports =
 
-  contentBase: "#{__dirname}/client/"
+  contentBase: "#{__dirname}/src/"
 
   cache: true
 
   entry:
-    bundle: './client/app'
+    bundle: './src/app'
 
   devtool: 'source-map'
 
@@ -71,7 +71,7 @@ module.exports =
 
   resolve:
     extensions: ['', '.webpack.js', '.web.js', '.coffee', '.js', '.scss']
-    modulesDirectories: ['client', 'lib', 'bower_components', 'node_modules']
+    modulesDirectories: ['src', 'src/lib', 'src/app', 'bower_components', 'node_modules']
 
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(true)

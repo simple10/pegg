@@ -1,4 +1,4 @@
-require 'styles/widgets/fpsmeter'
+require 'css/widgets/fpsmeter'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
