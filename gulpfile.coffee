@@ -8,6 +8,14 @@ webpack = require 'webpack'
 WebpackDevServer = require 'webpack-dev-server'
 webpackConfig = require './webpack.config.coffee'
 
+src = 'src/'
+
+copyFiles = [
+  '**/images/**'
+]
+
+conf = Object.create webpackConfig
+
 
 # Default task
 gulp.task 'default', ['help'], ->
@@ -17,10 +25,6 @@ gulp.task 'help', ->
   + "    gulp serve        (build and run dev server)\n" \
   + "    gulp build        (production build)\n"
 
-conf = Object.create webpackConfig
-gulp.task 'clean', ->
-  gulp.src(conf.output.publicPath, {read: false})
-  .pipe(clean())
 
 
 ############################################################
@@ -47,11 +51,13 @@ gulp.task 'webpack-dev-server', (callback) ->
 ############################################################
 # Production build
 ############################################################
-gulp.task 'build', ['webpack:build'], ->
+gulp.task 'build', ['clean', 'webpack:build', 'copy'], ->
 gulp.task 'webpack:build', (callback) ->
+  conf.output.filename = 'bundle-[hash].js'
+
   conf.plugins = conf.plugins.concat(
-    new webpack.DefinePlugin 'process.env': { NODE_ENV: JSON.stringify('production') }
-    new webpack.optimize.DedupePlugin()
+    # new webpack.DefinePlugin 'process.env': { NODE_ENV: JSON.stringify('production') }
+    # new webpack.optimize.DedupePlugin()
     new webpack.optimize.UglifyJsPlugin()
   )
 
@@ -60,3 +66,18 @@ gulp.task 'webpack:build', (callback) ->
     throw new gutil.PluginError('webpack:build', err) if err
     gutil.log '[webpack:build]', stats.toString colors: true
     callback()
+
+
+gulp.task 'clean', ->
+  gulp.src conf.output.path, read: false
+  .pipe clean()
+
+
+#  gulp.src(['src/**/*', '!src/scripts', '!src/scripts/**/*', '!src/styles', '!src/styles/**/*']).pipe(gulp.dest('dist'))
+
+
+gulp.task 'copy', ->
+  gulp.src copyFiles, cwd: src
+  .pipe gulp.dest conf.output.path
+
+
