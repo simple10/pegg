@@ -10,6 +10,7 @@ Surface = require 'famous/core/Surface'
 Transform = require 'famous/core/Transform'
 Transitionable  = require 'famous/transitions/Transitionable'
 Modifier = require 'famous/core/Modifier'
+StateModifer = require 'famous/modifiers/StateModifier'
 
 # Models
 Questions = require 'collections/Questions'
@@ -58,9 +59,15 @@ class AppView extends View
 
   initContent: ->
     @content = new CardView
-    modifier = new Modifier
-      origin: [0.5, 0.5]
-    @page.content.add(modifier).add @content
+    @contentState = new StateModifer
+      origin: [0, 0.5]
+
+    @contentState.setOrigin(
+      [0.5, 0.5]
+      duration: 500
+      curve: 'easeOutBounce'
+    )
+    @page.content.add(@contentState).add @content
 
   toggleMenu: =>
     if @menuOpen
