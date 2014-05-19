@@ -28,7 +28,7 @@ gzipFiles = [
 
 
 # Default task
-gulp.task 'default', ['help'], ->
+gulp.task 'default', ['help', 'serve'], ->
 
 gulp.task 'help', ->
   gutil.log "\n\nUsage:\n\n" \
