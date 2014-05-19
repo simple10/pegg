@@ -97,6 +97,7 @@ class CardView extends View
     @mainNode.add(modifier).add surface
 
   flip: (side) =>
+    @state.halt()
     @currentSide ?= 0
     if side is 0 or side is 1
       @currentSide = side
