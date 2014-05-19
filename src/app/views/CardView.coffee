@@ -10,7 +10,7 @@ Modifier = require 'famous/core/Modifier'
 StateModifer = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Utility = require 'famous/utilities/Utility'
-
+Easing = require 'famous/transitions/Easing'
 
 class CardView extends View
   @DEFAULT_OPTIONS:
@@ -18,6 +18,8 @@ class CardView extends View
     height: 600
     depth: 10
     borderRadius: 30
+    duration: 1500
+    easing: Easing.outElastic
 
   constructor: ->
     super
@@ -103,8 +105,8 @@ class CardView extends View
 
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
-      duration : 500
-      curve: 'easeInOut'
+      duration : @options.duration
+      curve: @options.easing
     )
 
 
