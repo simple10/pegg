@@ -16,9 +16,9 @@ class CardView extends View
   @DEFAULT_OPTIONS:
     width: 400
     height: 600
-    depth: 10
+    depth: 100
     borderRadius: 30
-    duration: 1500
+    duration: 10500
     easing: Easing.outElastic
 
   constructor: ->
@@ -54,13 +54,23 @@ class CardView extends View
           Transform.rotateX Math.PI
         )
       )
-    # Shim
+    # Shim left
     @addSurface
       size: [depth-2, height]
-      classes: ['card__shim']
+      classes: ['card__left']
+      content: 'Left'
       transform: Transform.multiply(
         Transform.translate -width/2+@options.borderRadius, 0, 1
         Transform.rotateY -Math.PI/2
+      )
+    # Shim right
+    @addSurface
+      size: [depth-2, height]
+      classes: ['card__right']
+      content: 'Right'
+      transform: Transform.multiply(
+        Transform.translate width/2-@options.borderRadius, 0, 1
+        Transform.rotateY Math.PI/2
       )
     # Back
     @addSurface

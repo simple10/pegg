@@ -1,9 +1,10 @@
 @import "settings";
 @import "mixins";
 
-.card__front, .card__middle, .card__back {
+.card__front, .card__back, .card__left, .card__right {
   text-align: center;
   cursor: pointer;
+  line-height: 100px;
 }
 
 .card__front {
@@ -14,11 +15,19 @@
   background-color: $black;
 }
 
-.card__shim {
-  @extend .backface-visible;
-  background-color: $black;
+.card__left {
+  background-color: $rainbow-red;
+}
+
+.card__right {
+  background-color: $rainbow-green;
 }
 
 .card__back {
   background-color: $rainbow-yellow;
+}
+
+.card__shim {
+  @extend .backface-visible;
+  background-color: $black;
 }
