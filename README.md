@@ -55,6 +55,7 @@ of useful plugins and example tasks that could be useful later on.
 * [Karma](http://karma-runner.github.io/0.12/index.html)
 * [CasperJS](http://casperjs.org/)
 * [PhantomCSS](https://github.com/Huddle/PhantomCSS)
+* [Jest](http://facebook.github.io/jest/)
 
 Use [jasmine-npm](https://github.com/pivotal/jasmine-npm) once it's available.
 [Minijasminenode](https://github.com/juliemr/minijasminenode/issues/9) will eventually be deprecated.
