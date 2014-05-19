@@ -41,6 +41,7 @@ gulp.task 'help', ->
 ############################################################
 # Development build
 ############################################################
+gulp.task 'serve', ['webpack-dev-server'], ->
 gulp.task 'webpack-dev-server', (callback) ->
   conf.debug = true
 
