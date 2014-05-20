@@ -59,10 +59,22 @@ class AppView extends View
     @menu.on 'toggleMenu', @toggleMenu
 
   initContent: ->
+    # Using a backing to hide the menu works but is problematic due
+    # to perspective issues. Changing the position in z space causes
+    # the backing to appear farther away and smaller. The menu would
+    # also need to be pushed back in z space making it smaller.
+    # The better solution is to animate the menu out of frame.
+    bgModifier = new Modifier
+      origin: [0, 0]
+      transform: Transform.translate(0, 0, -100)
+    @page.content.add(bgModifier).add new Surface
+      # Set the size for demo purposes so interference with the card flip is easier to see
+      size: [500, 500]
+      classes: ['content__background']
+
     @content = new CardView
     @contentState = new StateModifer
       origin: [0, 0.5]
-
     @contentState.setOrigin(
       [0.5, 0.5]
       duration: 500
