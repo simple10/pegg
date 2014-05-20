@@ -18,6 +18,9 @@ Mascot = require 'widgets/Mascot'
 # Create the main context
 mainContext = Engine.createContext()
 
+# Chrome maxes out at 60 FPS
+# Engine.setFPSCap 60
+
 # Set perspective for 3D effects
 # Lower values make effects more pronounced and extreme
 mainContext.setPerspective 2000
