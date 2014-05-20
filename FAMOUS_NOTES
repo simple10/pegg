@@ -5,3 +5,18 @@ Or Photoshop style ...
 Transform.forward
 Transform.backward
 
+
+use css property (webkitBackVisibility) to show back of surface so you can see the back when flipping a surface
+intersecting surfaces: in chrome and firefox, doesn't look good. won't until browser fixes. fix: don't intersect surfaces
+surface ordering: browsers paint in the order that DOM elements are listed (if no z-index, translation in z space)
+try to divert to css ordering (z-index) when you can
+you lose the ability to translate in z-space with too many nested container surfaces
+changing the size of DOM elements is SLOW... use modifiers not properties on Surface
+make sure your surface bounds all your content (going outside causes reflow, repaint)
+there is an upper limit to how many surfaces you can have in famo.us, careful adding too many
+performance tweak: trim down render tree size
+
+
+if you don't set perspective, rotate might look funny
+you can change the max framerate
+
