@@ -55,6 +55,7 @@ class AppView extends View
   initMenu: ->
     @menuPosition = new Transitionable 0
     @menu = new MenuView
+    @menu.resetBands()
     @menu.on 'toggleMenu', @toggleMenu
 
   initContent: ->
@@ -80,6 +81,7 @@ class AppView extends View
       @menuOpen = false
 
   openMenu: ->
+    @menu.animateBands()
     @menuPosition.set @options.menu.width, @options.menu.transition, =>
       @menuOpen = true
 

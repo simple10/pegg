@@ -33,6 +33,20 @@ class CardView extends View
     @state = new StateModifer
     @mainNode = @add @state
 
+    backing = new Surface
+      properties:
+        backgroundColor: "white"
+        boxShadow: "0 0 20px rgba(0,0,0,0.5)"
+        #zIndex: '-1'
+
+    #backModifier = new Modifier
+    #  transform: Transform.translate 0,0, -10
+
+    @add backing
+
+    #@add(backModifier).add backing
+
+
     # Front
     @addSurface
       size: [ width, height ]
