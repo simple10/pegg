@@ -13,7 +13,7 @@ class BandView extends View
     color: 'white'
     iconSize: 32
 
-  constructor: () ->
+  constructor: ->
     super
     @createBackground()
     @createIcon()
