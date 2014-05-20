@@ -10,6 +10,7 @@ gzip = require 'gulp-gzip' if enableGzip
 webpack = require 'webpack'
 WebpackDevServer = require 'webpack-dev-server'
 webpackConfig = require './webpack.config.coffee'
+jasmine = require 'gulp-jasmine'
 
 conf = Object.create webpackConfig
 
@@ -28,13 +29,22 @@ gzipFiles = [
 
 
 # Default task
-gulp.task 'default', ['help', 'serve'], ->
+gulp.task 'default', ['help'], ->
 
 gulp.task 'help', ->
-  gutil.log "\n\nUsage:\n\n" \
-  + "    gulp serve        (build and run dev server)\n" \
-  + "    gulp clean        (clean production build dir)\n" \
-  + "    gulp build        (production build)\n"
+  gutil.log """
+  \n
+    Usage: gulp [task] [option]
+
+    Tasks:
+
+      gulp serve            build and run dev server
+      gulp clean            clean production build dir
+      gulp build            production build
+      gulp test             run tests
+      gulp test --watch     run tests and watch for changes
+
+  """
 
 
 
@@ -90,6 +100,19 @@ gulp.task 'clean', ->
 gulp.task 'copy', ['clean'], ->
   gulp.src copyFiles, cwd: src
   .pipe gulp.dest dist
+
+
+############################################################
+# Test
+############################################################
+testSrc = "#{src}/spec/**/*.coffee"
+gulp.task 'test', ->
+  gulp.src testSrc
+  .pipe jasmine()
+
+  if gutil.env.watch
+    gutil.env.watch = false
+    gulp.watch testSrc, ['test']
 
 
 
