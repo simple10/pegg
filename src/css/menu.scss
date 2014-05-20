@@ -1,0 +1,27 @@
+@import "settings";
+
+
+.menu__background {
+  background-color: $darkblue;
+}
+
+.menu__item {
+  cursor: pointer;
+}
+.menu__item--peggboard {
+  background-color: $cloud-lightblue;
+}
+.menu__item--card {
+  background-color: $rainbow-green;
+}
+.menu__item--decks {
+  background-color: $rainbow-yellow;
+}
+.menu__item--settings {
+  background-color: $rainbow-red;
+}
+
+.menu__item__title {
+  color: $white;
+  text-transform: uppercase;
+}

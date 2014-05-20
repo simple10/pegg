@@ -1,3 +1,5 @@
+require 'css/menu'
+
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
@@ -10,62 +12,67 @@ class MenuView extends View
   @DEFAULT_OPTIONS:
     angle: -0.2
     bandWidth: 400
-    #bandHeight: 100
     topOffset: 0
     bandOffset: 105
     staggerDelay: 35
-    transition: {
+    transition:
       duration: 400
       curve: 'easeOut'
-    }
 
   constructor: ->
     super
-    @addBands()
+    @initEvents()
+    @initBackground()
+    @initBands()
 
-  addBands: ->
+  initEvents: ->
+    # Re-emit piped band events
+    @_eventInput.on 'selectMenuItem', (menuItem) =>
+      @_eventOutput.emit 'selectMenuItem', menuItem
+
+  initBackground: ->
+    @background = new Surface
+      size: [@options.bandWidth, undefined]
+      classes: ["menu__background"]
+    @add @background
+    @background.on 'click', =>
+      @_eventOutput.emit 'toggleMenu'
+
+  initBands: ->
     @bandModifiers = []
     yOffset = @options.topOffset
-
-    i = 0
     bands = [
-      {title: 'peggboard', iconUrl: 'images/mark_tiny.png', color: 'orange'},
-      {title: 'new card', iconUrl: 'images/mark_tiny.png', color: 'yellow'},
-      {title: 'decks', iconUrl: 'images/mark_tiny.png', color: 'green'},
-      {title: 'settings', iconUrl: 'images/mark_tiny.png', color: 'blue'}
+      {menuID: 'peggboard', title: 'peggboard', iconUrl: 'images/mark_tiny.png'}
+      {menuID: 'card', title: 'new card', iconUrl: 'images/mark_tiny.png'}
+      {menuID: 'decks', title: 'decks', iconUrl: 'images/mark_tiny.png'}
+      {menuID: 'settings', title: 'settings', iconUrl: 'images/mark_tiny.png'}
     ]
-
+    i = 0
     while i < bands.length
-      band = new BandView
-        iconUrl: bands[i].iconUrl
-        title: bands[i].title
-        color: bands[i].color
+      band = new BandView bands[i]
+      band.pipe @
       bandModifier = new StateModifier
-        transform: Transform.translate(0, yOffset, 0)
+        transform: Transform.translate 0, yOffset, 0
       @bandModifiers.push bandModifier
-      @add(bandModifier).add(band);
-
-      yOffset += @options.bandOffset;
+      @add(bandModifier).add band
+      yOffset += @options.bandOffset
       i++
 
-  MenuView::resetBands = ->
+  resetBands: ->
     i = 0
-
     while i < @bandModifiers.length
       initX = -@options.bandWidth
       initY = @options.topOffset + @options.bandOffset * i + @options.bandWidth * Math.tan(-@options.angle)
       @bandModifiers[i].setTransform Transform.translate(initX, initY, 0)
       i++
-    return
 
-  MenuView::animateBands = ->
+  animateBands: ->
     @resetBands()
     transition = @options.transition
     delay = @options.staggerDelay
     bandOffset = @options.bandOffset
     topOffset = @options.topOffset
     i = 0
-
     while i < @bandModifiers.length
       Timer.setTimeout ((i) ->
         yOffset = topOffset + bandOffset * i
@@ -73,7 +80,6 @@ class MenuView extends View
         return
       ).bind(this, i), i * delay
       i++
-    return
 
 
 

@@ -5,6 +5,8 @@ ImageSurface = require 'famous/surfaces/ImageSurface'
 
 class BandView extends View
   @DEFAULT_OPTIONS:
+    # menu item identifier
+    menuID: null
     width: 400
     height: 100
     angle: -0.2
@@ -22,31 +24,25 @@ class BandView extends View
   createBackground: ->
     @background = new Surface
       size: [@options.width, @options.height]
-      properties:
-        backgroundColor: @options.color
-        boxShadow: '0 0 1px ' + @options.color
+      classes: ['menu__item', "menu__item--#{@options.menuID}"]
     @add @background
-    #@background.on 'click', =>
-    #  @_eventOutput.emit 'toggleMenu'
+    @background.on 'click', =>
+      @_eventOutput.emit 'selectMenuItem', @
 
   createIcon: ->
     @icon = new ImageSurface
       size: [@options.iconSize, @options.iconSize]
       content: @options.iconUrl
-      pointerEvents : 'none'
     @add @icon
 
   createTitle: ->
     @title = new Surface
       size: [true, true]
       content: @options.title
-      properties:
-        color: 'white'
-        fontFamily: 'AvenirNextCondensed-DemiBold'
-        fontSize: this.options.fontSize + 'px'
-        textTransform: 'uppercase'
-        pointerEvents : 'none'
+      classes: ['menu__item__title']
     @add @title
 
+  getID: ->
+    @options.menuID
 
 module.exports = BandView
