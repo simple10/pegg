@@ -11,6 +11,8 @@ Transform = require 'famous/core/Transform'
 Transitionable  = require 'famous/transitions/Transitionable'
 Modifier = require 'famous/core/Modifier'
 StateModifer = require 'famous/modifiers/StateModifier'
+Lightbox = require 'famous/views/Lightbox'
+Easing = require 'famous/transitions/Easing'
 
 # Models
 Questions = require 'collections/Questions'
@@ -35,7 +37,7 @@ class AppView extends View
       transition:
         duration: 300
         curve: 'easeOut'
-
+  pages: {}
   menuOpen: false
 
   constructor: ->
@@ -45,7 +47,9 @@ class AppView extends View
       footerSize: 0
     @initHeader()
     @initMenu()
+    @initPages()
     @initContent()
+    @showPage 'card'
 
   initHeader: ->
     @header = new HeaderView
@@ -57,8 +61,30 @@ class AppView extends View
     @menu = new MenuView
     @menu.resetBands()
     @menu.on 'toggleMenu', @toggleMenu
+    @menu.on 'selectMenuItem', @selectMenuItem
+
+  initPages: ->
+    # Pages coorespond to menuID in MenuView
+    @pages.card = new CardView
+    @pages.peggboard = new Surface
+      size: [0.8, 0.8]
+      origin: [0.5, 0.5]
+      content: '<h1>Test: Page 2</h1>'
+      properties:
+        backgroundColor: 'red'
 
   initContent: ->
+    @lightbox = new Lightbox
+      inOpacity: 1
+      outOpacity: 0
+      inOrigin: [0, 0]
+      outOrigin: [0, 0]
+      showOrigin: [0, 0]
+      inTransform: Transform.thenMove(Transform.rotateX(0.9), [0, -300, -300])
+      outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, window.innerHeight, -1000])
+      inTransition: { duration: 650, curve: 'easeOut' }
+      outTransition: { duration: 500, curve: Easing.inCubic }
+
     # Using a backing to hide the menu works but is problematic due
     # to perspective issues. Changing the position in z space causes
     # the backing to appear farther away and smaller. The menu would
@@ -72,21 +98,20 @@ class AppView extends View
       size: [500, 500]
       classes: ['content__background']
 
-    @content = new CardView
-    @contentState = new StateModifer
-      origin: [0, 0.5]
-    @contentState.setOrigin(
-      [0.5, 0.5]
-      duration: 500
-      curve: 'easeOutBounce'
-    )
-    @page.content.add(@contentState).add @content
+    @page.content.add @lightbox
+
+  showPage: (pageName) ->
+    @lightbox.show @pages[pageName]
 
   toggleMenu: =>
     if @menuOpen
       @closeMenu()
     else
       @openMenu()
+
+  selectMenuItem: (menuItem) =>
+    @showPage menuItem.getID()
+    @closeMenu()
 
   closeMenu: ->
     @menuPosition.set 0, @options.menu.transition, =>
@@ -97,6 +122,9 @@ class AppView extends View
     @menuPosition.set @options.menu.width, @options.menu.transition, =>
       @menuOpen = true
 
+  # TODO: replace render with state modifiers.
+  # Overriding render is suboptimal.
+  # This code originally came from an old Famo.us example.
   render: ->
     [
         transform: Transform.translate 0, 0, -1
