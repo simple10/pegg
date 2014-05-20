@@ -42,7 +42,7 @@ class AppView extends View
     super
     @page = new HeaderFooterLayout
       headerSize: 60
-      footerSize: 50
+      footerSize: 0
     @initHeader()
     @initMenu()
     @initContent()
