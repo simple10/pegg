@@ -26,7 +26,7 @@ class ListQuestionsView extends View
     scrollview.sequenceFrom surfaces
 
     #debugger
-    @questions.each (question) =>
+    @questions.each (question) ->
       #link = question.get 'link'
       title = question.get 'title'
       content = "
