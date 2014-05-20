@@ -49,6 +49,11 @@ Gulp could be dropped since it's mostly just passing through to webpack. But gul
 of useful plugins and example tasks that could be useful later on.
 
 
+## Style Guides
+
+* [AirBnB](https://github.com/airbnb/javascript)
+
+
 # Testing
 
 * [Jasmine](http://jasmine.github.io/)
