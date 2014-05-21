@@ -10,7 +10,7 @@ Surface = require 'famous/core/Surface'
 Transform = require 'famous/core/Transform'
 Transitionable  = require 'famous/transitions/Transitionable'
 Modifier = require 'famous/core/Modifier'
-StateModifer = require 'famous/modifiers/StateModifier'
+StateModifier = require 'famous/modifiers/StateModifier'
 Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 
