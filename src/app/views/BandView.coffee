@@ -7,7 +7,7 @@ class BandView extends View
   @DEFAULT_OPTIONS:
     # menu item identifier
     menuID: null
-    width: 400
+    width: 280
     height: 100
     angle: -0.2
     iconUrl: 'images/mark_tiny.png'

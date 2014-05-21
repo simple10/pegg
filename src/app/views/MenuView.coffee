@@ -15,7 +15,7 @@ BandView = require 'views/BandView'
 class MenuView extends View
   @DEFAULT_OPTIONS:
     angle: -0.2
-    bandWidth: 400
+    bandWidth: 280
     topOffset: 0
     bandOffset: 105
     staggerDelay: 35
@@ -32,7 +32,7 @@ class MenuView extends View
     @background = new Surface
       size: [@options.bandWidth, undefined]
       classes: ["menu__background"]
-    @add @background
+    #@add @background
     @background.on 'click', =>
       @_eventOutput.emit 'toggleMenu'
 
@@ -65,7 +65,7 @@ class MenuView extends View
       @bandModifiers[i].setTransform Transform.translate(initX, initY, 0)
       i++
 
-  animateBands: ->
+  showBands: ->
     @resetBands()
     transition = @options.transition
     delay = @options.staggerDelay
@@ -80,6 +80,18 @@ class MenuView extends View
       ).bind(this, i), i * delay
       i++
 
+  hideBands: ->
+    transition = @options.transition
+    delay = @options.staggerDelay
+    i = 0
+    while i < @bandModifiers.length
+      Timer.setTimeout ((i) ->
+        initX = -@options.bandWidth
+        initY = @options.topOffset + @options.bandOffset * i + @options.bandWidth * Math.tan(-@options.angle)
+        @bandModifiers[i].setTransform Transform.translate(initX, initY, 0), transition
+        return
+      ).bind(this, i), i * delay
+      i++
 
 
 module.exports = MenuView

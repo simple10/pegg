@@ -79,7 +79,7 @@ class AppView extends View
       outOpacity: 0
       inOrigin: [0, 0]
       outOrigin: [0, 0]
-      showOrigin: [0, 0]
+      showOrigin: [.5, .5]
       inTransform: Transform.thenMove(Transform.rotateX(0.9), [0, -300, -300])
       outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, window.innerHeight, -1000])
       inTransition: { duration: 650, curve: 'easeOut' }
@@ -90,13 +90,13 @@ class AppView extends View
     # the backing to appear farther away and smaller. The menu would
     # also need to be pushed back in z space making it smaller.
     # The better solution is to animate the menu out of frame.
-    bgModifier = new Modifier
-      origin: [0, 0]
-      transform: Transform.translate(0, 0, -100)
-    @layout.content.add(bgModifier).add new Surface
+    #bgModifier = new Modifier
+    #  origin: [0, 0]
+    #  transform: Transform.translate(0, 0, -100)
+    #@layout.content.add(bgModifier).add new Surface
       # Set the size for demo purposes so interference with the card flip is easier to see
-      size: [500, 500]
-      classes: ['content__background']
+    #  size: [500, 500]
+    #  classes: ['content__background']
 
     @layout.content.add @lightbox
 
@@ -114,11 +114,12 @@ class AppView extends View
     @closeMenu()
 
   closeMenu: ->
+    @menu.hideBands()
     @menuPosition.set 0, @options.menu.transition, =>
       @menuOpen = false
 
   openMenu: ->
-    @menu.animateBands()
+    @menu.showBands()
     @menuPosition.set @options.menu.width, @options.menu.transition, =>
       @menuOpen = true
 
