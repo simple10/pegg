@@ -1,11 +1,8 @@
-# Famous
+# Pegg Famous
 
-See Taasky demo code for the best example of how to create forms and integrate with Backbone Model.
+Pegg is a social mobile game where users ask and answer questions about each other.
 
-Also see Famous/examples on github.
-
-The docs on famo.us are pretty useless. Better to just read the code and comments.
-
+It's also our first app built on the Famo.us platform and the Parse BaaS.
 
 
 # Install
@@ -13,6 +10,7 @@ The docs on famo.us are pretty useless. Better to just read the code and comment
 ```bash
 git clone https://github.com/auggernaut/pegg.git
 cd pegg
+npm install -g gulp
 npm install -g webpack-dev-server bower
 npm install
 ```
@@ -21,7 +19,7 @@ npm install
 
 ```bash
 # Run webpack-dev-server
-gulp
+gulp serve
 
 # Or manually run webpack if needed
 webpack -d --colors
@@ -68,11 +66,11 @@ Use [jasmine-npm](https://github.com/pivotal/jasmine-npm) once it's available.
 
 # Directory Structure
 
-* **/bin**: startup and task scripts
-* **/client**: all code and assets for display and interaction; javascript, html, images, css, etc.
+* **/app**: all javascript client-side app code, i.e collections, models, views, widgets
 * **/config**: config vars and initializers
-* **/lib**: shared code that doesn't obviously belong in client or server
-* **/server**: all server-side and api code
+* **/css**: styles
+* **/lib**: client-side libraries
+* **/spec**: tests
 
 
 # Dependencies
@@ -101,6 +99,7 @@ consistency between development and production.
 
 Does npm have the equivalent of Bundler's Gemfile.lock?
 
+
 ## Deploy
 
 ```bash
@@ -117,6 +116,8 @@ Rest of deploy details TBD.
 
 * https://github.com/ericclemmons/genesis-skeleton
 * https://github.com/neebz/backbone-parse
+* https://github.com/Famous/famous
+* https://github.com/Famous/examples
 
 
 # Resources
@@ -133,7 +134,9 @@ using the browser's native date parser. This will only work in ECMAScript 5 brow
 
 A permanent solution is to fix the regex.
 
+See Taasky demo code for the best example of how to create forms and integrate with Backbone Model.
 
+The docs on famo.us are pretty useless. Better to just read the code and comments.
 
 
 
