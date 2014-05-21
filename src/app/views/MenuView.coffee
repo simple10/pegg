@@ -6,6 +6,7 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
 BandView = require 'views/BandView'
+_ = require('Parse')._
 
 ###
 # Events:
@@ -15,24 +16,26 @@ BandView = require 'views/BandView'
 class MenuView extends View
   @DEFAULT_OPTIONS:
     angle: -0.2
-    bandWidth: 280
+    width: 280
     topOffset: 0
-    bandOffset: 105
-    staggerDelay: 35
-    transition:
-      duration: 400
-      curve: 'easeOut'
+    band:
+      offset: 105
+      staggerDelay: 35
+      transition:
+        duration: 400
+        curve: 'easeOut'
 
-  constructor: ->
-    super
+  constructor: (options) ->
+    options = _.defaults options, @constructor.DEFAULT_OPTIONS
+    super options
     @initBackground()
     @initBands()
 
   initBackground: ->
     @background = new Surface
-      size: [@options.bandWidth, undefined]
+      size: [@options.width, undefined]
       classes: ["menu__background"]
-    #@add @background
+    @add @background
     @background.on 'click', =>
       @_eventOutput.emit 'toggleMenu'
 
@@ -54,22 +57,28 @@ class MenuView extends View
         transform: Transform.translate 0, yOffset, 0
       @bandModifiers.push bandModifier
       @add(bandModifier).add band
-      yOffset += @options.bandOffset
+      yOffset += @options.band.offset
       i++
 
   resetBands: ->
     i = 0
     while i < @bandModifiers.length
-      initX = -@options.bandWidth
-      initY = @options.topOffset + @options.bandOffset * i + @options.bandWidth * Math.tan(-@options.angle)
+      initX = -@options.width
+      initY = @options.topOffset + @options.band.offset * i + @options.width * Math.tan(-@options.angle)
       @bandModifiers[i].setTransform Transform.translate(initX, initY, 0)
       i++
 
+  show: ->
+    @showBands()
+
+  hide: ->
+    @hideBands()
+
   showBands: ->
     @resetBands()
-    transition = @options.transition
-    delay = @options.staggerDelay
-    bandOffset = @options.bandOffset
+    transition = @options.band.transition
+    delay = @options.band.staggerDelay
+    bandOffset = @options.band.offset
     topOffset = @options.topOffset
     i = 0
     while i < @bandModifiers.length
@@ -81,13 +90,13 @@ class MenuView extends View
       i++
 
   hideBands: ->
-    transition = @options.transition
-    delay = @options.staggerDelay
+    transition = @options.band.transition
+    delay = @options.band.staggerDelay
     i = 0
     while i < @bandModifiers.length
       Timer.setTimeout ((i) ->
-        initX = -@options.bandWidth
-        initY = @options.topOffset + @options.bandOffset * i + @options.bandWidth * Math.tan(-@options.angle)
+        initX = -@options.width
+        initY = @options.topOffset + @options.band.offset * i + @options.width * Math.tan(-@options.angle)
         @bandModifiers[i].setTransform Transform.translate(initX, initY, 0), transition
         return
       ).bind(this, i), i * delay

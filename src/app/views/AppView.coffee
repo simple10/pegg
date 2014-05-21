@@ -42,26 +42,32 @@ class AppView extends View
 
   constructor: ->
     super
+    @initMenu()
+    @initMain()
+    @initPages()
+    @showPage 'card'
+
+  initMenu: ->
+    @menu = new MenuView @options.menu
+    @menu.resetBands()
+    @menu.on 'toggleMenu', @toggleMenu
+    @menu.on 'selectMenuItem', @selectMenuItem
+    @menuState = new StateModifier
+    @add(@menuState).add @menu
+
+  initMain: ->
     @layout = new HeaderFooterLayout
       headerSize: 60
       footerSize: 0
-    @initHeader()
-    @initMenu()
-    @initPages()
-    @initContent()
-    @showPage 'card'
+    @layout.header.add @initHeader()
+    @layout.content.add @initViewManager()
+    @layoutState = new StateModifier
+    @add(@layoutState).add @layout
 
   initHeader: ->
     @header = new HeaderView
     @header.on 'toggleMenu', @toggleMenu
-    @layout.header.add @header
-
-  initMenu: ->
-    @menuPosition = new Transitionable 0
-    @menu = new MenuView
-    @menu.resetBands()
-    @menu.on 'toggleMenu', @toggleMenu
-    @menu.on 'selectMenuItem', @selectMenuItem
+    @header
 
   initPages: ->
     # Pages coorespond to menuID in MenuView
@@ -73,32 +79,17 @@ class AppView extends View
       properties:
         backgroundColor: 'red'
 
-  initContent: ->
+  initViewManager: ->
     @lightbox = new Lightbox
       inOpacity: 1
       outOpacity: 0
       inOrigin: [0, 0]
       outOrigin: [0, 0]
-      showOrigin: [.5, .5]
+      showOrigin: [0.5, 0.5]
       inTransform: Transform.thenMove(Transform.rotateX(0.9), [0, -300, -300])
       outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, window.innerHeight, -1000])
       inTransition: { duration: 650, curve: 'easeOut' }
       outTransition: { duration: 500, curve: Easing.inCubic }
-
-    # Using a backing to hide the menu works but is problematic due
-    # to perspective issues. Changing the position in z space causes
-    # the backing to appear farther away and smaller. The menu would
-    # also need to be pushed back in z space making it smaller.
-    # The better solution is to animate the menu out of frame.
-    #bgModifier = new Modifier
-    #  origin: [0, 0]
-    #  transform: Transform.translate(0, 0, -100)
-    #@layout.content.add(bgModifier).add new Surface
-      # Set the size for demo purposes so interference with the card flip is easier to see
-    #  size: [500, 500]
-    #  classes: ['content__background']
-
-    @layout.content.add @lightbox
 
   showPage: (pageName) ->
     @lightbox.show @pages[pageName]
@@ -114,25 +105,24 @@ class AppView extends View
     @closeMenu()
 
   closeMenu: ->
-    @menu.hideBands()
-    @menuPosition.set 0, @options.menu.transition, =>
-      @menuOpen = false
+    @layoutState.setTransform(
+      Transform.translate 0, 0, 0
+      @options.menu.transition
+      =>
+        @menuOpen = false
+    )
+    # TODO: animate menu into screen
+    @menu.hide()
 
   openMenu: ->
-    @menu.showBands()
-    @menuPosition.set @options.menu.width, @options.menu.transition, =>
-      @menuOpen = true
+    @layoutState.setTransform(
+      Transform.translate @options.menu.width, 0, 0
+      @options.menu.transition
+      =>
+        @menuOpen = true
+    )
+    # TODO: animate menu offscreen to hide menu background
+    @menu.show()
 
-  # TODO: replace render with state modifiers.
-  # Overriding render is suboptimal.
-  # This code originally came from an old Famo.us example.
-  render: ->
-    [
-        transform: Transform.translate 0, 0, -1
-        target: @menu.render()
-      ,
-        transform: Transform.translate @menuPosition.get(), 0, 0
-        target: @layout.render()
-    ]
 
 module.exports = AppView

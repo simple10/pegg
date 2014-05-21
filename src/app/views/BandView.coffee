@@ -5,7 +5,6 @@ ImageSurface = require 'famous/surfaces/ImageSurface'
 
 class BandView extends View
   @DEFAULT_OPTIONS:
-    # menu item identifier
     menuID: null
     width: 280
     height: 100
