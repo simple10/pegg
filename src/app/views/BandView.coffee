@@ -1,5 +1,7 @@
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
+StateModifier = require 'famous/modifiers/StateModifier'
+Transform = require 'famous/core/Transform'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 
 
@@ -12,17 +14,22 @@ class BandView extends View
     iconUrl: 'images/mark_tiny.png'
     title: 'pegg'
     color: 'white'
-    iconSize: 32
+    iconSize: 50
 
   constructor: ->
     super
     @createBackground()
     @createIcon()
-    @createTitle()
+    #@createTitle()
 
   createBackground: ->
     @background = new Surface
       size: [@options.width, @options.height]
+      content: "<div class='menu__item__title'>#{@options.title}</div>"
+      #content: @options.menuID
+      #properties:
+      #  lineHeight: @options.height + 'px'
+      #  textAlign: 'center'
       classes: ['menu__item', "menu__item--#{@options.menuID}"]
     @add @background
     @background.on 'click', =>
@@ -32,14 +39,20 @@ class BandView extends View
     @icon = new ImageSurface
       size: [@options.iconSize, @options.iconSize]
       content: @options.iconUrl
-    @add @icon
+    @iconState = new StateModifier
+        transform: Transform.translate 20, @options.height/2 - @options.iconSize/2, 0
+    @add(@iconState).add @icon
+    #@add @icon
 
-  createTitle: ->
-    @title = new Surface
-      size: [true, true]
-      content: @options.title
-      classes: ['menu__item__title']
-    @add @title
+  #createTitle: ->
+  #  @title = new Surface
+  #    size: [@options.width, @options.height]
+  #    content: @options.title
+  #    classes: ['menu__item__title']
+  #  @titleState = new StateModifier
+  #    transform: Transform.translate @options.width/2, @options.height/2, 0
+  #  @add(@titleState).add @title
+    #@add @title
 
   getID: ->
     @options.menuID

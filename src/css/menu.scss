@@ -7,21 +7,28 @@
 
 .menu__item {
   cursor: pointer;
+  text-align: left;
 }
 .menu__item--peggboard {
-  background-color: $cloud-lightblue;
+  background-color: $rainbow-red;
 }
 .menu__item--card {
-  background-color: $rainbow-green;
-}
-.menu__item--decks {
   background-color: $rainbow-yellow;
 }
+.menu__item--decks {
+  background-color: $rainbow-green;
+}
 .menu__item--settings {
-  background-color: $rainbow-red;
+  background-color: $rainbow-blue;
 }
 
 .menu__item__title {
   color: $white;
   text-transform: uppercase;
+  position: relative;
+  top: 42%;
+  width: 70%;
+  float: right;
+  font-weight: bold;
+  font-size: 20px;
 }

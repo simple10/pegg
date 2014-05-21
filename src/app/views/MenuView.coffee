@@ -45,10 +45,10 @@ class MenuView extends View
     @bandModifiers = []
     yOffset = @options.topOffset
     bands = [
-      {menuID: 'peggboard', title: 'peggboard', iconUrl: 'images/mark_tiny.png'}
-      {menuID: 'card', title: 'new card', iconUrl: 'images/mark_tiny.png'}
-      {menuID: 'decks', title: 'decks', iconUrl: 'images/mark_tiny.png'}
-      {menuID: 'settings', title: 'settings', iconUrl: 'images/mark_tiny.png'}
+      {menuID: 'peggboard', title: 'peggboard', iconUrl: 'images/peggboard_medium.png'}
+      {menuID: 'card', title: 'new card', iconUrl: 'images/newcard_medium.png'}
+      {menuID: 'decks', title: 'decks', iconUrl: 'images/decks_medium.png'}
+      {menuID: 'settings', title: 'settings', iconUrl: 'images/settings_medium.png'}
     ]
     i = 0
     while i < bands.length
