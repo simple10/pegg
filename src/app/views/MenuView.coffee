@@ -6,7 +6,7 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
 BandView = require 'views/BandView'
-_ = require('Parse')._
+_ = require('parse')._
 
 ###
 # Events:
