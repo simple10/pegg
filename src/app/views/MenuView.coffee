@@ -19,7 +19,7 @@ class MenuView extends View
     width: 280
     topOffset: 0
     band:
-      offset: 105
+      offset: 100
       staggerDelay: 35
       transition:
         duration: 400
@@ -35,7 +35,9 @@ class MenuView extends View
     @background = new Surface
       size: [@options.width, undefined]
       classes: ["menu__background"]
-    @add @background
+    @backgroundState = new StateModifier
+      transform: Transform.translate -@options.width, 0, 0
+    @add(@backgroundState).add @background
     @background.on 'click', =>
       @_eventOutput.emit 'toggleMenu'
 
@@ -60,6 +62,7 @@ class MenuView extends View
       yOffset += @options.band.offset
       i++
 
+
   resetBands: ->
     i = 0
     while i < @bandModifiers.length
@@ -69,10 +72,18 @@ class MenuView extends View
       i++
 
   show: ->
+    @showBackground()
     @showBands()
 
   hide: ->
+    @hideBackground()
     @hideBands()
+
+  hideBackground: ->
+    @backgroundState.setTransform Transform.translate(-@options.width, 0, 0), @options.band.transition
+
+  showBackground: ->
+    @backgroundState.setTransform Transform.translate(0, 0, 0), @options.band.transition
 
   showBands: ->
     @resetBands()
@@ -89,6 +100,7 @@ class MenuView extends View
       ).bind(this, i), i * delay
       i++
 
+
   hideBands: ->
     transition = @options.band.transition
     delay = @options.band.staggerDelay
@@ -101,6 +113,7 @@ class MenuView extends View
         return
       ).bind(this, i), i * delay
       i++
+
 
 
 module.exports = MenuView

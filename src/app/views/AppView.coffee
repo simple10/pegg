@@ -70,7 +70,7 @@ class AppView extends View
     @header
 
   initPages: ->
-    # Pages coorespond to menuID in MenuView
+    # Pages correspond to menuID in MenuView
     @pages.card = new CardView
     @pages.peggboard = new Surface
       size: [0.8, 0.8]
@@ -86,7 +86,7 @@ class AppView extends View
       inOrigin: [0, 0]
       outOrigin: [0, 0]
       showOrigin: [0.5, 0.5]
-      inTransform: Transform.thenMove(Transform.rotateX(0.9), [0, -300, -300])
+      inTransform: Transform.thenMove(Transform.rotateX(1), [0, -300, -300])
       outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, window.innerHeight, -1000])
       inTransition: { duration: 650, curve: 'easeOut' }
       outTransition: { duration: 500, curve: Easing.inCubic }
@@ -111,7 +111,7 @@ class AppView extends View
       =>
         @menuOpen = false
     )
-    # TODO: animate menu into screen
+    # TODO: animate menu into screen - moved to MenuView
     @menu.hide()
 
   openMenu: ->
@@ -121,7 +121,7 @@ class AppView extends View
       =>
         @menuOpen = true
     )
-    # TODO: animate menu offscreen to hide menu background
+    # TODO: animate menu offscreen to hide menu background - moved to MenuView
     @menu.show()
 
 
