@@ -7,7 +7,11 @@ Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
 BandView = require 'views/BandView'
 
-
+###
+# Events:
+#   selectMenuItem {{menuID}}
+#   toggleMenu
+###
 class MenuView extends View
   @DEFAULT_OPTIONS:
     angle: -0.2
@@ -21,14 +25,8 @@ class MenuView extends View
 
   constructor: ->
     super
-    @initEvents()
     @initBackground()
     @initBands()
-
-  initEvents: ->
-    # Re-emit piped band events
-    @_eventInput.on 'selectMenuItem', (menuItem) =>
-      @_eventOutput.emit 'selectMenuItem', menuItem
 
   initBackground: ->
     @background = new Surface
@@ -50,7 +48,8 @@ class MenuView extends View
     i = 0
     while i < bands.length
       band = new BandView bands[i]
-      band.pipe @
+      band.on 'selectMenuItem', (menuItem) =>
+        @_eventOutput.emit 'selectMenuItem', menuItem.getID()
       bandModifier = new StateModifier
         transform: Transform.translate 0, yOffset, 0
       @bandModifiers.push bandModifier

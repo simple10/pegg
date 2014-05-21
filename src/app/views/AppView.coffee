@@ -42,7 +42,7 @@ class AppView extends View
 
   constructor: ->
     super
-    @page = new HeaderFooterLayout
+    @layout = new HeaderFooterLayout
       headerSize: 60
       footerSize: 0
     @initHeader()
@@ -54,7 +54,7 @@ class AppView extends View
   initHeader: ->
     @header = new HeaderView
     @header.on 'toggleMenu', @toggleMenu
-    @page.header.add @header
+    @layout.header.add @header
 
   initMenu: ->
     @menuPosition = new Transitionable 0
@@ -93,12 +93,12 @@ class AppView extends View
     bgModifier = new Modifier
       origin: [0, 0]
       transform: Transform.translate(0, 0, -100)
-    @page.content.add(bgModifier).add new Surface
+    @layout.content.add(bgModifier).add new Surface
       # Set the size for demo purposes so interference with the card flip is easier to see
       size: [500, 500]
       classes: ['content__background']
 
-    @page.content.add @lightbox
+    @layout.content.add @lightbox
 
   showPage: (pageName) ->
     @lightbox.show @pages[pageName]
@@ -109,8 +109,8 @@ class AppView extends View
     else
       @openMenu()
 
-  selectMenuItem: (menuItem) =>
-    @showPage menuItem.getID()
+  selectMenuItem: (menuID) =>
+    @showPage menuID
     @closeMenu()
 
   closeMenu: ->
@@ -131,7 +131,7 @@ class AppView extends View
         target: @menu.render()
       ,
         transform: Transform.translate @menuPosition.get(), 0, 0
-        target: @page.render()
+        target: @layout.render()
     ]
 
 module.exports = AppView
