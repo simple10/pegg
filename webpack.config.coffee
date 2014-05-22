@@ -24,6 +24,7 @@ module.exports =
     publicPath: 'dist/'
     filename: 'bundle.js'
     sourceMapFilename: '[file].map'
+    libraryTarget: 'umd'
     # chunkFilename: '[hash]/js/[id].js'
     # hotUpdateMainFilename: "[hash]/update.json",
     # hotUpdateChunkFilename: "[hash]/js/[id].update.js"
