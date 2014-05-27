@@ -94,6 +94,8 @@ class AppView extends View
   showPage: (pageName) ->
     @lightbox.show @pages[pageName]
 
+  testtest: ->
+
   toggleMenu: =>
     if @menuOpen
       @closeMenu()
