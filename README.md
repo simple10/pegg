@@ -54,6 +54,14 @@ of useful plugins and example tasks that could be useful later on.
 
 # Testing
 
+## CURRENT STATUS:
+
+* `karma start karma.conf.js` is functional
+* `gulp [mocha|karma]` is WIP
+* `gulp mocha` is working in coffeescript-seed-project (not pushed); need to port to pegg
+* GOTCHA: tests need to change number of lines in order to not be served a cached version
+
+
 * [Mocha](http://visionmedia.github.io/mocha/)
 * [Karma](http://karma-runner.github.io/0.12/index.html)
 * [WD.js](https://github.com/admc/wd)
