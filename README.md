@@ -54,14 +54,17 @@ of useful plugins and example tasks that could be useful later on.
 
 # Testing
 
-* [Jasmine](http://jasmine.github.io/)
+* [Mocha](http://visionmedia.github.io/mocha/)
 * [Karma](http://karma-runner.github.io/0.12/index.html)
+* [WD.js](https://github.com/admc/wd)
 * [CasperJS](http://casperjs.org/)
 * [PhantomCSS](https://github.com/Huddle/PhantomCSS)
 * [Jest](http://facebook.github.io/jest/)
-
-Use [jasmine-npm](https://github.com/pivotal/jasmine-npm) once it's available.
-[Minijasminenode](https://github.com/juliemr/minijasminenode/issues/9) will eventually be deprecated.
+* [Chai](http://chaijs.com/) – assertion library
+* [Sinon.js](http://sinonjs.org/) – spies, stubs and mocks
+* [Chai as Promised](https://github.com/domenic/chai-as-promised/)
+* [Sinon-Chai](https://github.com/domenic/sinon-chai)
+* [Rewire](https://github.com/jhnns/rewire)
 
 
 # Directory Structure
