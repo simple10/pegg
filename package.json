@@ -27,7 +27,6 @@
   "devDependencies": {
     "gulp": "^3.5.5",
     "gulp-util": "^2.2",
-    "gulp-jasmine": "^0.2.0",
     "gulp-coverage": "^0.1.24",
     "coffee-script": "^1.7",
     "node-sass": "^0.7.0",
@@ -40,5 +39,7 @@
     "css-loader": "^0.6.12",
     "gulp-clean": "^0.2.4",
     "gulp-gzip": "0.0.8"
+    "mocha": "^1.19.0",
+    "gulp-mocha": "^0.4.1",
   }
 }

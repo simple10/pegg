@@ -7,10 +7,10 @@ gulp = require 'gulp'
 gutil = require 'gulp-util'
 clean = require 'gulp-clean'
 gzip = require 'gulp-gzip' if enableGzip
+mocha = require 'gulp-mocha'
 webpack = require 'webpack'
 WebpackDevServer = require 'webpack-dev-server'
 webpackConfig = require './webpack.config.coffee'
-jasmine = require 'gulp-jasmine'
 
 conf = Object.create webpackConfig
 
@@ -105,15 +105,6 @@ gulp.task 'copy', ['clean'], ->
 ############################################################
 # Test
 ############################################################
-testSrc = "#{src}/spec/**/*.coffee"
-gulp.task 'test', ->
-  gulp.src testSrc
-  .pipe jasmine()
-
-  if gutil.env.watch
-    gutil.env.watch = false
-    gulp.watch testSrc, ['test']
-
 
 
 # path = require 'path'
