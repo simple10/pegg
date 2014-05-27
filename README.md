@@ -118,15 +118,17 @@ Rest of deploy details TBD.
 ## Of Interest:
 
 * https://github.com/ericclemmons/genesis-skeleton
-* https://github.com/neebz/backbone-parse
 * https://github.com/Famous/famous
 * https://github.com/Famous/examples
+* https://github.com/steida/este – isomorphic web dev framework
 
 
 # Resources
 
 * [CSS 3D Matrix Transformations](http://www.eleqtriq.com/2010/05/css-3d-matrix-transformations/)
 * [Testing and Debugging Angular](http://www.yearofmoo.com/2013/09/advanced-testing-and-debugging-in-angularjs.html)
+* [Stream Handbook](https://github.com/substack/stream-handbook)
+* [gulp Recipes](https://github.com/gulpjs/gulp/tree/master/docs/recipes)
 
 # Notes
 
