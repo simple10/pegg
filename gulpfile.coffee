@@ -3,11 +3,15 @@
 
 enableGzip = false
 
+# TODO: install gulp-plumber
 gulp = require 'gulp'
 gutil = require 'gulp-util'
 clean = require 'gulp-clean'
+watch = require 'gulp-watch'
+plumber = require 'gulp-plumber'
 gzip = require 'gulp-gzip' if enableGzip
 mocha = require 'gulp-mocha'
+karma = require 'gulp-karma'
 webpack = require 'webpack'
 WebpackDevServer = require 'webpack-dev-server'
 webpackConfig = require './webpack.config.coffee'
@@ -16,6 +20,7 @@ conf = Object.create webpackConfig
 
 src = 'src/'
 dist = conf.output.path
+testSrc = "#{src}/spec/**/*Spec.coffee"
 
 copyFiles = [
   '**/images/**'
@@ -26,6 +31,12 @@ gzipFiles = [
   '**/*.js'
   '**/*.html'
 ]
+mochaOpts =
+  # http://visionmedia.github.io/mocha/#mocha.opts
+  ui: 'bdd'
+  # http://visionmedia.github.io/mocha/#reporters
+  reporter: 'nyan'
+  compilers: 'coffee:coffee-script/register'
 
 
 # Default task
@@ -105,6 +116,46 @@ gulp.task 'copy', ['clean'], ->
 ############################################################
 # Test
 ############################################################
+# testSrc = "#{src}/spec/**/*.coffee"
+# gulp.task 'test', ->
+#   gulp.src testSrc
+#   # .pipe jasmine()
+
+#   if gutil.env.watch
+#     gutil.env.watch = false
+#     gulp.watch testSrc, ['test']
+
+
+# TODO: !!!!!!
+# hack into require and add webpack resolve.extensions directories to path
+# see require.path
+# http://blog.buildingawesome.com/post/85490946023/stubbing-out-dependencies-for-testing-with-browserify
+# !!!!!!!
+gulp.task 'test', ['webpack-dev-server', 'mocha']
+# See https://www.npmjs.org/package/gulp-watch#trigger-for-mocha
+gulp.task 'mocha', ->
+  gulp.src testSrc, read: false
+  .pipe watch emit: 'all', (files) ->
+    files.pipe mocha(mochaOpts)
+    .on 'error', (err) ->
+      unless /tests? failed/.test err.stack
+        console.log err.stack
+
+gulp.task 'karma', ->
+  gulp.src(testSrc)
+  .pipe karma
+    configFile: 'karma.conf.js'
+    action: 'watch'
+  .on 'error', (err) ->
+    throw new gutil.PluginError('karma', err)
+  return
+
+gulp.task 'webpack', (callback) ->
+  webpack conf, (err, stats) ->
+    throw new gutil.PluginError('webpack:build', err) if err
+    gutil.log "[webpack:build]\n\n" \
+      + stats.toString colors: true
+    callback()
 
 
 # path = require 'path'
