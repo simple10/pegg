@@ -128,15 +128,27 @@ Rest of deploy details TBD.
 * https://github.com/ericclemmons/genesis-skeleton
 * https://github.com/Famous/famous
 * https://github.com/Famous/examples
-* https://github.com/steida/este – isomorphic web dev framework
 
 
 # Resources
 
+3D
 * [CSS 3D Matrix Transformations](http://www.eleqtriq.com/2010/05/css-3d-matrix-transformations/)
+
 * [Testing and Debugging Angular](http://www.yearofmoo.com/2013/09/advanced-testing-and-debugging-in-angularjs.html)
+
+Streams
 * [Stream Handbook](https://github.com/substack/stream-handbook)
+* [este.js](https://github.com/steida/este) – isomorphic web dev framework
+* https://www.youtube.com/watch?v=lQAV3bPOYHo
+
+
+Webpack
+* [The Front-end Tooling Book](http://tooling.github.io/book-of-modern-frontend-tooling/dependency-management/webpack/getting-started.html)
+
+gulp
 * [gulp Recipes](https://github.com/gulpjs/gulp/tree/master/docs/recipes)
+* [gulp Plugins](http://gratimax.github.io/search-gulp-plugins/)
 
 # Notes
 
