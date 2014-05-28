@@ -15,6 +15,9 @@ karma = require 'gulp-karma'
 webpack = require 'webpack'
 WebpackDevServer = require 'webpack-dev-server'
 webpackConfig = require './webpack.config.coffee'
+grep = require 'gulp-grep-stream'
+debug = require 'gulp-debug'
+
 
 conf = Object.create webpackConfig
 
@@ -157,6 +160,26 @@ gulp.task 'webpack', (callback) ->
       + stats.toString colors: true
     callback()
 
+gulp.task 'mocha', ->
+  mocha_opts =
+    ui: 'bdd'
+    reporter: 'dot'
+    compilers: 'coffee:coffee-script/register'
+
+  grepFile = (file) ->
+    /.*\/test\/.*\.coffee/.test file.path
+
+  gulp.src ["src/**", "test/**"], read: false
+  .pipe watch emit: "all", (files) ->
+    files
+    .pipe grep(grepFile)
+    .pipe debug
+      verbose: true
+      title: 'DEBUG'
+    .pipe mocha(mocha_opts)
+    .on 'error', (err) ->
+      console.log err.stack  unless /tests? failed/.test(err.stack)
+    null
 
 # path = require 'path'
 # express = require 'express'

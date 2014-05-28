@@ -53,6 +53,8 @@
     "gulp-karma": "0.0.4",
     "karma-webpack": "^1.1.0",
     "karma-mocha-debug": "^0.1.2",
-    "karma-mocha-reporter": "^0.2.5"
+    "karma-mocha-reporter": "^0.2.5",
+    "gulp-debug": "^0.3.0",
+    "gulp-grep-stream": "0.0.2"
   }
 }
