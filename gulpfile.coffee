@@ -134,7 +134,7 @@ gulp.task 'copy', ['clean'], ->
 # see require.path
 # http://blog.buildingawesome.com/post/85490946023/stubbing-out-dependencies-for-testing-with-browserify
 # !!!!!!!
-gulp.task 'test', ['webpack-dev-server', 'mocha']
+# gulp.task 'test', ['webpack-dev-server', 'mocha']
 # See https://www.npmjs.org/package/gulp-watch#trigger-for-mocha
 gulp.task 'mocha', ->
   gulp.src testSrc, read: false
@@ -144,6 +144,7 @@ gulp.task 'mocha', ->
       unless /tests? failed/.test err.stack
         console.log err.stack
 
+gulp.task 'test', ['karma']
 gulp.task 'karma', ->
   gulp.src(testSrc)
   .pipe karma
