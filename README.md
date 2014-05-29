@@ -90,13 +90,10 @@ pegg uses webpack to transpile CoffeeScript and provide `require` in
 the browser which is freaking awesome. However, webpack introduces a bit of
 complexity
 
-
-## CURRENT STATUS:
-
-* `karma start karma.conf.js` is functional
-* `gulp [mocha|karma]` is WIP
-* `gulp mocha` is working in coffeescript-seed-project (not pushed); need to port to pegg
-* GOTCHA: tests need to change number of lines in order to not be served a cached version
+**GOTCHA:** tests need to change number of lines in order to not be served a
+cached version by webpack. If a test is changed but the results appear to be
+incorrect, try adding or removing blank lines to the test file and saving it
+to trigger cache busting.
 
 ## Utils in use
 * [Mocha](http://visionmedia.github.io/mocha/) – BDD/TDD test framework
