@@ -5,6 +5,7 @@ Pegg is a social mobile game where users ask and answer questions about each oth
 It's also our first app built on the Famo.us platform and the Parse BaaS.
 
 
+
 # Install
 
 ```bash
@@ -15,27 +16,32 @@ npm install -g webpack-dev-server bower
 npm install
 ```
 
+
+
 # Development
+
+For BDD, simply run `gulp test` and write failing tests first and
+then get them to pass by writing the code. The test task automatically
+runs a development server. No other commands are needed.
+
+To run the development server directly without tests, use one of the
+following commands.
 
 ```bash
 # Run webpack-dev-server
 gulp serve
 
-# Or manually run webpack if needed
+# Run dev server and open browser
+gulp serve --open
+
+# Or manually run webpack to see what it's doing behind the scenes.
+# Typically, you would just inspect code in the browser debugger
+# instead of calling webpack directly.
 webpack -d --colors
+
 ```
 
-# Production
-
-```bash
-# Compile assets for production
-gulp build
-```
-
-
-# Development Overview
-
-Gulp is used instead of grunt to manage development tasks.
+Gulp is used instead of grunt to manage build tasks.
 Gulp is easier to configure and faster due to streaming IO instead of writing files to disk.
 
 Webpack is used instead of browserify to compile assets and manage JavaScript dependencies.
@@ -43,16 +49,47 @@ Webpack can handle CSS and other file types besides JavaScript. This allows for 
 completely self contained with CSS, fonts, and JavaScript dependencies declared at the top
 of the view file.
 
-Gulp could be dropped since it's mostly just passing through to webpack. But gulp has a lot
-of useful plugins and example tasks that could be useful later on.
-
-
 ## Style Guides
 
 * [AirBnB](https://github.com/airbnb/javascript)
 
 
+
 # Testing
+
+**Run test environment:**
+```
+# Run tests and watch for changes; tests are automatically rerun
+gulp test
+
+# Run tests once
+gulp test --once
+```
+
+pegg uses mocha for BDD style tests.
+
+See  [behavior driven development primer](http://msdn.microsoft.com/en-us/magazine/gg490346.aspx).
+
+BDD is an evolution of TDD where tests are first written from an acceptance
+perspective rather than from a code testing perspective. Rather than thinking
+about what the inside of a function does and writing a test, the developer just
+needs to think about what she wants the function to return and test for that.
+This approach allows for tests to be written before code and generally promotes
+an easier refactoring cycle.
+
+Most frontend/client/browser testing strategies rely on either running tests
+directly in the browser or running against a simulated environment like node.js
+with jsdom. pegg officially supports running tests in the browser with karma
+without the need for mocking famo.us or other core components.
+
+Mocha is also configured to run directly from the command line. However,
+this is not recommended for pegg front-end testing since it would require
+significant mocking of core dependencies like famo.us.
+
+pegg uses webpack to transpile CoffeeScript and provide `require` in
+the browser which is freaking awesome. However, webpack introduces a bit of
+complexity
+
 
 ## CURRENT STATUS:
 
@@ -61,18 +98,21 @@ of useful plugins and example tasks that could be useful later on.
 * `gulp mocha` is working in coffeescript-seed-project (not pushed); need to port to pegg
 * GOTCHA: tests need to change number of lines in order to not be served a cached version
 
+## Utils in use
+* [Mocha](http://visionmedia.github.io/mocha/) – BDD/TDD test framework
+* [Karma](http://karma-runner.github.io/0.12/index.html) – test runner
+* [Chai](http://chaijs.com/) – assertion library
+* [Sinon.js](http://sinonjs.org/) – spies, stubs and mocks
+* [Sinon-Chai](https://github.com/domenic/sinon-chai)
 
-* [Mocha](http://visionmedia.github.io/mocha/)
-* [Karma](http://karma-runner.github.io/0.12/index.html)
+## Utils of interest
 * [WD.js](https://github.com/admc/wd)
 * [CasperJS](http://casperjs.org/)
 * [PhantomCSS](https://github.com/Huddle/PhantomCSS)
 * [Jest](http://facebook.github.io/jest/)
-* [Chai](http://chaijs.com/) – assertion library
-* [Sinon.js](http://sinonjs.org/) – spies, stubs and mocks
-* [Chai as Promised](https://github.com/domenic/chai-as-promised/)
-* [Sinon-Chai](https://github.com/domenic/sinon-chai)
+* [Chai as Promised](https://github.com/domenic/chai-as-promised/) – add async support to chai
 * [Rewire](https://github.com/jhnns/rewire)
+
 
 
 # Directory Structure
@@ -82,6 +122,7 @@ of useful plugins and example tasks that could be useful later on.
 * **/css**: styles
 * **/lib**: client-side libraries
 * **/spec**: tests
+
 
 
 # Dependencies
@@ -97,6 +138,7 @@ webpack configuration. Any changes to app.scss or _settings.scss requires a rest
 development server.
 
 
+
 # NPM vs Bower
 
 Use Bower for any dependencies that are only used in the browser. Use npm for everything else.
@@ -105,50 +147,45 @@ Use Bower for any dependencies that are only used in the browser. Use npm for ev
 
 # Production
 
-The package.json and bower.json files should be updated to use specific versions to ensure
-consistency between development and production.
-
-Does npm have the equivalent of Bundler's Gemfile.lock?
-
-
-## Deploy
-
 ```bash
-# build production assets
+# Compile assets for production
 gulp build
 ```
 
-Rest of deploy details TBD.
+The package.json and bower.json files should be updated to use specific versions to ensure
+consistency between development and production.
 
+Does npm have the equivalent of Bundler's Gemfile.lock???
 
-# Sources
-
-## Of Interest:
-
-* https://github.com/ericclemmons/genesis-skeleton
-* https://github.com/Famous/famous
-* https://github.com/Famous/examples
 
 
 # Resources
 
-3D
+## General
+* https://github.com/ericclemmons/genesis-skeleton
+* https://github.com/Famous/famous
+* https://github.com/Famous/examples
+
+## 3D
 * [CSS 3D Matrix Transformations](http://www.eleqtriq.com/2010/05/css-3d-matrix-transformations/)
 
+## Testing
 * [Testing and Debugging Angular](http://www.yearofmoo.com/2013/09/advanced-testing-and-debugging-in-angularjs.html)
 
-Streams
+## Streams
 * [Stream Handbook](https://github.com/substack/stream-handbook)
 * [este.js](https://github.com/steida/este) – isomorphic web dev framework
 * https://www.youtube.com/watch?v=lQAV3bPOYHo
 
 
-Webpack
+## Webpack
 * [The Front-end Tooling Book](http://tooling.github.io/book-of-modern-frontend-tooling/dependency-management/webpack/getting-started.html)
 
-gulp
+## gulp
 * [gulp Recipes](https://github.com/gulpjs/gulp/tree/master/docs/recipes)
 * [gulp Plugins](http://gratimax.github.io/search-gulp-plugins/)
+
+
 
 # Notes
 
