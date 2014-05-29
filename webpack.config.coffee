@@ -1,4 +1,5 @@
 # See webpack.config.js for more examples:
+# http://webpack.github.io/docs/configuration.html
 # https://github.com/webpack/webpack-with-common-libs/blob/master/webpack.config.js
 # https://github.com/webpack/example-app/blob/master/webpack.config.js
 
