@@ -59,6 +59,9 @@ of the view file.
 
 **Run test environment:**
 ```
+# Install karma-cli globally
+npm install -g karma-cli
+
 # Run tests and watch for changes; tests are automatically rerun
 gulp test
 
