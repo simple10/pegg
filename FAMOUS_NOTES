@@ -1,10 +1,3 @@
-Transform.inFront
-Transform.behind --> should be inBack ???
-
-Or Photoshop style ...
-Transform.forward
-Transform.backward
-
 
 use css property (webkitBackVisibility) to show back of surface so you can see the back when flipping a surface
 intersecting surfaces: in chrome and firefox, doesn't look good. won't until browser fixes. fix: don't intersect surfaces
