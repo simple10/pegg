@@ -67,6 +67,13 @@ module.exports =
       #   test: /\.jade$/
       #   loader: 'jade-loader?self'
       # }
+
+      # Shim sinon.js loading to fix broken AMD.
+      # https://github.com/webpack/webpack/issues/177
+      {
+        test: /sinon.js$/
+        loader: 'imports?define=>false'
+      }
     ]
 
 
