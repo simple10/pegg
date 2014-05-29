@@ -37,6 +37,7 @@ class AppView extends View
       transition:
         duration: 300
         curve: 'easeOut'
+  # pages keys correspond to pageID in MenuView
   pages: {}
   menuOpen: false
 
@@ -45,7 +46,7 @@ class AppView extends View
     @initMenu()
     @initMain()
     @initPages()
-    @showPage 'card'
+    @showPage @getPage 'card'
 
   initMenu: ->
     @menu = new MenuView @options.menu
@@ -70,7 +71,6 @@ class AppView extends View
     @header
 
   initPages: ->
-    # Pages correspond to menuID in MenuView
     @pages.card = new CardView
     @pages.peggboard = new Surface
       size: [0.8, 0.8]
@@ -91,8 +91,11 @@ class AppView extends View
       inTransition: { duration: 650, curve: 'easeOut' }
       outTransition: { duration: 500, curve: Easing.inCubic }
 
-  showPage: (pageName) ->
-    @lightbox.show @pages[pageName]
+  showPage: (page) ->
+    @lightbox.show page
+
+  getPage: (pageID) ->
+    @pages[pageID]
 
   toggleMenu: =>
     if @menuOpen
@@ -100,8 +103,8 @@ class AppView extends View
     else
       @openMenu()
 
-  selectMenuItem: (menuID) =>
-    @showPage menuID
+  selectMenuItem: (pageID) =>
+    @showPage @getPage pageID
     @closeMenu()
 
   closeMenu: ->

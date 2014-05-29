@@ -10,7 +10,7 @@ _ = require('parse')._
 
 ###
 # Events:
-#   selectMenuItem {{menuID}}
+#   selectMenuItem {{pageID}}
 #   toggleMenu
 ###
 class MenuView extends View
@@ -45,10 +45,10 @@ class MenuView extends View
     @bandModifiers = []
     yOffset = @options.topOffset
     bands = [
-      {menuID: 'peggboard', title: 'peggboard', iconUrl: 'images/peggboard_medium.png'}
-      {menuID: 'card', title: 'new card', iconUrl: 'images/newcard_medium.png'}
-      {menuID: 'decks', title: 'decks', iconUrl: 'images/decks_medium.png'}
-      {menuID: 'settings', title: 'settings', iconUrl: 'images/settings_medium.png'}
+      {pageID: 'peggboard', title: 'peggboard', iconUrl: 'images/peggboard_medium.png'}
+      {pageID: 'card', title: 'new card', iconUrl: 'images/newcard_medium.png'}
+      {pageID: 'decks', title: 'decks', iconUrl: 'images/decks_medium.png'}
+      {pageID: 'settings', title: 'settings', iconUrl: 'images/settings_medium.png'}
     ]
     i = 0
     while i < bands.length

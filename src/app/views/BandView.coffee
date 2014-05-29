@@ -7,7 +7,7 @@ ImageSurface = require 'famous/surfaces/ImageSurface'
 
 class BandView extends View
   @DEFAULT_OPTIONS:
-    menuID: null
+    pageID: null
     width: 280
     height: 100
     angle: -0.2
@@ -26,11 +26,11 @@ class BandView extends View
     @background = new Surface
       size: [@options.width, @options.height]
       content: "<div class='menu__item__title'>#{@options.title}</div>"
-      #content: @options.menuID
+      #content: @options.pageID
       #properties:
       #  lineHeight: @options.height + 'px'
       #  textAlign: 'center'
-      classes: ['menu__item', "menu__item--#{@options.menuID}"]
+      classes: ['menu__item', "menu__item--#{@options.pageID}"]
     @add @background
     @background.on 'click', =>
       @_eventOutput.emit 'selectMenuItem', @
@@ -55,6 +55,6 @@ class BandView extends View
     #@add @title
 
   getID: ->
-    @options.menuID
+    @options.pageID
 
 module.exports = BandView
