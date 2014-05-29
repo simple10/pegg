@@ -14,39 +14,18 @@ mocha = require 'gulp-mocha'
 karma = require 'gulp-karma'
 webpack = require 'webpack'
 WebpackDevServer = require 'webpack-dev-server'
-webpackConfig = require './webpack.config.coffee'
+webpackConfig = Object.create require('./webpack.config.coffee')
 grep = require 'gulp-grep-stream'
 debug = require 'gulp-debug'
+open = require 'open'
+log = gutil.log
+colors = gutil.colors
 
 
-conf = Object.create webpackConfig
-
-src = 'src/'
-dist = conf.output.path
-testSrc = "#{src}/spec/**/*Spec.coffee"
-
-copyFiles = [
-  '**/images/**'
-  '**/*.html'
-]
-gzipFiles = [
-  '**/images/**'
-  '**/*.js'
-  '**/*.html'
-]
-mochaOpts =
-  # http://visionmedia.github.io/mocha/#mocha.opts
-  ui: 'bdd'
-  # http://visionmedia.github.io/mocha/#reporters
-  reporter: 'nyan'
-  compilers: 'coffee:coffee-script/register'
-
-
-# Default task
+# Default task and usage
 gulp.task 'default', ['help'], ->
-
 gulp.task 'help', ->
-  gutil.log """
+  log """
   \n
     Usage: gulp [task] [option]
 
@@ -55,10 +34,48 @@ gulp.task 'help', ->
       gulp serve            build and run dev server
       gulp clean            clean production build dir
       gulp build            production build
-      gulp test             run tests
-      gulp test --watch     run tests and watch for changes
+      gulp test             run tests and watch for changes
+      gulp test --once      run tests once
+
+    Options:
+
+      --open                open browser after starting dev server
+      --port=[PORT]         set dev server port
+      --quiet               suppress extra dev server output
 
   """
+
+base = 'src/'
+conf =
+  webpack: webpackConfig
+  src: base
+  dist: webpackConfig.output.path
+  testSrc: "#{base}/spec/**/*Spec.coffee"
+  copyFiles: [
+    '**/images/**'
+    '**/*.html'
+  ]
+  gzipFiles: [
+    '**/images/**'
+    '**/*.js'
+    '**/*.html'
+  ]
+  mochaOpts: [
+    # http://visionmedia.github.io/mocha/#mocha.opts
+    ui: 'bdd'
+    # http://visionmedia.github.io/mocha/#reporters
+    reporter: 'nyan'
+    compilers: 'coffee:coffee-script/register'
+  ]
+
+  # CLI options
+  open: gutil.env.open
+  port: gutil.env.port or 8080
+  quiet: gutil.env.quiet or false
+
+  karma:
+    configFile: 'karma.config.coffee'
+
 
 
 
@@ -67,21 +84,27 @@ gulp.task 'help', ->
 ############################################################
 gulp.task 'serve', ['webpack-dev-server'], ->
 gulp.task 'webpack-dev-server', (callback) ->
-  conf.debug = true
+  webpackConfig.debug = true
 
   # Start a webpack-dev-server
-  new WebpackDevServer webpack(conf),
-    contentBase: conf.contentBase
+  new WebpackDevServer webpack(webpackConfig),
+    contentBase: webpackConfig.contentBase
     # hot: true
-    quiet: false
+    quiet: conf.quiet
     noInfo: false
     # lazy: false
     watchDelay: 300
     stats:
       colors: true
-  .listen 8080, '', (err) ->
+  .listen conf.port, '', (err) ->
     throw new gutil.PluginError('webpack-dev-server', err) if err
-    gutil.log '[webpack-dev-server]', 'http://localhost:8080/webpack-dev-server/index.html'
+    url = "http://localhost:#{conf.port}"
+    if conf.open
+      log 'Opening dev server URL in browser'
+      open url
+    else
+      log colors.gray 'Run with --open to automatically open URL on startup'
+    log colors.cyan '[webpack-dev-server]', colors.magenta "#{url}/webpack-dev-server/index.html"
 
 
 ############################################################
@@ -89,88 +112,55 @@ gulp.task 'webpack-dev-server', (callback) ->
 ############################################################
 gulp.task 'build', ['webpack:build', 'copy'], ->
   if enableGzip
-    gulp.src gzipFiles, cwd: dist
+    gulp.src gzipFiles, cwd: conf.dist
     .pipe gzip()
-    .pipe gulp.dest dist
+    .pipe gulp.dest conf.dist
 
 gulp.task 'webpack:build', (callback) ->
-  conf.output.filename = 'bundle-[hash].js'
-  conf.plugins = conf.plugins.concat(
+  webpackConfig.output.filename = 'bundle-[hash].js'
+  webpackConfig.plugins = webpackConfig.plugins.concat(
     new webpack.DefinePlugin 'process.env': { NODE_ENV: JSON.stringify('production') }
     new webpack.optimize.DedupePlugin()
     new webpack.optimize.UglifyJsPlugin()
   )
   # run webpack
-  webpack conf, (err, stats) ->
+  webpack webpackConfig, (err, stats) ->
     throw new gutil.PluginError('webpack:build', err) if err
-    gutil.log "[webpack:build]\n\n" \
-      + stats.toString colors: true
+    log "[webpack:build]\n\n#{stats.toString colors: true}"
     callback()
 
 gulp.task 'clean', ->
-  gulp.src dist, read: false
+  gulp.src conf.dist, read: false
   .pipe clean()
 
 gulp.task 'copy', ['clean'], ->
-  gulp.src copyFiles, cwd: src
-  .pipe gulp.dest dist
+  gulp.src copyFiles, cwd: conf.src
+  .pipe gulp.dest conf.dist
 
 
 ############################################################
 # Test
 ############################################################
-# testSrc = "#{src}/spec/**/*.coffee"
-# gulp.task 'test', ->
-#   gulp.src testSrc
-#   # .pipe jasmine()
-
-#   if gutil.env.watch
-#     gutil.env.watch = false
-#     gulp.watch testSrc, ['test']
-
-
-# TODO: !!!!!!
-# hack into require and add webpack resolve.extensions directories to path
-# see require.path
-# http://blog.buildingawesome.com/post/85490946023/stubbing-out-dependencies-for-testing-with-browserify
-# !!!!!!!
-# gulp.task 'test', ['webpack-dev-server', 'mocha']
-# See https://www.npmjs.org/package/gulp-watch#trigger-for-mocha
-gulp.task 'mocha', ->
-  gulp.src testSrc, read: false
-  .pipe watch emit: 'all', (files) ->
-    files.pipe mocha(mochaOpts)
-    .on 'error', (err) ->
-      unless /tests? failed/.test err.stack
-        console.log err.stack
-
 gulp.task 'test', ['karma']
 gulp.task 'karma', ->
-  gulp.src(testSrc)
+  action = if gutil.env.once then 'run' else 'watch'
+  gulp.src conf.testSrc
   .pipe karma
-    configFile: 'karma.conf.js'
-    action: 'watch'
+    configFile: conf.karma.configFile
+    action: action
   .on 'error', (err) ->
     throw new gutil.PluginError('karma', err)
   return
 
-gulp.task 'webpack', (callback) ->
-  webpack conf, (err, stats) ->
-    throw new gutil.PluginError('webpack:build', err) if err
-    gutil.log "[webpack:build]\n\n" \
-      + stats.toString colors: true
-    callback()
 
 gulp.task 'mocha', ->
   mocha_opts =
     ui: 'bdd'
     reporter: 'dot'
     compilers: 'coffee:coffee-script/register'
-
   grepFile = (file) ->
     /.*\/test\/.*\.coffee/.test file.path
-
-  gulp.src ["src/**", "test/**"], read: false
+  gulp.src [conf.src, conf.testSrc], read: false
   .pipe watch emit: "all", (files) ->
     files
     .pipe grep(grepFile)
@@ -179,7 +169,7 @@ gulp.task 'mocha', ->
       title: 'DEBUG'
     .pipe mocha(mocha_opts)
     .on 'error', (err) ->
-      console.log err.stack  unless /tests? failed/.test(err.stack)
+      log colors.red err.stack  unless /tests? failed/.test(err.stack)
     null
 
 # path = require 'path'
