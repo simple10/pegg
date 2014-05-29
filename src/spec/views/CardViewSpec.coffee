@@ -3,5 +3,7 @@ expect = require('../helpers/Common').expect
 
 
 describe 'CardView', ->
-  it 'contains spec with an expectation', ->
+  # Example: add 'x' in front of it to skip a test
+  xit 'example test', ->
     expect(true).to.equal true
+
