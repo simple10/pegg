@@ -25,16 +25,15 @@ module.exports = (config) ->
     # list of files / patterns to load in the browser
     # https://github.com/karma-runner/karma/blob/v0.12.16/docs/config/02-files.md
     # files: [
-    #   // Watch app files so tests rerun when code changes
-    #   {pattern: 'src/app/**/*', included: false, served: false, watched: true},
-    #   // Watch tests
+    #   # Watch app files so tests rerun when code changes
+    #   {pattern: 'src/app/**/*', included: false, served: false, watched: true}
+    #   # Watch tests
     #   'src/spec/**/*'
-    # ],
+    # ]
 
     # Serve images and assets by proxying to the dev server or serving them by karma.
-    # proxies: {
+    # proxies:
     #   '/img/': 'http://localhost:8080/base/test/images/'
-    # },
 
     # list of files to exclude
     exclude: [
