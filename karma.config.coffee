@@ -37,7 +37,9 @@ module.exports = (config) ->
     # },
 
     # list of files to exclude
-    exclude: []
+    exclude: [
+      'src/spec/helpers/**/*'
+    ]
 
     # Preprocess matching files before serving them to the browser.
     # Available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
