@@ -1,4 +1,4 @@
-# fb-root must be present on page
+# <div id=fb-root> must be present on page
 # https://developers.facebook.com/docs/javascript/quickstart
 
 Parse = require 'parse'
