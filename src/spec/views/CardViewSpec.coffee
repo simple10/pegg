@@ -1,8 +1,5 @@
-chai = require 'chai'
-
-assert = chai.assert
-should = chai.should()
-expect = chai.expect
+CardView = require 'views/CardView'
+expect = require('../helpers/Common').expect
 
 
 describe 'CardView', ->
