@@ -16,20 +16,11 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 
-# Models
-Questions = require 'collections/Questions'
-Question = require 'models/Question'
 
 # Views
 HeaderView = require 'views/HeaderView'
 MenuView = require 'views/MenuView'
 CardView = require 'views/CardView'
-
-# EditQuestionView = require 'views/EditQuestionView'
-# ListQuestionsView = require 'views/ListQuestionsView'
-# QuestionView = require 'views/QuestionView'
-# ImageUploadView = require 'views/ImageUploadView'
-# ImageEditView = require 'views/ImageEditView'
 
 
 class AppView extends View

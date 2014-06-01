@@ -6,7 +6,7 @@ spy = helper.spy
 
 describe 'AppView', ->
   beforeEach ->
-    @view = new AppView()
+    @view = new AppView
 
   it 'example test', ->
     expect(@view.showPage).to.be.a 'function'

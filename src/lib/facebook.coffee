@@ -1,8 +1,8 @@
 # <div id=fb-root> must be present on page
 # https://developers.facebook.com/docs/javascript/quickstart
 
-Parse = require 'parse'
-Config = require('config').public.facebook
+Parse = require 'Parse'
+Config = require('Config').public.facebook
 
 load = (d, s, id) ->
   fjs = d.getElementsByTagName(s)[0]
