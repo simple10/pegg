@@ -11,7 +11,8 @@ path = require 'path'
 
 module.exports =
 
-  contentBase: "#{__dirname}/src/"
+  # webpack-dev-server base directory
+  contentBase: "#{__dirname}/src/assets/"
 
   cache: true
 

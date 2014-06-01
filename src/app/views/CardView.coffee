@@ -2,7 +2,7 @@
 #
 # Flip between front and back side of card.
 
-require 'css/card'
+require './card'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'

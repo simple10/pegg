@@ -1,5 +1,4 @@
 # CSS
-require 'css/app'
 require 'famous/core/famous.css'
 
 # Polyfills

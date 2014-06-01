@@ -52,7 +52,7 @@ conf =
   dist: webpackConfig.output.path
   testSrc: "#{base}/spec/**/*Spec.coffee"
   copyFiles: [
-    '**/images/**'
+    'assets/**'
     '**/*.html'
   ]
   gzipFiles: [
@@ -89,6 +89,7 @@ gulp.task 'webpack-dev-server', (callback) ->
   # Start a webpack-dev-server
   new WebpackDevServer webpack(webpackConfig),
     contentBase: webpackConfig.contentBase
+    # publicPath: '/assets/'
     # hot: true
     quiet: conf.quiet
     noInfo: false

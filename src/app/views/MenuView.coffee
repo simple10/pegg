@@ -1,4 +1,4 @@
-require 'css/menu'
+require './menu'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'

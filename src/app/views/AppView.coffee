@@ -2,6 +2,8 @@
 #
 # Main entry point of the app. Manages global views and events.
 
+# CSS
+require './app'
 
 View = require 'famous/core/View'
 Utility = require 'famous/utilities/Utility'
