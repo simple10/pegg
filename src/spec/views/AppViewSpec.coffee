@@ -1,5 +1,5 @@
 AppView = require 'views/AppView'
-helper = require '../helpers/Common'
+helper = require 'spec/helpers/Common'
 expect = helper.expect
 spy = helper.spy
 
