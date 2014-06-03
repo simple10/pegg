@@ -8,3 +8,4 @@ module.exports =
   spy: sinon.spy
   stub: sinon.stub
   sinon: sinon
+  should: chai.should

@@ -17,11 +17,14 @@ Easing = require 'famous/transitions/Easing'
 # Models
 Questions = require 'collections/Questions'
 Question = require 'models/Question'
+Menu = require 'models/menu'
 
 # Views
 HeaderView = require 'views/HeaderView'
-MenuView = require 'views/MenuView'
 CardView = require 'views/CardView'
+NewCardView = require 'views/NewCardView'
+TabMenuView = require 'views/TabMenuView'
+BandMenuView = require 'views/BandMenuView'
 
 # EditQuestionView = require 'views/EditQuestionView'
 # ListQuestionsView = require 'views/ListQuestionsView'
@@ -46,10 +49,10 @@ class AppView extends View
     @initMenu()
     @initMain()
     @initPages()
-    @showPage @getPage 'card'
+    @showPage @getPage 'peggboard'
 
   initMenu: ->
-    @menu = new MenuView @options.menu
+    @menu = new BandMenuView @options.menu
     @menu.resetBands()
     @menu.on 'toggleMenu', @toggleMenu
     @menu.on 'selectMenuItem', @selectMenuItem
@@ -59,11 +62,21 @@ class AppView extends View
   initMain: ->
     @layout = new HeaderFooterLayout
       headerSize: 60
-      footerSize: 0
+      footerSize: 100
     @layout.header.add @initHeader()
+    @layout.footer.add @initFooter()
     @layout.content.add @initViewManager()
     @layoutState = new StateModifier
     @add(@layoutState).add @layout
+
+
+  initFooter: ->
+    @footer = new TabMenuView
+      count: 5
+      model: Menu
+    @footer.showTabs()
+    @footer
+
 
   initHeader: ->
     @header = new HeaderView
@@ -71,20 +84,16 @@ class AppView extends View
     @header
 
   initPages: ->
-    @pages.card = new CardView
-    @pages.peggboard = new Surface
-      size: [0.8, 0.8]
-      origin: [0.5, 0.5]
-      content: '<h1>Test: Page 2</h1>'
-      properties:
-        backgroundColor: 'red'
+    # Pages correspond to menuID in MenuView
+    @pages.peggboard = new CardView
+    @pages.newCard = new NewCardView
 
   initViewManager: ->
     @lightbox = new Lightbox
       inOpacity: 1
       outOpacity: 0
       inOrigin: [0, 0]
-      outOrigin: [0, 0]
+      outOrigin: [1, 1]
       showOrigin: [0.5, 0.5]
       inTransform: Transform.thenMove(Transform.rotateX(1), [0, -300, -300])
       outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, window.innerHeight, -1000])
