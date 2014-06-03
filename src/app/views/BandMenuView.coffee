@@ -1,4 +1,4 @@
-require './menu'
+require './bandview'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
