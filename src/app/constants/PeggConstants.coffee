@@ -1,10 +1,10 @@
-# Constants are used to
+Utils = require 'Utils'
 
-require 'Utils'
+module.exports =
+  actions: Utils.keyMirror
+    MENU_SELECT: null
 
-
-constants =
-  MENU_SELECT: null
-
-
-module.exports = Utils.keyMirror constants
+  stores: Utils.keyMirror
+    CHANGE: null
+    CREATE: null
+    DELETE: null
