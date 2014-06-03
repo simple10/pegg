@@ -1,4 +1,4 @@
-require 'css/views/questions'
+require 'css/peggbox'
 
 View = require 'famous/core/View'
 Modifier  = require 'famous/core/Modifier'
@@ -6,44 +6,62 @@ Transform = require 'famous/core/Transform'
 Surface = require 'famous/core/Surface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Scrollview = require 'famous/views/Scrollview'
+RenderNode = require 'famous/core/RenderNode'
+StateModifier = require 'famous/modifiers/StateModifier'
 
-class ListQuestionsView extends View
+class PeggBoxView extends View
+  @DEFAULT_OPTIONS:
+    model: null
 
-  constructor: (collection, options) ->
+  constructor: (options) ->
+    #options = _.defaults options, @constructor.DEFAULT_OPTIONS
     super options
-    @questions = collection
+    @init()
+
+  init: ->
+    @items = @options.model
     @build()
 
   build: ->
-    container = new ContainerSurface(
-      size: [400, undefined]
-      properties:
-        overflow: "hidden"
-    )
 
     surfaces = []
     scrollview = new Scrollview
     scrollview.sequenceFrom surfaces
 
     #debugger
-    @questions.each (question) ->
-      #link = question.get 'link'
-      title = question.get 'title'
+    i = 0
+    while i < @items.length
+      pic = @items[i].pic
+      message = @items[i].message
       content = "
-        <h2>#{title}</h2>
+        <h2><img src='#{pic}' />#{message}</h2>
       "
 
-      temp = new Surface
+      node = new RenderNode
+
+      item = new Surface
         size: [undefined, 50]
         content: content
         classes: ['question']
 
-      temp.pipe scrollview
-      surfaces.push temp
+      modifier = new StateModifier
+        origin: [0, 0]
+        align: [0.25, 0]
+
+      node.add(modifier).add item
+
+      item.pipe scrollview
+      surfaces.push node
+      i++
+
+    container = new ContainerSurface
+      size: [null, null]
+      properties:
+        overflow: "hidden"
 
     container.add scrollview
     @add scrollview
 
 
 
-module.exports = ListQuestionsView
+module.exports = PeggBoxView

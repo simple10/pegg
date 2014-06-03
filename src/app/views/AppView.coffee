@@ -51,7 +51,7 @@ class AppView extends View
     @initMenu()
     @initMain()
     @initPages()
-    @showPage @getPage 'peggboard'
+    @showPage @getPage 'play'
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
@@ -87,8 +87,10 @@ class AppView extends View
 
   initPages: ->
     # Pages correspond to menuID in MenuView
-    @pages.peggboard = new CardView
+    @pages.play = new CardView
     @pages.newCard = new NewCardView
+    @pages.peggbox = new PeggBoxView
+      model: Activity
 
   initViewManager: ->
     @lightbox = new Lightbox
