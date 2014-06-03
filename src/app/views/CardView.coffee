@@ -14,9 +14,9 @@ Easing = require 'famous/transitions/Easing'
 
 class CardView extends View
   @DEFAULT_OPTIONS:
-    width: 400
-    height: 600
-    depth: 100
+    width: 200
+    height: 300
+    depth: 5
     borderRadius: 30
     duration: 10500
     easing: Easing.outElastic
@@ -55,7 +55,7 @@ class CardView extends View
         )
       )
     # Shim left
-    @addSurface
+    ###@addSurface
       size: [depth-2, height]
       classes: ['card__left']
       content: 'Left'
@@ -71,7 +71,7 @@ class CardView extends View
       transform: Transform.multiply(
         Transform.translate width/2-@options.borderRadius, 0, 1
         Transform.rotateY Math.PI/2
-      )
+      )###
     # Back
     @addSurface
       size: [ width, height ]
