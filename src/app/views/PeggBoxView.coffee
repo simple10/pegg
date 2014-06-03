@@ -1,4 +1,4 @@
-require 'css/peggbox'
+require './peggbox'
 
 View = require 'famous/core/View'
 Modifier  = require 'famous/core/Modifier'

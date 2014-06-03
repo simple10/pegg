@@ -2,7 +2,7 @@
 #
 # Enter question and continue
 
-require 'css/newcard'
+require './newcard'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
