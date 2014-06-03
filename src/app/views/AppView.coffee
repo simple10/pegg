@@ -17,7 +17,7 @@ Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 
 # Models
-Menu = require 'models/menu'
+Menu = require 'config/menu'
 Activity = require 'models/activity'
 
 # Views
