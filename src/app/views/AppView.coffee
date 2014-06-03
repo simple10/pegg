@@ -21,7 +21,7 @@ Constants = require 'constants/PeggConstants'
 AppStateStore = require 'stores/AppStateStore'
 
 # Models
-Menu = require 'models/menu'
+Menu = require 'config/menu'
 Activity = require 'models/activity'
 
 # Views
