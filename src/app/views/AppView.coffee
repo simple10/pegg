@@ -18,6 +18,7 @@ Easing = require 'famous/transitions/Easing'
 Questions = require 'collections/Questions'
 Question = require 'models/Question'
 Menu = require 'models/menu'
+Activity = require 'models/activity'
 
 # Views
 HeaderView = require 'views/HeaderView'
@@ -25,6 +26,7 @@ CardView = require 'views/CardView'
 NewCardView = require 'views/NewCardView'
 TabMenuView = require 'views/TabMenuView'
 BandMenuView = require 'views/BandMenuView'
+PeggBoxView = require 'views/PeggBoxView'
 
 # EditQuestionView = require 'views/EditQuestionView'
 # ListQuestionsView = require 'views/ListQuestionsView'
