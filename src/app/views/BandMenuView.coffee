@@ -1,4 +1,4 @@
-require './bandview'
+require './bandview.scss'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'

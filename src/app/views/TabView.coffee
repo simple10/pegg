@@ -1,4 +1,4 @@
-require './tabview'
+require './tabview.scss'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
