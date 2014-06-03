@@ -68,6 +68,9 @@ Webpack can handle CSS and other file types besides JavaScript. This allows for 
 completely self contained with CSS, fonts, and JavaScript dependencies declared at the top
 of the view file.
 
+## Versioning
+
+* [Semantic Versioning](http://semver.org/)
 ## Style Guides
 
 pegg uses BEM (Block Element Modifier) syntax for CSS.
