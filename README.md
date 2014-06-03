@@ -70,6 +70,9 @@ of the view file.
 
 ## Style Guides
 
+pegg uses BEM (Block Element Modifier) syntax for CSS.
+
+* [BEM primer](http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/)
 * [AirBnB](https://github.com/airbnb/javascript)
 
 
