@@ -22,7 +22,9 @@
     "node": "~0.10.0"
   },
   "engineStrict": true,
-  "dependencies": {},
+  "dependencies": {
+    "bluebird": "^1.2.4"
+  },
   "optionalDependencies": {},
   "devDependencies": {
     "gulp": "^3.5.5",
