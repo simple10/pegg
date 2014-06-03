@@ -28,7 +28,6 @@ class PeggBoxView extends View
     scrollview = new Scrollview
     scrollview.sequenceFrom surfaces
 
-    #debugger
     i = 0
     while i < @items.length
       pic = @items[i].pic
