@@ -71,6 +71,11 @@ of the view file.
 ## Versioning
 
 * [Semantic Versioning](http://semver.org/)
+
+## Git
+
+* [Git Message Guidelines](http://www.mediawiki.org/wiki/Gerrit/Commit_message_guidelines)
+
 ## Style Guides
 
 pegg uses BEM (Block Element Modifier) syntax for CSS.
