@@ -6,6 +6,7 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
 BandView = require 'views/BandView'
+MenuActions = require 'actions/MenuActions'
 _ = require('Parse')._
 
 ###
@@ -50,7 +51,7 @@ class BandMenuView extends View
     while i < bands.length
       band = new BandView bands[i]
       band.on 'selectMenuItem', (menuItem) =>
-        @_eventOutput.emit 'selectMenuItem', menuItem.getID()
+        MenuActions.selectMenuItem menuItem.getID()
       bandModifier = new StateModifier
         transform: Transform.translate 0, yOffset, 0
       @bandModifiers.push bandModifier
