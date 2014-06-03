@@ -5,7 +5,7 @@ Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
-_ = require('parse')._
+_ = require('Parse')._
 
 TabView = require 'views/TabView'
 
