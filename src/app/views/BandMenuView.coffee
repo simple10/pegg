@@ -24,6 +24,7 @@ class BandMenuView extends View
       transition:
         duration: 400
         curve: 'easeOut'
+    model: null
 
   constructor: (options) ->
     options = _.defaults options, @constructor.DEFAULT_OPTIONS
@@ -44,12 +45,7 @@ class BandMenuView extends View
   initBands: ->
     @bandModifiers = []
     yOffset = @options.topOffset
-    bands = [
-      {pageID: 'peggboard', title: 'peggboard', iconUrl: 'images/peggboard_medium.png'}
-      {pageID: 'newCard', title: 'new card', iconUrl: 'images/newcard_medium.png'}
-      {pageID: 'decks', title: 'decks', iconUrl: 'images/decks_medium.png'}
-      {pageID: 'settings', title: 'settings', iconUrl: 'images/settings_medium.png'}
-    ]
+    bands = @options.model
     i = 0
     while i < bands.length
       band = new BandView bands[i]

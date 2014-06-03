@@ -42,6 +42,7 @@ class AppView extends View
       transition:
         duration: 300
         curve: 'easeOut'
+      model: Menu
   # pages keys correspond to pageID in MenuView
   pages: {}
   menuOpen: false
@@ -73,12 +74,10 @@ class AppView extends View
 
 
   initFooter: ->
-    @footer = new TabMenuView
-      count: 5
-      model: Menu
+    @footer = new TabMenuView @options.menu
     @footer.showTabs()
+    @footer.on 'selectTabMenuItem', @selectTabMenuItem
     @footer
-
 
   initHeader: ->
     @header = new HeaderView
@@ -119,6 +118,11 @@ class AppView extends View
   selectMenuItem: (pageID) =>
     @showPage @getPage pageID
     @closeMenu()
+
+  selectTabMenuItem: (pageID) =>
+    @showPage @getPage pageID
+    @footer.hideTabs()
+    @footer.showTabs()
 
   closeMenu: ->
     @layoutState.setTransform(

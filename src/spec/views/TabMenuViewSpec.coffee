@@ -1,5 +1,6 @@
 TabMenuView = require 'views/TabMenuView'
 helper = require '../helpers/Common'
+Timer = require 'famous/utilities/Timer'
 expect = helper.expect
 should = helper.should
 spy = helper.spy
@@ -13,7 +14,6 @@ describe 'TabMenuView', ->
     ]
 
     @view = new TabMenuView
-      count: 5
       model: @model
 
   it 'view should have tabs', ->
@@ -24,8 +24,25 @@ describe 'TabMenuView', ->
 
   it 'tabs should fill window width', ->
     expect(window.innerWidth).to.equal @view.tabs[0].options.width * @model.length
+    expect(@view.tabs[1].options.xOffset).to.equal 1 / @model.length
 
-  xit 'tabs should have icons', ->
+  it 'tabs should show', ->
+    @view.showTabs()
+    Timer.setTimeout (->
+      pos = @view.tabModifiers[0].getFinalTransform()
+      console.log pos
+      expect(pos[13]).to.equal 0
+    ), 40
+
+  it 'tabs should hide', ->
+    @view.hideTabs()
+    Timer.setTimeout (->
+      pos = @view.tabModifiers[0].getFinalTransform()
+      console.log pos
+      expect(pos[13]).to.equal @view.options.tab.height
+    ), 40
+
+
 
 
   #@surface = new Surface()

@@ -12,11 +12,10 @@ TabView = require 'views/TabView'
 
 ###
 # Events:
-#
+# selectTabMenuItem {{menuID}}
 ###
 class TabMenuView extends View
   @DEFAULT_OPTIONS:
-    count: 4
     tab:
       height: 100
       staggerDelay: 35
@@ -36,7 +35,6 @@ class TabMenuView extends View
     @tabModifiers = []
     i = 0
     xOffset = 0
-
     while i < @options.model.length
       @addTab
         pageID: @options.model[i].pageID
@@ -46,7 +44,7 @@ class TabMenuView extends View
         width: window.innerWidth / @options.model.length
         height: @options.tab.height
       i++
-      xOffset += 1/4
+      xOffset += 1/@options.model.length
 
 
   addTab: (params) ->
@@ -56,10 +54,9 @@ class TabMenuView extends View
       iconUrl: params.icon
       width: params.width
       height: params.height
+      xOffset: params.xOffset
     tab.on 'selectMenuItem', (menuItem) =>
-      @_eventOutput.emit 'selectMenuItem', @hideBands()
-
-    console.log(params)
+      @_eventOutput.emit 'selectTabMenuItem', menuItem.getID()
     tabModifier = new StateModifier
       origin: [0, 0]
       align: [params.xOffset, 0]
@@ -70,10 +67,8 @@ class TabMenuView extends View
 
 
   showTabs: ->
-    #@resetTabs()
     transition = @options.tab.transition
     delay = @options.tab.staggerDelay
-
     i = 0
     while i < @tabModifiers.length
       Timer.setTimeout ((i) ->
@@ -82,7 +77,7 @@ class TabMenuView extends View
       ).bind(this, i), i * delay
       i++
 
-  hideBands: ->
+  hideTabs: ->
     transition = @options.tab.transition
     delay = @options.tab.staggerDelay
     i = 0
