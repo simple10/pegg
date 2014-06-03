@@ -2,7 +2,7 @@
 #
 # Flip between front and back side of card.
 
-require 'css/card'
+require './card'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
@@ -123,64 +123,3 @@ class CardView extends View
 
 module.exports = CardView
 
-
-
-#
-# FOR REFERENCE ON HOW TO ADD SIDES
-#
-
-# // Top
-# addSurface({
-#     size: [width - borderRadius*2, depth],
-#     content: 'I\'m on Top! Just a shimmy and a shake',
-#     properties: {
-#         lineHeight: depth + 'px',
-#         textAlign: 'center',
-#         backgroundColor: '#0cf',
-#         overflow: 'hidden',
-#         color: '#666'
-#     },
-#     transform: Transform.multiply(Transform.translate(0, -height / 2, 0), Transform.rotateX(Math.PI/2)),
-# });
-
-# // Bottom
-# addSurface({
-#     size: [width - borderRadius*2, depth],
-#     content: 'I\'m the bottom!',
-#     properties: {
-#         lineHeight: depth + 'px',
-#         textAlign: 'center',
-#         backgroundColor: '#fc0',
-#         overflow: 'hidden',
-#         color: '#777'
-#     },
-#     transform: Transform.multiply(Transform.translate(0, height / 2, 0), Transform.multiply(Transform.rotateX(-Math.PI/2), Transform.rotateZ(Math.PI))),
-# });
-
-# // Left
-# addSurface({
-#     size: [depth, height - borderRadius*2],
-#     content: 'I\'m the Left! I\'m content',
-#     properties: {
-#         lineHeight: height + 'px',
-#         textAlign: 'center',
-#         backgroundColor: '#f0c',
-#         overflow: 'hidden',
-#         color: '#777'
-#     },
-#     transform: Transform.multiply(Transform.translate(-width / 2, 0, 0), Transform.rotateY(-Math.PI/2))
-# });
-
-# // Right
-# addSurface({
-#     size: [depth, height - borderRadius*2],
-#     content: 'I\'m always Right!',
-#     properties: {
-#         lineHeight: height + 'px',
-#         textAlign: 'center',
-#         backgroundColor: '#c0f',
-#         overflow: 'hidden',
-#         color: '#777'
-#     },
-#     transform: Transform.multiply(Transform.translate(width / 2, 0, 0), Transform.rotateY(Math.PI/2))
-# });

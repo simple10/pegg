@@ -1,12 +1,12 @@
 AppView = require 'views/AppView'
-helper = require '../helpers/Common'
+helper = require 'spec/helpers/Common'
 expect = helper.expect
 spy = helper.spy
 
 
 describe 'AppView', ->
   beforeEach ->
-    @view = new AppView()
+    @view = new AppView
 
   it 'example test', ->
     expect(@view.showPage).to.be.a 'function'

@@ -5,6 +5,25 @@ Pegg is a social mobile game where users ask and answer questions about each oth
 It's also our first app built on the Famo.us platform and the Parse BaaS.
 
 
+# Architecture
+
+Flux + Famo.us + Parse
+
+Pegg uses [Flux](http://facebook.github.io/react/docs/flux-overview.html) for the general
+code structure and app architecture. Flux is not a framework. It's just a design paradigm
+like MVC. Flux solves a lot of the code scalability and cascading problems of MVC by
+enforcing all data flow through a central dispatcher object. Data flows in only one direction
+which makes the code more maintainable and testable.
+
+Famo.us is the view layer.
+
+Parse is the data layer as well as the backend server.
+
+## Additional Resources
+
+* [Flux Overview](http://facebook.github.io/react/docs/flux-overview.html)
+* [Flux vs MVC](http://www.infoq.com/news/2014/05/facebook-mvc-flux)
+
 
 # Install
 
@@ -49,8 +68,20 @@ Webpack can handle CSS and other file types besides JavaScript. This allows for 
 completely self contained with CSS, fonts, and JavaScript dependencies declared at the top
 of the view file.
 
+## Versioning
+
+* [Semantic Versioning](http://semver.org/)
+
+## Git
+
+* [GitX rowanj fork](http://rowanj.github.io/gitx/) – use this version of gitx for osx
+* [Git Message Guidelines](http://www.mediawiki.org/wiki/Gerrit/Commit_message_guidelines)
+
 ## Style Guides
 
+pegg uses BEM (Block Element Modifier) syntax for CSS.
+
+* [BEM primer](http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/)
 * [AirBnB](https://github.com/airbnb/javascript)
 
 

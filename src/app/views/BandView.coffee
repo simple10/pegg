@@ -20,16 +20,11 @@ class BandView extends View
     super
     @createBackground()
     @createIcon()
-    #@createTitle()
 
   createBackground: ->
     @background = new Surface
       size: [@options.width, @options.height]
       content: "<div class='menu__item__title'>#{@options.title}</div>"
-      #content: @options.pageID
-      #properties:
-      #  lineHeight: @options.height + 'px'
-      #  textAlign: 'center'
       classes: ['menu__item', "menu__item--#{@options.pageID}"]
     @add @background
     @background.on 'click', =>
@@ -42,17 +37,6 @@ class BandView extends View
     @iconState = new StateModifier
         transform: Transform.translate 20, @options.height/2 - @options.iconSize/2, 0
     @add(@iconState).add @icon
-    #@add @icon
-
-  #createTitle: ->
-  #  @title = new Surface
-  #    size: [@options.width, @options.height]
-  #    content: @options.title
-  #    classes: ['menu__item__title']
-  #  @titleState = new StateModifier
-  #    transform: Transform.translate @options.width/2, @options.height/2, 0
-  #  @add(@titleState).add @title
-    #@add @title
 
   getID: ->
     @options.pageID

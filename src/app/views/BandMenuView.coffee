@@ -1,4 +1,4 @@
-require 'css/menu'
+require './menu'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
@@ -6,7 +6,7 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
 BandView = require 'views/BandView'
-_ = require('parse')._
+_ = require('Parse')._
 
 ###
 # Events:

@@ -1,5 +1,5 @@
 CardView = require 'views/CardView'
-expect = require('../helpers/Common').expect
+expect = require('spec/helpers/Common').expect
 
 
 describe 'CardView', ->

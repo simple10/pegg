@@ -2,6 +2,8 @@
 #
 # Main entry point of the app. Manages global views and events.
 
+# CSS
+require './app'
 
 View = require 'famous/core/View'
 Utility = require 'famous/utilities/Utility'
@@ -15,8 +17,6 @@ Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 
 # Models
-Questions = require 'collections/Questions'
-Question = require 'models/Question'
 Menu = require 'models/menu'
 Activity = require 'models/activity'
 
@@ -27,12 +27,6 @@ NewCardView = require 'views/NewCardView'
 TabMenuView = require 'views/TabMenuView'
 BandMenuView = require 'views/BandMenuView'
 PeggBoxView = require 'views/PeggBoxView'
-
-# EditQuestionView = require 'views/EditQuestionView'
-# ListQuestionsView = require 'views/ListQuestionsView'
-# QuestionView = require 'views/QuestionView'
-# ImageUploadView = require 'views/ImageUploadView'
-# ImageEditView = require 'views/ImageEditView'
 
 
 class AppView extends View
