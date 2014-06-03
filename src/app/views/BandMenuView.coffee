@@ -10,10 +10,10 @@ _ = require('parse')._
 
 ###
 # Events:
-#   selectMenuItem {{pageID}}
+#   selectMenuItem {{menuID}}
 #   toggleMenu
 ###
-class MenuView extends View
+class BandMenuView extends View
   @DEFAULT_OPTIONS:
     angle: -0.2
     width: 280
@@ -46,7 +46,7 @@ class MenuView extends View
     yOffset = @options.topOffset
     bands = [
       {pageID: 'peggboard', title: 'peggboard', iconUrl: 'images/peggboard_medium.png'}
-      {pageID: 'card', title: 'new card', iconUrl: 'images/newcard_medium.png'}
+      {pageID: 'newCard', title: 'new card', iconUrl: 'images/newcard_medium.png'}
       {pageID: 'decks', title: 'decks', iconUrl: 'images/decks_medium.png'}
       {pageID: 'settings', title: 'settings', iconUrl: 'images/settings_medium.png'}
     ]
@@ -116,4 +116,4 @@ class MenuView extends View
 
 
 
-module.exports = MenuView
+module.exports = BandMenuView
