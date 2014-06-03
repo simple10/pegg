@@ -1,4 +1,4 @@
-require './tabview'
+require './tabmenu'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
@@ -28,7 +28,7 @@ class TabView extends View
     @background = new Surface
       size: [@options.width, @options.height]
       #size: [null, null]
-      classes: ['menu__item', "menu__item--#{@options.pageID}"]
+      classes: ['tabmenu__item', "tabmenu__item--#{@options.pageID}"]
     @add @background
     @background.on 'click', =>
       @_eventOutput.emit 'selectMenuItem', @

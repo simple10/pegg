@@ -1,0 +1,22 @@
+@import "settings";
+
+.tabmenu__background {
+  background-color: $darkblue;
+}
+
+.tabmenu__item {
+  cursor: pointer;
+  text-align: left;
+}
+.tabmenu__item--friends {
+  background-color: $rainbow-red;
+}
+.tabmenu__item--decks {
+  background-color: $rainbow-yellow;
+}
+.tabmenu__item--peggbox {
+  background-color: $rainbow-green;
+}
+.tabmenu__item--activity {
+  background-color: $rainbow-blue;
+}

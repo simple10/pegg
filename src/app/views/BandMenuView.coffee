@@ -1,4 +1,4 @@
-require './bandview'
+require './bandmenu'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
@@ -35,7 +35,7 @@ class BandMenuView extends View
   initBackground: ->
     @background = new Surface
       size: [@options.width, undefined]
-      classes: ["menu__background"]
+      classes: ["bandmenu__background"]
     @backgroundState = new StateModifier
       transform: Transform.translate -@options.width, 0, 0
     @add(@backgroundState).add @background

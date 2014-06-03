@@ -1,3 +1,5 @@
+require './bandmenu'
+
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
@@ -24,8 +26,8 @@ class BandView extends View
   createBackground: ->
     @background = new Surface
       size: [@options.width, @options.height]
-      content: "<div class='menu__item__title'>#{@options.title}</div>"
-      classes: ['menu__item', "menu__item--#{@options.pageID}"]
+      content: "<div class='bandmenu__item__title'>#{@options.title}</div>"
+      classes: ['bandmenu__item', "bandmenu__item--#{@options.pageID}"]
     @add @background
     @background.on 'click', =>
       @_eventOutput.emit 'selectMenuItem', @

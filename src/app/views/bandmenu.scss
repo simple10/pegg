@@ -1,27 +1,27 @@
 @import "settings";
 
-.menu__background {
+.bandmenu__background {
   background-color: $darkblue;
 }
 
-.menu__item {
+.bandmenu__item {
   cursor: pointer;
   text-align: left;
 }
-.menu__item--friends {
+.bandmenu__item--friends {
   background-color: $rainbow-red;
 }
-.menu__item--decks {
+.bandmenu__item--decks {
   background-color: $rainbow-yellow;
 }
-.menu__item--peggbox {
+.bandmenu__item--peggbox {
   background-color: $rainbow-green;
 }
-.menu__item--activity {
+.bandmenu__item--activity {
   background-color: $rainbow-blue;
 }
 
-.menu__item__title {
+.bandmenu__item__title {
   color: $white;
   text-transform: uppercase;
   position: relative;
