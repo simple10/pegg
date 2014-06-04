@@ -1,10 +1,10 @@
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require('constants/PeggConstants').actions
 
-MenuActions =
-  selectMenuItem: (pageID) ->
+PeggBoxActions =
+  load: (page) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.MENU_SELECT
-      pageID: pageID
+      actionType: Constants.PEGGBOX_FETCH
+      page: page
 
-module.exports = MenuActions
+module.exports = PeggBoxActions
