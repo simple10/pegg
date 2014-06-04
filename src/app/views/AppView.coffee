@@ -24,6 +24,9 @@ Activity = require 'models/activity'
 AppStateStore = require 'stores/AppStateStore'
 PeggBoxStore = require 'stores/PeggBoxStore'
 
+# Actions
+PeggBoxActions = require 'actions/PeggBoxActions'
+
 # Menu
 Menu = require 'constants/menu'
 
@@ -50,6 +53,7 @@ class AppView extends View
 
   constructor: ->
     super
+    @initData()
     @initMenu()
     @initMain()
     @initPages()
@@ -58,6 +62,10 @@ class AppView extends View
 
   initListeners: ->
     AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
+    PeggBoxStore.on Constants.stores.CHANGE, @onPeggBoxChange
+
+  initData: ->
+    PeggBoxActions.load 0
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
@@ -93,7 +101,6 @@ class AppView extends View
     @pages.play = new CardView
     @pages.newCard = new NewCardView
     @pages.peggbox = new PeggBoxView
-      model: Activity
 
   initViewManager: ->
     @lightbox = new Lightbox
@@ -122,6 +129,9 @@ class AppView extends View
   onAppStoreChange: =>
     @showPage @getPage AppStateStore.getCurrentPageID()
     @closeMenu()
+
+  onPeggBoxChange: =>
+    @pages.peggbox.load(PeggBoxStore.getNextSet())
 
   selectTabMenuItem: (pageID) =>
     @showPage @getPage pageID

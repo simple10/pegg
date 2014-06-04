@@ -4,8 +4,8 @@
 module.exports =
   # Parse client credentials
   parse:
-    appId: 'sMSeqS1EP23z0vo3TgZKd38MBiP9qzrvnv0OHMk8'
-    jsKey: 'XrA5EweJyzPmhxQZY6DqE8qotDmAk13s5JKhkyql'
+    appId: '08asqa4QvUyNIDTIl3BS70CLcKJGoh2mI1MXwJEf'
+    jsKey: 'G19GjSAlnMOvTjcDqE6KxxKHsMnygHmbsfDYg8gm'
 
   facebook:
     appId: '1410524409215955'

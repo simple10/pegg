@@ -13,7 +13,8 @@ describe 'PeggBoxView', ->
     ]
 
     @view = new PeggBoxView
-      model: @model
+
+    @view.load(@model)
 
   it 'should have items', ->
     expect(@view.items).to.have.length(2)

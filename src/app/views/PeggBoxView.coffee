@@ -15,10 +15,11 @@ class PeggBoxView extends View
     @init()
 
   init: ->
-    @items = @options.model
-    @build()
+    @items = []
 
-  build: ->
+  load: (data) ->
+
+    @items = data
 
     surfaces = []
     scrollview = new Scrollview

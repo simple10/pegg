@@ -20,10 +20,10 @@ class ListItemView extends View
 
   build: ->
 
-    pic = @options.pic
-    message = @options.message
+    #pic = @options.pic
+    message = @options.id
     content = "
-      <h2><img src='#{pic}' />#{message}</h2>
+      <h2>#{message}</h2>
     "
 
     item = new Surface

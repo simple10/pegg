@@ -5,29 +5,30 @@ Parse = require 'Parse'
 
 
 class PeggBoxStore extends EventEmitter
-  _currentBox: null
+  _nextSet: null
 
-  fetchParse: (pagination) ->
+  fetchParse: (page) ->
+    debugger
     Sets = Parse.Object.extend("Sets")
     query = new Parse.Query(Sets)
     query.exists "title"
     query.find
-      success: (results) ->
-        @_currentBox = results
-        console.log "Successfully retrieved " + results.length + " scores."
-
+      success: (results) =>
+        @_nextSet = results
+        @emit Constants.stores.CHANGE
+        console.log results
         i = 0
         while i < results.length
           object = results[i]
-          console.log object.id
+          console.log object
           i++
         return
       error: (error) ->
         console.log "Error: " + error.code + " " + error.message
         return
 
-  getPeggBox: ->
-    @_currentBox
+  getNextSet: ->
+    @_nextSet
 
 peggbox = new PeggBoxStore
 
