@@ -7,7 +7,7 @@ Transform = require 'famous/core/Transform'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 
 
-class TabView extends View
+class TabMenuItemView extends View
   @DEFAULT_OPTIONS:
     pageID: null
     width: 100
@@ -55,4 +55,4 @@ class TabView extends View
   getID: ->
     @options.pageID
 
-module.exports = TabView
+module.exports = TabMenuItemView

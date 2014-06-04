@@ -7,7 +7,7 @@ Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
 _ = require('Parse')._
 
-TabView = require 'views/TabView'
+TabMenuItemView = require 'views/TabMenuItemView'
 
 
 ###
@@ -48,7 +48,7 @@ class TabMenuView extends View
 
 
   addTab: (params) ->
-    tab = new TabView
+    tab = new TabMenuItemView
       pageID: params.pageID
       title: params.title
       iconUrl: params.icon
