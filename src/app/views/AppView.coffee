@@ -17,12 +17,15 @@ Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 Constants = require 'constants/PeggConstants'
 
+# TODO: replace models with Flux pattern
+Activity = require 'models/activity'
+
 # Stores
 AppStateStore = require 'stores/AppStateStore'
+PeggBoxStore = require 'stores/PeggBoxStore'
 
-# Models
-Menu = require 'config/menu'
-Activity = require 'models/activity'
+# Menu
+Menu = require 'constants/menu'
 
 # Views
 HeaderView = require 'views/HeaderView'
@@ -132,7 +135,6 @@ class AppView extends View
       =>
         @menuOpen = false
     )
-    # TODO: animate menu into screen - moved to MenuView
     @menu.hide()
 
   openMenu: ->
@@ -142,7 +144,6 @@ class AppView extends View
       =>
         @menuOpen = true
     )
-    # TODO: animate menu offscreen to hide menu background - moved to MenuView
     @menu.show()
 
 
