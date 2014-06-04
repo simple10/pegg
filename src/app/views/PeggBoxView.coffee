@@ -11,8 +11,7 @@ class PeggBoxView extends View
     model: null
 
   constructor: (options) ->
-    #options = _.defaults options, @constructor.DEFAULT_OPTIONS
-    super options
+    super
     @init()
 
   init: ->

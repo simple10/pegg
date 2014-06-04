@@ -12,7 +12,7 @@ class ListItemView extends View
     pic: null
 
   constructor: (options) ->
-    super options
+    super
     @init()
 
   init: ->
