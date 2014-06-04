@@ -51,7 +51,7 @@ class AppView extends View
     @initMain()
     @initPages()
     @initListeners()
-    @showPage @getPage 'play'
+    @onAppStoreChange()
 
   initListeners: ->
     AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
@@ -60,7 +60,6 @@ class AppView extends View
     @menu = new BandMenuView @options.menu
     @menu.resetBands()
     @menu.on 'toggleMenu', @toggleMenu
-    # @menu.on 'selectMenuItem', @selectMenuItem
     @menuState = new StateModifier
     @add(@menuState).add @menu
 
@@ -117,7 +116,7 @@ class AppView extends View
     else
       @openMenu()
 
-  onAppStoreChange: (event) =>
+  onAppStoreChange: =>
     @showPage @getPage AppStateStore.getCurrentPageID()
     @closeMenu()
 
