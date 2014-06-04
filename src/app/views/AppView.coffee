@@ -17,9 +17,6 @@ Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 Constants = require 'constants/PeggConstants'
 
-# TODO: replace models with Flux pattern
-Activity = require 'models/activity'
-
 # Stores
 AppStateStore = require 'stores/AppStateStore'
 PeggBoxStore = require 'stores/PeggBoxStore'
@@ -32,12 +29,11 @@ Menu = require 'constants/menu'
 
 # Views
 HeaderView = require 'views/HeaderView'
-CardView = require 'views/CardView'
-NewCardView = require 'views/NewCardView'
 TabMenuView = require 'views/TabMenuView'
 BandMenuView = require 'views/BandMenuView'
 PeggBoxView = require 'views/PeggBoxView'
-
+PlayView = require 'views/PlayView'
+NewCardView = require 'views/NewCardView'
 
 class AppView extends View
   @DEFAULT_OPTIONS:
@@ -98,9 +94,9 @@ class AppView extends View
 
   initPages: ->
     # Pages correspond to menuID in MenuView
-    @pages.play = new CardView
     @pages.newCard = new NewCardView
     @pages.peggbox = new PeggBoxView
+    @pages.play = new PlayView
 
   initViewManager: ->
     @lightbox = new Lightbox

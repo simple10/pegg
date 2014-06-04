@@ -8,7 +8,7 @@ ListItemView = require 'views/ListItemView'
 
 class PeggBoxView extends View
   @DEFAULT_OPTIONS:
-    model: null
+    itemDensity: null
 
   constructor: (options) ->
     super

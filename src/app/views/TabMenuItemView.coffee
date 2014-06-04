@@ -21,7 +21,7 @@ class TabMenuItemView extends View
   constructor: ->
     super
     @createBackground()
-    @createIcon()
+    #@createIcon()
     #@createTitle()
 
   createBackground: ->

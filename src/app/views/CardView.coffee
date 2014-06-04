@@ -21,11 +21,12 @@ class CardView extends View
     duration: 10500
     easing: Easing.outElastic
 
-  constructor: ->
+  constructor: (card, options) ->
     super
-    @init()
+    @init(card)
 
-  init: ->
+  init: (card) ->
+    console.log card
     width = @options.width
     height = @options.height
     depth = @options.depth
@@ -33,10 +34,13 @@ class CardView extends View
     @state = new StateModifer
     @mainNode = @add @state
 
+    question = card.question
+    answer = card.answer
+
     # Front
     @addSurface
       size: [ width, height ]
-      content: "<h2>Front of card.</h2>"
+      content: "<h2>#{question}</h2>"
       classes: ['card__front']
       properties:
         borderRadius: "#{@options.borderRadius}px"
@@ -75,7 +79,7 @@ class CardView extends View
     # Back
     @addSurface
       size: [ width, height ]
-      content: "<h3>Back of card</h3>"
+      content: "<h3>#{answer}</h3>"
       classes: ['card__back']
       properties:
         borderRadius: "#{@options.borderRadius}px"
@@ -104,6 +108,7 @@ class CardView extends View
     modifier = new Modifier
       transform: params.transform
     surface.on 'click', @flip
+    surface.pipe @_eventOutput
     @mainNode.add(modifier).add surface
 
   flip: (side) =>
