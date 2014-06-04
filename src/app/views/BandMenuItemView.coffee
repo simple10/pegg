@@ -8,7 +8,7 @@ ImageSurface = require 'famous/surfaces/ImageSurface'
 MenuActions = require 'actions/MenuActions'
 
 
-class BandView extends View
+class BandMenuItemView extends View
   @DEFAULT_OPTIONS:
     pageID: null
     width: 280
@@ -44,4 +44,4 @@ class BandView extends View
   getID: ->
     @options.pageID
 
-module.exports = BandView
+module.exports = BandMenuItemView
