@@ -1,13 +1,10 @@
 require './peggbox.scss'
 
 View = require 'famous/core/View'
-Modifier  = require 'famous/core/Modifier'
-Transform = require 'famous/core/Transform'
-Surface = require 'famous/core/Surface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Scrollview = require 'famous/views/Scrollview'
-RenderNode = require 'famous/core/RenderNode'
-StateModifier = require 'famous/modifiers/StateModifier'
+
+ListItemView = require 'views/ListItemView'
 
 class PeggBoxView extends View
   @DEFAULT_OPTIONS:
@@ -30,36 +27,19 @@ class PeggBoxView extends View
 
     i = 0
     while i < @items.length
-      pic = @items[i].pic
-      message = @items[i].message
-      content = "
-        <h2><img src='#{pic}' />#{message}</h2>
-      "
-
-      node = new RenderNode
-
-      item = new Surface
-        size: [undefined, 50]
-        content: content
-        classes: ['question']
-
-      modifier = new StateModifier
-        origin: [0, 0]
-        align: [0.25, 0]
-
-      node.add(modifier).add item
-
+      item = new ListItemView @items[i]
       item.pipe scrollview
-      surfaces.push node
+      surfaces.push item
       i++
 
     container = new ContainerSurface
-      size: [null, null]
+      size: [undefined, undefined]
       properties:
         overflow: "hidden"
 
+
     container.add scrollview
-    @add scrollview
+    @add container
 
 
 
