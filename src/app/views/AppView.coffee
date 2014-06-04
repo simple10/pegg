@@ -3,7 +3,7 @@
 # Main entry point of the app. Manages global views and events.
 
 # CSS
-require './app'
+require './app.scss'
 
 View = require 'famous/core/View'
 Utility = require 'famous/utilities/Utility'
@@ -15,6 +15,10 @@ Modifier = require 'famous/core/Modifier'
 StateModifier = require 'famous/modifiers/StateModifier'
 Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
+Constants = require 'constants/PeggConstants'
+
+# Stores
+AppStateStore = require 'stores/AppStateStore'
 
 # Models
 Menu = require 'config/menu'
@@ -46,13 +50,16 @@ class AppView extends View
     @initMenu()
     @initMain()
     @initPages()
-    @showPage @getPage 'play'
+    @initListeners()
+    @onAppStoreChange()
+
+  initListeners: ->
+    AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
     @menu.resetBands()
     @menu.on 'toggleMenu', @toggleMenu
-    @menu.on 'selectMenuItem', @selectMenuItem
     @menuState = new StateModifier
     @add(@menuState).add @menu
 
@@ -109,8 +116,8 @@ class AppView extends View
     else
       @openMenu()
 
-  selectMenuItem: (pageID) =>
-    @showPage @getPage pageID
+  onAppStoreChange: =>
+    @showPage @getPage AppStateStore.getCurrentPageID()
     @closeMenu()
 
   selectTabMenuItem: (pageID) =>

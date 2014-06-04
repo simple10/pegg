@@ -1,4 +1,4 @@
-require './bandmenu'
+require './bandview'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
@@ -49,8 +49,6 @@ class BandMenuView extends View
     i = 0
     while i < bands.length
       band = new BandView bands[i]
-      band.on 'selectMenuItem', (menuItem) =>
-        @_eventOutput.emit 'selectMenuItem', menuItem.getID()
       bandModifier = new StateModifier
         transform: Transform.translate 0, yOffset, 0
       @bandModifiers.push bandModifier

@@ -5,6 +5,7 @@ Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 ImageSurface = require 'famous/surfaces/ImageSurface'
+MenuActions = require 'actions/MenuActions'
 
 
 class BandView extends View
@@ -30,7 +31,7 @@ class BandView extends View
       classes: ['bandmenu__item', "bandmenu__item--#{@options.pageID}"]
     @add @background
     @background.on 'click', =>
-      @_eventOutput.emit 'selectMenuItem', @
+      MenuActions.selectMenuItem @getID()
 
   createIcon: ->
     @icon = new ImageSurface
