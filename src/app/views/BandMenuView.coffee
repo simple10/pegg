@@ -1,11 +1,11 @@
-require './bandview'
+require './bandmenu.scss'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
-BandView = require 'views/BandView'
+BandMenuItemView = require 'views/BandMenuItemView'
 _ = require('Parse')._
 
 ###
@@ -48,7 +48,7 @@ class BandMenuView extends View
     bands = @options.model
     i = 0
     while i < bands.length
-      band = new BandView bands[i]
+      band = new BandMenuItemView bands[i]
       bandModifier = new StateModifier
         transform: Transform.translate 0, yOffset, 0
       @bandModifiers.push bandModifier
