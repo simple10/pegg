@@ -34,7 +34,7 @@ class ListItemView extends View
     item.on 'click', =>
       @_eventOutput.emit 'selectItem', @
 
-    @.pipe item
+    item.pipe @_eventOutput
 
     itemModifier = new StateModifier
       origin: [0, 0]
