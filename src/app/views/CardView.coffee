@@ -11,22 +11,23 @@ StateModifer = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Utility = require 'famous/utilities/Utility'
 Easing = require 'famous/transitions/Easing'
+_ = require('Parse')._
 
 class CardView extends View
   @DEFAULT_OPTIONS:
-    width: 200
-    height: 300
+    width: 300
+    height: 400
     depth: 5
     borderRadius: 30
-    duration: 10500
-    easing: Easing.outElastic
+    duration: 2000
+    easing: Easing.outCubic
 
   constructor: (card, options) ->
-    super
+    options = _.defaults options, @constructor.DEFAULT_OPTIONS
+    super options
     @init(card)
 
   init: (card) ->
-    console.log card
     width = @options.width
     height = @options.height
     depth = @options.depth
@@ -34,13 +35,18 @@ class CardView extends View
     @state = new StateModifer
     @mainNode = @add @state
 
-    question = card.question
-    answer = card.answer
+    question = card.get "title"
+    image = card.get "image1"
+    answer = card.get "caption1"
+
+    options = '<p>' + card.get("caption1") + '</p>'
+    options += '<p>' + card.get("caption2") + '</p>'
+    options += '<p>' + card.get("caption3") + '</p>'
 
     # Front
     @addSurface
       size: [ width, height ]
-      content: "<h2>#{question}</h2>"
+      content: "<h2>#{question}</h2>#{options}"
       classes: ['card__front']
       properties:
         borderRadius: "#{@options.borderRadius}px"
@@ -58,31 +64,13 @@ class CardView extends View
           Transform.rotateX Math.PI
         )
       )
-    # Shim left
-    ###@addSurface
-      size: [depth-2, height]
-      classes: ['card__left']
-      content: 'Left'
-      transform: Transform.multiply(
-        Transform.translate -width/2+@options.borderRadius, 0, 1
-        Transform.rotateY -Math.PI/2
-      )
-    # Shim right
-    @addSurface
-      size: [depth-2, height]
-      classes: ['card__right']
-      content: 'Right'
-      transform: Transform.multiply(
-        Transform.translate width/2-@options.borderRadius, 0, 1
-        Transform.rotateY Math.PI/2
-      )###
-    # Back
     @addSurface
       size: [ width, height ]
-      content: "<h3>#{answer}</h3>"
+      content: "<img width='#{width-50}' src='#{image}'/><h3>#{answer}</h3>"
       classes: ['card__back']
       properties:
         borderRadius: "#{@options.borderRadius}px"
+        padding: "10px"
       transform: Transform.multiply(
         Transform.translate(0, 0, -depth/2)
         Transform.multiply(
@@ -127,4 +115,5 @@ class CardView extends View
 
 
 module.exports = CardView
+
 
