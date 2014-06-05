@@ -1,10 +1,10 @@
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require('constants/PeggConstants').actions
 
-PeggBoxActions =
-  load: (page) ->
+PlayActions =
+  load: (game) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.PEGGBOX_FETCH
-      page: page
+      actionType: Constants.GAME_FETCH
+      gameID: game
 
-module.exports = PeggBoxActions
+module.exports = PlayActions
