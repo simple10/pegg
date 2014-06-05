@@ -8,6 +8,9 @@
   cursor: pointer;
   text-align: left;
 }
+.tabmenu__item--play {
+  background-color: $rainbow-red;
+}
 .tabmenu__item--friends {
   background-color: $rainbow-red;
 }

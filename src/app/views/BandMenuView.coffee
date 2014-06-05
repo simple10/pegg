@@ -19,7 +19,7 @@ class BandMenuView extends View
     width: 280
     topOffset: 0
     band:
-      offset: 100
+      offset: window.innerHeight / 4
       staggerDelay: 35
       transition:
         duration: 400
@@ -39,8 +39,6 @@ class BandMenuView extends View
     @backgroundState = new StateModifier
       transform: Transform.translate -@options.width, 0, 0
     @add(@backgroundState).add @background
-    @background.on 'click', =>
-      @_eventOutput.emit 'toggleMenu'
 
   initBands: ->
     @bandModifiers = []

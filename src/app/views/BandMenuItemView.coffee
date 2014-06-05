@@ -12,7 +12,7 @@ class BandMenuItemView extends View
   @DEFAULT_OPTIONS:
     pageID: null
     width: 280
-    height: 100
+    height: window.innerHeight / 4
     angle: -0.2
     iconUrl: 'images/mark_tiny.png'
     title: 'pegg'
@@ -37,6 +37,7 @@ class BandMenuItemView extends View
     @icon = new ImageSurface
       size: [@options.iconSize, @options.iconSize]
       content: @options.iconUrl
+      classes: ['bandmenu__item__logo']
     @iconState = new StateModifier
         transform: Transform.translate 20, @options.height/2 - @options.iconSize/2, 0
     @add(@iconState).add @icon

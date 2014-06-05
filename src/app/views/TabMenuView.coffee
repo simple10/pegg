@@ -17,7 +17,7 @@ TabMenuItemView = require 'views/TabMenuItemView'
 class TabMenuView extends View
   @DEFAULT_OPTIONS:
     tab:
-      height: 100
+      height: 60
       staggerDelay: 35
       transition:
         duration: 400
@@ -55,8 +55,6 @@ class TabMenuView extends View
       width: params.width
       height: params.height
       xOffset: params.xOffset
-    tab.on 'selectMenuItem', (menuItem) =>
-      @_eventOutput.emit 'selectTabMenuItem', menuItem.getID()
     tabModifier = new StateModifier
       origin: [0, 0]
       align: [params.xOffset, 0]
@@ -88,5 +86,11 @@ class TabMenuView extends View
       ).bind(this, i), i * delay
       i++
 
+  resetTabs: ->
+    transition = @options.tab.transition
+    i = 0
+    while i < @tabModifiers.length
+      @tabModifiers[i].setTransform Transform.translate(0, 0, 0), transition
+      i++
 
 module.exports = TabMenuView

@@ -5,13 +5,13 @@ Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 ImageSurface = require 'famous/surfaces/ImageSurface'
-
+MenuActions = require 'actions/MenuActions'
 
 class TabMenuItemView extends View
   @DEFAULT_OPTIONS:
     pageID: null
-    width: 100
-    height: 100
+    width: null
+    height: null
     angle: -0.2
     iconUrl: 'images/mark_tiny.png'
     title: 'pegg'
@@ -31,7 +31,7 @@ class TabMenuItemView extends View
       classes: ['tabmenu__item', "tabmenu__item--#{@options.pageID}"]
     @add @background
     @background.on 'click', =>
-      @_eventOutput.emit 'selectMenuItem', @
+      MenuActions.selectMenuItem @getID()
 
   createIcon: ->
     @icon = new ImageSurface
