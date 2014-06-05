@@ -20,9 +20,11 @@ Constants = require 'constants/PeggConstants'
 # Stores
 AppStateStore = require 'stores/AppStateStore'
 PeggBoxStore = require 'stores/PeggBoxStore'
+PlayStore = require 'stores/PlayStore'
 
 # Actions
 PeggBoxActions = require 'actions/PeggBoxActions'
+PlayActions = require 'actions/PlayActions'
 
 # Menu
 Menu = require 'constants/menu'
@@ -59,9 +61,11 @@ class AppView extends View
   initListeners: ->
     AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
     PeggBoxStore.on Constants.stores.CHANGE, @onPeggBoxChange
+    PlayStore.on Constants.stores.CHANGE, @onPlayChange
 
   initData: ->
     PeggBoxActions.load 0
+    PlayActions.load 0
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
@@ -73,7 +77,7 @@ class AppView extends View
   initMain: ->
     @layout = new HeaderFooterLayout
       headerSize: 60
-      footerSize: 100
+      footerSize: 60
     @layout.header.add @initHeader()
     @layout.footer.add @initFooter()
     @layout.content.add @initViewManager()
@@ -83,8 +87,7 @@ class AppView extends View
 
   initFooter: ->
     @footer = new TabMenuView @options.menu
-    @footer.showTabs()
-    @footer.on 'selectTabMenuItem', @selectTabMenuItem
+    @footer.resetTabs()
     @footer
 
   initHeader: ->
@@ -93,7 +96,7 @@ class AppView extends View
     @header
 
   initPages: ->
-    # Pages correspond to menuID in MenuView
+    # Pages correspond to pageID in constants/menu.coffee
     @pages.newCard = new NewCardView
     @pages.peggbox = new PeggBoxView
     @pages.play = new PlayView
@@ -124,15 +127,15 @@ class AppView extends View
 
   onAppStoreChange: =>
     @showPage @getPage AppStateStore.getCurrentPageID()
+    @footer.hideTabs()
+    @footer.showTabs()
     @closeMenu()
 
   onPeggBoxChange: =>
-    @pages.peggbox.load(PeggBoxStore.getNextSet())
+    @pages.peggbox.load PeggBoxStore.getNextSet()
 
-  selectTabMenuItem: (pageID) =>
-    @showPage @getPage pageID
-    @footer.hideTabs()
-    @footer.showTabs()
+  onPlayChange: =>
+    @pages.play.load PlayStore.getGame()
 
   closeMenu: ->
     @layoutState.setTransform(
