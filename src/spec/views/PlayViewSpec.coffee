@@ -15,7 +15,7 @@ describe 'PlayView', ->
 
 
 
-  xit 'should have an empty set of cards', ->
+  it 'should have an empty set of cards', ->
     expect(@view.cards).to.exist
     expect(@view.cards).to.have.length(0)
 
