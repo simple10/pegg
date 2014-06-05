@@ -10,7 +10,7 @@ class PeggBoxView extends View
   @DEFAULT_OPTIONS:
     itemDensity: null
 
-  constructor: (options) ->
+  constructor: () ->
     super
     @init()
 
@@ -36,7 +36,6 @@ class PeggBoxView extends View
       size: [undefined, undefined]
       properties:
         overflow: "hidden"
-
 
     container.add scrollview
     @add container
