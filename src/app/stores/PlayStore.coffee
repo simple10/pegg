@@ -4,38 +4,36 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 
 
-class PeggBoxStore extends EventEmitter
+class PlayStore extends EventEmitter
   _nextSet: null
 
-  fetchParse: (page) ->
-    # TODO: implement pagination
+  fetchGame: (gameID) ->
     Sets = Parse.Object.extend("Sets")
     query = new Parse.Query(Sets)
     query.exists "title"
     query.find
       success: (results) =>
-        @_nextSet = results
-        # TODO: process the results from Parse
+        @_game = results
         @emit Constants.stores.CHANGE
         return
       error: (error) ->
         console.log "Error: " + error.code + " " + error.message
         return
 
-  getNextSet: ->
-    @_nextSet
+  getGame: ->
+    @_game
 
-peggbox = new PeggBoxStore
+play = new PlayStore
 
 
 # Register callback with AppDispatcher to be notified of events
 AppDispatcher.register (payload) ->
   action = payload.action
 
-  # Pay attention to events relevant to PeggBoxStore
+  # Pay attention to events relevant to PlayStore
   switch action.actionType
-    when Constants.actions.PEGGBOX_FETCH
-      peggbox.fetchParse action.page
+    when Constants.actions.GAME_FETCH
+      play.fetchGame action.gameID
 
 
-module.exports = peggbox
+module.exports = play
