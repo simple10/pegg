@@ -25,6 +25,7 @@ class PlayView extends View
     scrollview = new Scrollview
       direction: Utility.Direction.X
       paginated: true
+      margin: 10000
     scrollview.sequenceFrom surfaces
 
     i = 0

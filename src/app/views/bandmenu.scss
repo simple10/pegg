@@ -4,14 +4,13 @@
   background-color: $darkblue;
   z-index: 100;
 }
-.bandmenu__item--play {
-  background-color: $rainbow-red;
-  z-index: 101;
-}
 .bandmenu__item {
   cursor: pointer;
   text-align: left;
   z-index: 101;
+}
+.bandmenu__item--play {
+  background-color: $rainbow-red;
 }
 .bandmenu__item--friends {
   background-color: $rainbow-red;

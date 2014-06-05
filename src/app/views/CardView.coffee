@@ -15,11 +15,11 @@ _ = require('Parse')._
 
 class CardView extends View
   @DEFAULT_OPTIONS:
-    width: 300
-    height: 400
+    width: 290
+    height: 350
     depth: 5
-    borderRadius: 30
-    duration: 2000
+    borderRadius: 10
+    duration: 1500
     easing: Easing.outCubic
 
   constructor: (card, options) ->

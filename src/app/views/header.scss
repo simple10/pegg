@@ -7,6 +7,25 @@
   text-align: center;
 }
 
+.header__background--play {
+  background-color: $rainbow-red;
+}
+
+.header__background--peggbox {
+  background-color: $rainbow-green;
+}
+
+.header__background--decks {
+  background-color: $rainbow-yellow;
+}
+
+.header__background--friends {
+  background-color: $rainbow-red;
+}
+.header__background--activity {
+  background-color: $rainbow-blue;
+}
+
 .header__title {
   font-weight: bold;
   font-size: 30px;

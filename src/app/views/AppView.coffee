@@ -105,12 +105,12 @@ class AppView extends View
     @lightbox = new Lightbox
       inOpacity: 1
       outOpacity: 0
-      inOrigin: [0, 0]
-      outOrigin: [1, 1]
+      inOrigin: [1, 1]
+      outOrigin: [0, 0]
       showOrigin: [0.5, 0.5]
-      inTransform: Transform.thenMove(Transform.rotateX(1), [0, -300, -300])
-      outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, window.innerHeight, -1000])
-      inTransition: { duration: 650, curve: 'easeOut' }
+      inTransform: Transform.thenMove(Transform.rotateX(1), [0, window.innerHeight, -300])
+      outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, -window.innerHeight, -1000])
+      inTransition: { duration: 850, curve: Easing.outElastic }
       outTransition: { duration: 500, curve: Easing.inCubic }
 
   showPage: (page) ->
@@ -126,7 +126,9 @@ class AppView extends View
       @openMenu()
 
   onAppStoreChange: =>
-    @showPage @getPage AppStateStore.getCurrentPageID()
+    pageID = AppStateStore.getCurrentPageID()
+    @showPage @getPage pageID
+    @header.change pageID
     @footer.hideTabs()
     @footer.showTabs()
     @closeMenu()

@@ -16,25 +16,21 @@ class HeaderView extends View
 
   constructor: ->
     super
-    @build()
+    @build("Pegg")
     @initEvents()
 
   # Build view
-  build: ->
+  build: (page) ->
     @background = new Surface
-      classes: ["#{@cssPrefix}__background"]
-
+      classes: ["#{@cssPrefix}__background--#{page}"]
     @logo = new ImageSurface
       size: [55, 40]
       classes: ["#{@cssPrefix}__logo"]
       content: 'images/mark_tiny.png'
-
     @title = new Surface
-      content: @title
+      content: page
       classes: ["#{@cssPrefix}__title"]
-
     @add @background
-
     @add new Modifier
       origin: [0, 0]
       transform: Transform.multiply(
@@ -42,7 +38,6 @@ class HeaderView extends View
         Transform.translate 10, 10
       )
     .add @logo
-
     @add new Modifier
       transform: Transform.translate 0, 10
     .add @title
@@ -50,5 +45,10 @@ class HeaderView extends View
   initEvents: ->
     @logo.on 'click', =>
       @_eventOutput.emit 'toggleMenu'
+
+  change: (page) ->
+    @background.setClasses(["#{@cssPrefix}__background--#{page}"])
+    @title.setContent page
+
 
 module.exports = HeaderView

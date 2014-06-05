@@ -10,6 +10,7 @@ class ListItemView extends View
     itemID: null
     message: null
     pic: null
+    height: 100
 
   constructor: (options) ->
     super
@@ -27,8 +28,10 @@ class ListItemView extends View
     "
 
     item = new Surface
-      size: [window.innerWidth, 50]
+      size: [window.innerWidth, @options.height]
       content: content
+      properties:
+        width: window.innerWidth
       classes: ['peggbox__item']
 
     item.on 'click', =>

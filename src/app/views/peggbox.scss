@@ -6,12 +6,16 @@
 }
 
 .peggbox__item {
-  background-color: $cloud-lightblue;
+  color: $white;
+  border-bottom: 1px solid $cloud-lightblue;
+
 }
 
 
 .peggbox__item span {
   font-size: 16px;
-  overflow: hidden;
-  padding: 10px;
+  padding: 0px 10px;
+  display: inline-block;
+  vertical-align: center;
+  line-height: 20px;
 }
