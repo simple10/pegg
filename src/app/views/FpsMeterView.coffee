@@ -26,12 +26,12 @@ class FpsMeter extends View
     @initTime()
 
     @surface = new Surface
-      size: [100, 20]
+      size: [60, 20]
       classes: ['fpsmeter']
       content: ''
 
     @add new Modifier
-      origin: [1, 1]
+      origin: [1, 0]
       transform: Transform.inFront
     .add @surface
 

@@ -17,7 +17,7 @@ class CardView extends View
   @DEFAULT_OPTIONS:
     width: 290
     height: 350
-    depth: 5
+    depth: 8
     borderRadius: 10
     duration: 1500
     easing: Easing.outCubic
@@ -64,6 +64,7 @@ class CardView extends View
           Transform.rotateX Math.PI
         )
       )
+    # Back
     @addSurface
       size: [ width, height ]
       content: "<img width='#{width-50}' src='#{image}'/><h3>#{answer}</h3>"

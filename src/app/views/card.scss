@@ -2,9 +2,18 @@
 @import "mixins";
 
 .card__front, .card__back, .card__left, .card__right {
-  text-align: center;
   cursor: pointer;
-  line-height: 50px;
+  padding: 20px;
+}
+
+.card__front h2 {
+  font-size: 25px;
+  line-height: 35px;
+  text-align: center;
+}
+
+.card__front p {
+
 }
 
 .card__front {
@@ -15,15 +24,8 @@
   background-color: $white;
 }
 
-.card__left {
-  background-color: $rainbow-red;
-}
-
-.card__right {
-  background-color: $rainbow-green;
-}
-
 .card__back {
+  text-align: center;
   background-color: $rainbow-yellow;
 }
 
