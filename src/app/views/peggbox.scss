@@ -4,3 +4,14 @@
 .peggbox__background {
   background-color: $darkblue;
 }
+
+.peggbox__item {
+  background-color: $cloud-lightblue;
+}
+
+
+.peggbox__item span {
+  font-size: 16px;
+  overflow: hidden;
+  padding: 10px;
+}

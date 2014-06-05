@@ -21,13 +21,13 @@ class ListItemView extends View
   build: ->
 
     #pic = @options.pic
-    message = @options.id
+    message = @options.get "title"
     content = "
-      <h2>#{message}</h2>
+      <span>#{message}</span>
     "
 
     item = new Surface
-      size: [undefined, 50]
+      size: [window.innerWidth, 50]
       content: content
       classes: ['peggbox__item']
 
@@ -37,8 +37,6 @@ class ListItemView extends View
     item.pipe @_eventOutput
 
     itemModifier = new StateModifier
-      origin: [0, 0]
-      align: [0.25, 0]
 
     @add(itemModifier).add item
 
