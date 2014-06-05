@@ -16,7 +16,7 @@ class HeaderView extends View
 
   constructor: ->
     super
-    @build("Pegg")
+    @build(@options.title)
     @initEvents()
 
   # Build view

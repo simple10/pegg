@@ -45,7 +45,7 @@ class AppView extends View
         duration: 300
         curve: 'easeOut'
       model: Menu
-  # pages keys correspond to pageID in MenuView
+  # Pages correspond to pageID in constants/menu.coffee
   pages: {}
   menuOpen: false
 
@@ -99,7 +99,7 @@ class AppView extends View
     # Pages correspond to pageID in constants/menu.coffee
     @pages.newCard = new NewCardView
     @pages.peggbox = new PeggBoxView
-    @pages.play = new PlayView
+    @pages.pegg = new PlayView
 
   initViewManager: ->
     @lightbox = new Lightbox
@@ -110,7 +110,7 @@ class AppView extends View
       showOrigin: [0.5, 0.5]
       inTransform: Transform.thenMove(Transform.rotateX(1), [0, window.innerHeight, -300])
       outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, -window.innerHeight, -1000])
-      inTransition: { duration: 850, curve: Easing.outElastic }
+      inTransition: { duration: 1000, curve: Easing.outElastic }
       outTransition: { duration: 500, curve: Easing.inCubic }
 
   showPage: (page) ->
@@ -137,7 +137,7 @@ class AppView extends View
     @pages.peggbox.load PeggBoxStore.getNextSet()
 
   onPlayChange: =>
-    @pages.play.load PlayStore.getGame()
+    @pages.pegg.load PlayStore.getGame()
 
   closeMenu: ->
     @layoutState.setTransform(
