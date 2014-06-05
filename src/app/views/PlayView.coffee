@@ -35,9 +35,8 @@ class PlayView extends View
       surfaces.push card
       i++
 
-
-    #node.add(modifier).add scrollview
-    #@add node
+    #scrollview.outputFrom (offset) ->
+    #  Transform.translate -offset/100, -offset/100, offset
 
     @add scrollview
 
