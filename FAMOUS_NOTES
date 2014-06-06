@@ -13,3 +13,5 @@ performance tweak: trim down render tree size
 if you don't set perspective, rotate might look funny
 you can change the max framerate
 
+Flux- photons per area /sec
+LOOK UP
