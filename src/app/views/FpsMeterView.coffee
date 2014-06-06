@@ -1,4 +1,4 @@
-require './fpsmeter.scss'
+require './scss/fpsmeter.scss'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'

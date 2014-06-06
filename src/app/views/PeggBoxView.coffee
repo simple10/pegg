@@ -1,4 +1,4 @@
-require './peggbox.scss'
+require './scss/peggbox.scss'
 
 View = require 'famous/core/View'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'

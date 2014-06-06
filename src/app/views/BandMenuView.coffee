@@ -1,4 +1,4 @@
-require './bandmenu.scss'
+require './scss/bandmenu.scss'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'

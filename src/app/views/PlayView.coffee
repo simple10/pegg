@@ -1,4 +1,4 @@
-require './play.scss'
+require './scss/play.scss'
 
 View = require 'famous/core/View'
 StateModifier = require 'famous/modifiers/StateModifier'
