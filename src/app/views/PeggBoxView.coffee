@@ -23,14 +23,19 @@ class PeggBoxView extends View
 
     surfaces = []
     scrollview = new Scrollview
+      size: [window.innerWidth, window.innerHeight]
     scrollview.sequenceFrom surfaces
 
     i = 0
     while i < @items.length
       item = new ListItemView @items[i]
+      item.on 'scroll', =>
+        @_eventOutput.emit 'scroll'
       item.pipe scrollview
       surfaces.push item
       i++
+
+
 
     container = new ContainerSurface
       size: [undefined, undefined]
