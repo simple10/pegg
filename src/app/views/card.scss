@@ -6,10 +6,23 @@
   padding: 20px;
 }
 
-.card__front h2 {
+.card__front {
+
+}
+
+.card__front__question {
   font-size: 25px;
   line-height: 35px;
   text-align: center;
+  padding: 10px;
+}
+
+.card__front__option {
+  padding: 20px;
+}
+
+.card__front__option:hover {
+  background-color: $white;
 }
 
 .card__front p {
