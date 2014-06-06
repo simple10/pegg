@@ -9,9 +9,9 @@ class PeggBoxStore extends EventEmitter
 
   fetchParse: (page) ->
     # TODO: implement pagination
-    Sets = Parse.Object.extend("Sets")
-    query = new Parse.Query(Sets)
-    query.exists "title"
+    PeggBox = Parse.Object.extend("PeggBox")
+    query = new Parse.Query(PeggBox)
+    query.equalTo "userId", 1
     query.find
       success: (results) =>
         @_nextSet = results
