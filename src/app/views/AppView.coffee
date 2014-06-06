@@ -40,7 +40,7 @@ NewCardView = require 'views/NewCardView'
 class AppView extends View
   @DEFAULT_OPTIONS:
     menu:
-      width: 280
+      width: 250
       transition:
         duration: 300
         curve: 'easeOut'
@@ -62,6 +62,7 @@ class AppView extends View
     AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
     PeggBoxStore.on Constants.stores.CHANGE, @onPeggBoxChange
     PlayStore.on Constants.stores.CHANGE, @onPlayChange
+    @pages.peggbox.on 'scroll', @onScroll
 
   initData: ->
     PeggBoxActions.load 0
@@ -87,7 +88,6 @@ class AppView extends View
 
   initFooter: ->
     @footer = new TabMenuView @options.menu
-    @footer.resetTabs()
     @footer
 
   initHeader: ->
@@ -110,7 +110,7 @@ class AppView extends View
       showOrigin: [0.5, 0.5]
       inTransform: Transform.thenMove(Transform.rotateX(1), [0, window.innerHeight, -300])
       outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, -window.innerHeight, -1000])
-      inTransition: { duration: 1000, curve: Easing.outElastic }
+      inTransition: { duration: 1000, curve: Easing.outExpo }
       outTransition: { duration: 500, curve: Easing.inCubic }
 
   showPage: (page) ->
@@ -129,8 +129,7 @@ class AppView extends View
     pageID = AppStateStore.getCurrentPageID()
     @showPage @getPage pageID
     @header.change pageID
-    @footer.hideTabs()
-    @footer.showTabs()
+    @footer.bounceTabs()
     @closeMenu()
 
   onPeggBoxChange: =>
@@ -138,6 +137,14 @@ class AppView extends View
 
   onPlayChange: =>
     @pages.pegg.load PlayStore.getGame()
+
+  onScroll: =>
+    if @tabsOpen
+      @footer.hideTabs()
+      @tabsOpen = false
+    else
+      @footer.showTabs()
+      @tabsOpen = true
 
   closeMenu: ->
     @layoutState.setTransform(

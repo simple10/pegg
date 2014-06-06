@@ -86,11 +86,23 @@ class TabMenuView extends View
       ).bind(this, i), i * delay
       i++
 
-  resetTabs: ->
+  bounceTabs: ->
     transition = @options.tab.transition
+    delay = @options.tab.staggerDelay
     i = 0
-    while i < @tabModifiers.length
-      @tabModifiers[i].setTransform Transform.translate(0, 0, 0), transition
+    tab = 0
+    y = @options.tab.height
+    while i < @tabModifiers.length * 2
+      Timer.setTimeout ((i) ->
+        @tabModifiers[tab].setTransform Transform.translate(0, y, 0), transition
+        tab++
+        if tab == @tabModifiers.length
+          tab = 0
+          y = 0
+        return
+      ).bind(this, i), i * delay
       i++
+
+
 
 module.exports = TabMenuView
