@@ -1,4 +1,4 @@
-require './peggbox'
+require './scss/peggbox'
 
 View = require 'famous/core/View'
 Transform = require 'famous/core/Transform'

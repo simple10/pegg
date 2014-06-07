@@ -1,4 +1,4 @@
-require './tabmenu'
+require './scss/tabmenu'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
