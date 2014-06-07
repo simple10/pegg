@@ -10,9 +10,11 @@ class PlayStore extends EventEmitter
   fetchGame: (gameID) ->
     Sets = Parse.Object.extend("Sets")
     query = new Parse.Query(Sets)
-    query.equalTo "approved", true
+    #query.equalTo "approved", true
+    query.equalTo "approved", null
     query.find
       success: (results) =>
+        #debugger
         @_game = results
         @emit Constants.stores.CHANGE
         return
