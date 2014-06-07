@@ -85,14 +85,14 @@ class CardView extends View
       transform: Transform.translate 0, 0, -depth/2+1
 
     #Question
-    question = new Surface
+    @question = new Surface
       size: [ width, height ]
       classes: ['card__front__question']
       content: @card.get "title"
     @qModifier = new StateModifier
       transform: Transform.translate 0, height/2 + -100, depth/2 + 2
-    question.on 'click', @showOptions
-    @mainNode.add(@qModifier).add question
+    @question.on 'click', @showOptions
+    @mainNode.add(@qModifier).add @question
 
     #Options
     option1 = new Surface
@@ -124,11 +124,21 @@ class CardView extends View
     @o3Modifier = new StateModifier
       opacity: 0
       transform: Transform.translate 0, height/6, depth/2
-    @choice = 3
     option3.on 'click', =>
       @pickAnswer 3
     @mainNode.add(@o3Modifier).add option3
 
+    option4 = new Surface
+      size: [ width, height/6 ]
+      content: "<input type='text' name='newOption' class='card__front__input' style='width: #{@options.width-100}px' placeholder='Type your own...'>"
+      properties:
+        width: @options.width
+    @o4Modifier = new StateModifier
+      opacity: 0
+      transform: Transform.translate 0, height/6, depth/2
+#    option4.on 'click', =>
+#      @pickAnswer 3
+    @mainNode.add(@o4Modifier).add option4
 
 
   addSurface: (params) ->
@@ -145,6 +155,7 @@ class CardView extends View
 
 
   showOptions: =>
+    #@question.setClasses(['card__front__question--small'])
     @qModifier.setTransform(
       Transform.translate 0, 20, @options.depth/2 + 2
       duration : @options.duration
@@ -158,26 +169,36 @@ class CardView extends View
     )
     @o2Modifier.setOpacity 1
     @o2Modifier.setTransform(
-      Transform.translate 0, 60, @options.depth/2 + 2
+      Transform.translate 0, 50, @options.depth/2 + 2
       duration : @options.duration
       curve: @options.easing
     )
     @o3Modifier.setOpacity 1
     @o3Modifier.setTransform(
-      Transform.translate 0, 110, @options.depth/2 + 2
+      Transform.translate 0, 90, @options.depth/2 + 2
+      duration : @options.duration
+      curve: @options.easing
+    )
+    @o4Modifier.setOpacity 1
+    @o4Modifier.setTransform(
+      Transform.translate 0, 150, @options.depth/2 + 2
       duration : @options.duration
       curve: @options.easing
     )
 
   pickAnswer: (choice) =>
+    topOffest = 100
     image = new ImageSurface
-      size: [@options.width, @options.height]
+      size: [@options.width - 40, null]
+      classes: ['card__back__image']
       content: @card.get('image' + choice)
       properties:
         borderRadius: "#{@options.borderRadius}px"
+        maxHeight: "#{@options.height - topOffest}px"
     imageModifier = new StateModifier
+      align: [0.5,0.5]
       transform: Transform.multiply(
-        Transform.translate(0, 0, -@options.depth/2 - 2)
+        Transform.translate(0, -topOffest, -@options.depth/2 - 2)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
