@@ -129,7 +129,8 @@ class AppView extends View
     pageID = AppStateStore.getCurrentPageID()
     @showPage @getPage pageID
     @header.change pageID
-    @footer.bounceTabs()
+    #@footer.bounceTabs()
+    @footer.hideTabs()
     @closeMenu()
 
   onPeggBoxChange: =>
