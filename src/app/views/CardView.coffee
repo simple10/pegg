@@ -15,13 +15,15 @@ Easing = require 'famous/transitions/Easing'
 PlayActions = require 'actions/PlayActions'
 _ = require('Parse')._
 
+ImageUploadView = require 'views/ImageUploadView'
+
 class CardView extends View
   @DEFAULT_OPTIONS:
     width: 290
     height: 350
-    depth: 8
+    depth: -5
     borderRadius: 10
-    duration: 1000
+    duration: 500
     easing: Easing.outCubic
 
   constructor: (card, options) ->
@@ -38,7 +40,7 @@ class CardView extends View
     @state = new StateModifier
     @mainNode = @add @state
 
-    # Front Card
+    ## Front Card
     front = new Surface
       size: [ width, height ]
       classes: ['card__front']
@@ -49,26 +51,14 @@ class CardView extends View
     front.on 'click', @showOptions
     @mainNode.add(modifier).add front
 
-    # Front Card Backing
-    @addSurface
-      size: [ width, height ]
-      classes: ['card__backing']
-      properties:
-        borderRadius: "#{@options.borderRadius}px"
-      transform: Transform.multiply(
-        Transform.translate 0, 0, depth/2-1
-        Transform.multiply(
-          Transform.rotateZ Math.PI
-          Transform.rotateX Math.PI
-        )
-      )
-    # Back Card
-    @addSurface
+    ## Back Card
+    back = new Surface
       size: [ width, height ]
       classes: ['card__back']
       properties:
         borderRadius: "#{@options.borderRadius}px"
         padding: "10px"
+    modifier = new Modifier
       transform: Transform.multiply(
         Transform.translate(0, 0, -depth/2)
         Transform.multiply(
@@ -76,15 +66,11 @@ class CardView extends View
           Transform.rotateX Math.PI
         )
       )
-    # Back Card Backing
-    @addSurface
-      size: [ width, height ]
-      classes: ['card__backing']
-      properties:
-        borderRadius: "#{@options.borderRadius}px"
-      transform: Transform.translate 0, 0, -depth/2+1
+    back.on "click", =>
+      PlayActions.answer 'card', 'choice'
+    @mainNode.add(modifier).add back
 
-    #Question
+    ## Question
     @question = new Surface
       size: [ width, height ]
       classes: ['card__front__question']
@@ -94,7 +80,7 @@ class CardView extends View
     @question.on 'click', @showOptions
     @mainNode.add(@qModifier).add @question
 
-    #Options
+    ## Options
     option1 = new Surface
       size: [ width, height/6 ]
       classes: ['card__front__option']
@@ -140,18 +126,39 @@ class CardView extends View
 #      @pickAnswer 3
     @mainNode.add(@o4Modifier).add option4
 
-
-  addSurface: (params) ->
-    surface = new Surface
-      size: params.size
-      content: params.content
-      classes: params.classes
-      properties: params.properties
-    modifier = new Modifier
-      transform: params.transform
-    #surface.on 'click', @flip
-    surface.pipe @_eventOutput
-    @mainNode.add(modifier).add surface
+    ## Image
+    @image = new ImageSurface
+      size: [@options.width - 40, null]
+      classes: ['card__back__image']
+      content: @card.get('image1')
+      properties:
+        borderRadius: "#{@options.borderRadius}px"
+        maxHeight: "#{@options.height - 100}px"
+    @image.on "click", =>
+      @flip()
+    @imageModifier = new StateModifier
+      align: [0.5,0.5]
+      transform: Transform.multiply(
+        Transform.translate(0, -100, -@options.depth/2 - 2)
+        Transform.multiply(
+          Transform.rotateZ Math.PI
+          Transform.rotateX Math.PI
+        )
+      )
+    @text = new Surface
+      size: [@options.width - 40, null]
+      classes: ['card__back__text']
+      content: @card.get('caption1')
+    @textModifier = new StateModifier
+      transform: Transform.multiply(
+        Transform.translate(0, -150, -@options.depth/2 - 2)
+        Transform.multiply(
+          Transform.rotateZ Math.PI
+          Transform.rotateX Math.PI
+        )
+      )
+    @mainNode.add(@imageModifier).add @image
+    @mainNode.add(@textModifier).add @text
 
 
   showOptions: =>
@@ -187,26 +194,30 @@ class CardView extends View
     )
 
   pickAnswer: (choice) =>
-    topOffest = 100
-    image = new ImageSurface
-      size: [@options.width - 40, null]
-      classes: ['card__back__image']
-      content: @card.get('image' + choice)
-      properties:
-        borderRadius: "#{@options.borderRadius}px"
-        maxHeight: "#{@options.height - topOffest}px"
-    imageModifier = new StateModifier
-      align: [0.5,0.5]
-      transform: Transform.multiply(
-        Transform.translate(0, -topOffest, -@options.depth/2 - 2)
+    PlayActions.answer 'card', 'choice'
+    @image.setContent @card.get('image' + choice)
+    @imageModifier.setTransform(
+      Transform.multiply(
+        Transform.translate(0, -100, -@options.depth/2 - 2)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
         )
       )
-    image.on "click", =>
-      PlayActions.answer 'card', 'choice'
-    @mainNode.add(imageModifier).add image
+    )
+    @text.setContent @card.get('caption' + choice)
+    @textModifier.setTransform(
+      Transform.multiply(
+        Transform.translate(0, -150, -@options.depth/2 - 2)
+        Transform.multiply(
+          Transform.rotateZ Math.PI
+          Transform.rotateX Math.PI
+        )
+      )
+    )
+    @mainNode.add(@textModifier).add @text
+    #uploadImage = new ImageUploadView
+    #@mainNode.add(imageModifier).add uploadImage
     @flip()
 
   flip: (side) =>
