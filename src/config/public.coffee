@@ -10,3 +10,5 @@ module.exports =
   facebook:
     appId: '1410524409215955'
 
+  aviary:
+    apiKey: 'cdef40f2d4f076a2'
