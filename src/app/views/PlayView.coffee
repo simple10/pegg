@@ -31,7 +31,7 @@ class PlayView extends View
     @scrollview = new Scrollview
       direction: Utility.Direction.X
       paginated: true
-      margin: 10000
+      margin: 1000
     @scrollview.sequenceFrom surfaces
 
     i = 0
@@ -47,7 +47,7 @@ class PlayView extends View
     @add @scrollview
 
   nextCard: =>
-    @scrollview.goToNextPage()
+    #@scrollview.goToNextPage()
 
 
 module.exports = PlayView
