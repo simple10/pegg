@@ -78,7 +78,7 @@ class AppView extends View
   initMain: ->
     @layout = new HeaderFooterLayout
       headerSize: 60
-      footerSize: 60
+      footerSize: 20
     @layout.header.add @initHeader()
     @layout.footer.add @initFooter()
     @layout.content.add @initViewManager()
