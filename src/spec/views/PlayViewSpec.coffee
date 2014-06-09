@@ -5,7 +5,6 @@ expect = helper.expect
 should = helper.should
 spy = helper.spy
 
-
 describe 'PlayView', ->
   beforeEach ->
     @view = new PlayView
@@ -21,12 +20,12 @@ describe 'PlayView', ->
 
 
 
-  xit 'should load a set of cards', ->
+  it 'should load a set of cards', ->
     cards = [
       {id: 1, question: "What's the meaning of life?", answer: "42"}
       {id: 2, question: "What's lies in the middle of meaning?", answer: "3"}
     ]
-    @view.init cards
+    @view.load cards
     expect(@view.cards).to.have.length(2)
 
 
