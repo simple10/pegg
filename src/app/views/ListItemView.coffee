@@ -1,4 +1,4 @@
-require './peggbox'
+require './scss/peggbox'
 
 View = require 'famous/core/View'
 Transform = require 'famous/core/Transform'
@@ -21,23 +21,25 @@ class ListItemView extends View
 
   build: ->
 
-    #pic = @options.pic
-    message = @options.get "title"
-    content = "
-      <span>#{message}</span>
-    "
+    #pic = @options.get "pic"
+    message = @options.get "message"
 
     item = new Surface
       size: [window.innerWidth, @options.height]
-      content: content
+      content: message
       properties:
         width: window.innerWidth
       classes: ['peggbox__item']
 
+    item.pipe @_eventOutput
+
     item.on 'click', =>
       @_eventOutput.emit 'selectItem', @
 
-    item.pipe @_eventOutput
+    item.on 'mousedown', (options) =>
+      console.log 'mousedown'
+      @_eventOutput.emit 'scroll', @
+
 
     itemModifier = new StateModifier
 

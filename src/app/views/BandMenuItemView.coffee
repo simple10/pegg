@@ -1,4 +1,4 @@
-require './bandmenu'
+require './scss/bandmenu'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
@@ -11,7 +11,7 @@ MenuActions = require 'actions/MenuActions'
 class BandMenuItemView extends View
   @DEFAULT_OPTIONS:
     pageID: null
-    width: 280
+    width: 250
     height: window.innerHeight / 4
     angle: -0.2
     iconUrl: 'images/mark_tiny.png'

@@ -8,14 +8,14 @@
 .peggbox__item {
   color: $white;
   border-bottom: 1px solid $cloud-lightblue;
-
+  font-size: 20px;
+  vertical-align: center;
+  padding: 20px;
 }
 
 
 .peggbox__item span {
-  font-size: 16px;
+
   padding: 0px 10px;
   display: inline-block;
-  vertical-align: center;
-  line-height: 20px;
 }

@@ -1,5 +1,6 @@
 # TODO
 
-1. Convert AppView to use RenderController (or Lightbox?) for menu and other views
-  * solves issue with menu being clickable when collapsed
-1. Use separate engine context for top menu so card flipper does not intersect nav UI
+Hide tabmenu on scrolldown
+Fix Bandmenu z-index issue
+Style PeggBox items
+pass width down through BandMenu (so it only appears once)
