@@ -74,6 +74,7 @@ of the view file.
 
 ## Git
 
+* [Git best practices](https://blog.rainforestqa.com/2014-05-28-version-control-best-practices/)
 * [GitX rowanj fork](http://rowanj.github.io/gitx/) – use this version of gitx for osx
 * [Git Message Guidelines](http://www.mediawiki.org/wiki/Gerrit/Commit_message_guidelines)
 
