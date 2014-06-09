@@ -30,13 +30,16 @@ class CardView extends View
     options = _.defaults options, @constructor.DEFAULT_OPTIONS
     super options
     @card = card
-    @init()
 
-  init: () ->
     width = @options.width
     height = @options.height
     depth = @options.depth
+    @initCard width, height, depth
+    @initQuestion width, height, depth
+    @initChoices width, height, depth
+    @initAnswer width, height, depth
 
+  initCard: (width, height, depth) ->
     @state = new StateModifier
     @mainNode = @add @state
 
@@ -70,6 +73,7 @@ class CardView extends View
       PlayActions.answer 'card', 'choice'
     @mainNode.add(modifier).add back
 
+  initQuestion: (width, height, depth) ->
     ## Question
     @question = new Surface
       size: [ width, height ]
@@ -80,39 +84,19 @@ class CardView extends View
     @question.on 'click', @showOptions
     @mainNode.add(@qModifier).add @question
 
-    ## Options
-    option1 = new Surface
-      size: [ width, height/6 ]
-      classes: ['card__front__option']
-      content: @card.get('caption1')
-    @o1Modifier = new StateModifier
-      opacity: 0
-      transform: Transform.translate 0, height/6, depth/2
-    option1.on 'click', =>
-      @pickAnswer 1
-    @mainNode.add(@o1Modifier).add option1
-
-    option2 = new Surface
-      size: [ width, height/6 ]
-      classes: ['card__front__option']
-      content: @card.get('caption2')
-    @o2Modifier = new StateModifier
-      opacity: 0
-      transform: Transform.translate 0, height/6, depth/2
-    option2.on 'click', =>
-      @pickAnswer 2
-    @mainNode.add(@o2Modifier).add option2
-
-    option3 = new Surface
-      size: [ width, height/6 ]
-      classes: ['card__front__option']
-      content: @card.get('caption3')
-    @o3Modifier = new StateModifier
-      opacity: 0
-      transform: Transform.translate 0, height/6, depth/2
-    option3.on 'click', =>
-      @pickAnswer 3
-    @mainNode.add(@o3Modifier).add option3
+  initChoices: (width, height, depth) ->
+    for i in [1..3]
+      option = new Surface
+        size: [ width, height/6 ]
+        classes: ['card__front__option']
+        content: @card.get("caption#{i}")
+      @["o#{i}Modifier"] = new StateModifier
+        opacity: 0
+        transform: Transform.translate 0, height/6, depth/2
+      option.on 'click', ((i) ->
+        @pickAnswer i
+      ).bind @, i
+      @mainNode.add(@["o#{i}Modifier"]).add option
 
     option4 = new Surface
       size: [ width, height/6 ]
@@ -122,10 +106,9 @@ class CardView extends View
     @o4Modifier = new StateModifier
       opacity: 0
       transform: Transform.translate 0, height/6, depth/2
-#    option4.on 'click', =>
-#      @pickAnswer 3
     @mainNode.add(@o4Modifier).add option4
 
+  initAnswer: (width, height, depth) ->
     ## Image
     @image = new ImageSurface
       size: [@options.width - 40, null]
