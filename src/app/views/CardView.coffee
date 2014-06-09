@@ -196,26 +196,7 @@ class CardView extends View
   pickAnswer: (choice) =>
     PlayActions.answer 'card', 'choice'
     @image.setContent @card.get('image' + choice)
-    @imageModifier.setTransform(
-      Transform.multiply(
-        Transform.translate(0, -100, -@options.depth/2 - 2)
-        Transform.multiply(
-          Transform.rotateZ Math.PI
-          Transform.rotateX Math.PI
-        )
-      )
-    )
     @text.setContent @card.get('caption' + choice)
-    @textModifier.setTransform(
-      Transform.multiply(
-        Transform.translate(0, -150, -@options.depth/2 - 2)
-        Transform.multiply(
-          Transform.rotateZ Math.PI
-          Transform.rotateX Math.PI
-        )
-      )
-    )
-    @mainNode.add(@textModifier).add @text
     #uploadImage = new ImageUploadView
     #@mainNode.add(imageModifier).add uploadImage
     @flip()
