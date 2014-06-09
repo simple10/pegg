@@ -13,4 +13,10 @@ PlayActions =
       cardID: card
       choice: choice
 
+  rate: (card, rating) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.RATE_CARD
+      cardID: card
+      rating: rating
+
 module.exports = PlayActions

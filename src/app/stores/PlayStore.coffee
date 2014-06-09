@@ -10,8 +10,8 @@ class PlayStore extends EventEmitter
   fetchGame: (gameID) ->
     Sets = Parse.Object.extend("Sets")
     query = new Parse.Query(Sets)
-    #query.equalTo "approved", true
-    query.equalTo "approved", null
+    query.equalTo "approved", true
+    #query.equalTo "approved", null
     query.find
       success: (results) =>
         #debugger
@@ -22,9 +22,14 @@ class PlayStore extends EventEmitter
         console.log "Error: " + error.code + " " + error.message
         return
 
-  recordAnswer: (cardID, choice) ->
+  saveAnswer: (cardID, choice) ->
     #TODO: send data to Parse
-    @emit Constants.stores.NEXTCARD
+    @emit Constants.stores.ANSWERED
+
+  saveRating: (cardID, rating) ->
+    console.log "rating: " + rating
+      #TODO: send data to Parse
+    @emit Constants.stores.RATED
 
   getGame: ->
     @_game
@@ -41,7 +46,9 @@ AppDispatcher.register (payload) ->
     when Constants.actions.GAME_FETCH
       play.fetchGame action.gameID
     when Constants.actions.CARD_ANSWER
-      play.recordAnswer action.cardID, action.choice
+      play.saveAnswer action.cardID, action.choice
+    when Constants.actions.RATE_CARD
+      play.saveRating action.cardID, action.rating
 
 
 module.exports = play

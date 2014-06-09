@@ -6,9 +6,11 @@ module.exports =
     PEGGBOX_FETCH: null
     GAME_FETCH: null
     CARD_ANSWER: null
+    RATE_CARD: null
 
   stores: Utils.keyMirror
     CHANGE: null
     CREATE: null
     DELETE: null
-    NEXTCARD: null
+    ANSWERED: null
+    RATED: null

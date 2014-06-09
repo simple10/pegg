@@ -10,6 +10,7 @@ Utility = require 'famous/utilities/Utility'
 Surface = require 'famous/core/Surface'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
+RateView = require 'views/RateView'
 
 class PlayView extends View
 
@@ -19,7 +20,8 @@ class PlayView extends View
     @initCards()
 
   initListeners: ->
-    PlayStore.on Constants.stores.NEXTCARD, @nextCard
+    PlayStore.on Constants.stores.ANSWERED, @rateCard
+    PlayStore.on Constants.stores.RATED, @nextCard
 
   initCards: ->
     @cards = []
@@ -41,13 +43,20 @@ class PlayView extends View
       surfaces.push card
       i++
 
+    # TODO: make cards scroll on z axis
     #scrollview.outputFrom (offset) ->
     #  Transform.translate -offset/100, -offset/100, offset
 
     @add @scrollview
 
+    @rate = new RateView()
+    @add @rate
+
   nextCard: =>
-    #@scrollview.goToNextPage()
+    @scrollview.goToNextPage()
+
+  rateCard: =>
+    @rate.showStars()
 
 
 module.exports = PlayView
