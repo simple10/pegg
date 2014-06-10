@@ -11,6 +11,7 @@ Surface = require 'famous/core/Surface'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
 RateView = require 'views/RateView'
+Timer = require 'famous/utilities/Timer'
 
 class PlayView extends View
 
@@ -20,8 +21,8 @@ class PlayView extends View
     @initCards()
 
   initListeners: ->
-    PlayStore.on Constants.stores.ANSWERED, @rateCard
-    PlayStore.on Constants.stores.RATED, @nextCard
+    PlayStore.on Constants.stores.CARD_ANSWERED, @rateCard
+    PlayStore.on Constants.stores.CARD_RATED, @nextCard
 
   initCards: ->
     @cards = []
@@ -53,7 +54,12 @@ class PlayView extends View
     @add @rate
 
   nextCard: =>
-    @scrollview.goToNextPage()
+    Timer.setTimeout (->
+      @scrollview.goToNextPage()
+      @rate.resetStars()
+      debugger
+      return
+    ).bind(@), 500
 
   rateCard: =>
     @rate.showStars()
