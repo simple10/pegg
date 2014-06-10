@@ -20,7 +20,7 @@ describe 'PlayView', ->
 
 
 
-  it 'should load a set of cards', ->
+  xit 'should load a set of cards', ->
     cards = [
       {id: 1, question: "What's the meaning of life?", answer: "42"}
       {id: 2, question: "What's lies in the middle of meaning?", answer: "3"}
