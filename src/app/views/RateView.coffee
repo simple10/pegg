@@ -32,6 +32,8 @@ class RateView extends View
       star = new ImageSurface
         size: [ @options.width/spacing, @options.height ]
         content: "images/star_white_256.png"
+        properties:
+          padding: "10px"
       starMod = new StateModifier
         align: [1/spacing*i,1.5]
         origin: [0,1]
