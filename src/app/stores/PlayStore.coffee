@@ -6,6 +6,7 @@ Parse = require 'Parse'
 
 class PlayStore extends EventEmitter
   _game: null
+  _card: null
 
   fetchGame: (gameID) ->
     Sets = Parse.Object.extend("Sets")
@@ -22,14 +23,20 @@ class PlayStore extends EventEmitter
         console.log "Error: " + error.code + " " + error.message
         return
 
-  saveAnswer: (cardID, choice) ->
+  saveAnswer: (choice) ->
+    console.log "choice: " + choice
     #TODO: send data to Parse
-    @emit Constants.stores.ANSWERED
+    @emit Constants.stores.CARD_ANSWERED
 
-  saveRating: (cardID, rating) ->
+  saveRating: (rating) ->
     console.log "rating: " + rating
       #TODO: send data to Parse
-    @emit Constants.stores.RATED
+    @emit Constants.stores.CARD_RATED
+
+  nextCard: (cardID) ->
+    console.log "cardID: " + cardID
+    @_card = cardID
+
 
   getGame: ->
     @_game
@@ -46,9 +53,11 @@ AppDispatcher.register (payload) ->
     when Constants.actions.GAME_FETCH
       play.fetchGame action.gameID
     when Constants.actions.CARD_ANSWER
-      play.saveAnswer action.cardID, action.choice
-    when Constants.actions.RATE_CARD
-      play.saveRating action.cardID, action.rating
+      play.saveAnswer action.choice
+    when Constants.actions.CARD_RATE
+      play.saveRating action.rating
+    when Constants.actions.CARD_PICK
+      play.nextCard action.cardID
 
 
 module.exports = play

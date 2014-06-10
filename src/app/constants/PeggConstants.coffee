@@ -6,7 +6,8 @@ module.exports =
     PEGGBOX_FETCH: null
     GAME_FETCH: null
     CARD_ANSWER: null
-    RATE_CARD: null
+    CARD_RATE: null
+    CARD_PICK: null
 
   stores: Utils.keyMirror
     # Generic
@@ -14,5 +15,5 @@ module.exports =
 
     # Specific ... probably make these more explicity
     # e.g. CARD_ANSWERED
-    ANSWERED: null
-    RATED: null
+    CARD_ANSWERED: null
+    CARD_RATED: null
