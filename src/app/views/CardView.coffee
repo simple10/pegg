@@ -36,7 +36,7 @@ class CardView extends View
     depth = @options.depth
     @initCard width, height, depth
     @initQuestion width, height, depth
-    @initChoices width, height, depth
+    @initChoices width, Math.floor(height/6), depth/2
     @initAnswer width, height, depth
 
   initCard: (width, height, depth) ->
@@ -69,12 +69,9 @@ class CardView extends View
           Transform.rotateX Math.PI
         )
       )
-    back.on "click", =>
-      PlayActions.answer 'card', 'choice'
     @mainNode.add(modifier).add back
 
   initQuestion: (width, height, depth) ->
-    ## Question
     @question = new Surface
       size: [ width, height ]
       classes: ['card__front__question']
@@ -87,54 +84,59 @@ class CardView extends View
   initChoices: (width, height, depth) ->
     for i in [1..3]
       option = new Surface
-        size: [ width, height/6 ]
+        size: [ width, height ]
         classes: ['card__front__option']
-        content: @card.get("caption#{i}")
+        content: "
+              <div class='outerContainer' style='width: #{width-40}px; height: #{height}px'>
+                <div class='innerContainer'>
+                 #{@card.get("caption#{i}")}
+                </div>
+              </div>"
       @["o#{i}Modifier"] = new StateModifier
         opacity: 0
-        transform: Transform.translate 0, height/6, depth/2
+        transform: Transform.translate 0, height, depth
       option.on 'click', ((i) ->
         @pickAnswer i
       ).bind @, i
       @mainNode.add(@["o#{i}Modifier"]).add option
 
     option4 = new Surface
-      size: [ width, height/6 ]
+      size: [ width, height ]
       content: "<input type='text' name='newOption' class='card__front__input' style='width: #{@options.width-100}px' placeholder='Type your own...'>"
       properties:
         width: @options.width
     @o4Modifier = new StateModifier
       opacity: 0
-      transform: Transform.translate 0, height/6, depth/2
+      transform: Transform.translate 0, height, depth
     @mainNode.add(@o4Modifier).add option4
 
   initAnswer: (width, height, depth) ->
-    ## Image
     @image = new ImageSurface
-      size: [@options.width - 40, null]
+      size: [width - 40, null]
       classes: ['card__back__image']
-      content: @card.get('image1')
+      #content: @card.get('image1')
       properties:
         borderRadius: "#{@options.borderRadius}px"
-        maxHeight: "#{@options.height - 100}px"
+        maxHeight: "#{height - 100}px"
     @image.on "click", =>
+      @image.setContent ""
       @flip()
     @imageModifier = new StateModifier
       align: [0.5,0.5]
       transform: Transform.multiply(
-        Transform.translate(0, -100, -@options.depth/2 - 2)
+        Transform.translate(0, -100, -depth/2 - 2)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
         )
       )
     @text = new Surface
-      size: [@options.width - 40, null]
+      size: [width - 40, null]
       classes: ['card__back__text']
       content: @card.get('caption1')
     @textModifier = new StateModifier
       transform: Transform.multiply(
-        Transform.translate(0, -150, -@options.depth/2 - 2)
+        Transform.translate(0, -150, -depth/2 - 2)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
@@ -145,39 +147,23 @@ class CardView extends View
 
 
   showOptions: =>
-    #@question.setClasses(['card__front__question--small'])
+    PlayActions.pick @card.id
+    @question.setClasses(['card__front__question--small'])
     @qModifier.setTransform(
       Transform.translate 0, 20, @options.depth/2 + 2
       duration : @options.duration
       curve: @options.easing
     )
-    @o1Modifier.setOpacity 1
-    @o1Modifier.setTransform(
-      Transform.translate 0,  10, @options.depth/2 + 2
-      duration : @options.duration
-      curve: @options.easing
-    )
-    @o2Modifier.setOpacity 1
-    @o2Modifier.setTransform(
-      Transform.translate 0, 50, @options.depth/2 + 2
-      duration : @options.duration
-      curve: @options.easing
-    )
-    @o3Modifier.setOpacity 1
-    @o3Modifier.setTransform(
-      Transform.translate 0, 90, @options.depth/2 + 2
-      duration : @options.duration
-      curve: @options.easing
-    )
-    @o4Modifier.setOpacity 1
-    @o4Modifier.setTransform(
-      Transform.translate 0, 150, @options.depth/2 + 2
-      duration : @options.duration
-      curve: @options.easing
-    )
+    for i in [1..4]
+      @["o#{i}Modifier"].setOpacity 1
+      @["o#{i}Modifier"].setTransform(
+        Transform.translate 0, 50*(i-1), @options.depth/2 + 2
+        duration : @options.duration
+        curve: @options.easing
+      )
 
   pickAnswer: (choice) =>
-    PlayActions.answer 'card', 'choice'
+    PlayActions.answer choice
     @image.setContent @card.get('image' + choice)
     @text.setContent @card.get('caption' + choice)
     #uploadImage = new ImageUploadView
