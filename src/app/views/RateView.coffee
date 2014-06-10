@@ -12,7 +12,7 @@ class RateView extends View
     width: window.innerWidth
     height: 50
     scale: 5
-    staggerDelay: 35
+    staggerDelay: 50
     transition:
       duration: 400
       curve: 'easeOut'
@@ -38,34 +38,42 @@ class RateView extends View
         align: [1/spacing*i,1.5]
         origin: [0,1]
       # numStars will equal i thanks to bind
-      star.on 'click', ((numStars, evt) ->
-        PlayActions.rate 'cardID', numStars
-      ).bind null, i
+      star.on 'click', ((numStars) ->
+        @pickStar numStars
+      ).bind @, i
       @starModifiers.push starMod
       @stars.push star
       @mainNode.add(starMod).add star
       i++
 
   showStars: ->
-    transition = @options.transition
-    delay = @options.staggerDelay
     i = 0
     while i < @starModifiers.length
       Timer.setTimeout ((i) ->
-        @starModifiers[i].setTransform Transform.translate(0, -window.innerHeight/2+@options.height, 0), transition
+        @starModifiers[i].setTransform Transform.translate(0, -window.innerHeight/2+@options.height, 0), @options.transition
         return
-      ).bind(this, i), i * delay
+      ).bind(this, i), i * @options.staggerDelay
+      i++
+
+  resetStars: ->
+    i = 0
+    while i < @starModifiers.length
+      Timer.setTimeout ((i) ->
+        @stars[i].setContent "images/star_white_256.png"
+        @starModifiers[i].setTransform Transform.translate(0, 0, 0), @options.transition
+        return
+      ).bind(this, i), i * @options.staggerDelay
       i++
 
   pickStar: (pos) =>
-    delay = @options.staggerDelay
+    PlayActions.rate pos
     i = 0
     while i < pos
-      console.log i + " " + pos
       Timer.setTimeout ((i) ->
         @stars[i].setContent "images/star_gold_256.png"
         return
-      ).bind(this, i), i * delay
+      ).bind(this, i), i *  @options.staggerDelay
       i++
+
 
 module.exports = RateView
