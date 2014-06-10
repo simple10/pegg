@@ -37,8 +37,10 @@ class RateView extends View
       starMod = new StateModifier
         align: [1/spacing*i,1.5]
         origin: [0,1]
-      star.on 'click', (i)->
-        PlayActions.rate 'cardID', "#{i}"
+      # numStars will equal i thanks to bind
+      star.on 'click', ((numStars, evt) ->
+        PlayActions.rate 'cardID', numStars
+      ).bind null, i
       @starModifiers.push starMod
       @stars.push star
       @mainNode.add(starMod).add star

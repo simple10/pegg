@@ -9,8 +9,10 @@ module.exports =
     RATE_CARD: null
 
   stores: Utils.keyMirror
+    # Generic
     CHANGE: null
-    CREATE: null
-    DELETE: null
+
+    # Specific ... probably make these more explicity
+    # e.g. CARD_ANSWERED
     ANSWERED: null
     RATED: null

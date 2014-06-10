@@ -1,4 +1,4 @@
-Config = require('config').public.aviary
+Config = require('Config').public.aviary
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 
