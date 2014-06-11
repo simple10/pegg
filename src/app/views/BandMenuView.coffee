@@ -10,8 +10,6 @@ _ = require('Parse')._
 
 ###
 # Events:
-#   selectMenuItem {{menuID}}
-#   toggleMenu
 ###
 class BandMenuView extends View
   @DEFAULT_OPTIONS:

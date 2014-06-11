@@ -37,6 +37,7 @@ PeggBoxView = require 'views/PeggBoxView'
 PlayView = require 'views/PlayView'
 NewCardView = require 'views/NewCardView'
 
+
 class AppView extends View
   @DEFAULT_OPTIONS:
     menu:
@@ -70,9 +71,10 @@ class AppView extends View
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
-    @menu.resetBands()
+    #@menu.resetBands()
     @menu.on 'toggleMenu', @toggleMenu
     @menuState = new StateModifier
+      origin: [0,0]
     @add(@menuState).add @menu
 
   initMain: ->
@@ -84,7 +86,6 @@ class AppView extends View
     @layout.content.add @initViewManager()
     @layoutState = new StateModifier
     @add(@layoutState).add @layout
-
 
   initFooter: ->
     @footer = new TabMenuView @options.menu
@@ -164,6 +165,5 @@ class AppView extends View
         @menuOpen = true
     )
     @menu.show()
-
 
 module.exports = AppView

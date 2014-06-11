@@ -9,6 +9,7 @@ class PlayStore extends EventEmitter
   _card: null
 
   fetchGame: (gameID) ->
+    # TODO: if offline, load from localStorage
     Sets = Parse.Object.extend("Sets")
     query = new Parse.Query(Sets)
     query.equalTo "approved", true

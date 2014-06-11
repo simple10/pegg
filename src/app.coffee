@@ -8,10 +8,28 @@ require 'famous-polyfills/requestAnimationFrame'
 
 # Famous
 Engine = require 'famous/core/Engine'
+Lightbox = require 'famous/views/Lightbox'
+Timer = require 'famous/utilities/Timer'
+Transform = require 'famous/core/Transform'
+Easing = require 'famous/transitions/Easing'
+
+# Facebook
+Facebook = require 'Facebook'
 
 # Views
 AppView = require 'views/AppView'
 FpsMeter = require 'views/FpsMeterView'
+LoginView = require 'views/LoginView'
+
+# Stores
+UserStore = require 'stores/UserStore'
+
+# Actions
+UserActions = require 'actions/UserActions'
+
+# Constants
+Constants = require 'constants/PeggConstants'
+
 
 # Create the main context
 mainContext = Engine.createContext()
@@ -19,10 +37,35 @@ mainContext = Engine.createContext()
 # Chrome maxes out at 60 FPS
 Engine.setFPSCap 60
 
+
 # Set perspective for 3D effects
 # Lower values make effects more pronounced and extreme
 mainContext.setPerspective 2000
 
-mainContext.add new AppView
+appView = new AppView
+loginView = new LoginView
+lightbox = new Lightbox
+  inOpacity: 1
+  outOpacity: 0
+  inOrigin: [1, 1]
+  outOrigin: [0, 0]
+  showOrigin: [0.5, 0.5]
+mainContext.add lightbox
+
+pickView = ->
+  if UserStore.getLoggedIn()
+    lightbox.show appView
+  else
+    lightbox.show loginView
+
+#Wait a couple cycles for Famo.us to boot up, smoother animations
+Timer.after (->
+  pickView()
+), 20
+
+UserStore.on Constants.stores.CHANGE, ->
+  pickView()
+
 mainContext.add new FpsMeter
+
 

@@ -8,6 +8,8 @@ module.exports =
     CARD_ANSWER: null
     CARD_RATE: null
     CARD_PICK: null
+    USER_LOGIN: null
+    USER_LOGOUT: null
 
   stores: Utils.keyMirror
     # Generic

@@ -1,7 +1,3 @@
-# CardView
-#
-# Flip between front and back side of card.
-
 require './scss/card.scss'
 
 View = require 'famous/core/View'
