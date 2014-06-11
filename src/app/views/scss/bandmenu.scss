@@ -2,12 +2,12 @@
 
 .bandmenu__background {
   background-color: $darkblue;
-  z-index: 100;
+  z-index: 10;
 }
 .bandmenu__item {
   cursor: pointer;
   text-align: left;
-  z-index: 101;
+  z-index: 20;
 }
 .bandmenu__item--pegg {
   background-color: $rainbow-red;
@@ -37,5 +37,5 @@
 }
 
 .bandmenu__item__logo {
-  z-index: 101;
+  z-index: 100;
 }

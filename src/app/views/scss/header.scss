@@ -1,10 +1,14 @@
 @import "settings";
 
-.header__background, .footer {
+.footer {
   background-color: $nav-bg;
   color: $nav-color;
   line-height: 100px;
   text-align: center;
+}
+
+.header__background {
+  z-index: -10;
 }
 
 .header__background--pegg {
@@ -33,6 +37,16 @@
   color: $nav-color;
 }
 
+.header__logout {
+  font-weight: bold;
+  font-size: 18px;
+  color: $nav-color;
+}
+
 .header__logo {
   cursor: pointer;
+}
+
+.header__profilePic {
+
 }

@@ -57,7 +57,6 @@ class PlayView extends View
     Timer.setTimeout (->
       @scrollview.goToNextPage()
       @rate.resetStars()
-      debugger
       return
     ).bind(@), 500
 

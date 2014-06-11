@@ -46,9 +46,12 @@ class AppView extends View
         duration: 300
         curve: 'easeOut'
       model: Menu
+    header:
+      height: 60
   # Pages correspond to pageID in constants/menu.coffee
   pages: {}
   menuOpen: false
+
 
   constructor: ->
     super
@@ -79,7 +82,7 @@ class AppView extends View
 
   initMain: ->
     @layout = new HeaderFooterLayout
-      headerSize: 60
+      headerSize: @options.header.height
       footerSize: 20
     @layout.header.add @initHeader()
     @layout.footer.add @initFooter()
@@ -92,7 +95,7 @@ class AppView extends View
     @footer
 
   initHeader: ->
-    @header = new HeaderView
+    @header = new HeaderView @options.header
     @header.on 'toggleMenu', @toggleMenu
     @header
 

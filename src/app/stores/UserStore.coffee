@@ -4,34 +4,32 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 
 class UserStore extends EventEmitter
-  _user: null
-  _loggedIn: false
 
   login: ->
     Parse.FacebookUtils.logIn null,
       success: (user) =>
-        @_loggedIn = true
-        @_user = user
-        user.save
-          avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture?type=square"
+        FB.api("/me", "get", (res) ->
+          user.save
+            avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture?type=square"
+            name: res.name
+            gender: res.gender
+        )
         unless user.existed()
           console.log 'User signed up and logged in through Facebook!'
         else
           console.log 'User logged in through Facebook!'
         @emit Constants.stores.CHANGE
       error: (user, error) =>
-        console.log user + " - " + error
+        console.log "UserStore.login Error: " + user + " - " + error
         @emit Constants.stores.CHANGE
-        @_loggedIn = false
         Parse.User.logOut()
 
   logout: ->
     Parse.User.logOut()
     @emit Constants.stores.CHANGE
-    @_loggedIn = false
 
   getUser: ->
-    @_user
+    Parse.User.current()
 
   getLoggedIn: ->
     if Parse.User.current()

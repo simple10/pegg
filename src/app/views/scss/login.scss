@@ -1,6 +1,33 @@
 @import "settings";
 
 
-.play__background {
+.login__background {
   background-color: $darkblue;
+}
+
+
+.login__text--header {
+  text-transform: uppercase;
+  color: $white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.login__text--message {
+  color: $cloud-blue;
+  font-size: 12px;
+}
+
+.login__button--facebook {
+  background-color: $fb-blue;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+}
+
+.login__button--google {
+  background-color: $gp-red;
+  text-align: center;
+  color: white;
+  font-weight: bold;
 }
