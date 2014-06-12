@@ -182,5 +182,3 @@ class CardView extends View
 
 
 module.exports = CardView
-
-
