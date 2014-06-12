@@ -18,7 +18,7 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 
 
 class AppStateStore extends EventEmitter
-  _currentPageID: 'play'
+  _currentPageID: 'create'
 
   changePage: (pageID) ->
     @_currentPageID = pageID
