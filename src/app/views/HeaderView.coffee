@@ -44,7 +44,7 @@ class HeaderView extends View
     pic = new ImageSurface
       size: [@options.height, @options.height]
       content: UserStore.getAvatar("square")
-      class: ["#{@cssPrefix}__profilePic"]
+      classes: ["#{@cssPrefix}__profilePic"]
       properties:
         borderRadius: "#{@options.height-15}px"
         padding: "10px"
@@ -61,7 +61,6 @@ class HeaderView extends View
     @add @background
     @add new Modifier
       origin: [0, 0]
-      transform: Transform.inFront
     .add @logo
     #@add new Modifier
     #  transform: Transform.translate 0, 10

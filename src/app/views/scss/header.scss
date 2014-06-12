@@ -8,7 +8,7 @@
 }
 
 .header__background {
-  z-index: -10;
+  z-index: 10;
 }
 
 .header__background--play {
@@ -50,8 +50,9 @@
 
 .header__logo {
   cursor: pointer;
+  z-index: 11
 }
 
 .header__profilePic {
-
+  z-index: 11
 }
