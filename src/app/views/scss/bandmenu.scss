@@ -9,16 +9,16 @@
   text-align: left;
   z-index: 20;
 }
-.bandmenu__item--pegg {
+.bandmenu__item--play {
   background-color: $rainbow-red;
 }
 .bandmenu__item--friends {
   background-color: $rainbow-red;
 }
-.bandmenu__item--decks {
+.bandmenu__item--create {
   background-color: $rainbow-yellow;
 }
-.bandmenu__item--peggbox {
+.bandmenu__item--decks {
   background-color: $rainbow-green;
 }
 .bandmenu__item--activity {
@@ -30,10 +30,10 @@
   text-transform: uppercase;
   position: relative;
   top: 42%;
-  width: 70%;
+  width: 60%;
   float: right;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 25px;
 }
 
 .bandmenu__item__logo {
