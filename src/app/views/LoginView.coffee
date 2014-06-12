@@ -19,7 +19,6 @@ class LoginView extends View
     logoHeight: 110
     markWidth: 127
     markHeight: 65
-    buttonHeight: 142
     transition:
       duration: 800
       curve: Easing.inOutBack
@@ -64,37 +63,37 @@ class LoginView extends View
       content: 'Login'
       classes: ['login__text--header']
     privacyText = new Surface
-      size: [230, null]
+      size: [window.innerWidth, 10]
       content: 'Psst... Pegg respects people and their data.'
       classes: ['login__text--message']
     loginTextMod = new StateModifier
       align: [0.5,0.5]
       origin: [0.5,0.5]
       opacity: 0
+    node = @add loginTextMod
+    node.add loginText
+    node.add privacyText
     fbButton = new Surface
-      size: [window.innerWidth, @options.buttonHeight]
+      size: [window.innerWidth, window.innerHeight/4]
       content: 'Login with Facebook'
       classes: ['login__button--facebook']
       properties:
-        lineHeight: "#{@options.buttonHeight}px"
+        lineHeight: "#{window.innerHeight/4}px"
     fbButtonMod = new StateModifier
       align: [1,0.5]
       origin: [0,0]
     fbButton.on "click", ->
       UserActions.login()
     gpButton = new Surface
-      size: [window.innerWidth, @options.buttonHeight]
+      size: [window.innerWidth, window.innerHeight/4]
       content: 'Login with Google'
       classes: ['login__button--google']
       properties:
-        lineHeight: "#{@options.buttonHeight}px"
+        lineHeight: "#{window.innerHeight/4}px"
     gpButtonMod = new StateModifier
       align: [1,1]
       origin: [0,1]
 
-    node = @add loginTextMod
-    node.add loginText
-    node.add privacyText
     loginTextMod.setOpacity 1, @options.transition
     loginTextMod.setTransform Transform.translate(0, -105, 0), @options.transition
     @add(fbButtonMod).add fbButton

@@ -16,6 +16,7 @@
 .login__text--message {
   color: $cloud-blue;
   font-size: 12px;
+  text-align: center;
 }
 
 .login__button--facebook {
@@ -23,6 +24,7 @@
   text-align: center;
   color: white;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .login__button--google {
@@ -30,6 +32,7 @@
   text-align: center;
   color: white;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .login__logo {
