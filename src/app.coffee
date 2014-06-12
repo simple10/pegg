@@ -47,9 +47,13 @@ loginView = new LoginView
 lightbox = new Lightbox
   inOpacity: 1
   outOpacity: 0
-  inOrigin: [1, 1]
+  inOrigin: [.5, 1]
   outOrigin: [0, 0]
   showOrigin: [0.5, 0.5]
+  inTransform: Transform.thenMove(Transform.rotateX(1), [0, window.innerHeight, -300])
+  outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, -window.innerHeight, -1000])
+  inTransition: { duration: 1000, curve: Easing.outExpo }
+  outTransition: { duration: 500, curve: Easing.inCubic }
 mainContext.add lightbox
 
 pickView = ->
