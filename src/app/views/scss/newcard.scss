@@ -15,8 +15,10 @@ input[type="text"] {
   font-size: 15px;
 }
 
-
-.newcard__question_submit {
+.newcard__button--blue {
+  background-color: $midblue !important;
+}
+.newcard__button {
   background-color: $white;
   border-radius: 5px;
   text-align: center;
@@ -25,8 +27,7 @@ input[type="text"] {
 
 .newcard__header {
   color: $white;
-  font-weight: bold;
-  font-size: 25px;
+  font-size: 23px;
   text-align: center;
 }
 
@@ -37,4 +38,15 @@ input[type="text"] {
   font-weight: bold;
   line-height: 30px;
   vertical-align: middle;
+}
+
+.newcard__step3__deckText {
+  color: $white;
+  font-size: 15px;
+}
+
+.newcard__header--big {
+  color: $midblue;
+  font-size: 36px;
+  text-align: center;
 }
