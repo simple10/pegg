@@ -37,13 +37,10 @@ class ListItemView extends View
       @_eventOutput.emit 'selectItem', @
 
     item.on 'mousedown', (options) =>
-      console.log 'mousedown'
       @_eventOutput.emit 'scroll', @
-
 
     itemModifier = new StateModifier
 
     @add(itemModifier).add item
-
 
 module.exports = ListItemView
