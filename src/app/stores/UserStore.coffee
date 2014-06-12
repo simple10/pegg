@@ -10,8 +10,9 @@ class UserStore extends EventEmitter
       success: (user) =>
         FB.api("/me", "get", (res) ->
           user.save
-            avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture?type=square"
-            name: res.name
+            avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture"
+            first_name: res.first_name
+            last_name: res.last_name
             gender: res.gender
         )
         unless user.existed()
@@ -30,6 +31,14 @@ class UserStore extends EventEmitter
 
   getUser: ->
     Parse.User.current()
+
+  getName: (part) ->
+    if Parse.User.current()
+      return Parse.User.current().get("#{part}_name")
+
+  getAvatar: (type)->
+    if Parse.User.current()
+      return Parse.User.current().get('avatar_url') + "?type=#{type}"
 
   getLoggedIn: ->
     if Parse.User.current()
