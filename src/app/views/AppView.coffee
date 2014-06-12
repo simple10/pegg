@@ -35,13 +35,16 @@ TabMenuView = require 'views/TabMenuView'
 BandMenuView = require 'views/BandMenuView'
 PeggBoxView = require 'views/PeggBoxView'
 PlayView = require 'views/PlayView'
+ProfileView = require 'views/ProfileView'
+ActivityView = require 'views/ActivityView'
+DecksView = require 'views/ActivityView'
 NewCardView = require 'views/NewCardView'
 
 
 class AppView extends View
   @DEFAULT_OPTIONS:
     menu:
-      width: 250
+      width: 270
       transition:
         duration: 300
         curve: 'easeOut'
@@ -101,9 +104,12 @@ class AppView extends View
 
   initPages: ->
     # Pages correspond to pageID in constants/menu.coffee
-    @pages.newCard = new NewCardView
+    @pages.play = new PlayView
+    @pages.create = new NewCardView
+    @pages.decks = new DecksView
+    @pages.activity = new ActivityView
+    @pages.profile = new ProfileView
     @pages.peggbox = new PeggBoxView
-    @pages.pegg = new PlayView
 
   initViewManager: ->
     @lightbox = new Lightbox
@@ -141,7 +147,7 @@ class AppView extends View
     @pages.peggbox.load PeggBoxStore.getNextSet()
 
   onPlayChange: =>
-    @pages.pegg.load PlayStore.getGame()
+    @pages.play.load PlayStore.getGame()
 
   onScroll: =>
     if @tabsOpen
