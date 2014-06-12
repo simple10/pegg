@@ -11,7 +11,11 @@
   z-index: -10;
 }
 
-.header__background--pegg {
+.header__background--play {
+  background-color: $rainbow-red;
+}
+
+.header__background--profile {
   background-color: $rainbow-red;
 }
 
@@ -20,12 +24,13 @@
 }
 
 .header__background--decks {
+  background-color: $rainbow-green;
+}
+
+.header__background--create {
   background-color: $rainbow-yellow;
 }
 
-.header__background--friends {
-  background-color: $rainbow-red;
-}
 .header__background--activity {
   background-color: $rainbow-blue;
 }
