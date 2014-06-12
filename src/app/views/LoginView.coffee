@@ -104,13 +104,11 @@ class LoginView extends View
       gpButtonMod.setTransform Transform.translate(-window.innerWidth, 0, 0), @options.transition
     ), 10
 
+# Causes inexplicable flutter near end of animation:
 #    Transform.multiply(
 #      Transform.scale(.8, .8, 0)
 #      Transform.translate(@options.logoWidth/4, -30, 20)
 #      Transform.identity
 #    ), @options.transition
-
-
-
 
 module.exports = LoginView
