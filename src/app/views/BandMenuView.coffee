@@ -14,7 +14,7 @@ _ = require('Parse')._
 class BandMenuView extends View
   @DEFAULT_OPTIONS:
     angle: -0.2
-    width: 250
+    width: null
     topOffset: 0
     band:
       offset: window.innerHeight / 4
