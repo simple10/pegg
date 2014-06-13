@@ -15,8 +15,7 @@
     "url": "git://github.com/auggernaut/pegg.git"
   },
   "scripts": {
-    "start": "gulp",
-    "install": "bower install"
+    "start": "gulp"
   },
   "engines": {
     "node": "~0.10.0"
