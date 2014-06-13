@@ -45,20 +45,24 @@ class PlayView extends View
       i++
 
     # TODO: make cards scroll on z axis
-    #scrollview.outputFrom (offset) ->
-    #  Transform.translate -offset/100, -offset/100, offset
+    #@scrollview.outputFrom (offset) ->
+    #  Transform.multiply(
+    #    Transform.translate offset/100, offset/100, 50
+    #    Transform.rotateY(1)
+    #  )
 
     @add @scrollview
+    #@scrollview.on "click", @nextCard
 
     @rate = new RateView()
     @add @rate
 
   nextCard: =>
-    Timer.setTimeout (->
-      @scrollview.goToNextPage()
+    Timer.setTimeout (=>
       @rate.resetStars()
+      @scrollview.goToNextPage()
       return
-    ).bind(@), 500
+    ).bind(@), 200
 
   rateCard: =>
     @rate.showStars()
