@@ -9,14 +9,17 @@ Transform = require 'famous/core/Transform'
 Utility = require 'famous/utilities/Utility'
 Easing = require 'famous/transitions/Easing'
 PlayActions = require 'actions/PlayActions'
+Timer = require 'famous/utilities/Timer'
+ChoicesView = require 'views/ChoicesView'
+
 _ = require('Parse')._
 
 ImageUploadView = require 'views/ImageUploadView'
 
 class CardView extends View
   @DEFAULT_OPTIONS:
-    width: 290
-    height: 350
+    width: window.innerHeight/2
+    height: window.innerHeight-200
     depth: -5
     borderRadius: 10
     duration: 500
@@ -47,7 +50,7 @@ class CardView extends View
         borderRadius: "#{@options.borderRadius}px"
     modifier = new Modifier
       transform: Transform.translate 0, 0, depth/2
-    front.on 'click', @showOptions
+    front.on 'click', @showChoices
     @mainNode.add(modifier).add front
 
     ## Back Card
@@ -74,12 +77,13 @@ class CardView extends View
       content: @card.get "title"
     @qModifier = new StateModifier
       transform: Transform.translate 0, height/2 + -100, depth/2 + 2
-    @question.on 'click', @showOptions
+    @question.on 'click', @showChoices
     @mainNode.add(@qModifier).add @question
 
   initChoices: (width, height, depth) ->
-    for i in [1..3]
-      option = new Surface
+    @choices =[]
+    for i in [1..4]
+      choice = new Surface
         size: [ width, height ]
         classes: ['card__front__option']
         content: "
@@ -88,23 +92,27 @@ class CardView extends View
                  #{@card.get("caption#{i}")}
                 </div>
               </div>"
-      @["o#{i}Modifier"] = new StateModifier
-        opacity: 0
-        transform: Transform.translate 0, height, depth
-      option.on 'click', ((i) ->
+      choice.on 'click', ((i) ->
         @pickAnswer i
       ).bind @, i
-      @mainNode.add(@["o#{i}Modifier"]).add option
+      @choices.push choice
 
-    option4 = new Surface
+    choices = new ChoicesView
+    choices.load @choices
+    @choicesMod = new StateModifier
+    @mainNode.add(@choicesMod).add choices
+    @choicesMod.setTransform Transform.translate(0,0,-10)
+
+    newChoice = new Surface
       size: [ width, height ]
-      content: "<input type='text' name='newOption' class='card__front__input' style='width: #{@options.width-100}px' placeholder='Type your own...'>"
+      content: "<input type='text' name='newOption' class='card__front__input' style='width: #{width - 60}px' placeholder='Type your own...'>"
       properties:
         width: @options.width
-    @o4Modifier = new StateModifier
+    @newChoiceModifier = new StateModifier
       opacity: 0
-      transform: Transform.translate 0, height, depth
-    @mainNode.add(@o4Modifier).add option4
+      origin: [0.5,1.4]
+      align: [0.5, 1]
+    @mainNode.add(@newChoiceModifier).add newChoice
 
   initAnswer: (width, height, depth) ->
     @image = new ImageSurface
@@ -115,10 +123,12 @@ class CardView extends View
         borderRadius: "#{@options.borderRadius}px"
         maxHeight: "#{height - 100}px"
     @image.on "click", =>
+      #@toggleImage
       @image.setContent ""
+      @newChoiceModifier.setTransform Transform.translate(0,0,-10)
+      @newChoiceModifier.setOpacity 0
       @flip()
     @imageModifier = new StateModifier
-      align: [0.5,0.5]
       transform: Transform.multiply(
         Transform.translate(0, -100, -depth/2 - 2)
         Transform.multiply(
@@ -142,7 +152,15 @@ class CardView extends View
     @mainNode.add(@textModifier).add @text
 
 
-  showOptions: =>
+  toggleImage: =>
+    if @big
+      @big = false
+      @image.setSize [@options.width, @options.height]
+    else
+      @big = true
+      @image.setSize [window.innerWidth, window.innerHeight]
+
+  showChoices: =>
     PlayActions.pick @card.id
     @question.setClasses(['card__front__question--small'])
     @qModifier.setTransform(
@@ -150,17 +168,27 @@ class CardView extends View
       duration : @options.duration
       curve: @options.easing
     )
-    for i in [1..4]
-      @["o#{i}Modifier"].setOpacity 1
-      @["o#{i}Modifier"].setTransform(
-        Transform.translate 0, 50*(i-1), @options.depth/2 + 2
-        duration : @options.duration
-        curve: @options.easing
-      )
+
+    @newChoiceModifier.setOpacity 1
+
+    @choicesMod.setTransform Transform.translate 0, 50, 0
+
+  hideChoices: =>
+    @qModifier.setTransform(
+      Transform.translate 0, @options.height/2 + -100, @options.depth/2 + 2
+      duration : @options.duration
+      curve: @options.easing
+    )
+    @choicesMod.setOpacity 0
+    @question.on 'click', @showChoices
+
 
   pickAnswer: (choice) =>
     PlayActions.answer choice
-    @image.setContent @card.get('image' + choice)
+    Timer.after ( =>
+      @image.setContent @card.get('image' + choice)
+    ), 20
+
     @text.setContent @card.get('caption' + choice)
     #uploadImage = new ImageUploadView
     #@mainNode.add(imageModifier).add uploadImage

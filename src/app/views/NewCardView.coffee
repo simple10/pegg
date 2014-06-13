@@ -51,7 +51,7 @@ class NewCardView extends View
     @addNum(1)
     @addSurface(1,
       size: [@options.input.width, @options.input.height]
-      content: '<input type="text" name="question" placeholder="Write a question" id="question"/>'
+      content: '<input type="text" name="question" placeholder="Write a question" id="question" required/>'
       classes: ["#{@cssPrefix}__question--input"]
     )
     @addButton(1,
@@ -69,7 +69,7 @@ class NewCardView extends View
     for i in [1..4]
       @addSurface(2,
         size: [@options.input.width, @options.input.height]
-        content: "<input type='text' name='answer' placeholder='Answer option #{i}' id='answer#{i}'/>"
+        content: "<input type='text' name='answer' placeholder='Answer option #{i}' id='answer#{i}' tabindex='#{i}'/>"
         classes: ["#{@cssPrefix}__answer--input"]
       )
     @addButton(2,
@@ -116,10 +116,10 @@ class NewCardView extends View
 
   step4: ->
     @step4Mods = []
-    @newCardTitle.setContent "CARD CREATED"
+    #@newCardTitle.setContent "CARD CREATED"
     @addSurface(4,
       size: [@options.input.width, 50]
-      content: 'GREAT!'
+      content: 'CREATED!'
       classes: ['newcard__header--big']
     )
     @addButton(4,
@@ -134,6 +134,7 @@ class NewCardView extends View
       classes: ['newcard__button--blue', 'newcard__button']
     , =>
       @hideStep(@step4Mods)
+      @newCardTitle.setContent "NEW CARD"
       #TODO: reset all fields to empty
       @step1()
     )
@@ -177,7 +178,7 @@ class NewCardView extends View
       classes: options.classes
     surfaceMod = new StateModifier
       origin: [0.5, 1]
-      align: [0.5, 0]
+      align: [0.5, -0.05]
     @["step#{step}Mods"].push surfaceMod
     @add(surfaceMod).add surface
 
@@ -201,7 +202,7 @@ class NewCardView extends View
         lineHeight: @options.input.height + "px"
     submitMod = new StateModifier
       origin: [0.5, 0.5]
-      align: [0.5, -0.05]
+      align: [0.5, -0.07]
     @["step#{step}Mods"].push submitMod
     @add(submitMod).add submit
     submit.on 'click', func
