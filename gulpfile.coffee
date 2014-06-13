@@ -135,7 +135,7 @@ gulp.task 'clean', ->
   .pipe clean()
 
 gulp.task 'copy', ['clean'], ->
-  gulp.src copyFiles, cwd: conf.src
+  gulp.src conf.copyFiles, cwd: conf.src
   .pipe gulp.dest conf.dist
 
 
