@@ -23,7 +23,9 @@
   },
   "engineStrict": true,
   "dependencies": {
-    "bluebird": "^1.2.4"
+    "bluebird": "^1.2.4",
+    "logfmt": "^1.1.2",
+    "express": "^4.4.3"
   },
   "optionalDependencies": {},
   "devDependencies": {
