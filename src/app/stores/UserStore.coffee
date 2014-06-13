@@ -8,18 +8,24 @@ class UserStore extends EventEmitter
   login: ->
     Parse.FacebookUtils.logIn null,
       success: (user) =>
-        FB.api("/me", "get", (res) ->
+        FB.api("/me", "get", (res) =>
           user.save
             avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture"
             first_name: res.first_name
             last_name: res.last_name
             gender: res.gender
+          ,
+            wait: false
+            error: ->
+              debugger
+            success: =>
+              @emit Constants.stores.CHANGE
         )
         unless user.existed()
           console.log 'User signed up and logged in through Facebook!'
         else
           console.log 'User logged in through Facebook!'
-        @emit Constants.stores.CHANGE
+
       error: (user, error) =>
         console.log "UserStore.login Error: " + user + " - " + error
         @emit Constants.stores.CHANGE
