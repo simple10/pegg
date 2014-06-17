@@ -43,23 +43,31 @@ class CardView extends View
     @mainNode = @add @state
 
     ## Front Card
-    front = new Surface
+    front = new ImageSurface
       size: [ width, height ]
-      classes: ['card__front']
-      properties:
-        borderRadius: "#{@options.borderRadius}px"
+      content: "images/Card_White.png"
+
+    #front = new Surface
+    #  size: [ width, height ]
+    #  classes: ['card__front']
+    #  properties:
+    #    borderRadius: "#{@options.borderRadius}px"
     modifier = new Modifier
       transform: Transform.translate 0, 0, depth/2
     front.on 'click', @showChoices
     @mainNode.add(modifier).add front
 
     ## Back Card
-    back = new Surface
+    back = new ImageSurface
       size: [ width, height ]
-      classes: ['card__back']
-      properties:
-        borderRadius: "#{@options.borderRadius}px"
-        padding: "10px"
+      content: "images/Card_Blue.png"
+
+    #back = new Surface
+    #  size: [ width, height ]
+    #  classes: ['card__back']
+    #  properties:
+    #    borderRadius: "#{@options.borderRadius}px"
+    #    padding: "10px"
     modifier = new Modifier
       transform: Transform.multiply(
         Transform.translate(0, 0, -depth/2)
@@ -82,7 +90,7 @@ class CardView extends View
 
   initChoices: (width, height, depth) ->
     @choices =[]
-    for i in [1..4]
+    for i in [1..5]
       choice = new Surface
         size: [ width, height ]
         classes: ['card__front__option']

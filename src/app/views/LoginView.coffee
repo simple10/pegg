@@ -15,10 +15,10 @@ Transitionable.registerMethod 'spring', SpringTransition
 
 class LoginView extends View
   @DEFAULT_OPTIONS:
-    logoWidth: 141
+    logoWidth: 150
     logoHeight: 110
-    markWidth: 127
-    markHeight: 65
+    markWidth: 150
+    markHeight: 70
     transition:
       duration: 800
       curve: Easing.inOutBack
@@ -49,7 +49,7 @@ class LoginView extends View
       origin: [0.5,0]
     @add(logoSizeMod).add(logoPosMod).add logo
     @add(markMod).add mark
-    markMod.setTransform Transform.translate(0, -window.innerHeight/2 - @options.logoHeight/2 + @options.markHeight, 3), @options.transition, =>
+    markMod.setTransform Transform.translate(0, -window.innerHeight/2 - @options.logoHeight/2 + @options.markHeight, 3), @options.transition
     Timer.after (=>
       logoPosMod.setTransform Transform.translate(0, -window.innerHeight/2 - @options.logoHeight, 0), @options.spring, =>
         logoSizeMod.setTransform Transform.translate(0, -300, -2000), @options.transition

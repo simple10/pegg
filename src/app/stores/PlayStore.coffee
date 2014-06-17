@@ -12,8 +12,8 @@ class PlayStore extends EventEmitter
     # TODO: if offline, load from localStorage
     Sets = Parse.Object.extend("Sets")
     query = new Parse.Query(Sets)
-    query.equalTo "approved", true
-    #query.equalTo "approved", null
+    #query.equalTo "approved", true
+    query.equalTo "approved", null
     query.find
       success: (results) =>
         #debugger
@@ -32,12 +32,17 @@ class PlayStore extends EventEmitter
   saveRating: (rating) ->
     console.log "rating: " + rating
       #TODO: send data to Parse
+    if @_card is "Mrsdr1sylO"
+      @emit Constants.stores.UNLOCK_ACHIEVED
     @emit Constants.stores.CARD_RATED
 
-  nextCard: (cardID) ->
+  saveStatusAck: ->
+    console.log "yep"
+    @emit Constants.stores.PLAY_CONTINUED
+
+  savePlay: (cardID) ->
     console.log "cardID: " + cardID
     @_card = cardID
-
 
   getGame: ->
     @_game
@@ -58,7 +63,9 @@ AppDispatcher.register (payload) ->
     when Constants.actions.CARD_RATE
       play.saveRating action.rating
     when Constants.actions.CARD_PICK
-      play.nextCard action.cardID
+      play.savePlay action.cardID
+    when Constants.actions.PLAY_CONTINUE
+      play.saveStatusAck()
 
 
 module.exports = play

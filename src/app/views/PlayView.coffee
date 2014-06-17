@@ -11,58 +11,97 @@ Surface = require 'famous/core/Surface'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
 RateView = require 'views/RateView'
+StatusView = require 'views/StatusView'
+ProgressBarView = require 'views/ProgressBarView'
 Timer = require 'famous/utilities/Timer'
+Easing = require 'famous/transitions/Easing'
 
 class PlayView extends View
 
   constructor: () ->
     super
     @initListeners()
-    @initCards()
+    @initPlay()
+    @initStatus()
 
   initListeners: ->
     PlayStore.on Constants.stores.CARD_ANSWERED, @rateCard
     PlayStore.on Constants.stores.CARD_RATED, @nextCard
-
-  initCards: ->
-    @cards = []
+    PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @showStatus
+    PlayStore.on Constants.stores.PLAY_CONTINUED, @hideStatus
 
   load: (data) ->
-    @cards = data
-
     surfaces = []
-    @scrollview = new Scrollview
+    @cards.sequenceFrom surfaces
+    i = 0
+    while i < data.length
+      card = new CardView(data[i], size: [350, null])
+      card.pipe @cards
+      surfaces.push card
+      i++
+    @initProgress data.length
+
+  initPlay: ->
+    @playMod = new StateModifier
+    @playNode = @add @playMod
+    @cards = new Scrollview
       direction: Utility.Direction.X
       paginated: true
       margin: 1000
-    @scrollview.sequenceFrom surfaces
-
-    i = 0
-    while i < @cards.length
-      card = new CardView(@cards[i], size: [350, null])
-      card.pipe @scrollview
-      surfaces.push card
-      i++
-
     # TODO: make cards scroll on z axis
-    #@scrollview.outputFrom (offset) ->
+    #@cards.outputFrom (offset) ->
     #  Transform.multiply(
     #    Transform.translate offset/100, offset/100, 50
     #    Transform.rotateY(1)
     #  )
-
-    @add @scrollview
-    #@scrollview.on "click", @nextCard
-
+    @playNode.add @cards
     @rate = new RateView()
-    @add @rate
+    @playNode.add @rate
+
+   initProgress: (size) ->
+    @progress = new ProgressBarView(size)
+    progressMod = new StateModifier
+      size: [window.innerHeight/2-20, 15]
+      align: [0.5, 0.06]
+      origin: [0.5, 0.5]
+    @playNode.add(progressMod).add @progress
+
+  initStatus: ->
+    status = new StatusView()
+    @statusMod = new StateModifier
+      size: [window.innerWidth, window.innerHeight]
+      align: [0.5, 0]
+      origin: [0.5, 1]
+    @add(@statusMod).add status
 
   nextCard: =>
-    Timer.setTimeout (=>
-      @rate.resetStars()
-      @scrollview.goToNextPage()
-      return
-    ).bind(@), 200
+    @progress.increment(1)
+    @cards.goToNextPage()
+
+  showStatus: =>
+    @playMod.setTransform(
+      Transform.translate 0, window.innerHeight, 0
+      duration: 800
+      curve: Easing.inBack
+    )
+    @statusMod.setTransform(
+      Transform.translate 0, window.innerHeight, 0
+      duration: 800
+      curve: Easing.inBack
+    )
+
+  hideStatus: =>
+    @playMod.setTransform(
+      Transform.translate 0, 0, 0
+      duration: 800
+      curve: Easing.inBack
+    )
+    @statusMod.setTransform(
+      Transform.translate 0, -window.innerHeight, 0
+      duration: 800
+      curve: Easing.inBack
+    )
+
 
   rateCard: =>
     @rate.showStars()

@@ -30,16 +30,18 @@ class RateView extends View
     spacing = @options.scale + 2
     while i <= @options.scale
       star = new ImageSurface
-        size: [ @options.width/spacing, @options.height ]
-        content: "images/star_white_256.png"
-        properties:
-          padding: "10px"
+        size: [ @options.height, @options.height ]
+        content: "images/sun__grey_50px.png"
       starMod = new StateModifier
         align: [1/spacing*i,1.5]
         origin: [0,1]
       # numStars will equal i thanks to bind
       star.on 'click', ((numStars) ->
         @pickStar numStars
+        Timer.setTimeout ((pos) ->
+          PlayActions.rate pos
+          @resetStars()
+        ).bind(@, numStars), numStars * @options.staggerDelay
       ).bind @, i
       @starModifiers.push starMod
       @stars.push star
@@ -59,21 +61,22 @@ class RateView extends View
     i = 0
     while i < @starModifiers.length
       Timer.setTimeout ((i) ->
-        @stars[i].setContent "images/star_white_256.png"
+        @stars[i].setContent "images/sun__grey_50px.png"
         @starModifiers[i].setTransform Transform.translate(0, 0, 0), @options.transition
         return
       ).bind(this, i), i * @options.staggerDelay
       i++
 
   pickStar: (pos) =>
-    PlayActions.rate pos
     i = 0
     while i < pos
       Timer.setTimeout ((i) ->
-        @stars[i].setContent "images/star_gold_256.png"
+        @stars[i].setContent "images/sun_50px.png"
         return
-      ).bind(this, i), i *  @options.staggerDelay
+      ).bind(@, i), i *  @options.staggerDelay
       i++
+
+
 
 
 module.exports = RateView

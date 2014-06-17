@@ -42,3 +42,19 @@
 .login__mark{
   z-index: -10;
 }
+
+.signup__text--header {
+  text-align: center;
+  text-transform: uppercase;
+  color: $white;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.signup__submit {
+  background-color: $white;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 15px;
+  cursor: pointer;
+}

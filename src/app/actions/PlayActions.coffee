@@ -22,4 +22,8 @@ PlayActions =
       actionType: Constants.actions.CARD_PICK
       cardID: card
 
+  continue: () ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.PLAY_CONTINUE
+
 module.exports = PlayActions

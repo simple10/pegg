@@ -10,12 +10,15 @@ module.exports =
     CARD_PICK: null
     USER_LOGIN: null
     USER_LOGOUT: null
+    PLAY_CONTINUE: null
 
   stores: Utils.keyMirror
     # Generic
     CHANGE: null
 
-    # Specific ... probably make these more explicity
+    # Specific ... probably make these more explicit
     # e.g. CARD_ANSWERED
     CARD_ANSWERED: null
     CARD_RATED: null
+    UNLOCK_ACHIEVED: null
+    PLAY_CONTINUED:null

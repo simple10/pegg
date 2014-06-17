@@ -20,6 +20,7 @@ Facebook = require 'Facebook'
 AppView = require 'views/AppView'
 FpsMeter = require 'views/FpsMeterView'
 LoginView = require 'views/LoginView'
+SignupView = require 'views/SignupView'
 
 # Stores
 UserStore = require 'stores/UserStore'
@@ -29,6 +30,9 @@ UserActions = require 'actions/UserActions'
 
 # Constants
 Constants = require 'constants/PeggConstants'
+
+# Routes
+Routes = require 'routes/AppRoutes'
 
 
 # Create the main context
@@ -44,6 +48,7 @@ mainContext.setPerspective 2000
 
 appView = new AppView
 loginView = new LoginView
+signupView = new SignupView
 lightbox = new Lightbox
   inOpacity: 1
   outOpacity: 0
@@ -60,7 +65,8 @@ pickView = ->
   if UserStore.getLoggedIn()
     lightbox.show appView
   else
-    lightbox.show loginView
+    #lightbox.show loginView
+    lightbox.show signupView
 
 #Wait a couple cycles for Famo.us to boot up, smoother animations
 Timer.after (->
