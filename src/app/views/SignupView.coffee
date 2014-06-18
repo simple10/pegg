@@ -80,7 +80,7 @@ class SignupView extends View
       align: [0.5, -0.05]
     signupEmail = new Surface
       size: [300, 40]
-      content: '<input type="text" name="question" placeholder="Enter your email" id="email" required/>'
+      content: '<input type="text" name="email" placeholder="Enter your email" id="email" required/>'
       classes: ["signup__email__input"]
     signupEmailMod = new StateModifier
       origin: [0.5, 1]
@@ -110,17 +110,21 @@ class SignupView extends View
 
   showMessage: =>
     if UserStore.getSubscriptionStatus()
-      message = "Successfully subscribed!"
+      message = 'We agree.<br/>You\'re on the list.'
+      classes = ['signup__response--success']
+
     else
-      message = "Subscription fail..."
+      message = 'Nah, guess not. Fail.'
+      classes = ['signup__response--fail']
     messageText = new Surface
       size: [300, 60]
       content: message
-      classes: ['signup__text--header']
+      classes: classes
     messageMod = new StateModifier
       origin: [0.5, 0.5]
-      align: [0.5, 1]
+      align: [0.5, -0.07]
     @add(messageMod).add messageText
+    messageMod.setTransform Transform.translate(0, window.innerHeight/2 + 230, 3), @options.transition, =>
 
 
 
