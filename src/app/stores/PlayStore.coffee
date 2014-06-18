@@ -32,7 +32,7 @@ class PlayStore extends EventEmitter
   saveRating: (rating) ->
     console.log "rating: " + rating
       #TODO: send data to Parse
-    if @_card is "Mrsdr1sylO"
+    if @_card is "qZxzk3ipSd"
       @emit Constants.stores.UNLOCK_ACHIEVED
     @emit Constants.stores.CARD_RATED
 
