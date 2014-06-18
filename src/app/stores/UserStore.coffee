@@ -38,14 +38,14 @@ class UserStore extends EventEmitter
     subscriber.set "email", email
     subscriber.save null,
       success: (subscriber) =>
-        @emit Constants.stores.SUBSCRIBE_PASS
         @_subscribed = true
+        @emit Constants.stores.SUBSCRIBE_PASS
         console.log "Subscriber created with objectId: " + subscriber.id
         return
 
       error: (subscriber, error) ->
-        @emit Constants.stores.SUBSCRIBE_FAIL
         @_subscribed = false
+        @emit Constants.stores.SUBSCRIBE_FAIL
         console.log "Failed to create subscriber, with error code: " + error.description
         return
 
