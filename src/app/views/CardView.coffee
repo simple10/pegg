@@ -18,8 +18,8 @@ ImageUploadView = require 'views/ImageUploadView'
 
 class CardView extends View
   @DEFAULT_OPTIONS:
-    width: window.innerHeight/2
-    height: window.innerHeight-200
+    width: window.innerWidth - window.innerWidth * .1
+    height: window.innerHeight - window.innerHeight * .3
     depth: -5
     borderRadius: 10
     duration: 500
@@ -46,12 +46,6 @@ class CardView extends View
     front = new ImageSurface
       size: [ width, height ]
       content: "images/Card_White.png"
-
-    #front = new Surface
-    #  size: [ width, height ]
-    #  classes: ['card__front']
-    #  properties:
-    #    borderRadius: "#{@options.borderRadius}px"
     modifier = new Modifier
       transform: Transform.translate 0, 0, depth/2
     front.on 'click', @showChoices
@@ -61,13 +55,6 @@ class CardView extends View
     back = new ImageSurface
       size: [ width, height ]
       content: "images/Card_Blue.png"
-
-    #back = new Surface
-    #  size: [ width, height ]
-    #  classes: ['card__back']
-    #  properties:
-    #    borderRadius: "#{@options.borderRadius}px"
-    #    padding: "10px"
     modifier = new Modifier
       transform: Transform.multiply(
         Transform.translate(0, 0, -depth/2)
@@ -91,36 +78,27 @@ class CardView extends View
   initChoices: (width, height, depth) ->
     @choices =[]
     for i in [1..5]
-      choice = new Surface
-        size: [ width, height ]
-        classes: ['card__front__option']
-        content: "
-              <div class='outerContainer' style='width: #{width-40}px; height: #{height}px'>
-                <div class='innerContainer'>
-                 #{@card.get("caption#{i}")}
-                </div>
-              </div>"
-      choice.on 'click', ((i) ->
-        @pickAnswer i
-      ).bind @, i
-      @choices.push choice
+      choiceText = @card.get("caption#{i}")
+      if choiceText
+        choice = new Surface
+          size: [ width, height ]
+          classes: ['card__front__option']
+          content: "
+                <div class='outerContainer' style='width: #{width-40}px; height: #{height}px'>
+                  <div class='innerContainer'>
+                   #{choiceText}
+                  </div>
+                </div>"
+        choice.on 'click', ((i) ->
+          @pickAnswer i
+        ).bind @, i
+        @choices.push choice
 
     choices = new ChoicesView
     choices.load @choices
     @choicesMod = new StateModifier
     @mainNode.add(@choicesMod).add choices
     @choicesMod.setTransform Transform.translate(0,0,-10)
-
-    ###newChoice = new Surface
-      size: [ width, height ]
-      content: "<input type='text' name='newOption' class='card__front__input' style='width: #{width - 60}px' placeholder='Type your own...'>"
-      properties:
-        width: @options.width
-    @newChoiceModifier = new StateModifier
-      opacity: 0
-      origin: [0.5,1.4]
-      align: [0.5, 1]
-    @mainNode.add(@newChoiceModifier).add newChoice###
 
   initAnswer: (width, height, depth) ->
     @image = new ImageSurface
