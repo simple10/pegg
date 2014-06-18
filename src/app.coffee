@@ -63,23 +63,20 @@ lightbox = new Lightbox
 mainContext.add lightbox
 
 pickView = ->
-  if UserStore.getLoggedIn()
+  #Wait a couple cycles for Famo.us to boot up, smoother animations
+  if AppStateStore.getCurrentPageID() is "login"
+    lightbox.show loginView
+  else if UserStore.getLoggedIn()
     lightbox.show appView
   else
     lightbox.show signupView
 
-AppStateStore.on Constants.stores.CHANGE, =>
-  pageID = AppStateStore.getCurrentPageID()
-  if pageID is "login"
-    lightbox.show loginView
+AppStateStore.on Constants.stores.CHANGE, pickView
+UserStore.on Constants.stores.CHANGE, pickView
 
-#Wait a couple cycles for Famo.us to boot up, smoother animations
 Timer.after (->
   pickView()
-), 10
-
-UserStore.on Constants.stores.CHANGE, ->
-  pickView()
+), 20
 
 mainContext.add new FpsMeter
 
