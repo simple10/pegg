@@ -11,7 +11,6 @@ Surface = require 'famous/core/Surface'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
 RateView = require 'views/RateView'
-StatusView = require 'views/StatusView'
 ProgressBarView = require 'views/ProgressBarView'
 Timer = require 'famous/utilities/Timer'
 Easing = require 'famous/transitions/Easing'
@@ -22,20 +21,17 @@ class PlayView extends View
     super
     @initListeners()
     @initPlay()
-    @initStatus()
 
   initListeners: ->
     PlayStore.on Constants.stores.CARD_ANSWERED, @rateCard
     PlayStore.on Constants.stores.CARD_RATED, @nextCard
-    PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @showStatus
-    PlayStore.on Constants.stores.PLAY_CONTINUED, @hideStatus
 
   load: (data) ->
     surfaces = []
     @cards.sequenceFrom surfaces
     i = 0
     while i < data.length
-      card = new CardView(data[i], size: [350, null])
+      card = new CardView(data[i], size: [window.innerWidth, null])
       card.pipe @cards
       surfaces.push card
       i++
@@ -66,42 +62,9 @@ class PlayView extends View
       origin: [0.5, 0.5]
     @playNode.add(progressMod).add @progress
 
-  initStatus: ->
-    status = new StatusView()
-    @statusMod = new StateModifier
-      size: [window.innerWidth, window.innerHeight]
-      align: [0.5, 0]
-      origin: [0.5, 1]
-    @add(@statusMod).add status
-
   nextCard: =>
     @progress.increment(1)
     @cards.goToNextPage()
-
-  showStatus: =>
-    @playMod.setTransform(
-      Transform.translate 0, window.innerHeight, 0
-      duration: 800
-      curve: Easing.inBack
-    )
-    @statusMod.setTransform(
-      Transform.translate 0, window.innerHeight, 0
-      duration: 800
-      curve: Easing.inBack
-    )
-
-  hideStatus: =>
-    @playMod.setTransform(
-      Transform.translate 0, 0, 0
-      duration: 800
-      curve: Easing.inBack
-    )
-    @statusMod.setTransform(
-      Transform.translate 0, -window.innerHeight, 0
-      duration: 800
-      curve: Easing.inBack
-    )
-
 
   rateCard: =>
     @rate.showStars()

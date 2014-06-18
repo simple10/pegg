@@ -39,6 +39,7 @@ ProfileView = require 'views/ProfileView'
 ActivityView = require 'views/ActivityView'
 DecksView = require 'views/ActivityView'
 NewCardView = require 'views/NewCardView'
+StatusView = require 'views/StatusView'
 
 
 class AppView extends View
@@ -68,7 +69,9 @@ class AppView extends View
   initListeners: ->
     AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
     PeggBoxStore.on Constants.stores.CHANGE, @onPeggBoxChange
-    PlayStore.on Constants.stores.CHANGE, @onPlayChange
+    PlayStore.on Constants.stores.CHANGE, @onGameChange
+    PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @onStatusChange
+    PlayStore.on Constants.stores.PLAY_CONTINUED, @onPlayContinued
     @pages.peggbox.on 'scroll', @onScroll
 
   initData: ->
@@ -110,6 +113,7 @@ class AppView extends View
     @pages.activity = new PeggBoxView
     @pages.profile = new ProfileView
     @pages.peggbox = new PeggBoxView
+    @pages.status = new StatusView
 
   initViewManager: ->
     @lightbox = new Lightbox
@@ -146,8 +150,14 @@ class AppView extends View
   onPeggBoxChange: =>
     @pages.activity.load PeggBoxStore.getNextSet()
 
-  onPlayChange: =>
+  onGameChange: =>
     @pages.play.load PlayStore.getGame()
+
+  onPlayContinued: =>
+    @showPage @getPage "play"
+
+  onStatusChange: =>
+    @showPage @getPage "status"
 
   onScroll: =>
     if @tabsOpen
