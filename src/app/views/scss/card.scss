@@ -83,3 +83,18 @@
   @extend .backface-visible;
   background-color: $black;
 }
+
+.card__front_newOption {
+  margin: 0;
+  width: 80% !important;
+}
+
+input[type="text"] {
+  background: transparent;
+  border: 1px solid $white;
+  border-radius: 5px;
+  padding: 10px;
+  width: 80%;
+  color: $white;
+  font-size: 15px;
+}
