@@ -10,6 +10,7 @@ module.exports =
     CARD_PICK: null
     USER_LOGIN: null
     USER_LOGOUT: null
+    SUBSCRIBER_SUBMIT: null
     PLAY_CONTINUE: null
 
   stores: Utils.keyMirror
@@ -21,4 +22,6 @@ module.exports =
     CARD_ANSWERED: null
     CARD_RATED: null
     UNLOCK_ACHIEVED: null
-    PLAY_CONTINUED:null
+    PLAY_CONTINUED: null
+    SUBSCRIBE_PASS: null
+    SUBSCRIBE_FAIL: null

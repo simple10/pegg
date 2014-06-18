@@ -1,5 +1,5 @@
 AppDispatcher = require 'dispatchers/AppDispatcher'
-Constants = require('constants/PeggConstants')
+Constants = require 'constants/PeggConstants'
 
 UserActions =
   login: ->
@@ -10,5 +10,9 @@ UserActions =
     AppDispatcher.handleViewAction
       actionType: Constants.actions.USER_LOGOUT
 
+  subscribe: (email) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.SUBSCRIBER_SUBMIT
+      email: email
 
 module.exports = UserActions

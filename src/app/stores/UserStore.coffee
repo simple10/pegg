@@ -4,6 +4,7 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 
 class UserStore extends EventEmitter
+  _subscribed: false
 
   login: ->
     Parse.FacebookUtils.logIn null,
@@ -31,6 +32,24 @@ class UserStore extends EventEmitter
         @emit Constants.stores.CHANGE
         Parse.User.logOut()
 
+  subscribe: (email) ->
+    Subscriber = Parse.Object.extend("Subscriber")
+    subscriber = new Subscriber()
+    subscriber.set "email", email
+    subscriber.save null,
+      success: (subscriber) =>
+        @emit Constants.stores.SUBSCRIBE_PASS
+        @_subscribed = true
+        console.log "Subscriber created with objectId: " + subscriber.id
+        return
+
+      error: (subscriber, error) ->
+        @emit Constants.stores.SUBSCRIBE_FAIL
+        @_subscribed = false
+        console.log "Failed to create subscriber, with error code: " + error.description
+        return
+
+
   logout: ->
     Parse.User.logOut()
     @emit Constants.stores.CHANGE
@@ -52,6 +71,9 @@ class UserStore extends EventEmitter
     else
       return false
 
+  getSubscriptionStatus: ->
+    return @_subscribed
+
 user = new UserStore
 
 
@@ -65,5 +87,7 @@ AppDispatcher.register (payload) ->
       user.login()
     when Constants.actions.USER_LOGOUT
       user.logout()
+    when Constants.actions.SUBSCRIBER_SUBMIT
+      user.subscribe action.email
 
 module.exports = user

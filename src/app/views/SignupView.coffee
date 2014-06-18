@@ -11,9 +11,11 @@ Timer = require 'famous/utilities/Timer'
 Transitionable = require 'famous/transitions/Transitionable'
 SpringTransition = require 'famous/transitions/SpringTransition'
 Transitionable.registerMethod 'spring', SpringTransition
+UserStore = require 'stores/UserStore'
+Constants = require 'constants/PeggConstants'
 
 
-class LoginView extends View
+class SignupView extends View
   @DEFAULT_OPTIONS:
     logoWidth: 165
     logoHeight: 122
@@ -32,7 +34,12 @@ class LoginView extends View
 
   constructor: (options) ->
     super options
+    @initListeners()
     @initSplash()
+
+  initListeners: ->
+    UserStore.on Constants.stores.SUBSCRIBE_PASS, @showMessage
+    UserStore.on Constants.stores.SUBSCRIBE_FAIL, @showMessage
 
   initSplash: ->
     logo = new ImageSurface
@@ -92,9 +99,29 @@ class LoginView extends View
     @add(signupSubmitMod).add signupSubmit
     signupTextMod.setTransform Transform.translate(0, window.innerHeight/2 + 60, 3), @options.transition, =>
       signupEmailMod.setTransform Transform.translate(0, window.innerHeight/2 + 120, 3), @options.transition, =>
-        signupSubmitMod.setTransform Transform.translate(0, window.innerHeight/2 + 160, 3), @options.transition, =>
+        signupSubmitMod.setTransform Transform.translate(0, window.innerHeight/2 + 170, 3), @options.transition, =>
+
+    signupSubmit.on "click", =>
+      @onSubmit()
+
+  onSubmit: =>
+    email = document.getElementById('email')
+    UserActions.subscribe email
+
+  showMessage: =>
+    if UserStore.getSubscriptionStatus()
+      message = "Successfully subscribed!"
+    else
+      message = "Subscription fail..."
+    messageText = new Surface
+      size: [300, 60]
+      content: message
+      classes: ['signup__text--header']
+    messageMod = new StateModifier
+      origin: [0.5, 0.5]
+      align: [0.5, 1]
+    @add(messageMod).add messageText
 
 
 
-
-module.exports = LoginView
+module.exports = SignupView
