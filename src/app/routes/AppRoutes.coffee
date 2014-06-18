@@ -1,16 +1,16 @@
 Parse = require 'Parse'
+MenuActions = require 'actions/MenuActions'
 
 #define router class
 AppRouter = Parse.Router.extend(
   routes:
-    "": "home"
-    view: "viewImage"
+    "login": "login"
 
-  home: ->
-    alert "you are viewing home page"
-    return
-
-  viewImage: ->
-    alert "you are viewing an image"
-    return
+  login: ->
+    MenuActions.selectMenuItem "login"
 )
+
+appRoutes = new AppRouter()
+
+Parse.history.start()
+

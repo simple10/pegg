@@ -24,6 +24,7 @@ SignupView = require 'views/SignupView'
 
 # Stores
 UserStore = require 'stores/UserStore'
+AppStateStore = require 'stores/AppStateStore'
 
 # Actions
 UserActions = require 'actions/UserActions'
@@ -65,13 +66,17 @@ pickView = ->
   if UserStore.getLoggedIn()
     lightbox.show appView
   else
-    #lightbox.show loginView
     lightbox.show signupView
+
+AppStateStore.on Constants.stores.CHANGE, =>
+  pageID = AppStateStore.getCurrentPageID()
+  if pageID is "login"
+    lightbox.show loginView
 
 #Wait a couple cycles for Famo.us to boot up, smoother animations
 Timer.after (->
   pickView()
-), 20
+), 10
 
 UserStore.on Constants.stores.CHANGE, ->
   pickView()
