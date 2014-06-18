@@ -105,7 +105,7 @@ class SignupView extends View
       @onSubmit()
 
   onSubmit: =>
-    email = document.getElementById('email')
+    email = document.getElementById('email').value
     UserActions.subscribe email
 
   showMessage: =>

@@ -53,7 +53,7 @@ class LoginView extends View
     Timer.after (=>
       logoPosMod.setTransform Transform.translate(0, -window.innerHeight/2 - @options.logoHeight, 0), @options.spring, =>
         logoSizeMod.setTransform Transform.translate(0, -300, -2000), @options.transition
-        markMod.setOpacity 0, {duration: 200}, =>
+        markMod.setTransform Transform.translate(0, 0, -30000), {duration: 200}, =>
           @initLogin()
     ), 20
 

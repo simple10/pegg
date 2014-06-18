@@ -111,7 +111,7 @@ class CardView extends View
     @mainNode.add(@choicesMod).add choices
     @choicesMod.setTransform Transform.translate(0,0,-10)
 
-    newChoice = new Surface
+    ###newChoice = new Surface
       size: [ width, height ]
       content: "<input type='text' name='newOption' class='card__front__input' style='width: #{width - 60}px' placeholder='Type your own...'>"
       properties:
@@ -120,7 +120,7 @@ class CardView extends View
       opacity: 0
       origin: [0.5,1.4]
       align: [0.5, 1]
-    @mainNode.add(@newChoiceModifier).add newChoice
+    @mainNode.add(@newChoiceModifier).add newChoice###
 
   initAnswer: (width, height, depth) ->
     @image = new ImageSurface
@@ -133,8 +133,8 @@ class CardView extends View
     @image.on "click", =>
       #@toggleImage
       @image.setContent ""
-      @newChoiceModifier.setTransform Transform.translate(0,0,-10)
-      @newChoiceModifier.setOpacity 0
+      #@newChoiceModifier.setTransform Transform.translate(0,0,-10)
+      #@newChoiceModifier.setOpacity 0
       @flip()
     @imageModifier = new StateModifier
       transform: Transform.multiply(
@@ -177,7 +177,7 @@ class CardView extends View
       curve: @options.easing
     )
 
-    @newChoiceModifier.setOpacity 1
+    #@newChoiceModifier.setOpacity 1
 
     @choicesMod.setTransform Transform.translate 0, 50, 0
 
