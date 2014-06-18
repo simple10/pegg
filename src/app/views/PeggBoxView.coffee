@@ -18,7 +18,6 @@ class PeggBoxView extends View
     @items = []
 
   load: (data) ->
-
     @items = data
 
     surfaces = []

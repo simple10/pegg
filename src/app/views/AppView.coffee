@@ -107,7 +107,7 @@ class AppView extends View
     @pages.play = new PlayView
     @pages.create = new NewCardView
     @pages.decks = new DecksView
-    @pages.activity = new ActivityView
+    @pages.activity = new PeggBoxView
     @pages.profile = new ProfileView
     @pages.peggbox = new PeggBoxView
 
@@ -144,7 +144,7 @@ class AppView extends View
     @closeMenu()
 
   onPeggBoxChange: =>
-    @pages.peggbox.load PeggBoxStore.getNextSet()
+    @pages.activity.load PeggBoxStore.getNextSet()
 
   onPlayChange: =>
     @pages.play.load PlayStore.getGame()
