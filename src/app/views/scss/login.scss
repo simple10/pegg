@@ -58,3 +58,27 @@
   font-size: 15px;
   cursor: pointer;
 }
+
+.signup__email__input input{
+  background: transparent;
+  border: 1px solid $white;
+  border-radius: 5px;
+  padding: 10px;
+  width: 92%;
+  color: $white;
+  font-size: 15px;
+}
+
+.signup__response--success {
+  text-align: center;
+  color: $rainbow-green;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.signup__response--fail {
+  text-align: center;
+  color: $rainbow-red;
+  font-size: 25px;
+  font-weight: bold;
+}

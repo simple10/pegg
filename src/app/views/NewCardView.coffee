@@ -52,7 +52,7 @@ class NewCardView extends View
     @addSurface(1,
       size: [@options.input.width, @options.input.height]
       content: '<input type="text" name="question" placeholder="Write a question" id="question" required/>'
-      classes: ["#{@cssPrefix}__question--input"]
+      classes: ["#{@cssPrefix}__input"]
     )
     @addButton(1,
       content: "Continue"
@@ -70,7 +70,7 @@ class NewCardView extends View
       @addSurface(2,
         size: [@options.input.width, @options.input.height]
         content: "<input type='text' name='answer' placeholder='Answer option #{i}' id='answer#{i}' tabindex='#{i}'/>"
-        classes: ["#{@cssPrefix}__answer--input"]
+        classes: ["#{@cssPrefix}__input"]
       )
     @addButton(2,
       content: "Continue"
