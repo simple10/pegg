@@ -16,12 +16,15 @@ EventEmitter = require 'famous/core/EventEmitter'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 
+Parse = require 'Parse'
+
 
 class AppStateStore extends EventEmitter
   _currentPageID: 'play'
 
   changePage: (pageID) ->
     @_currentPageID = pageID
+    Parse.history.navigate(pageID, true);
     @emit Constants.stores.CHANGE
     # TODO: stash currentPageID in Parse or localStorage and
     #   auto load previous app state when user returns to app.
