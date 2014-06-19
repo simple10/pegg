@@ -10,7 +10,6 @@ var buildRedirectURL = function(req, path) {
   return path + (req._parsedUrl.search || '');
 };
 
-
 // Example of a redirect
 // app.get('/redirect', function(req, res){
 //   res.redirect(301, buildRedirectURL(req, '/'));
@@ -23,4 +22,9 @@ app.get(/^\/.*/, function(req, res){
   res.sendfile('index.html', {root: './dist'});
 });
 
-module.exports = app;
+var port = Number(process.env.PORT || 8080);
+
+app.listen(port, function() {
+  console.log("Listening on " + port);
+});
+
