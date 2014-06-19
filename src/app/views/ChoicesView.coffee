@@ -40,7 +40,7 @@ class ChoicesView extends View
     surfaces.push newChoice
 
     container = new ContainerSurface
-      size: [window.innerHeight/2, 260]
+      size: [window.innerHeight/2, 300]
       properties:
         overflow: "hidden"
 

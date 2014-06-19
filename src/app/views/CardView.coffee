@@ -72,10 +72,11 @@ class CardView extends View
       content: @card.get "title"
     @qModifier = new StateModifier
       transform: Transform.translate 0, height/2 + -100, depth/2 + 2
-    @question.on 'click', @showChoices
+    @question.on 'click', @toggleChoices
     @mainNode.add(@qModifier).add @question
 
-  initChoices: (width, height, depth) ->
+  initChoices: (width, height) ->
+    @showChoices = true
     @choices =[]
     for i in [1..5]
       choiceText = @card.get("caption#{i}")
@@ -146,28 +147,26 @@ class CardView extends View
       @big = true
       @image.setSize [window.innerWidth, window.innerHeight]
 
-  showChoices: =>
-    PlayActions.pick @card.id
-    @question.setClasses(['card__front__question--small'])
-    @qModifier.setTransform(
-      Transform.translate 0, 20, @options.depth/2 + 2
-      duration : @options.duration
-      curve: @options.easing
-    )
-
-    #@newChoiceModifier.setOpacity 1
-
-    @choicesMod.setTransform Transform.translate 0, 50, 0
-
-  hideChoices: =>
-    @qModifier.setTransform(
-      Transform.translate 0, @options.height/2 + -100, @options.depth/2 + 2
-      duration : @options.duration
-      curve: @options.easing
-    )
-    @choicesMod.setOpacity 0
-    @question.on 'click', @showChoices
-
+  toggleChoices: =>
+    if @showChoices
+      PlayActions.pick @card.id
+      @question.setClasses(['card__front__question--small'])
+      @qModifier.setTransform(
+        Transform.translate 0, 20, @options.depth/2 + 2
+        duration : @options.duration
+        curve: @options.easing
+      )
+      @choicesMod.setTransform Transform.translate 0, 30, 0
+      @showChoices = false
+    else
+      @question.setClasses(['card__front__question'])
+      @qModifier.setTransform(
+        Transform.translate 0, @options.height/2 + -100, @options.depth/2 + 2
+        duration : @options.duration
+        curve: @options.easing
+      )
+      @choicesMod.setTransform Transform.translate 0, 0, -10
+      @showChoices = true
 
   pickAnswer: (choice) =>
     PlayActions.answer choice

@@ -23,9 +23,9 @@
   padding: 0px 10px;
   line-height: 30px;
   z-index: -10;
-
-  height: 90px !important;
+  height: 60px !important;
   text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .card__front__option {
