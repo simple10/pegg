@@ -19,7 +19,7 @@ ImageUploadView = require 'views/ImageUploadView'
 class CardView extends View
   @DEFAULT_OPTIONS:
     width: window.innerWidth - window.innerWidth * .1
-    height: window.innerHeight - window.innerHeight * .3
+    height: window.innerHeight - window.innerHeight * .38
     depth: -5
     borderRadius: 10
     duration: 500

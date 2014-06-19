@@ -43,13 +43,16 @@ class PlayView extends View
     @cards = new Scrollview
       direction: Utility.Direction.X
       paginated: true
-      margin: 1000
+      margin: 500
     # TODO: make cards scroll on z axis
     #@cards.outputFrom (offset) ->
     #  Transform.multiply(
     #    Transform.translate offset/100, offset/100, 50
     #    Transform.rotateY(1)
     #  )
+    cardsMod = new StateModifier
+      origin: [0.5, 0.5]
+      align: [0.5, 0.6]
     @playNode.add @cards
     @rate = new RateView()
     @playNode.add @rate
