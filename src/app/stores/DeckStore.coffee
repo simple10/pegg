@@ -4,28 +4,16 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 
 
-class PeggBoxStore extends EventEmitter
-  _nextSet: null
+class DeckStore extends EventEmitter
+  _deck: null
 
-  fetchParse: (page) ->
-    # TODO: implement pagination
-    PeggBox = Parse.Object.extend("PeggBox")
-    query = new Parse.Query(PeggBox)
-    query.equalTo "userId", 1
-    query.find
-      success: (results) =>
-        @_nextSet = results
-        # TODO: process the results from Parse
-        @emit Constants.stores.CHANGE
-        return
-      error: (error) ->
-        console.log "Error: " + error.code + " " + error.message
-        return
+  fetch: ->
+    return
 
-  getNextSet: ->
+  getDecks: ->
     @_nextSet
 
-peggbox = new PeggBoxStore
+decks = new DeckStore
 
 
 # Register callback with AppDispatcher to be notified of events
@@ -34,8 +22,8 @@ AppDispatcher.register (payload) ->
 
   # Pay attention to events relevant to PeggBoxStore
   switch action.actionType
-    when Constants.actions.PEGGBOX_FETCH
-      peggbox.fetchParse action.page
+    when Constants.actions.DECKS_FETCH
+      decks.fetch action.page
 
 
-module.exports = peggbox
+module.exports = decks
