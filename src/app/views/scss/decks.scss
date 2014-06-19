@@ -1,0 +1,48 @@
+@import "settings";
+@import "mixins";
+
+.newcard__input input {
+  background: transparent;
+  border: 1px solid $white;
+  border-radius: 5px;
+  padding: 10px;
+  width: 92%;
+  color: $white;
+  font-size: 15px;
+}
+
+.newcard__button--blue {
+  background-color: $midblue !important;
+}
+.newcard__button {
+  background-color: $white;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.newcard__header {
+  color: $white;
+  font-size: 23px;
+  text-align: center;
+}
+
+.newcard__number {
+  border-radius: 30px;
+  background-color: $white;
+  text-align: center;
+  font-weight: bold;
+  line-height: 30px;
+  vertical-align: middle;
+}
+
+.newcard__step3__deckText {
+  color: $white;
+  font-size: 15px;
+}
+
+.newcard__header--big {
+  color: $midblue;
+  font-size: 36px;
+  text-align: center;
+}
