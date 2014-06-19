@@ -87,7 +87,7 @@ class NewCardView extends View
     @step3Mods = []
     @addNum(3)
     @addLinkContainer(3,
-      size: [59, 60]
+      size: [59, 55]
       image: 'images/deck_existing.png'
       text: 'Place card in existing deck(s)'
       classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
@@ -95,8 +95,8 @@ class NewCardView extends View
         alert "existing deck"
     )
     @addLinkContainer(3,
-      size: [73, 59]
-      image: 'images/deck_new.png'
+      size: [76, 65]
+      image: 'images/deck_new2.png'
       text: 'Create a new deck'
       classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
     , =>
