@@ -37,7 +37,7 @@ PeggBoxView = require 'views/PeggBoxView'
 PlayView = require 'views/PlayView'
 ProfileView = require 'views/ProfileView'
 ActivityView = require 'views/ActivityView'
-DecksView = require 'views/ActivityView'
+DecksView = require 'views/DecksView'
 NewCardView = require 'views/NewCardView'
 StatusView = require 'views/StatusView'
 
