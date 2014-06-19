@@ -16,7 +16,7 @@ class UserStore extends EventEmitter
             last_name: res.last_name
             gender: res.gender
           ,
-            wait: false
+            wait: true
             error: ->
               debugger
             success: =>
