@@ -12,13 +12,8 @@ describe 'PlayView', ->
   it 'should exist', ->
     expect(@view).to.exist
 
-
-
-  it 'should have an empty set of cards', ->
+  it 'should have cards', ->
     expect(@view.cards).to.exist
-    expect(@view.cards).to.have.length(0)
-
-
 
   xit 'should load a set of cards', ->
     cards = [
