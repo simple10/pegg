@@ -28,6 +28,7 @@ AppStateStore = require 'stores/AppStateStore'
 
 # Actions
 UserActions = require 'actions/UserActions'
+MenuActions = require 'actions/MenuActions'
 
 # Constants
 Constants = require 'constants/PeggConstants'
@@ -64,10 +65,10 @@ mainContext.add lightbox
 
 pickView = ->
   #Wait a couple cycles for Famo.us to boot up, smoother animations
-  if AppStateStore.getCurrentPageID() is "login"
-    lightbox.show loginView
-  else if UserStore.getLoggedIn()
+  if UserStore.getLoggedIn()
     lightbox.show appView
+  else if AppStateStore.getCurrentPageID() is "login"
+    lightbox.show loginView
   else
     lightbox.show signupView
 
