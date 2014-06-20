@@ -1,4 +1,5 @@
 MoodStore = require 'stores/MoodStore'
+Parse = require 'Parse'
 helper = require '../helpers/Common'
 expect = helper.expect
 should = helper.should
@@ -21,3 +22,8 @@ describe 'MoodStore', ->
     expect(@moodStore.getMoods()).to.be.a('null');
     @moodStore.fetch()
     expect(@moodStore.getMoods()).to.not.be.a('null');
+
+  it 'should contain name and imageUrl', ->
+    @moodStore.fetch()
+    moods = @moodStore.getMoods()
+    expect(moods[0].name).to.exist
