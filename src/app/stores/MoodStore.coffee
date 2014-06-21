@@ -17,7 +17,6 @@ class MoodStore extends EventEmitter
     query.equalTo 'live', true
     query.find
       success: (results) =>
-        console.log results
         @_moods = results
         @emit Constants.stores.CHANGE
       error: (error) ->
