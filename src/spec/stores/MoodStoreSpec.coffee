@@ -1,29 +1,41 @@
 MoodStore = require 'stores/MoodStore'
+Constants = require 'constants/PeggConstants'
 Parse = require 'Parse'
 helper = require '../helpers/Common'
 expect = helper.expect
-should = helper.should
 spy = helper.spy
+
+
+# Mock Parse.Query 'Mood'
+Mood = Parse.Object.extend 'Mood'
+MoodQuery = new Parse.Query Mood
+MoodQuery.find = (options) ->
+  options.success 'dummy'
+
 
 describe 'MoodStore', ->
   beforeEach ->
     @moodStore = MoodStore
+    @moodStore._getMoodQuery = ->
+      MoodQuery
 
-  it 'should exist', ->
+  it 'exists', ->
     expect(@moodStore).to.exist
 
-  it 'should have a fetch function', ->
+  it 'has a fetch function', ->
     expect(@moodStore.fetch).to.exist
 
-  it 'should have a getMoods function', ->
+  it 'has a getMoods function', ->
     expect(@moodStore.getMoods).to.exist
 
-  it 'should not have moods until fetched', ->
-    expect(@moodStore.getMoods()).to.be.a('null');
-    @moodStore.fetch()
-    expect(@moodStore.getMoods()).to.not.be.a('null');
+  it 'does not have moods until fetched', ->
+    expect(@moodStore.getMoods()).to.be.a('null')
 
-  it 'should contain name and imageUrl', ->
+  it 'has moods after fetching', ->
     @moodStore.fetch()
-    moods = @moodStore.getMoods()
-    expect(moods[0].name).to.exist
+    expect(@moodStore.getMoods()).to.not.be.a('null')
+
+  it 'emits change after fetching data', (done) ->
+    @moodStore.on Constants.stores.CHANGE, ->
+      done()
+    @moodStore.fetch()

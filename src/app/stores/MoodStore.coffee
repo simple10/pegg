@@ -3,23 +3,25 @@ Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 
+Mood = Parse.Object.extend 'Mood'
+
 
 class MoodStore extends EventEmitter
   _moods: null
 
+  _getMoodQuery: ->
+    new Parse.Query Mood
+
   fetch: ->
-    Mood = Parse.Object.extend("Mood")
-    query = new Parse.Query(Mood)
-    query.equalTo "live", true
+    query = @_getMoodQuery()
+    query.equalTo 'live', true
     query.find
       success: (results) =>
         console.log results
         @_moods = results
         @emit Constants.stores.CHANGE
-        return
       error: (error) ->
-        console.log "Error: " + error.code + " " + error.message
-        return
+        console.log "Error: #{error.code} #{error.message}"
 
   getMoods: ->
     @_moods
