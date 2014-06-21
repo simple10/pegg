@@ -107,7 +107,7 @@ define(function(require, exports, module) {
     //   and for each managed Context: emit the 'resize' event and update its size.
     // @param {Object=} event document event
     //
-    function handleResize(event) {
+    /*function handleResize(event) {
         for (var i = 0; i < contexts.length; i++) {
             contexts[i].emit('resize');
         }
@@ -115,7 +115,7 @@ define(function(require, exports, module) {
     }
     window.addEventListener('resize', handleResize, false);
     handleResize();
-
+*/
     // prevent scrolling via browser
     window.addEventListener('touchmove', function(event) {
         event.preventDefault();
