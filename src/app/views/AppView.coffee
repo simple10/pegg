@@ -21,6 +21,7 @@ Constants = require 'constants/PeggConstants'
 AppStateStore = require 'stores/AppStateStore'
 PeggBoxStore = require 'stores/PeggBoxStore'
 PlayStore = require 'stores/PlayStore'
+MoodStore = require 'stores/MoodStore'
 
 # Actions
 PeggBoxActions = require 'actions/PeggBoxActions'
@@ -40,6 +41,7 @@ ActivityView = require 'views/ActivityView'
 DecksView = require 'views/DecksView'
 NewCardView = require 'views/NewCardView'
 StatusView = require 'views/StatusView'
+MoodsView = require 'views/MoodsView'
 
 
 class AppView extends View
@@ -56,7 +58,6 @@ class AppView extends View
   pages: {}
   menuOpen: false
 
-
   constructor: ->
     super
     @initData()
@@ -70,6 +71,7 @@ class AppView extends View
     AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
     PeggBoxStore.on Constants.stores.CHANGE, @onPeggBoxChange
     PlayStore.on Constants.stores.CHANGE, @onGameChange
+    MoodStore.on Constants.stores.CHANGE, @onMoodChange
     PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @onStatusChange
     PlayStore.on Constants.stores.PLAY_CONTINUED, @onPlayContinued
     @pages.peggbox.on 'scroll', @onScroll
@@ -114,6 +116,7 @@ class AppView extends View
     @pages.profile = new ProfileView
     @pages.peggbox = new PeggBoxView
     @pages.status = new StatusView
+    @pages.moods = new MoodsView
 
   initViewManager: ->
     @lightbox = new Lightbox
@@ -152,6 +155,9 @@ class AppView extends View
 
   onGameChange: =>
     @pages.play.load PlayStore.getGame()
+
+  onMoodChange: =>
+    @pages.play.load MoodStore.getMoods()
 
   onPlayContinued: =>
     @showPage @getPage "play"
