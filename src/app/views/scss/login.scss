@@ -59,14 +59,31 @@
   cursor: pointer;
 }
 
+.signup__email__input{
+  text-align: center;
+}
+
 .signup__email__input input{
   background: transparent;
   border: 1px solid $white;
   border-radius: 5px;
   padding: 10px;
-  width: 92%;
+  margin: 10px;
   color: $white;
   font-size: 15px;
+  width: 86%;
+}
+
+.signup__email__box {
+  background-color: #fff;
+}
+
+.signup__email__input--big input{
+  border: none;
+  height: 100%;
+  padding: 20px;
+  font-size: 20px;
+  width: 100%;
 }
 
 .signup__response--success {
