@@ -20,7 +20,7 @@ Parse = require 'Parse'
 
 
 class AppStateStore extends EventEmitter
-  _currentPageID: 'play'
+  _currentPageID: 'moods'
 
   changePage: (pageID) ->
     @_currentPageID = pageID
