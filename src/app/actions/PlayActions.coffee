@@ -26,4 +26,9 @@ PlayActions =
     AppDispatcher.handleViewAction
       actionType: Constants.actions.PLAY_CONTINUE
 
+  comment: (comment) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.CARD_COMMENT
+      comment: comment
+
 module.exports = PlayActions

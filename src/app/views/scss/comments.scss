@@ -1,0 +1,10 @@
+@import "settings";
+@import "mixins";
+
+.comments__item {
+  z-index: -10;
+}
+
+.comments__text {
+  color: $white;
+}

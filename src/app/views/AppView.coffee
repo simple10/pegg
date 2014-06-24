@@ -41,7 +41,7 @@ ActivityView = require 'views/ActivityView'
 DecksView = require 'views/DecksView'
 NewCardView = require 'views/NewCardView'
 StatusView = require 'views/StatusView'
-MoodsView = require 'views/MoodsView'
+#MoodsView = require 'views/MoodsView'
 
 
 class AppView extends View
@@ -91,7 +91,7 @@ class AppView extends View
   initMain: ->
     @layout = new HeaderFooterLayout
       headerSize: @options.header.height
-      footerSize: 20
+      footerSize: 0
     @layout.header.add @initHeader()
     @layout.footer.add @initFooter()
     @layout.content.add @initViewManager()
@@ -116,7 +116,7 @@ class AppView extends View
     @pages.profile = new ProfileView
     @pages.peggbox = new PeggBoxView
     @pages.status = new StatusView
-    @pages.moods = new MoodsView
+    #@pages.moods = new MoodsView
 
   initViewManager: ->
     @lightbox = new Lightbox

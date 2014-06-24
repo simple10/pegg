@@ -17,7 +17,7 @@ class BandMenuItemView extends View
     iconUrl: 'images/mark_tiny.png'
     title: 'pegg'
     color: 'white'
-    iconSize: 50
+    iconSize: 60
 
   constructor: ->
     super

@@ -7,6 +7,7 @@ Parse = require 'Parse'
 class PlayStore extends EventEmitter
   _game: null
   _card: null
+  _comments: null
 
   fetchGame: (gameID) ->
     # TODO: if offline, load from localStorage
@@ -16,13 +17,29 @@ class PlayStore extends EventEmitter
     query.equalTo "approved", null
     query.find
       success: (results) =>
-        #debugger
         @_game = results
         @emit Constants.stores.CHANGE
-        return
       error: (error) ->
         console.log "Error: " + error.code + " " + error.message
-        return
+
+  fetchComments: () ->
+    @_comments = [ { text: 'some comment', imageUrl: 'images/mascot_medium.png'},
+      { text: 'another comment', imageUrl: 'images/mascot_medium.png'},
+      { text: 'hello dixie dear oh me oh my this is a comment!', imageUrl: 'images/mascot_medium.png'},
+      { text: 'this is the craziest bullshit ever...', imageUrl: 'images/mascot_medium.png'},
+    ]
+    @emit Constants.stores.COMMENTS_FETCHED
+    ###Comments = Parse.Object.extend("Comment")
+    query = new Parse.Query(Comments)
+    query.equalTo "userId", userId
+    query.equalTo "cardId", @_cardId
+    query.include "author"
+    query.find
+      success: (results) =>
+        @_comments = results
+        @emit Constants.stores.COMMENTS_FETCHED
+      error: (error) ->
+        console.log "Error: " + error.code + " " + error.message###
 
   saveAnswer: (choice) ->
     console.log "choice: " + choice
@@ -36,8 +53,11 @@ class PlayStore extends EventEmitter
       @emit Constants.stores.UNLOCK_ACHIEVED
     @emit Constants.stores.CARD_RATED
 
+  saveComment: (comment) ->
+    console.log comment
+    comment
+
   saveStatusAck: ->
-    console.log "yep"
     @emit Constants.stores.PLAY_CONTINUED
 
   savePlay: (cardID) ->
@@ -46,6 +66,9 @@ class PlayStore extends EventEmitter
 
   getGame: ->
     @_game
+
+  getComments: () ->
+    @_comments
 
 play = new PlayStore
 
@@ -60,12 +83,15 @@ AppDispatcher.register (payload) ->
       play.fetchGame action.gameID
     when Constants.actions.CARD_ANSWER
       play.saveAnswer action.choice
-    when Constants.actions.CARD_RATE
-      play.saveRating action.rating
+      play.fetchComments()
+    when Constants.actions.CARD_COMMENT
+      play.saveComment action.comment
     when Constants.actions.CARD_PICK
       play.savePlay action.cardID
     when Constants.actions.PLAY_CONTINUE
       play.saveStatusAck()
+    when Constants.actions.CARD_RATE
+      play.saveRating action.rating
 
 
 module.exports = play

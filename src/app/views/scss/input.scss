@@ -1,0 +1,19 @@
+@import "settings";
+@import "mixins";
+
+.input__text {
+  background: transparent;
+  border: 1px solid $white;
+  border-radius: 5px;
+  padding: 10px;
+  color: $white;
+  font-size: 15px;
+}
+
+.input__text--big {
+  border: none;
+  height: 100%;
+  padding: 20px;
+  font-size: 20px;
+  width: 100%;
+}

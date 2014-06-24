@@ -111,10 +111,11 @@ class CardView extends View
         maxHeight: "#{height - 100}px"
     @image.on "click", =>
       #@toggleImage
-      @image.setContent ""
+      #@image.setContent ""
       #@newChoiceModifier.setTransform Transform.translate(0,0,-10)
       #@newChoiceModifier.setOpacity 0
-      @flip()
+      #@flip()
+      PlayActions.rate 0
     @imageModifier = new StateModifier
       transform: Transform.multiply(
         Transform.translate(0, -100, -depth/2 - 2)
@@ -173,10 +174,7 @@ class CardView extends View
     Timer.after ( =>
       @image.setContent @card.get('image' + choice)
     ), 20
-
     @text.setContent @card.get('caption' + choice)
-    #uploadImage = new ImageUploadView
-    #@mainNode.add(imageModifier).add uploadImage
     @flip()
 
   flip: (side) =>

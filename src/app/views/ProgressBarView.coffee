@@ -24,6 +24,12 @@ class ProgressBarView extends View
   init: ->
     progressBarMod = new StateModifier
     @mainNode = @add progressBarMod
+    text = new Surface
+      content: "Progress"
+      size: [@options.width, @options.height]
+    textMod = new StateModifier
+      align: [0, 0]
+      origin: [0, 0]
     @activeBar = new ImageSurface
       content: "images/progress_active.png"
       size: [@last, @options.height]
@@ -38,6 +44,7 @@ class ProgressBarView extends View
     inactiveBarMod = new StateModifier
     @mainNode.add(inactiveBarMod).add inactiveBar
     @mainNode.add(@activeBarMod).add @activeBar
+    @mainNode.add(textMod).add text
 
   increment: (x) =>
     step = @options.width / @steps

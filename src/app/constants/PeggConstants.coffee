@@ -8,6 +8,7 @@ module.exports =
     CARD_ANSWER: null
     CARD_RATE: null
     CARD_PICK: null
+    CARD_COMMENT: null
     USER_LOGIN: null
     USER_LOGOUT: null
     SUBSCRIBER_SUBMIT: null
@@ -25,3 +26,4 @@ module.exports =
     PLAY_CONTINUED: null
     SUBSCRIBE_PASS: null
     SUBSCRIBE_FAIL: null
+    COMMENTS_FETCHED: null

@@ -33,11 +33,11 @@ class ChoicesView extends View
       @items[i].pipe scrollview
       surfaces.push @items[i]
       i++
-    newChoice = new Surface
-      size: [ @options.width - 50, @options.height ]
-      content: "<input type='text' name='newOption' placeholder='Type your own...'>"
-      classes: ['card__front__input']
-    surfaces.push newChoice
+    #newChoice = new Surface
+    #  size: [ @options.width - 50, @options.height ]
+    #  content: "<input type='text' name='newOption' placeholder='Type your own...'>"
+    #  classes: ['card__front__input']
+    #surfaces.push newChoice
 
     container = new ContainerSurface
       size: [window.innerHeight/2, 250]
