@@ -5,22 +5,44 @@ Parse = require 'Parse'
 
 
 class PlayStore extends EventEmitter
-  _game: null
+  _game: {}
   _card: null
   _comments: null
 
+  # TODO: if offline, load from localStorage
+
   fetchGame: (gameID) ->
-    # TODO: if offline, load from localStorage
-    Sets = Parse.Object.extend("Sets")
-    query = new Parse.Query(Sets)
-    #query.equalTo "approved", true
-    query.equalTo "approved", null
-    query.find
-      success: (results) =>
-        @_game = results
-        @emit Constants.stores.CHANGE
+    # Gets 10 unanswered "Preferences" or cards about the user
+    Choice = Parse.Object.extend 'Choice'
+    Pref = Parse.Object.extend 'Pref'
+    prefQuery = new Parse.Query Pref
+    prefQuery.limit 10
+    prefQuery.include 'user'
+    prefQuery.include 'card'
+    prefQuery.equalTo 'choice', null
+    prefQuery.find
+      success: (prefs) =>
+        choiceQuery = new Parse.Query Choice
+        done = 0
+        for j in [0..prefs.length-1]
+          card = prefs[j].get('card')
+          pic = prefs[j].get('user').get('avatar_url')
+          @_game[card.id] = { pic: pic, question: card.get('question'), choices: null }
+          choiceQuery.equalTo 'cardId', card.id
+          choiceQuery.find
+            success: (choices) =>
+              pChoices = []
+              for i in [0..choices.length-1]
+                pChoices.push { id: choices[i].id, text: choices[i].get('text'), image: choices[i].get('image')}
+              @_game[choices[0].get('cardId')].choices = pChoices
+              if done is prefs.length-1
+                @emit Constants.stores.CHANGE
+              done++
+            error: (error) ->
+              console.log "Error fetching choices: " + error.code + " " + error.message
       error: (error) ->
-        console.log "Error: " + error.code + " " + error.message
+        console.log "Error fethcing cards: " + error.code + " " + error.message
+    return
 
   fetchComments: () ->
     @_comments = [ { text: 'some comment', imageUrl: 'images/mascot_medium.png'},
@@ -41,9 +63,21 @@ class PlayStore extends EventEmitter
       error: (error) ->
         console.log "Error: " + error.code + " " + error.message###
 
-  saveAnswer: (choice) ->
-    console.log "choice: " + choice
-    #TODO: send data to Parse
+  saveAnswer: (cardId, choiceId) ->
+    console.log "card: " + cardId + " choice: " + choiceId
+    card = new Parse.Object 'Card'
+    card.set 'id', cardId
+    user = new Parse.Object 'User'
+    user.set 'id', 'OtWqilgV3h'
+    choice = new Parse.Object 'Choice'
+    choice.set 'id', choiceId
+    prefQuery = new Parse.Query 'Pref'
+    prefQuery.equalTo 'card', card
+    prefQuery.equalTo 'user', user
+    prefQuery.first
+      success: (pref) =>
+        pref.set 'choice', choice
+        pref.save()
     @emit Constants.stores.CARD_ANSWERED
 
   saveRating: (rating) ->
@@ -65,6 +99,7 @@ class PlayStore extends EventEmitter
     @_card = cardID
 
   getGame: ->
+    #console.log JSON.stringify(@_game)
     @_game
 
   getComments: () ->
@@ -82,7 +117,7 @@ AppDispatcher.register (payload) ->
     when Constants.actions.GAME_FETCH
       play.fetchGame action.gameID
     when Constants.actions.CARD_ANSWER
-      play.saveAnswer action.choice
+      play.saveAnswer action.pref, action.choice
       play.fetchComments()
     when Constants.actions.CARD_COMMENT
       play.saveComment action.comment

@@ -7,10 +7,11 @@ PlayActions =
       actionType: Constants.actions.GAME_FETCH
       gameID: game
 
-  answer: (choice) ->
+  answer: (pref, choice) ->
     AppDispatcher.handleViewAction
       actionType: Constants.actions.CARD_ANSWER
       choice: choice
+      pref: pref
 
   rate: (rating) ->
     AppDispatcher.handleViewAction

@@ -26,20 +26,20 @@ class PlayView extends View
     @initComments()
 
   initListeners: ->
-    #PlayStore.on Constants.stores.CARD_ANSWERED, @flipCard
+    PlayStore.on Constants.stores.CARD_ANSWERED, @scoreCard
     PlayStore.on Constants.stores.CARD_RATED, @nextCard
     PlayStore.on Constants.stores.COMMENTS_FETCHED, @loadComments
 
   load: (data) ->
     surfaces = []
     @cards.sequenceFrom surfaces
-    i = 0
-    while i < data.length
-      card = new CardView(data[i], size: [window.innerWidth, null])
+    size = 0
+    for own k,v of data
+      card = new CardView(k, v, size: [window.innerWidth, null])
       card.pipe @cards
       surfaces.push card
-      i++
-    @initProgress data.length
+      size++
+    @initProgress size
 
   initPlay: ->
     @playMod = new StateModifier
@@ -80,12 +80,10 @@ class PlayView extends View
       origin: [0.5, 0]
       align: [0.5, 1]
     @add(@newCommentMod).add @newComment
-    debugger
     @newComment.on 'submit', (comment) =>
       @saveComment(comment)
 
   nextCard: =>
-    @progress.increment(1)
     @cards.goToNextPage()
     @commentsMod.setTransform Transform.translate(0, window.innerHeight, -5), {duration: 200}
 
@@ -111,6 +109,8 @@ class PlayView extends View
   saveComment: (comment) ->
     PlayActions.comment(comment)
 
+  scoreCard: =>
+    @progress.increment(1)
 
 
 module.exports = PlayView
