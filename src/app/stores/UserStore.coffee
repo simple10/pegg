@@ -11,7 +11,7 @@ class UserStore extends EventEmitter
       success: (user) =>
         FB.api("/me", "get", (res) =>
           user.save
-            avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture"
+            avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture?height=200&type=normal&width=200"
             first_name: res.first_name
             last_name: res.last_name
             gender: res.gender
