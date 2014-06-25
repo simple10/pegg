@@ -22,20 +22,25 @@ class CardView extends View
     height: window.innerHeight - window.innerHeight * .38
     depth: -5
     borderRadius: 10
-    duration: 500
-    easing: Easing.outCubic
+    transition:
+      duration: 300
+      easing: Easing.outCubic
+    pic:
+      width: 80
+      height: 80
 
-  constructor: (card, options) ->
+
+  constructor: (id, card, options) ->
     options = _.defaults options, @constructor.DEFAULT_OPTIONS
     super options
     @card = card
-
+    @id = id
     width = @options.width
     height = @options.height
     depth = @options.depth
     @initCard width, height, depth
     @initQuestion width, height, depth
-    @initChoices width, Math.floor(height/6), depth/2
+    @initChoices width, Math.floor(height/6)
     @initAnswer width, height, depth
 
   initCard: (width, height, depth) ->
@@ -66,20 +71,31 @@ class CardView extends View
     @mainNode.add(modifier).add back
 
   initQuestion: (width, height, depth) ->
+    @pic = new ImageSurface
+      size: [@options.pic.width, @options.pic.height]
+      content: @card.pic
+      #classes: ['card__front__pic--big']
+      properties:
+        borderRadius: "#{@options.pic.width}px"
+    @picMod = new StateModifier
+      align: [0.5, 0.5]
+      origin: [0.5, 0.5]
+      transform: Transform.translate 0, -100, depth/2 + 2
     @question = new Surface
       size: [ width, height ]
       classes: ['card__front__question']
-      content: @card.get "title"
+      content: @card.question
     @qModifier = new StateModifier
-      transform: Transform.translate 0, height/2 + -100, depth/2 + 2
+      transform: Transform.translate 0, height/2 + -60, depth/2 + 2
     @question.on 'click', @toggleChoices
     @mainNode.add(@qModifier).add @question
+    @mainNode.add(@picMod).add @pic
 
   initChoices: (width, height) ->
     @showChoices = true
-    @choices =[]
-    for i in [1..5]
-      choiceText = @card.get("caption#{i}")
+    @choices = []
+    for i in [0..@card.choices.length-1]
+      choiceText = @card.choices[i].text
       if choiceText
         choice = new Surface
           size: [ width, height ]
@@ -105,7 +121,6 @@ class CardView extends View
     @image = new ImageSurface
       size: [width - 40, null]
       classes: ['card__back__image']
-      #content: @card.get('image1')
       properties:
         borderRadius: "#{@options.borderRadius}px"
         maxHeight: "#{height - 100}px"
@@ -127,7 +142,7 @@ class CardView extends View
     @text = new Surface
       size: [width - 40, null]
       classes: ['card__back__text']
-      content: @card.get('caption1')
+      #content: @card.get('caption1')
     @textModifier = new StateModifier
       transform: Transform.multiply(
         Transform.translate(0, -150, -depth/2 - 2)
@@ -150,31 +165,44 @@ class CardView extends View
 
   toggleChoices: =>
     if @showChoices
-      PlayActions.pick @card.id
+      PlayActions.pick @id
       @question.setClasses(['card__front__question--small'])
+      @question.setSize [@options.width - 50, @options.height]
       @qModifier.setTransform(
-        Transform.translate 0, 20, @options.depth/2 + 2
-        duration : @options.duration
-        curve: @options.easing
+        Transform.translate 30, 20, @options.depth/2 + 2
+        @options.transition
+      )
+      #@pic.setClasses(['card__front__pic--small'])
+      @picMod.setTransform(
+        Transform.multiply(
+          Transform.scale .7, .7, 1
+          Transform.translate -150, -185, @options.depth/2 + 2
+        ), @options.transition
       )
       @choicesMod.setTransform Transform.translate 0, 30, 0
       @showChoices = false
     else
       @question.setClasses(['card__front__question'])
       @qModifier.setTransform(
-        Transform.translate 0, @options.height/2 + -100, @options.depth/2 + 2
-        duration : @options.duration
-        curve: @options.easing
+        Transform.translate 0, @options.height/2 + -60, @options.depth/2 + 2
+        @options.transition
       )
+      @picMod.setTransform(
+        Transform.multiply(
+          Transform.scale 1, 1, 1
+          Transform.translate 0, -100, @options.depth/2
+        ), @options.transition
+      )
+      @ch
       @choicesMod.setTransform Transform.translate 0, 0, -10
       @showChoices = true
 
   pickAnswer: (choice) =>
-    PlayActions.answer choice
+    PlayActions.answer @id, @card.choices[choice].id
     Timer.after ( =>
-      @image.setContent @card.get('image' + choice)
+      @image.setContent @card.choices[choice].image
     ), 20
-    @text.setContent @card.get('caption' + choice)
+    @text.setContent @card.choices[choice].text
     @flip()
 
   flip: (side) =>
@@ -185,10 +213,11 @@ class CardView extends View
     else
       @currentSide = if @currentSide is 1 then 0 else 1
 
+    @picMod.setOpacity 0
+
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
-      duration : @options.duration
-      curve: @options.easing
+      @options.transition
     )
 
 
