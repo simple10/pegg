@@ -11,9 +11,7 @@ Easing = require 'famous/transitions/Easing'
 PlayActions = require 'actions/PlayActions'
 Timer = require 'famous/utilities/Timer'
 ChoicesView = require 'views/ChoicesView'
-
 _ = require('Parse')._
-
 ImageUploadView = require 'views/ImageUploadView'
 
 class CardView extends View
@@ -26,9 +24,8 @@ class CardView extends View
       duration: 300
       easing: Easing.outCubic
     pic:
-      width: 80
-      height: 80
-
+      width: 100
+      height: 100
 
   constructor: (id, card, options) ->
     options = _.defaults options, @constructor.DEFAULT_OPTIONS
@@ -49,15 +46,15 @@ class CardView extends View
     ## Front Card
     front = new ImageSurface
       size: [ width, height ]
-      content: "images/Card_White.png"
+      content: 'images/Card_White.png'
     modifier = new Modifier
       transform: Transform.translate 0, 0, depth/2
     front.on 'click', @showChoices
     @mainNode.add(modifier).add front
     ## Back Card
-    back = new ImageSurface
+    @back = new ImageSurface
       size: [ width, height ]
-      content: "images/Card_Blue.png"
+      content: 'images/Card_White.png'
     modifier = new Modifier
       transform: Transform.multiply(
         Transform.translate(0, 0, -depth/2)
@@ -66,25 +63,25 @@ class CardView extends View
           Transform.rotateX Math.PI
         )
       )
-    @mainNode.add(modifier).add back
+    @mainNode.add(modifier).add @back
 
   initQuestion: (width, height, depth) ->
     @pic = new ImageSurface
       size: [@options.pic.width, @options.pic.height]
-      content: @card.pic
+      content: "#{@card.pic}/?height=200&type=normal&width=200"
       #classes: ['card__front__pic--big']
       properties:
         borderRadius: "#{@options.pic.width}px"
     @picMod = new StateModifier
       align: [0.5, 0.5]
       origin: [0.5, 0.5]
-      transform: Transform.translate 0, -100, depth/2 + 2
+      transform: Transform.translate 0, -110, depth/2 + 2
     @question = new Surface
       size: [ width, height ]
       classes: ['card__front__question']
       content: @card.question
     @qModifier = new StateModifier
-      transform: Transform.translate 0, height/2 + -60, depth/2 + 2
+      transform: Transform.translate 0, height/2 + -40, depth/2 + 2
     @question.on 'click', @toggleChoices
     @mainNode.add(@qModifier).add @question
     @mainNode.add(@picMod).add @pic
@@ -108,7 +105,6 @@ class CardView extends View
           @pickAnswer i
         ).bind @, i
         @choices.push choice
-
     choices = new ChoicesView
     choices.load @choices
     @choicesMod = new StateModifier
@@ -122,7 +118,7 @@ class CardView extends View
       properties:
         borderRadius: "#{@options.borderRadius}px"
         maxHeight: "#{height - 100}px"
-    @image.on "click", =>
+    @image.on 'click', =>
       PlayActions.rate 0
     @imageModifier = new StateModifier
       transform: Transform.multiply(
@@ -135,7 +131,6 @@ class CardView extends View
     @text = new Surface
       size: [width - 40, null]
       classes: ['card__back__text']
-      #content: @card.get('caption1')
     @textModifier = new StateModifier
       transform: Transform.multiply(
         Transform.translate(0, -150, -depth/2 - 2)
@@ -146,7 +141,6 @@ class CardView extends View
       )
     @mainNode.add(@imageModifier).add @image
     @mainNode.add(@textModifier).add @text
-
 
   toggleImage: =>
     if @big
@@ -168,8 +162,8 @@ class CardView extends View
       #@pic.setClasses(['card__front__pic--small'])
       @picMod.setTransform(
         Transform.multiply(
-          Transform.scale .7, .7, 1
-          Transform.translate -150, -185, @options.depth/2 + 2
+          Transform.scale .6, .6, 1
+          Transform.translate -200, -250, @options.depth/2 + 2
         ), @options.transition
       )
       @choicesMod.setTransform Transform.translate 0, 30, 0
@@ -177,24 +171,36 @@ class CardView extends View
     else
       @question.setClasses(['card__front__question'])
       @qModifier.setTransform(
-        Transform.translate 0, @options.height/2 + -60, @options.depth/2 + 2
+        Transform.translate 0, @options.height/2 + -40, @options.depth/2 + 2
         @options.transition
       )
       @picMod.setTransform(
         Transform.multiply(
           Transform.scale 1, 1, 1
-          Transform.translate 0, -100, @options.depth/2
+          Transform.translate 0, -110, @options.depth/2
         ), @options.transition
       )
       @choicesMod.setTransform Transform.translate 0, 0, -10
       @showChoices = true
 
-  pickAnswer: (choice) =>
-    PlayActions.answer @id, @card.choices[choice].id
+  pickAnswer: (i) =>
+    choice = @card.choices[i]
+    if @card.peggee?
+      PlayActions.pegg @card.peggee, @id, choice.id
+      if @card.answer.id is choice.id
+        @back.setContent 'images/Card_Blue.png'
+      else
+        @back.setContent 'images/Card_Red.png'
+      image = @card.answer.get('image')
+      text = @card.answer.get('text')
+    else
+      PlayActions.pref @id, choice.id
+      image = choice.image
+      text = choice.text
     Timer.after ( =>
-      @image.setContent @card.choices[choice].image
+      @image.setContent image
     ), 20
-    @text.setContent @card.choices[choice].text
+    @text.setContent text
     @flip()
 
   flip: (side) =>
@@ -204,9 +210,7 @@ class CardView extends View
       @currentSide = side
     else
       @currentSide = if @currentSide is 1 then 0 else 1
-
     @picMod.setOpacity 0
-
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
       @options.transition

@@ -71,6 +71,7 @@ Timer.after (->
 pickView = ->
   if UserStore.getLoggedIn()
     lightbox.show appView
+    appView.initData()
   else if AppStateStore.getCurrentPageID() is "login"
     lightbox.show loginView
   else

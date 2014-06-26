@@ -9,36 +9,40 @@ class PlayStore extends EventEmitter
   _cardSet: {}
   _card: null
   _comments: null
-  _user: UserStore.getUser().id
+  _user: UserStore.getUser()
 
   # TODO: if offline, load from localStorage
 
-  loadGame: () ->
-    # Track state of player in game
-    # emit: CARDS_LOADED, UNLOCK_ACHIEVED, or GAME_ERROR
-
-    # Game flow:
+  # Tracks state of player in game
+  # emits: CARDS_LOADED, UNLOCK_ACHIEVED, or GAME_ERROR
+  loadGame: ->
+    # TODO: Game flow
     # 1. 10 Pref cards
     # 2. 10 Pegg cards
     # 3. Achievement unlocked
     # Repeat 1-3 until all 5 unlocks achieved
+    @_fetchPrefCards @_user, 10, (res) =>
+      if res isnt {}
+        @_cardSet = res
+        @emit Constants.stores.CARDS_LOADED
+      else
+        @emit Constants.stores.GAME_ERROR
+    #@_fetchPeggCards @_user, 10, (res) =>
 
-    @fetchPrefCards 10
-    #@fetchPeggCards 10
-
-  fetchPrefCards: (num) ->
-    # Gets num unanswered "Preferences" or cards the user answers about himself
-    @_cardSet = {}
+  _fetchPrefCards: (user, num, cb) ->
+    # Gets unanswered preferences: cards the user answers about himself
+    cardSet = {}
     Choice = Parse.Object.extend 'Choice'
     Card = Parse.Object.extend 'Card'
     cardQuery = new Parse.Query Card
     cardQuery.limit num
+    cardQuery.notContainedIn 'hasPlayed', [user.id]
     cardQuery.find
       success: (cards) =>
         choiceQuery = new Parse.Query Choice
         cCount = 0
         for j in [0..cards.length-1]
-          @_cardSet[cards[j].id] = { question: cards[j].get('question'), choices: null }
+          cardSet[cards[j].id] = { pic: user.get('avatar_url'), question: cards[j].get('question'), choices: null }
           choiceQuery.equalTo 'cardId', cards[j].id
           choiceQuery.find
             success: (choices) =>
@@ -46,55 +50,61 @@ class PlayStore extends EventEmitter
               pChoices = []
               for i in [0..choices.length-1]
                 pChoices.push { id: choices[i].id, text: choices[i].get('text'), image: choices[i].get('image')}
-              @_cardSet[choices[0].get('cardId')].choices = pChoices
+              cardSet[choices[0].get('cardId')].choices = pChoices
               if cCount is cards.length
-                @emit Constants.stores.CARDS_LOADED
+                cb cardSet
             error: (error) ->
               console.log "Error fetching choices: " + error.code + " " + error.message
+              cb cardSet
       error: (error) ->
         console.log "Error fetching cards: " + error.code + " " + error.message
-    return
+        cb cardSet
 
-  fetchPeggCards: (num) ->
-    # Gets num unpegged preferences
-    @_cardSet = {}
+  _fetchPeggCards: (user, num, cb) ->
+    # Gets unpegged preferences: cards the user answers about a friend
+    cardSet = {}
     Choice = Parse.Object.extend 'Choice'
     Pref = Parse.Object.extend 'Pref'
+    prefUser = new Parse.Object 'User'
+    prefUser.set 'id', user.id
     prefQuery = new Parse.Query Pref
     prefQuery.limit num
     prefQuery.include 'user'
     prefQuery.include 'card'
     prefQuery.include 'choice'
-    prefQuery.notContainedIn 'peggedBy', [@_user]
+    prefQuery.notEqualTo 'user', prefUser
+    prefQuery.notContainedIn 'peggedBy', [user.id]
     prefQuery.find
       success: (prefs) =>
-        choiceQuery = new Parse.Query Choice
-        cCount = 0
-        for j in [0..prefs.length-1]
-          card = prefs[j].get('card')
-          pegger = prefs[j].get('user')
-          answer = prefs[j].get('choice')
-          debugger
-          pic = pegger.get('avatar_url') + '?height=200&type=normal&width=200'
-          @_cardSet[card.id] = { pegger: pegger.id, pic: pic, question: card.get('question'), choices: null, answer: answer  }
-          choiceQuery.equalTo 'cardId', card.id
-          choiceQuery.find
-            success: (choices) =>
-              cCount++
-              pChoices = []
-              for i in [0..choices.length-1]
-                pChoices.push { id: choices[i].id, text: choices[i].get('text'), image: choices[i].get('image')}
-              @_cardSet[choices[0].get('cardId')].choices = pChoices
-              if cCount is prefs.length-1
-                return "success"
-            error: (error) ->
-              console.log "Error fetching choices: " + error.code + " " + error.message
-              return "failure"
+        if prefs.length is 0
+          cb cardSet
+        else
+          choiceQuery = new Parse.Query Choice
+          cCount = 0
+          for j in [0..prefs.length-1]
+            card = prefs[j].get('card')
+            peggee = prefs[j].get('user')
+            answer = prefs[j].get('choice')
+            pic = peggee.get('avatar_url')
+            cardSet[card.id] = { peggee: peggee.id, pic: pic, question: card.get('question'), choices: null, answer: answer  }
+            choiceQuery.equalTo 'cardId', card.id
+            choiceQuery.find
+              success: (choices) =>
+                cCount++
+                pChoices = []
+                for i in [0..choices.length-1]
+                  pChoices.push { id: choices[i].id, text: choices[i].get('text'), image: choices[i].get('image')}
+                cardSet[choices[0].get('cardId')].choices = pChoices
+                if cCount is prefs.length
+                  cb cardSet
+              error: (error) ->
+                console.log "Error fetching choices: " + error.code + " " + error.message
+                cb cardSet
       error: (error) ->
         console.log "Error fetching cards: " + error.code + " " + error.message
-        return "failure"
+        cb cardSet
 
-  fetchComments: () ->
+  fetchComments: ->
     @_comments = [ { text: 'some comment', imageUrl: 'images/mascot_medium.png'},
       { text: 'another comment', imageUrl: 'images/mascot_medium.png'},
       { text: 'hello dixie dear oh me oh my this is a comment!', imageUrl: 'images/mascot_medium.png'},
@@ -113,13 +123,13 @@ class PlayStore extends EventEmitter
       error: (error) ->
         console.log "Error: " + error.code + " " + error.message###
 
-  savePegg: (peggUserId, cardId, choiceId) ->
+  savePegg: (peggeeId, cardId, choiceId) ->
     #UPDATE Pref table to include current user in peggedBy array
     console.log "card: " + cardId + " choice: " + choiceId
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     user = new Parse.Object 'User'
-    user.set 'id', peggedId
+    user.set 'id', peggeeId
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
     prefQuery = new Parse.Query 'Pref'
@@ -128,7 +138,7 @@ class PlayStore extends EventEmitter
     prefQuery.first
       success: (pref) =>
         pref.set 'choice', choice
-        pref.addUnique 'peggedBy', @_user
+        pref.addUnique 'peggedBy', @_user.id
         pref.save()
     #INSERT into Pegg table a row with current user's pegg
     @emit Constants.stores.PLAY_SAVED
@@ -136,17 +146,18 @@ class PlayStore extends EventEmitter
 
   savePref: (cardId, choiceId) ->
     #UPDATE Card table to include current user in hasPlayed array
+    console.log "card: " + cardId + " choice: " + choiceId
     cardQuery = new Parse.Query 'Card'
-    cardQuery.equalTo 'id', cardId
+    cardQuery.equalTo 'objectId', cardId
     cardQuery.first
       success: (card) =>
-        card.addUnique 'hasPlayed', @_user
+        card.addUnique 'hasPlayed', @_user.id
         card.save()
     #INSERT into Pref table a row with user's choice
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     user = new Parse.Object 'User'
-    user.set 'id', @_user
+    user.set 'id', @_user.id
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
     newPref = new Parse.Object 'Pref'

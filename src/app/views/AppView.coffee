@@ -60,7 +60,6 @@ class AppView extends View
 
   constructor: ->
     super
-    @initData()
     @initMenu()
     @initMain()
     @initPages()

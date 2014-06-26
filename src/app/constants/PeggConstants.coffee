@@ -28,3 +28,4 @@ module.exports =
     COMMENTS_FETCHED: null
     CARDS_LOADED: null
     PLAY_CONTINUED: null
+    GAME_ERROR: null

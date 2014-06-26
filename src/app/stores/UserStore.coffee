@@ -16,10 +16,11 @@ class UserStore extends EventEmitter
             last_name: res.last_name
             gender: res.gender
           ,
-            wait: true
+            wait: false
             error: ->
               debugger
             success: =>
+              debugger
               @emit Constants.stores.CHANGE
         )
         unless user.existed()
@@ -30,6 +31,7 @@ class UserStore extends EventEmitter
         console.log "UserStore.login Error: #{user} - #{error} "
         @emit Constants.stores.CHANGE
         Parse.User.logOut()
+        FB.logout()
 
   subscribe: (email) ->
     Subscriber = Parse.Object.extend("Subscriber")
@@ -47,7 +49,6 @@ class UserStore extends EventEmitter
         @emit Constants.stores.SUBSCRIBE_FAIL
         console.log "Failed to create subscriber, with error code: #{error.description}"
         return
-
 
   logout: ->
     FB.logout()
