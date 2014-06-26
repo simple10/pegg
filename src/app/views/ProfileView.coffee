@@ -24,7 +24,7 @@ class ProfileView extends View
   init: ->
     pic = new ImageSurface
       size: [ @options.width, null]
-      content: UserStore.getAvatar("large")
+      content: UserStore.getAvatar("height=200&type=normal&width=200")
       classes: ["profile__pic"]
     picMod = new StateModifier
       align: [0.5, 1]

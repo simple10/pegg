@@ -26,7 +26,7 @@ class PlayView extends View
     @initComments()
 
   initListeners: ->
-    PlayStore.on Constants.stores.CARD_ANSWERED, @scoreCard
+    PlayStore.on Constants.stores.PLAY_SAVED, @adjustPoints
     PlayStore.on Constants.stores.CARD_RATED, @nextCard
     PlayStore.on Constants.stores.COMMENTS_FETCHED, @loadComments
 
@@ -109,7 +109,7 @@ class PlayView extends View
   saveComment: (comment) ->
     PlayActions.comment(comment)
 
-  scoreCard: =>
+  adjustPoints: =>
     @progress.increment(1)
 
 

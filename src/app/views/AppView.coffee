@@ -70,15 +70,15 @@ class AppView extends View
   initListeners: ->
     AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
     PeggBoxStore.on Constants.stores.CHANGE, @onPeggBoxChange
-    PlayStore.on Constants.stores.CHANGE, @onGameChange
+    PlayStore.on Constants.stores.CARDS_LOADED, @onGameChange
     MoodStore.on Constants.stores.CHANGE, @onMoodChange
     PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @onStatusChange
     PlayStore.on Constants.stores.PLAY_CONTINUED, @onPlayContinued
-    @pages.peggbox.on 'scroll', @onScroll
+    #@pages.peggbox.on 'scroll', @onScroll
 
   initData: ->
     PeggBoxActions.load 0
-    PlayActions.load 0
+    PlayActions.load()
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
@@ -136,12 +136,6 @@ class AppView extends View
   getPage: (pageID) ->
     @pages[pageID]
 
-  toggleMenu: =>
-    if @menuOpen
-      @closeMenu()
-    else
-      @openMenu()
-
   onAppStoreChange: =>
     pageID = AppStateStore.getCurrentPageID()
     @showPage @getPage pageID
@@ -151,10 +145,10 @@ class AppView extends View
     @closeMenu()
 
   onPeggBoxChange: =>
-    @pages.activity.load PeggBoxStore.getNextSet()
+    @pages.activity.load PeggBoxStore.getActivity()
 
   onGameChange: =>
-    @pages.play.load PlayStore.getGame()
+    @pages.play.load PlayStore.getCards()
 
   onMoodChange: =>
     @pages.play.load MoodStore.getMoods()
@@ -165,13 +159,11 @@ class AppView extends View
   onStatusChange: =>
     @showPage @getPage "status"
 
-  onScroll: =>
-    if @tabsOpen
-      @footer.hideTabs()
-      @tabsOpen = false
+  toggleMenu: =>
+    if @menuOpen
+      @closeMenu()
     else
-      @footer.showTabs()
-      @tabsOpen = true
+      @openMenu()
 
   closeMenu: ->
     @layoutState.setTransform(
@@ -190,5 +182,13 @@ class AppView extends View
         @menuOpen = true
     )
     @menu.show()
+
+  onScroll: =>
+    if @tabsOpen
+      @footer.hideTabs()
+      @tabsOpen = false
+    else
+      @footer.showTabs()
+      @tabsOpen = true
 
 module.exports = AppView

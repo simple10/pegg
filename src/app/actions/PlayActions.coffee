@@ -2,26 +2,32 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require('constants/PeggConstants')
 
 PlayActions =
-  load: (game) ->
+  load: () ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.GAME_FETCH
-      gameID: game
+      actionType: Constants.actions.GAME_LOAD
 
-  answer: (pref, choice) ->
+  pref: (card, choice) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.CARD_ANSWER
+      actionType: Constants.actions.PREF_SUBMIT
+      card: card
       choice: choice
-      pref: pref
+
+  pegg: (peggee, card, choice) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.PEGG_SUBMIT
+      peggee: peggee
+      card: card
+      choice: choice
 
   rate: (rating) ->
     AppDispatcher.handleViewAction
       actionType: Constants.actions.CARD_RATE
       rating: rating
 
-  pick: (card) ->
+  pass: (card) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.CARD_PICK
-      cardID: card
+      actionType: Constants.actions.CARD_PASS
+      card: card
 
   continue: () ->
     AppDispatcher.handleViewAction

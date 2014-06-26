@@ -11,7 +11,7 @@ class UserStore extends EventEmitter
       success: (user) =>
         FB.api("/me", "get", (res) =>
           user.save
-            avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture?height=200&type=normal&width=200"
+            avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture"
             first_name: res.first_name
             last_name: res.last_name
             gender: res.gender
@@ -26,9 +26,8 @@ class UserStore extends EventEmitter
           console.log 'User signed up and logged in through Facebook!'
         else
           console.log 'User logged in through Facebook!'
-
       error: (user, error) =>
-        console.log "UserStore.login Error: " + user + " - " + error
+        console.log "UserStore.login Error: #{user} - #{error} "
         @emit Constants.stores.CHANGE
         Parse.User.logOut()
 
@@ -40,17 +39,18 @@ class UserStore extends EventEmitter
       success: (subscriber) =>
         @_subscribed = true
         @emit Constants.stores.SUBSCRIBE_PASS
-        console.log "Subscriber created with objectId: " + subscriber.id
+        console.log "Subscriber created with objectId: #{subscriber.id}"
         return
 
       error: (subscriber, error) ->
         @_subscribed = false
         @emit Constants.stores.SUBSCRIBE_FAIL
-        console.log "Failed to create subscriber, with error code: " + error.description
+        console.log "Failed to create subscriber, with error code: #{error.description}"
         return
 
 
   logout: ->
+    FB.logout()
     Parse.User.logOut()
     @emit Constants.stores.CHANGE
 
@@ -61,9 +61,9 @@ class UserStore extends EventEmitter
     if Parse.User.current()
       return Parse.User.current().get("#{part}_name")
 
-  getAvatar: (type)->
+  getAvatar: (params)->
     if Parse.User.current()
-      return Parse.User.current().get('avatar_url') + "?type=#{type}"
+      return Parse.User.current().get('avatar_url') + "?#{params}"
 
   getLoggedIn: ->
     if Parse.User.current()

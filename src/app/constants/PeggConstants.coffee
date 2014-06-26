@@ -4,10 +4,11 @@ module.exports =
   actions: Utils.keyMirror
     MENU_SELECT: null
     PEGGBOX_FETCH: null
-    GAME_FETCH: null
-    CARD_ANSWER: null
+    GAME_LOAD: null
+    PEGG_SUBMIT: null
+    PREF_SUBMIT: null
     CARD_RATE: null
-    CARD_PICK: null
+    CARD_PASS: null
     CARD_COMMENT: null
     USER_LOGIN: null
     USER_LOGOUT: null
@@ -19,11 +20,11 @@ module.exports =
     CHANGE: null
 
     # Specific ... probably make these more explicit
-    # e.g. CARD_ANSWERED
-    CARD_ANSWERED: null
     CARD_RATED: null
     UNLOCK_ACHIEVED: null
-    PLAY_CONTINUED: null
+    PLAY_SAVED: null
     SUBSCRIBE_PASS: null
     SUBSCRIBE_FAIL: null
     COMMENTS_FETCHED: null
+    CARDS_LOADED: null
+    PLAY_CONTINUED: null

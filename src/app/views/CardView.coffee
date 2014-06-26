@@ -46,7 +46,6 @@ class CardView extends View
   initCard: (width, height, depth) ->
     @state = new StateModifier
     @mainNode = @add @state
-
     ## Front Card
     front = new ImageSurface
       size: [ width, height ]
@@ -55,7 +54,6 @@ class CardView extends View
       transform: Transform.translate 0, 0, depth/2
     front.on 'click', @showChoices
     @mainNode.add(modifier).add front
-
     ## Back Card
     back = new ImageSurface
       size: [ width, height ]
@@ -125,11 +123,6 @@ class CardView extends View
         borderRadius: "#{@options.borderRadius}px"
         maxHeight: "#{height - 100}px"
     @image.on "click", =>
-      #@toggleImage
-      #@image.setContent ""
-      #@newChoiceModifier.setTransform Transform.translate(0,0,-10)
-      #@newChoiceModifier.setOpacity 0
-      #@flip()
       PlayActions.rate 0
     @imageModifier = new StateModifier
       transform: Transform.multiply(
@@ -165,7 +158,7 @@ class CardView extends View
 
   toggleChoices: =>
     if @showChoices
-      PlayActions.pick @id
+      #PlayActions.pick @id
       @question.setClasses(['card__front__question--small'])
       @question.setSize [@options.width - 50, @options.height]
       @qModifier.setTransform(
@@ -193,7 +186,6 @@ class CardView extends View
           Transform.translate 0, -100, @options.depth/2
         ), @options.transition
       )
-      @ch
       @choicesMod.setTransform Transform.translate 0, 0, -10
       @showChoices = true
 

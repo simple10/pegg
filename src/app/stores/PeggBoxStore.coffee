@@ -5,7 +5,7 @@ Parse = require 'Parse'
 
 
 class PeggBoxStore extends EventEmitter
-  _nextSet: null
+  _activity: null
 
   fetchParse: (page) ->
     # TODO: implement pagination
@@ -14,7 +14,7 @@ class PeggBoxStore extends EventEmitter
     query.equalTo "userId", 1
     query.find
       success: (results) =>
-        @_nextSet = results
+        @_activity = results
         # TODO: process the results from Parse
         @emit Constants.stores.CHANGE
         return
@@ -22,8 +22,8 @@ class PeggBoxStore extends EventEmitter
         console.log "Error: " + error.code + " " + error.message
         return
 
-  getNextSet: ->
-    @_nextSet
+  getActivity: ->
+    @_activity
 
 peggbox = new PeggBoxStore
 
