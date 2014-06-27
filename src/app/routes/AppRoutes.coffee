@@ -14,3 +14,8 @@ appRoutes = new AppRouter()
 
 Parse.history.start()
 
+# Use pushState in production
+# TODO: get webpack-dev-server to rewrite URLs to always serve index.html
+# Parse.history.start
+#   pushState: true
+
