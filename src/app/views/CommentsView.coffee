@@ -14,7 +14,7 @@ ContainerSurface = require 'famous/surfaces/ContainerSurface'
 class CommentsView extends View
   @DEFAULT_OPTIONS:
     width: window.innerWidth - 50
-    height: window.innerHeight
+    height: window.innerHeight - 300
 
   constructor: () ->
     super

@@ -20,7 +20,6 @@ class UserStore extends EventEmitter
             error: ->
               debugger
             success: =>
-              debugger
               @emit Constants.stores.CHANGE
         )
         unless user.existed()

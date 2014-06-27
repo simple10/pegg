@@ -14,12 +14,14 @@ class ProgressBarView extends View
       duration: 400
       curve: 'easeOut'
 
-  constructor: (steps, options) ->
+  constructor: (options) ->
     super options
-    #debugger
-    @steps = steps
     @last = 0
     @init()
+
+  reset: (steps) =>
+    @steps = steps
+    @last = 0
 
   init: ->
     progressBarMod = new StateModifier
@@ -51,5 +53,7 @@ class ProgressBarView extends View
     next = @last + step * x
     @activeBar.setSize [next, @options.height]
     @last = next
+
+
 
 module.exports = ProgressBarView

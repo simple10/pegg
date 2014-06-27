@@ -15,11 +15,11 @@ class CommentsItemView extends View
     width: undefined
     height: 60
     text:
-      width: window.innerWidth - 80
+      width: window.innerWidth - 87
       height: 15
     pic:
-      width: 30
-      height: 30
+      width: 35
+      height: 35
 
   constructor: (comment, options) ->
     options = _.defaults options, @constructor.DEFAULT_OPTIONS

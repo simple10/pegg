@@ -9,7 +9,7 @@ Easing = require 'famous/transitions/Easing'
 
 class InputView extends View
   @DEFAULT_OPTIONS:
-    width: window.innerWidth - window.innerWidth * .2
+    width: window.innerWidth - window.innerWidth * .1
     height: 50
     placeholder: 'hello'
     cssPrefix: 'input__text'
@@ -18,8 +18,8 @@ class InputView extends View
       duration: 500
       curve: Easing.outBounce
 
-  constructor: () ->
-    super
+  constructor: (options) ->
+    super options
     @init()
 
   init: =>
@@ -39,12 +39,16 @@ class InputView extends View
   onInputFocus: =>
     @textInput.focus()
     @textInput.setClasses ["#{@options.cssPrefix}--big"]
-    @textInputMod.setTransform Transform.translate(0, -window.innerHeight/2, 0), @options.transition
+    @textInput.setSize [window.innerWidth, window.innerHeight/2 + 50]
+    @textInputMod.setAlign [0.5, 0]
+    #@textInputMod.setTransform Transform.translate(0, -window.innerHeight, 0), @options.transition
 
   onInputBlur: =>
     @textInput.blur()
     @textInput.setClasses ["#{@options.cssPrefix}"]
-    @textInputMod.setTransform Transform.translate(0, -window.innerHeight/2 + 120, 0), @options.transition
+    @textInput.setSize [@options.width, @options.height]
+    @textInputMod.setAlign [0.5, 1]
+    #@textInputMod.setTransform Transform.translate(0, -window.innerHeight/2 + 120, 0), @options.transition
 
 
 

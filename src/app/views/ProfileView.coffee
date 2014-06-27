@@ -24,14 +24,14 @@ class ProfileView extends View
   init: ->
     pic = new ImageSurface
       size: [ @options.width, null]
-      content: UserStore.getAvatar("height=200&type=normal&width=200")
+      content: UserStore.getAvatar("height=300&type=normal&width=300")
       classes: ["profile__pic"]
     picMod = new StateModifier
       align: [0.5, 1]
       origin: [0.5, 1]
-      transform: Transform.translate 0, 0, -1
+      transform: Transform.translate 0, 100, -1
     pic.on "click", ((picMod) =>
-      picMod.setTransform Transform.translate(0, 300, -1),
+      picMod.setTransform Transform.translate(0, 200, -1),
         @options.transition
     ).bind @, picMod
     name = new Surface

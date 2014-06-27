@@ -49,7 +49,7 @@ class CardView extends View
       content: 'images/Card_White.png'
     modifier = new Modifier
       transform: Transform.translate 0, 0, depth/2
-    front.on 'click', @showChoices
+    front.on 'click', @toggleChoices
     @mainNode.add(modifier).add front
     ## Back Card
     @back = new ImageSurface
@@ -133,7 +133,7 @@ class CardView extends View
       classes: ['card__back__text']
     @textModifier = new StateModifier
       transform: Transform.multiply(
-        Transform.translate(0, -150, -depth/2 - 2)
+        Transform.translate(0, -160, -depth/2 - 2)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
@@ -152,18 +152,16 @@ class CardView extends View
 
   toggleChoices: =>
     if @showChoices
-      #PlayActions.pick @id
       @question.setClasses(['card__front__question--small'])
       @question.setSize [@options.width - 50, @options.height]
       @qModifier.setTransform(
         Transform.translate 30, 20, @options.depth/2 + 2
         @options.transition
       )
-      #@pic.setClasses(['card__front__pic--small'])
       @picMod.setTransform(
         Transform.multiply(
-          Transform.scale .6, .6, 1
-          Transform.translate -200, -250, @options.depth/2 + 2
+          Transform.scale .5, .5, 1
+          Transform.translate -210, -260, @options.depth/2 + 2
         ), @options.transition
       )
       @choicesMod.setTransform Transform.translate 0, 30, 0
@@ -177,7 +175,7 @@ class CardView extends View
       @picMod.setTransform(
         Transform.multiply(
           Transform.scale 1, 1, 1
-          Transform.translate 0, -110, @options.depth/2
+          Transform.translate 0, -110, @options.depth/2 + 2
         ), @options.transition
       )
       @choicesMod.setTransform Transform.translate 0, 0, -10
