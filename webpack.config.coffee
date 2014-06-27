@@ -19,7 +19,8 @@ module.exports =
   entry:
     bundle: './src/app'
 
-  devtool: 'source-map'
+  devtool: 'eval'
+  # devtool: 'source-map'
 
   output:
     path: path.join(__dirname, 'dist')
