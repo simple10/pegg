@@ -138,7 +138,6 @@ class AppView extends View
   onAppStoreChange: =>
     pageID = AppStateStore.getCurrentPageID()
     @showPage @getPage pageID
-    @header.change pageID
     #@footer.bounceTabs()
     @footer.hideTabs()
     @closeMenu()

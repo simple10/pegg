@@ -10,6 +10,8 @@ Modifier  = require 'famous/core/Modifier'
 Transform = require 'famous/core/Transform'
 UserActions = require 'actions/UserActions'
 UserStore = require 'stores/UserStore'
+AppStateStore = require 'stores/AppStateStore'
+Constants = require 'constants/PeggConstants'
 MenuActions = require 'actions/MenuActions'
 Easing = require 'famous/transitions/Easing'
 Timer = require 'famous/utilities/Timer'
@@ -20,18 +22,24 @@ Timer = require 'famous/utilities/Timer'
 # logout
 ###
 class HeaderView extends View
-  @DEFAULT_OPTIONS:
-    title: 'play'
   cssPrefix: 'header'
   height: null
 
   constructor: ->
     super
-    @build(@options.title)
+    UserStore.on Constants.stores.CHANGE, @_build
+    AppStateStore.on Constants.stores.CHANGE, @_build
+    @_build()
     @initEvents()
 
   # Build view
-  build: (page) ->
+  _build: =>
+    page = AppStateStore.getCurrentPageID()
+
+    #@background.setClasses ["#{@cssPrefix}__background", "#{@cssPrefix}__background--#{page}"]
+    #@title.setContent page
+    #if page isnt "profile" then page else ""
+
     @background = new Surface
       classes: ["#{@cssPrefix}__background", "#{@cssPrefix}__background--#{page}"]
     @logo = new ImageSurface
@@ -71,11 +79,6 @@ class HeaderView extends View
   initEvents: ->
     @logo.on 'click', =>
       @_eventOutput.emit 'toggleMenu'
-
-  change: (page) ->
-    #@background.setClasses ["#{@cssPrefix}__background", "#{@cssPrefix}__background--#{page}"]
-    #@title.setContent page
-    #if page isnt "profile" then page else ""
 
 
 module.exports = HeaderView
