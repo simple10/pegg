@@ -9,7 +9,6 @@ class PlayStore extends EventEmitter
   _cardSet: {}
   _card: null
   _comments: null
-  _user: UserStore.getUser()
   _playState: Constants.stores.PEGGS_LOADED
 
   ## Tracks state of player in game
@@ -18,17 +17,19 @@ class PlayStore extends EventEmitter
   #   TODO: LOAD_ERROR
   loadGame: ->
     if @_playState is Constants.stores.PREFS_LOADED
-      @_fetchPeggCards @_user, 3, (res) =>
+      @_fetchPeggCards UserStore.getUser(), 3, (res) =>
         @_cardSet = res
         @_playState = Constants.stores.PEGGS_LOADED
         @emit Constants.stores.CHANGE
     else if @_playState is Constants.stores.PEGGS_LOADED
-      @_fetchPrefCards @_user, 3, (res) =>
+
+      @_fetchPrefCards UserStore.getUser(), 3, (res) =>
         @_cardSet = res
         @_playState = Constants.stores.PREFS_LOADED
         @emit Constants.stores.CHANGE
 
   _fetchPrefCards: (user, num, cb) ->
+    debugger
     # Gets unanswered preferences: cards the user answers about himself
     cardSet = {}
     Choice = Parse.Object.extend 'Choice'
@@ -140,7 +141,7 @@ class PlayStore extends EventEmitter
     prefQuery.first
       success: (pref) =>
         pref.set 'choice', choice
-        pref.addUnique 'peggedBy', @_user.id
+        pref.addUnique 'peggedBy', UserStore.getUser().id
         pref.save()###
     #INSERT into Pegg table a row with current user's pegg
     @emit Constants.stores.PLAY_SAVED
@@ -153,13 +154,13 @@ class PlayStore extends EventEmitter
     cardQuery.equalTo 'objectId', cardId
     cardQuery.first
       success: (card) =>
-        card.addUnique 'hasPlayed', @_user.id
+        card.addUnique 'hasPlayed', UserStore.getUser().id
         card.save()###
     #INSERT into Pref table a row with user's choice
     ###card = new Parse.Object 'Card'
     card.set 'id', cardId
     user = new Parse.Object 'User'
-    user.set 'id', @_user.id
+    user.set 'id', UserStore.getUser().id
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
     newPref = new Parse.Object 'Pref'
