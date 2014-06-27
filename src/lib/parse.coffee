@@ -9,6 +9,7 @@
 # Example using imports and exports loaders
 # Parse = require 'imports?window=>{}!exports?window.Parse!./parse-1.2.18_fixed-parsedate'
 
+$ = require 'exports?$!../../bower_components/zepto/zepto.js'
 require 'script!./parse-1.2.18_fixed-parsedate'
 Config = require('Config').public.parse
 
