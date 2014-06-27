@@ -4,7 +4,7 @@ module.exports =
   actions: Utils.keyMirror
     MENU_SELECT: null
     PEGGBOX_FETCH: null
-    GAME_LOAD: null
+    SET_LOAD: null
     PEGG_SUBMIT: null
     PREF_SUBMIT: null
     CARD_RATE: null
@@ -19,7 +19,7 @@ module.exports =
     # Generic
     CHANGE: null
 
-    # Specific ... probably make these more explicit
+    # Specific
     CARD_RATED: null
     UNLOCK_ACHIEVED: null
     PLAY_SAVED: null
@@ -28,4 +28,8 @@ module.exports =
     COMMENTS_FETCHED: null
     CARDS_LOADED: null
     PLAY_CONTINUED: null
-    GAME_ERROR: null
+    LOAD_ERROR: null
+    NO_PREFS_REMAINING: null
+    NO_PEGGS_REMAINING: null
+    PREFS_LOADED: null
+    PEGGS_LOADED: null

@@ -69,10 +69,10 @@ class AppView extends View
   initListeners: ->
     AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
     PeggBoxStore.on Constants.stores.CHANGE, @onPeggBoxChange
-    PlayStore.on Constants.stores.CARDS_LOADED, @onGameChange
+    PlayStore.on Constants.stores.CHANGE, @onPlayChange
     MoodStore.on Constants.stores.CHANGE, @onMoodChange
-    PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @onStatusChange
-    PlayStore.on Constants.stores.PLAY_CONTINUED, @onPlayContinued
+    #PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @onStatusChange
+    #PlayStore.on Constants.stores.PLAY_CONTINUED, @onPlayContinued
     #@pages.peggbox.on 'scroll', @onScroll
 
   initData: ->
@@ -146,17 +146,18 @@ class AppView extends View
   onPeggBoxChange: =>
     @pages.activity.load PeggBoxStore.getActivity()
 
-  onGameChange: =>
-    @pages.play.load PlayStore.getCards()
+  onPlayChange: =>
+    playState = PlayStore.getPlayState()
+    if playState is Constants.stores.CARDS_LOADED
+      @pages.play.load PlayStore.getCards()
+    else if playState is Constants.stores.PLAY_CONTINUED
+      @showPage @pages.play
+    else
+      @pages.status.load playState
+      @showPage @pages.status
 
   onMoodChange: =>
     @pages.play.load MoodStore.getMoods()
-
-  onPlayContinued: =>
-    @showPage @getPage "play"
-
-  onStatusChange: =>
-    @showPage @getPage "status"
 
   toggleMenu: =>
     if @menuOpen

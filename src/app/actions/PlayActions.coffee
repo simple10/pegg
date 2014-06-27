@@ -4,7 +4,7 @@ Constants = require('constants/PeggConstants')
 PlayActions =
   load: () ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.GAME_LOAD
+      actionType: Constants.actions.SET_LOAD
 
   pref: (card, choice) ->
     AppDispatcher.handleViewAction

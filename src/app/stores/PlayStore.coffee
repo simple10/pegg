@@ -10,24 +10,23 @@ class PlayStore extends EventEmitter
   _card: null
   _comments: null
   _user: UserStore.getUser()
+  _playState: Constants.stores.PEGGS_LOADED
 
-  # TODO: if offline, load from localStorage
-
-  # Tracks state of player in game
-  # emits: CARDS_LOADED, UNLOCK_ACHIEVED, or GAME_ERROR
+  ## Tracks state of player in game
+  # emits:
+  #   CHANGE
+  #   TODO: LOAD_ERROR
   loadGame: ->
-    # TODO: Game flow
-    # 1. 10 Pref cards
-    # 2. 10 Pegg cards
-    # 3. Achievement unlocked
-    # Repeat 1-3 until all 5 unlocks achieved
-    @_fetchPrefCards @_user, 10, (res) =>
-      if res isnt {}
+    if @_playState is Constants.stores.PREFS_LOADED
+      @_fetchPeggCards @_user, 3, (res) =>
         @_cardSet = res
-        @emit Constants.stores.CARDS_LOADED
-      else
-        @emit Constants.stores.GAME_ERROR
-    #@_fetchPeggCards @_user, 10, (res) =>
+        @_playState = Constants.stores.PEGGS_LOADED
+        @emit Constants.stores.CHANGE
+    else if @_playState is Constants.stores.PEGGS_LOADED
+      @_fetchPrefCards @_user, 3, (res) =>
+        @_cardSet = res
+        @_playState = Constants.stores.PREFS_LOADED
+        @emit Constants.stores.CHANGE
 
   _fetchPrefCards: (user, num, cb) ->
     # Gets unanswered preferences: cards the user answers about himself
@@ -105,10 +104,13 @@ class PlayStore extends EventEmitter
         cb cardSet
 
   fetchComments: ->
-    @_comments = [ { text: 'some comment', imageUrl: 'images/mascot_medium.png'},
-      { text: 'another comment', imageUrl: 'images/mascot_medium.png'},
-      { text: 'hello dixie dear oh me oh my this is a comment!', imageUrl: 'images/mascot_medium.png'},
-      { text: 'this is the craziest bullshit ever...', imageUrl: 'images/mascot_medium.png'},
+    @_comments = [
+      { text: 'totally disagree, you woulda picked the girly one.', imageUrl: 'https://graph.facebook.com/4901716/picture?type=square'},
+      { text: 'dear oh me oh my this is a comment!', imageUrl: 'https://graph.facebook.com/21303798/picture/?type=square'},
+      { text: 'this is the craziest thing ever...', imageUrl: 'https://graph.facebook.com/598877832/picture/?type=square'},
+      { text: 'So how would you go about making a half-man, half-monkey type creature?', imageUrl: 'https://graph.facebook.com/4914848/picture?type=square'},
+      { text: 'thats some next level shiz!', imageUrl: 'https://graph.facebook.com/21303798/picture/?type=square'},
+      { text: 'hmm... not sure what to make of that.', imageUrl: 'https://graph.facebook.com/4914848/picture?type=square'},
     ]
     @emit Constants.stores.COMMENTS_FETCHED
     ###Comments = Parse.Object.extend("Comment")
@@ -125,7 +127,7 @@ class PlayStore extends EventEmitter
 
   savePegg: (peggeeId, cardId, choiceId) ->
     #UPDATE Pref table to include current user in peggedBy array
-    console.log "card: " + cardId + " choice: " + choiceId
+    ###console.log "card: " + cardId + " choice: " + choiceId
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     user = new Parse.Object 'User'
@@ -139,22 +141,22 @@ class PlayStore extends EventEmitter
       success: (pref) =>
         pref.set 'choice', choice
         pref.addUnique 'peggedBy', @_user.id
-        pref.save()
+        pref.save()###
     #INSERT into Pegg table a row with current user's pegg
     @emit Constants.stores.PLAY_SAVED
 
 
   savePref: (cardId, choiceId) ->
     #UPDATE Card table to include current user in hasPlayed array
-    console.log "card: " + cardId + " choice: " + choiceId
+    ###console.log "card: " + cardId + " choice: " + choiceId
     cardQuery = new Parse.Query 'Card'
     cardQuery.equalTo 'objectId', cardId
     cardQuery.first
       success: (card) =>
         card.addUnique 'hasPlayed', @_user.id
-        card.save()
+        card.save()###
     #INSERT into Pref table a row with user's choice
-    card = new Parse.Object 'Card'
+    ###card = new Parse.Object 'Card'
     card.set 'id', cardId
     user = new Parse.Object 'User'
     user.set 'id', @_user.id
@@ -164,21 +166,24 @@ class PlayStore extends EventEmitter
     newPref.set 'choice', choice
     newPref.set 'card', card
     newPref.set 'user', user
-    newPref.save()
+    newPref.save()###
     @emit Constants.stores.PLAY_SAVED
 
   saveRating: (rating) ->
     console.log "rating: " + rating
       #TODO: send data to Parse
     if @_card is "qZxzk3ipSd"
-      @emit Constants.stores.UNLOCK_ACHIEVED
-    @emit Constants.stores.CARD_RATED
+      @_playState = Constants.stores.UNLOCK_ACHIEVED
+      @emit Constants.stores.CHANGE
+    else
+      @emit Constants.stores.CARD_RATED
 
   saveComment: (comment) ->
     comment
 
   saveStatusAck: ->
-    @emit Constants.stores.PLAY_CONTINUED
+    @_playState = Constants.stores.PLAY_CONTINUED
+    @emit Constants.stores.CHANGE
 
   savePlay: (cardID) ->
     console.log "cardID: " + cardID
@@ -190,6 +195,20 @@ class PlayStore extends EventEmitter
   getComments: () ->
     @_comments
 
+  getPlayState: () ->
+    if @_playState is Constants.stores.PREFS_LOADED
+      if @_cardSet is {}
+        Constants.stores.NO_PREFS_REMAINING
+      else
+        Constants.stores.CARDS_LOADED
+    else if @_playState is Constants.stores.PEGGS_LOADED
+      if @_cardSet is {}
+        Constants.stores.NO_PEGGS_REMAINING
+      else
+        Constants.stores.CARDS_LOADED
+    else
+      @_playState
+
 play = new PlayStore
 
 
@@ -199,7 +218,7 @@ AppDispatcher.register (payload) ->
 
   # Pay attention to events relevant to PlayStore
   switch action.actionType
-    when Constants.actions.GAME_LOAD
+    when Constants.actions.SET_LOAD
       play.loadGame()
     when Constants.actions.PEGG_SUBMIT
       play.savePegg action.peggee, action.card, action.choice
