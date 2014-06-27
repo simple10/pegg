@@ -148,7 +148,7 @@ class AppView extends View
 
   onPlayChange: =>
     playState = PlayStore.getPlayState()
-    if playState is Constants.stores.CARDS_LOADED
+    if playState is Constants.stores.PREFS_LOADED or Constants.stores.PEGGS_LOADED
       @pages.play.load PlayStore.getCards()
     else if playState is Constants.stores.PLAY_CONTINUED
       @showPage @pages.play

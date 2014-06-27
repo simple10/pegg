@@ -196,18 +196,11 @@ class PlayStore extends EventEmitter
     @_comments
 
   getPlayState: () ->
-    if @_playState is Constants.stores.PREFS_LOADED
-      if @_cardSet is {}
-        Constants.stores.NO_PREFS_REMAINING
-      else
-        Constants.stores.CARDS_LOADED
-    else if @_playState is Constants.stores.PEGGS_LOADED
-      if @_cardSet is {}
-        Constants.stores.NO_PEGGS_REMAINING
-      else
-        Constants.stores.CARDS_LOADED
-    else
-      @_playState
+    if @_playState is Constants.stores.PREFS_LOADED and @_cardSet is {}
+        return Constants.stores.NO_PREFS_REMAINING
+    else if @_playState is Constants.stores.PEGGS_LOADED and @_cardSet is {}
+        return Constants.stores.NO_PEGGS_REMAINING
+    @_playState
 
 play = new PlayStore
 

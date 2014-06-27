@@ -26,7 +26,6 @@ module.exports =
     SUBSCRIBE_PASS: null
     SUBSCRIBE_FAIL: null
     COMMENTS_FETCHED: null
-    CARDS_LOADED: null
     PLAY_CONTINUED: null
     LOAD_ERROR: null
     NO_PREFS_REMAINING: null
