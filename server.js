@@ -17,7 +17,6 @@ var buildRedirectURL = function(req, path) {
 
 app.use(express.static(__dirname + '/dist'));
 
-// REQUEST.HTML
 app.get(/^\/.*/, function(req, res){
   res.sendfile('index.html', {root: './dist'});
 });
