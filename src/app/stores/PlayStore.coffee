@@ -29,7 +29,6 @@ class PlayStore extends EventEmitter
         @emit Constants.stores.CHANGE
 
   _fetchPrefCards: (user, num, cb) ->
-    debugger
     # Gets unanswered preferences: cards the user answers about himself
     cardSet = {}
     Choice = Parse.Object.extend 'Choice'
