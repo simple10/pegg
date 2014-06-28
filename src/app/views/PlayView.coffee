@@ -30,14 +30,15 @@ class PlayView extends View
   initListeners: ->
     PlayStore.on Constants.stores.PLAY_SAVED, @adjustProgress
     PlayStore.on Constants.stores.CARD_RATED, @nextCard
-    PlayStore.on Constants.stores.COMMENTS_FETCHED, @loadComments
+    PlayStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
+    PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
 
-  load: (data) ->
+  loadCards: ->
     surfaces = []
     @cards.sequenceFrom surfaces
     @size = 0
     @pos = 1
-    for own k,v of data
+    for own k,v of PlayStore.getCards()
       card = new CardView(k, v, size: [window.innerWidth, null])
       card.pipe @cards
       surfaces.push card
@@ -45,6 +46,7 @@ class PlayView extends View
     @progress.reset(@size)
 
   initPlay: ->
+    debugger
     @playMod = new StateModifier
     @playNode = @add @playMod
     @cards = new Scrollview
@@ -58,10 +60,8 @@ class PlayView extends View
     #    Transform.rotateY(1)
     #  )
     @playNode.add @cards
-    #@rate = new RateView()
-    #@playNode.add @rate
 
-  initProgress: (size) ->
+  initProgress: ->
     @progress = new ProgressBarView
     progressMod = new StateModifier
       size: [window.innerHeight/2-20, 15]

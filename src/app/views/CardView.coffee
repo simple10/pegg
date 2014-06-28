@@ -13,6 +13,9 @@ Timer = require 'famous/utilities/Timer'
 ChoicesView = require 'views/ChoicesView'
 _ = require('Parse')._
 ImageUploadView = require 'views/ImageUploadView'
+PlayStore = require 'stores/PlayStore'
+Constants = require 'constants/PeggConstants'
+
 
 class CardView extends View
   @DEFAULT_OPTIONS:
@@ -39,6 +42,8 @@ class CardView extends View
     @initQuestion width, height, depth
     @initChoices width, Math.floor(height/6)
     @initAnswer width, height, depth
+    PlayStore.on Constants.stores.CHOICES_CHANGE, @loadChoices(cardId)
+
 
   initCard: (width, height, depth) ->
     @state = new StateModifier
@@ -86,30 +91,36 @@ class CardView extends View
     @mainNode.add(@qModifier).add @question
     @mainNode.add(@picMod).add @pic
 
-  initChoices: (width, height) ->
+  initChoices: ->
     @showChoices = true
-    @choices = []
-    for i in [0..@card.choices.length-1]
-      choiceText = @card.choices[i].text
+    @choicesView = new ChoicesView
+    @choicesMod = new StateModifier
+    @mainNode.add(@choicesMod).add @choicesView
+    @choicesMod.setTransform Transform.translate(0,0,-10)
+
+  loadChoices: (cardId) ->
+    choices = PlayStore.getChoices(cardId)
+    choiceSurfaces = []
+    i=0
+    for choice in choices
+      choiceText = choice.text
       if choiceText
-        choice = new Surface
-          size: [ width, height ]
+        height = choiceText/30 * 10
+        choiceSurface = new Surface
+          size: [ @options.width, height ]
           classes: ['card__front__option']
           content: "
-                <div class='outerContainer' style='width: #{width-40}px; height: #{height}px'>
-                  <div class='innerContainer'>
-                   #{choiceText}
-                  </div>
-                </div>"
-        choice.on 'click', ((i) ->
+                    <div class='outerContainer' style='width: #{width-40}px; height: #{height}px'>
+                      <div class='innerContainer'>
+                       #{choiceText}
+                      </div>
+                    </div>"
+        choiceSurface.on 'click', ((i) ->
           @pickAnswer i
         ).bind @, i
-        @choices.push choice
-    choices = new ChoicesView
-    choices.load @choices
-    @choicesMod = new StateModifier
-    @mainNode.add(@choicesMod).add choices
-    @choicesMod.setTransform Transform.translate(0,0,-10)
+        choiceSurfaces.push choice
+        i++
+    @choicesView.load @choices
 
   initAnswer: (width, height, depth) ->
     @image = new ImageSurface
@@ -189,8 +200,8 @@ class CardView extends View
         @back.setContent 'images/Card_Blue.png'
       else
         @back.setContent 'images/Card_Red.png'
-      image = @card.answer.get('image')
-      text = @card.answer.get('text')
+      image = @card.answer.get 'image'
+      text = @card.answer.get 'text'
     else
       PlayActions.pref @id, choice.id
       image = choice.image

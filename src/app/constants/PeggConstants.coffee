@@ -25,10 +25,12 @@ module.exports =
     PLAY_SAVED: null
     SUBSCRIBE_PASS: null
     SUBSCRIBE_FAIL: null
-    COMMENTS_FETCHED: null
-    PLAY_CONTINUED: null
     LOAD_ERROR: null
     NO_PREFS_REMAINING: null
     NO_PEGGS_REMAINING: null
-    PREFS_LOADED: null
-    PEGGS_LOADED: null
+    PLAY_PREFS: null
+    PLAY_PEGGS: null
+    CARDS_CHANGE: null
+    CHOICES_CHANGE: null
+    COMMENTS_CHANGE: null
+    PLAY_CHANGE: null

@@ -14,3 +14,4 @@ describe 'PlayStore', ->
 
   it 'has a card set', ->
     expect(@playStore._cardSet).to.exist
+
