@@ -22,31 +22,40 @@ class PlayView extends View
 
   constructor: () ->
     super
-    @initListeners()
     @initPlay()
     @initComments()
     @initProgress()
+    @initListeners()
 
   initListeners: ->
     PlayStore.on Constants.stores.PLAY_SAVED, @adjustProgress
     PlayStore.on Constants.stores.CARD_RATED, @nextCard
     PlayStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
     PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
+    PlayStore.on Constants.stores.CHOICES_CHANGE, (cardId) =>
+      @loadChoices cardId
 
-  loadCards: ->
-    surfaces = []
-    @cards.sequenceFrom surfaces
+  loadCards: =>
+    @cardSurfaces = []
+    @index = []
+    @cards.sequenceFrom @cardSurfaces
     @size = 0
     @pos = 1
     for own k,v of PlayStore.getCards()
       card = new CardView(k, v, size: [window.innerWidth, null])
       card.pipe @cards
-      surfaces.push card
+      @cardSurfaces.push card
+      @index[k] = @size
       @size++
     @progress.reset(@size)
 
+  loadChoices: (cardId) ->
+    @cardSurfaces[@index[cardId]].loadChoices cardId
+
+  loadComments: =>
+    @comments.load PlayStore.getComments()
+
   initPlay: ->
-    debugger
     @playMod = new StateModifier
     @playNode = @add @playMod
     @cards = new Scrollview
@@ -94,10 +103,6 @@ class PlayView extends View
       @cards.goToNextPage()
     @commentsMod.setTransform Transform.translate(0, window.innerHeight, -5), { duration: 500, curve: Easing.inCubic }
 
-  loadComments: =>
-    @comments.load PlayStore.getComments()
-    @commentsMod.setTransform Transform.translate(0, -50, -3), { duration: 500, curve: Easing.outCubic }
-
   toggleComments: =>
     transition = { duration: 500, curve: Easing.outCubic }
     if @commentsOpen
@@ -116,6 +121,7 @@ class PlayView extends View
 
   adjustProgress: =>
     @progress.increment(1)
+    @commentsMod.setTransform Transform.translate(0, -50, -3), { duration: 500, curve: Easing.outCubic }
 
 
 module.exports = PlayView

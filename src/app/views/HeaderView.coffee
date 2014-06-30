@@ -27,58 +27,49 @@ class HeaderView extends View
 
   constructor: ->
     super
-    UserStore.on Constants.stores.CHANGE, @_build
-    AppStateStore.on Constants.stores.CHANGE, @_build
+    UserStore.on Constants.stores.CHANGE, @_update
+    #AppStateStore.on Constants.stores.CHANGE, @_build
     @_build()
     @initEvents()
 
   # Build view
   _build: =>
-    page = AppStateStore.getCurrentPageID()
-
+    #page = AppStateStore.getCurrentPageID()
     #@background.setClasses ["#{@cssPrefix}__background", "#{@cssPrefix}__background--#{page}"]
     #@title.setContent page
     #if page isnt "profile" then page else ""
 
     @background = new Surface
-      classes: ["#{@cssPrefix}__background", "#{@cssPrefix}__background--#{page}"]
+      classes: ["#{@cssPrefix}__background"]
     @logo = new ImageSurface
       size: [130, 59]
       classes: ["#{@cssPrefix}__logo"]
       content: 'images/pegg_logo-small.png'
-    #@title = new Surface
-    #  content: page
-    #  classes: ["#{@cssPrefix}__title"]
-    pic = new ImageSurface
+    @pic = new ImageSurface
       size: [@options.height, @options.height]
-      content: UserStore.getAvatar 'type=square'
       classes: ["#{@cssPrefix}__profilePic"]
+      content: UserStore.getAvatar 'type=square'
       properties:
         borderRadius: "#{@options.height-15}px"
-        padding: "10px"
+        padding: '10px'
     picMod = new Modifier
       origin: [1, 0]
       align: [1, 0]
-    pic.on "click", ((picMod) =>
-      #picMod.setTransform Transform.scale(1, 0, 0),
-      #  { duration: 800, curve: Easing.inOutBack }
-      #Timer.after (=>
-        MenuActions.selectMenuItem "profile"
-      #), 20
-    ).bind null, picMod
     @add @background
     @add new Modifier
       origin: [0, 0]
     .add @logo
-    #@add new Modifier
-    #  transform: Transform.translate 0, 10
-    #.add @title
-    @add(picMod).add pic
+    @add(picMod).add @pic
+
+  _update: =>
+    @pic.setContent UserStore.getAvatar 'type=square'
 
 
   initEvents: ->
     @logo.on 'click', =>
       @_eventOutput.emit 'toggleMenu'
+    @pic.on 'click', ->
+      MenuActions.selectMenuItem 'profile'
 
 
 module.exports = HeaderView

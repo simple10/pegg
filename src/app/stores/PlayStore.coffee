@@ -10,7 +10,6 @@ class PlayStore extends EventEmitter
   _card: null
   _comments: null
   _mode: null
-  _card: null
   _peggee: null
 
 
@@ -22,13 +21,14 @@ class PlayStore extends EventEmitter
       @_fetchPeggCards 3
       @_mode = Constants.stores.PLAY_PEGGS
     else
-      @_fetchPrefCards 3
+      @_fetchPrefCards 1
       @_mode = Constants.stores.PLAY_PREFS
     @emit Constants.stores.PLAY_CHANGE
 
+
   _fetchPrefCards: (num) ->
     # Gets unanswered preferences: cards the user answers about himself
-    cardSet = {}
+    @_cardSet = {}
     user = UserStore.getUser()
     Choice = Parse.Object.extend 'Choice'
     Card = Parse.Object.extend 'Card'
@@ -38,15 +38,20 @@ class PlayStore extends EventEmitter
     cardQuery.find
       success: (cards) =>
         for card in cards
-          @_cardSet[card.id] = { pic: user.get('avatar_url'), question: card.get('question'), choices: null }
+          @_cardSet[card.id] = {
+            pic: user.get 'avatar_url'
+            question: card.get 'question'
+            choices: null
+          }
           @_fetchChoices(card.id)
-          @emit Constants.stores.CARDS_CHANGE
+        @emit Constants.stores.CARDS_CHANGE
       error: (error) ->
         console.log "Error fetching cards: " + error.code + " " + error.message
-        cb cardSet
+
 
   _fetchPeggCards: (num) ->
     # Gets unpegged preferences: cards the user answers about a friend
+    @_cardSet = {}
     user = UserStore.getUser()
     Pref = Parse.Object.extend 'Pref'
     prefUser = new Parse.Object 'User'
@@ -61,20 +66,20 @@ class PlayStore extends EventEmitter
     prefQuery.find
       success: (prefs) =>
         for pref in prefs
-          card = pref.get('card')
-          peggee = pref.get('user')
+          card = pref.get 'card'
+          peggee = pref.get 'user'
           @_cardSet[card.id] = {
             peggee: peggee.id
-            pic: peggee.get('avatar_url')
-            question: card.get('question')
+            pic: peggee.get 'avatar_url'
+            question: card.get 'question'
             choices: null
-            answer: pref.get('choice')
+            answer: pref.get 'choice'
           }
-          @_fetchChoices(card.id)
+          @_fetchChoices card.id
         @emit Constants.stores.CARDS_CHANGE
       error: (error) ->
         console.log "Error fetching cards: " + error.code + " " + error.message
-        cb cardSet
+
 
   _fetchChoices: (cardId) ->
     Choice = Parse.Object.extend 'Choice'
@@ -185,12 +190,12 @@ class PlayStore extends EventEmitter
     @_playState = Constants.stores.PLAY_CONTINUED
     @emit Constants.stores.CHANGE
 
-  _savePlay: (cardID) ->
-    console.log "cardID: " + cardID
-    #@_card = cardID
+  _savePlay: (cardId) ->
+    console.log "cardID: " + cardId
+    #@_card = cardId
 
-  _savePass: (cardID) ->
-    console.log "cardID: " + cardID
+  _savePass: (cardId) ->
+    console.log "cardID: " + cardId
 
   getCards: ->
     @_cardSet

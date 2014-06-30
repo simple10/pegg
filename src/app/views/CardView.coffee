@@ -42,8 +42,6 @@ class CardView extends View
     @initQuestion width, height, depth
     @initChoices width, Math.floor(height/6)
     @initAnswer width, height, depth
-    PlayStore.on Constants.stores.CHOICES_CHANGE, @loadChoices(cardId)
-
 
   initCard: (width, height, depth) ->
     @state = new StateModifier
@@ -91,36 +89,18 @@ class CardView extends View
     @mainNode.add(@qModifier).add @question
     @mainNode.add(@picMod).add @pic
 
-  initChoices: ->
+  initChoices: (width, height) ->
     @showChoices = true
-    @choicesView = new ChoicesView
+    @choicesView = new ChoicesView {width: width, height: height}
     @choicesMod = new StateModifier
     @mainNode.add(@choicesMod).add @choicesView
     @choicesMod.setTransform Transform.translate(0,0,-10)
 
   loadChoices: (cardId) ->
-    choices = PlayStore.getChoices(cardId)
-    choiceSurfaces = []
-    i=0
-    for choice in choices
-      choiceText = choice.text
-      if choiceText
-        height = choiceText/30 * 10
-        choiceSurface = new Surface
-          size: [ @options.width, height ]
-          classes: ['card__front__option']
-          content: "
-                    <div class='outerContainer' style='width: #{width-40}px; height: #{height}px'>
-                      <div class='innerContainer'>
-                       #{choiceText}
-                      </div>
-                    </div>"
-        choiceSurface.on 'click', ((i) ->
-          @pickAnswer i
-        ).bind @, i
-        choiceSurfaces.push choice
-        i++
-    @choicesView.load @choices
+    @choicesView.load cardId
+    @choicesView.on 'choice', ((i) ->
+      @pickAnswer i
+    ).bind @
 
   initAnswer: (width, height, depth) ->
     @image = new ImageSurface
@@ -153,7 +133,7 @@ class CardView extends View
     @mainNode.add(@imageModifier).add @image
     @mainNode.add(@textModifier).add @text
 
-  toggleImage: =>
+  toggleZoom: =>
     if @big
       @big = false
       @image.setSize [@options.width, @options.height]

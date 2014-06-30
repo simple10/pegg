@@ -25,7 +25,6 @@ MoodStore = require 'stores/MoodStore'
 
 # Actions
 PeggBoxActions = require 'actions/PeggBoxActions'
-PlayActions = require 'actions/PlayActions'
 
 # Menu
 Menu = require 'constants/menu'
@@ -61,23 +60,17 @@ class AppView extends View
   constructor: ->
     super
     @initMenu()
-    @initMain()
+    @initLayout()
     @initPages()
     @initListeners()
-    @onAppStoreChange()
 
   initListeners: ->
-    AppStateStore.on Constants.stores.CHANGE, @onAppStoreChange
-    PeggBoxStore.on Constants.stores.CHANGE, @onPeggBoxChange
-    PlayStore.on Constants.stores.PLAY_CHANGE, @onPlayChange
+    AppStateStore.on Constants.stores.CHANGE, @togglePage
+    PlayStore.on Constants.stores.PLAY_CHANGE, @togglePage
     #MoodStore.on Constants.stores.CHANGE, @onMoodChange
     #PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @onStatusChange
     #PlayStore.on Constants.stores.PLAY_CONTINUED, @onPlayContinued
     #@pages.peggbox.on 'scroll', @onScroll
-
-  initData: ->
-    PeggBoxActions.load 0
-    PlayActions.load()
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
@@ -87,7 +80,7 @@ class AppView extends View
       origin: [0,0]
     @add(@menuState).add @menu
 
-  initMain: ->
+  initLayout: ->
     @layout = new HeaderFooterLayout
       headerSize: @options.header.height
       footerSize: 0
@@ -135,25 +128,19 @@ class AppView extends View
   getPage: (pageID) ->
     @pages[pageID]
 
-  onAppStoreChange: =>
+  togglePage: =>
     pageID = AppStateStore.getCurrentPageID()
-    @showPage @getPage pageID
+    if pageID is 'play'
+      playState = PlayStore.getPlayState()
+      if playState is Constants.stores.PLAY_PREFS or Constants.stores.PLAY_PEGGS
+        @showPage @pages.play
+      else if playState is Constants.stores.UNLOCK_ACHIEVED
+        @showPage @pages.status
+    else
+      @showPage @getPage pageID
     #@footer.bounceTabs()
     @footer.hideTabs()
     @closeMenu()
-
-  onPeggBoxChange: =>
-    @pages.activity.load PeggBoxStore.getActivity()
-
-  onPlayChange: =>
-    playState = PlayStore.getPlayState()
-    if playState is Constants.stores.PLAY_PREFS or Constants.stores.PLAY_PEGGS
-      @showPage @pages.play
-    else if playState is Constants.stores.UNLOCK_ACHIEVED
-      @showPage @pages.status
-
-  onMoodChange: =>
-    #@pages.play.load MoodStore.getMoods()
 
   toggleMenu: =>
     if @menuOpen
