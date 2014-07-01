@@ -91,7 +91,7 @@ class SignupView extends View
       origin: [0.5, 1]
       align: [0.5, -0.05]
     @signupInput = new InputSurface
-      size: [window.innerWidth - window.innerWidth * .2, @options.input.height]
+      size: [@options.input.width, @options.input.height]
       placeholder: "Enter your email"
       classes: ["signup__email__input"]
       name: "signup"
