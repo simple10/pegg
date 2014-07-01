@@ -35,6 +35,7 @@ class InputView extends View
       if e.keyCode is 13
         @onInputBlur()
         @_eventOutput.emit 'submit', @textInput.getValue()
+        @textInput.setValue ''
 
   onInputFocus: =>
     @textInput.focus()

@@ -17,12 +17,12 @@ class PlayStore extends EventEmitter
   # emits:
   #   PLAY_CHANGE
   _loadGame: ->
-    #if @_mode is Constants.stores.PLAY_PREFS
-    @_fetchPeggCards 10
-    @_mode = Constants.stores.PLAY_PEGGS
-    #else
-    #  @_fetchPrefCards 1
-    #  @_mode = Constants.stores.PLAY_PREFS
+    if @_mode is Constants.stores.PLAY_PREFS
+      @_fetchPeggCards 10
+      @_mode = Constants.stores.PLAY_PEGGS
+    else
+      @_fetchPrefCards 10
+      @_mode = Constants.stores.PLAY_PREFS
     @emit Constants.stores.PLAY_CHANGE
 
 
@@ -62,7 +62,7 @@ class PlayStore extends EventEmitter
     prefQuery.include 'card'
     prefQuery.include 'choice'
     prefQuery.notEqualTo 'user', prefUser
-    prefQuery.notContainedIn 'peggedBy', [user.id]
+    prefQuery.notContainedIn 'peggers', [user.id]
     prefQuery.find
       success: (prefs) =>
         for pref in prefs
@@ -99,85 +99,63 @@ class PlayStore extends EventEmitter
 
 
   _fetchComments: ->
-    @_comments = [
-      { text: 'totally disagree, you woulda picked the girly one.', imageUrl: 'https://graph.facebook.com/4901716/picture?type=square'},
-      { text: 'dear oh me oh my this is a comment!', imageUrl: 'https://graph.facebook.com/21303798/picture/?type=square'},
-      { text: 'this is the craziest thing ever...', imageUrl: 'https://graph.facebook.com/598877832/picture/?type=square'},
-      { text: 'So how would you go about making a half-man, half-monkey type creature?', imageUrl: 'https://graph.facebook.com/4914848/picture?type=square'},
-      { text: 'thats some next level shiz!', imageUrl: 'https://graph.facebook.com/21303798/picture/?type=square'},
-      { text: 'hmm... not sure what to make of that.', imageUrl: 'https://graph.facebook.com/4914848/picture?type=square'},
-    ]
-    @emit Constants.stores.COMMENTS_CHANGE
-    ###Comments = Parse.Object.extend("Comment")
-    query = new Parse.Query(Comments)
+    Comments = Parse.Object.extend 'Comment'
+    query = new Parse.Query Comments
     card = new Parse.Object 'Card'
-    card.set 'id', cardId
+    card.set 'id', @_card
     peggee = new Parse.Object 'User'
-    peggee.set 'id', peggeeId
-    query.equalTo "peggee", peggee
-    query.equalTo "card", card
-    query.include "author"
+    peggee.set 'id', @_peggee
+    query.equalTo 'peggee', peggee
+    query.equalTo 'card', card
+    query.include 'author'
     query.find
       success: (results) =>
         @_comments = results
         @emit Constants.stores.COMMENTS_CHANGE
       error: (error) ->
-        console.log "Error: " + error.code + " " + error.message###
+        console.log "Error: #{error.code}  #{error.message}"
 
   _savePegg: (peggeeId, cardId, choiceId) ->
-    #UPDATE Pref table to include current user in peggedBy array
-    ###console.log "card: " + cardId + " choice: " + choiceId
+    @_peggee = peggeeId
+    @_card = cardId
+
+    #UPDATE Pref table to include current user in peggers array
+    console.log "card: " + cardId + " choice: " + choiceId
     card = new Parse.Object 'Card'
     card.set 'id', cardId
-    user = new Parse.Object 'User'
-    user.set 'id', peggeeId
+    peggee = new Parse.Object 'User'
+    peggee.set 'id', peggeeId
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
     prefQuery = new Parse.Query 'Pref'
     prefQuery.equalTo 'card', card
-    prefQuery.equalTo 'user', user
+    prefQuery.equalTo 'peggee', peggee
     prefQuery.first
       success: (pref) =>
         pref.set 'choice', choice
-        pref.addUnique 'peggedBy', UserStore.getUser().id
-        pref.save()###
-    #INSERT into Pegg table a row with current user's pegg
+        pref.addUnique 'peggers', UserStore.getUser().id
+        pref.save()
+    #TODO: INSERT into Pegg table a row with current user's pegg
     @emit Constants.stores.PLAY_SAVED
 
 
   _savePref: (cardId, choiceId) ->
+    @_peggee = UserStore.getUser().id
+    @_card = cardId
+
     #UPDATE Card table to include current user in hasPlayed array
-    ###console.log "card: " + cardId + " choice: " + choiceId
+    console.log "card: " + cardId + " choice: " + choiceId
     cardQuery = new Parse.Query 'Card'
     cardQuery.equalTo 'objectId', cardId
     cardQuery.first
       success: (card) =>
-        card.addUnique 'hasPlayed', UserStore.getUser().id
-        card.save()###
+        card.addUnique 'hasPlayed', @_peggee
+        card.save()
     #INSERT into Pref table a row with user's choice
-    ###card = new Parse.Object 'Card'
-    card.set 'id', cardId
-    user = new Parse.Object 'User'
-    user.set 'id', UserStore.getUser().id
-    choice = new Parse.Object 'Choice'
-    choice.set 'id', choiceId
-    newPref = new Parse.Object 'Pref'
-    newPref.set 'choice', choice
-    newPref.set 'card', card
-    newPref.set 'user', user
-    newPref.save()###
-    @emit Constants.stores.PLAY_SAVED
-
-  _saveRating: (rating) ->
-    console.log "rating: " + rating
-    #TODO: send data to Parse
-    @emit Constants.stores.CARD_RATED
-
-  _saveComment: (comment) ->
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     user = new Parse.Object 'User'
-    user.set 'id', @_user.id
+    user.set 'id', @_peggee
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
     newPref = new Parse.Object 'Pref'
@@ -185,6 +163,30 @@ class PlayStore extends EventEmitter
     newPref.set 'card', card
     newPref.set 'user', user
     newPref.save()
+    @emit Constants.stores.PLAY_SAVED
+
+  _saveRating: (rating) ->
+    console.log "rating: #{rating}"
+    #TODO: send data to Parse
+    @emit Constants.stores.CARD_RATED
+
+  _saveComment: (comment) ->
+    console.log "comment: #{comment}  peggee: #{@_peggee}  card: #{@_card}"
+    card = new Parse.Object 'Card'
+    card.set 'id', @_card
+    user = new Parse.Object 'User'
+    user.set 'id', UserStore.getUser().id
+    peggee = new Parse.Object 'User'
+    peggee.set 'id', @_peggee
+    newComment = new Parse.Object 'Comment'
+    newComment.set 'peggee', peggee
+    newComment.set 'card', card
+    newComment.set 'text', comment
+    newComment.set 'author', user
+    newComment.set 'userImg', UserStore.getAvatar 'type=square'
+    newComment.save()
+    @_comments.push newComment
+    @emit Constants.stores.COMMENTS_CHANGE
 
   _saveStatusAck: ->
     @_playState = Constants.stores.PLAY_CONTINUED
@@ -229,6 +231,7 @@ AppDispatcher.register (payload) ->
       play._fetchComments()
     when Constants.actions.PREF_SUBMIT
       play._savePref action.card, action.choice
+      play._fetchComments()
     when Constants.actions.CARD_COMMENT
       play._saveComment action.comment
     when Constants.actions.CARD_PASS

@@ -12,6 +12,9 @@ AppRouter = Parse.Router.extend(
 
   play: ->
     MenuActions.selectMenuItem "play"
+
+  decks: ->
+    MenuActions.selectMenuItem "decks"
 )
 
 appRoutes = new AppRouter()

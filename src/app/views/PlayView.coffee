@@ -84,7 +84,7 @@ class PlayView extends View
       origin: [0.5, 0]
       align: [0.5, 1]
     @add(@commentsMod).add @comments
-    @comments.on 'click', =>
+    @comments.on 'open', =>
       @toggleComments()
 
     @newComment = new InputView {placeholder: "Enter a comment..."}

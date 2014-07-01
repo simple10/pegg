@@ -1,3 +1,4 @@
+require './scss/comments.scss'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
@@ -23,16 +24,19 @@ class CommentsView extends View
   init: ->
     @comments = new Scrollview
     #@add @comments
-
     container = new ContainerSurface
       size: [@options.width, @options.height]
       properties:
         overflow: 'hidden'
     container.add @comments
+    surface = new Surface
+      content: 'Tap here to enter a comment'
+      classes: ['comments__text']
+    container.add surface
+    surface.on 'click', =>
+      surface.setContent ''
+      @_eventOutput.emit 'open', @
     @add container
-
-    container.on 'click', =>
-      @_eventOutput.emit 'click', @
 
   load: (data) ->
     surfaces = []
