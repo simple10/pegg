@@ -73,8 +73,8 @@ class PlayView extends View
   initProgress: ->
     @progress = new ProgressBarView
     progressMod = new StateModifier
-      size: [window.innerHeight/2-20, 15]
-      align: [0.5, 0.08]
+      #size: [window.innerHeight/2-20, 50]
+      align: [0.5, 0.09]
       origin: [0.5, 0.5]
     @playNode.add(progressMod).add @progress
 

@@ -1,3 +1,4 @@
+require './scss/play.scss'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
@@ -24,29 +25,26 @@ class ProgressBarView extends View
     @last = 0
 
   init: ->
-    progressBarMod = new StateModifier
-    @mainNode = @add progressBarMod
     text = new Surface
-      content: "Progress"
-      size: [@options.width, @options.height]
+      content: 'Next level'
+      size: [window.innerWidth, @options.height]
+      classes: ['progressBar__title']
     textMod = new StateModifier
-      align: [0, 0]
-      origin: [0, 0]
+      align: [0.5, 0.03]
+      origin: [0.5, 0]
     @activeBar = new ImageSurface
-      content: "images/progress_active.png"
+      content: 'images/progress_active.png'
       size: [@last, @options.height]
       properties:
         zIndex: 10
     inactiveBar = new ImageSurface
-      content: "images/progress_inactive.png"
+      content: 'images/progress_inactive.png'
       size: [@options.width, @options.height]
     @activeBarMod = new StateModifier
-      align: [0, 0]
-      origin: [0, 0]
     inactiveBarMod = new StateModifier
-    @mainNode.add(inactiveBarMod).add inactiveBar
-    @mainNode.add(@activeBarMod).add @activeBar
-    @mainNode.add(textMod).add text
+    @add(inactiveBarMod).add inactiveBar
+    @add(@activeBarMod).add @activeBar
+    @add(textMod).add text
 
   increment: (x) =>
     step = @options.width / @steps

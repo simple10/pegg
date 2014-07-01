@@ -20,6 +20,7 @@ class UserStore extends EventEmitter
             error: ->
               debugger
             success: =>
+              Parse.history.navigate('play');
               @emit Constants.stores.CHANGE
         )
         unless user.existed()

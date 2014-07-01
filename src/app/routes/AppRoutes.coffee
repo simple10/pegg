@@ -5,9 +5,13 @@ MenuActions = require 'actions/MenuActions'
 AppRouter = Parse.Router.extend(
   routes:
     "login": "login"
+    "play": "play"
 
   login: ->
     MenuActions.selectMenuItem "login"
+
+  play: ->
+    MenuActions.selectMenuItem "play"
 )
 
 appRoutes = new AppRouter()

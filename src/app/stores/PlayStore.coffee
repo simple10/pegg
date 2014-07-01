@@ -17,12 +17,12 @@ class PlayStore extends EventEmitter
   # emits:
   #   PLAY_CHANGE
   _loadGame: ->
-    if @_mode is Constants.stores.PLAY_PREFS
-      @_fetchPeggCards 3
-      @_mode = Constants.stores.PLAY_PEGGS
-    else
-      @_fetchPrefCards 1
-      @_mode = Constants.stores.PLAY_PREFS
+    #if @_mode is Constants.stores.PLAY_PREFS
+    @_fetchPeggCards 10
+    @_mode = Constants.stores.PLAY_PEGGS
+    #else
+    #  @_fetchPrefCards 1
+    #  @_mode = Constants.stores.PLAY_PREFS
     @emit Constants.stores.PLAY_CHANGE
 
 
@@ -225,7 +225,7 @@ AppDispatcher.register (payload) ->
     when Constants.actions.SET_LOAD
       play._loadGame()
     when Constants.actions.PEGG_SUBMIT
-      play._savePegg action.choice
+      play._savePegg action.peggee, action.card, action.choice
       play._fetchComments()
     when Constants.actions.PREF_SUBMIT
       play._savePref action.card, action.choice
