@@ -28,26 +28,26 @@ class CommentsView extends View
       properties:
         overflow: 'hidden'
     @container.add @comments
+    @add @container
+    @addCommentText = new Surface
+      classes: ['comments__text']
+      content: 'Tap here to enter a comment'
+    @container.add @addCommentText
     @container.on 'click', =>
       @_eventOutput.emit 'open', @
-    @add @container
 
   load: (data) ->
     surfaces = []
     @comments.sequenceFrom surfaces
     i = 0
     while i < data.length
+      @addCommentText.setContent ''
       comment = new CommentItemView(data[i], size: [@options.width, @options.height])
       comment.pipe @comments
       surfaces.push comment
       i++
     if data.length is 0
-      addCommentText = new Surface
-        classes: ['comments__text']
-        content: 'Tap here to enter a comment'
-      addCommentText.on 'click', =>
-        addCommentText.setContent ''
-        @_eventOutput.emit 'open', @
-      @container.add addCommentText
+      @addCommentText.setContent 'Tap here to enter a comment'
+
 
 module.exports = CommentsView
