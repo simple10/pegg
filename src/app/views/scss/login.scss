@@ -60,19 +60,14 @@
 }
 
 .signup__email__input{
-  text-align: center;
-}
-
-.signup__email__input input{
   background: transparent;
   border: 1px solid $white;
   border-radius: 5px;
   padding: 10px;
-  margin: 10px;
   color: $white;
   font-size: 15px;
-  width: 86%;
 }
+
 
 .signup__email__box {
   background-color: #fff;

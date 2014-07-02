@@ -35,7 +35,7 @@ class SignupView extends View
       dampingRatio: 0.3
     input:
       width: 300
-      height: 40
+      height: 50
 
 
   #Engine.on "keydown", (e) =>
@@ -129,14 +129,18 @@ class SignupView extends View
 
   onInputFocus: =>
     @signupInput.focus()
-    @signupInput.setClasses ["signup__email__input--big"]
-    @signupInputMod.setTransform Transform.translate(0, @options.input.height*2, 0), @options.transition
+    ###@signupInput.setClasses ["signup__email__input--big"]
+    @signupInput.setSize [window.innerWidth, window.innerHeight/2 + 50]
+    @signupInputMod.setAlign [0.5, 0]
+    @signupInputMod.setOrigin [0.5, 1]###
 
   onInputBlur: =>
     @signupInput.blur()
-    @signupInput.setClasses ["signup__email__input"]
+    ###@signupInput.setClasses ["signup__email__input"]
     @signupInputMod.setTransform Transform.translate(0, @window.height/2 + 120, 0), @options.transition
-
+    @signupInput.setSize [@options.input.width, @options.input.height]
+    @signupInputMod.setAlign [0.5, 1]
+    @signupInputMod.setOrigin [0.5, 0]###
 
   closeInput: =>
     alert "close"
