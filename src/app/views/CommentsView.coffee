@@ -23,20 +23,14 @@ class CommentsView extends View
 
   init: ->
     @comments = new Scrollview
-    #@add @comments
-    container = new ContainerSurface
+    @container = new ContainerSurface
       size: [@options.width, @options.height]
       properties:
         overflow: 'hidden'
-    container.add @comments
-    surface = new Surface
-      content: 'Tap here to enter a comment'
-      classes: ['comments__text']
-    container.add surface
-    surface.on 'click', =>
-      surface.setContent ''
+    @container.add @comments
+    @container.on 'click', =>
       @_eventOutput.emit 'open', @
-    @add container
+    @add @container
 
   load: (data) ->
     surfaces = []
@@ -47,5 +41,13 @@ class CommentsView extends View
       comment.pipe @comments
       surfaces.push comment
       i++
+    if data.length is 0
+      addCommentText = new Surface
+        classes: ['comments__text']
+        content: 'Tap here to enter a comment'
+      addCommentText.on 'click', =>
+        addCommentText.setContent ''
+        @_eventOutput.emit 'open', @
+      @container.add addCommentText
 
 module.exports = CommentsView
