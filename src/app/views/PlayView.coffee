@@ -42,12 +42,14 @@ class PlayView extends View
     @size = 0
     @pos = 1
     for own k,v of PlayStore.getCards()
-      card = new CardView(k, v, size: [window.innerWidth, null])
+      card = new CardView k, v, size: [window.innerWidth, null]
+      card.on 'comment', =>
+        @toggleComments()
       card.pipe @cards
       @cardSurfaces.push card
       @index[k] = @size
       @size++
-    @progress.reset(@size)
+    @progress.reset @size
 
   loadChoices: (cardId) ->
     @cardSurfaces[@index[cardId]].loadChoices cardId
@@ -93,7 +95,7 @@ class PlayView extends View
       align: [0.5, 1]
     @add(@newCommentMod).add @newComment
     @newComment.on 'submit', (comment) =>
-      @saveComment(comment)
+      @saveComment comment
 
   nextCard: =>
     if @pos is @size
