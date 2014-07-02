@@ -10,7 +10,7 @@ PlayStore = require 'stores/PlayStore'
 class ChoicesView extends View
   @DEFAULT_OPTIONS:
     width: window.innerHeight/2
-    height: 60
+    height: 50
 
   constructor: () ->
     super
@@ -24,8 +24,10 @@ class ChoicesView extends View
     for choice in choices
       choiceText = choice.text
       if choiceText
-        #height = choiceText/30 * 10
-        height = 60
+        if choiceText.length > 40
+          height = choiceText.length/30 * 30
+        else
+          height = @options.height
         choiceSurface = new Surface
           size: [ @options.width, height ]
           classes: ['card__front__option']
@@ -51,9 +53,10 @@ class ChoicesView extends View
     #surfaces.push newChoice
 
     container = new ContainerSurface
-      size: [window.innerHeight/2, 250]
+      size: [window.innerHeight/2, 220]
       properties:
         overflow: "hidden"
+      classes: ['card__options__box']
 
     container.add scrollview
     @add container

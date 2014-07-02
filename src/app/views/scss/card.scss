@@ -25,11 +25,19 @@
   line-height: 35px;
 }
 
+.card__front__question--medium {
+  text-align: center;
+  padding: 10px;
+  font-size: 24px;
+  line-height: 30px;
+}
+
+
 .card__front__question--small {
   text-align: center;
   font-size: 16px;
-  padding: 0px 10px;
-  line-height: 30px;
+  padding: 0px 12px;
+  line-height: 20px;
   z-index: -10;
   height: 60px !important;
   text-overflow: ellipsis;
@@ -50,6 +58,8 @@
   width: 100%;
   margin: 0 auto;
   text-align: left;
+  font-size: 16px;
+  line-height: 20px;
 }
 
 .card__front__input {
@@ -104,4 +114,10 @@
 .card__front_newOption {
   margin: 0;
   width: 80% !important;
+}
+
+.card__options__box {
+/*  -webkit-box-shadow: 0 4px 5px 2px #cccccc;
+  -moz-box-shadow: 0 4px 5px 2px #cccccc;
+  box-shadow: 0 4px 5px 2px #cccccc;*/
 }

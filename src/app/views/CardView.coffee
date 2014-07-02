@@ -29,6 +29,8 @@ class CardView extends View
     pic:
       width: 100
       height: 100
+    question:
+      classes: ['card__front__question']
 
   constructor: (id, card, options) ->
     options = _.defaults options, @constructor.DEFAULT_OPTIONS
@@ -44,6 +46,8 @@ class CardView extends View
     @initAnswer width, height, depth
 
   initCard: (width, height, depth) ->
+    if @card.question.length > 90
+      @options.question.classes = ["#{@options.question.classes}--medium"]
     @state = new StateModifier
     @mainNode = @add @state
     ## Front Card
@@ -75,13 +79,14 @@ class CardView extends View
       #classes: ['card__front__pic--big']
       properties:
         borderRadius: "#{@options.pic.width}px"
+    @pic.on 'click', @toggleChoices
     @picMod = new StateModifier
       align: [0.5, 0.5]
       origin: [0.5, 0.5]
       transform: Transform.translate 0, -110, depth/2 + 2
     @question = new Surface
       size: [ width, height ]
-      classes: ['card__front__question']
+      classes: @options.question.classes
       content: @card.question
     @qModifier = new StateModifier
       transform: Transform.translate 0, height/2 + -40, depth/2 + 2
@@ -143,8 +148,8 @@ class CardView extends View
 
   toggleChoices: =>
     if @showChoices
-      @question.setClasses(['card__front__question--small'])
-      @question.setSize [@options.width - 50, @options.height]
+      @question.setClasses ["#{@options.question.classes}--small"]
+      @question.setSize [@options.width - 80, @options.height]
       @qModifier.setTransform(
         Transform.translate 30, 20, @options.depth/2 + 2
         @options.transition
@@ -155,10 +160,11 @@ class CardView extends View
           Transform.translate -210, -260, @options.depth/2 + 2
         ), @options.transition
       )
-      @choicesMod.setTransform Transform.translate 0, 30, 0
+      @choicesMod.setTransform Transform.translate 0, 50, 0
       @showChoices = false
     else
-      @question.setClasses(['card__front__question'])
+      @question.setClasses @options.question.classes
+      @question.setSize [@options.width, @options.height]
       @qModifier.setTransform(
         Transform.translate 0, @options.height/2 + -40, @options.depth/2 + 2
         @options.transition
@@ -173,6 +179,8 @@ class CardView extends View
       @showChoices = true
 
   pickAnswer: (i) =>
+    @back.on 'click', =>
+      @_eventOutput.emit 'comment', @
     choice = @card.choices[i]
     if @card.peggee?
       PlayActions.pegg @card.peggee, @id, choice.id
