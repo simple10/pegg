@@ -120,16 +120,16 @@ class PlayStore extends EventEmitter
     @_card = cardId
 
     #UPDATE Pref table to include current user in peggers array
-    console.log "card: " + cardId + " choice: " + choiceId
+    console.log "peggee: #{peggeeId}  card: #{cardId}  choice: #{choiceId} "
     card = new Parse.Object 'Card'
-    card.set 'id', cardId
+    card.set 'id', @_card
     peggee = new Parse.Object 'User'
-    peggee.set 'id', peggeeId
+    peggee.set 'id', @_peggee
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
     prefQuery = new Parse.Query 'Pref'
     prefQuery.equalTo 'card', card
-    prefQuery.equalTo 'peggee', peggee
+    prefQuery.equalTo 'user', peggee
     prefQuery.first
       success: (pref) =>
         pref.set 'choice', choice
