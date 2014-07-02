@@ -26,7 +26,7 @@ class ProgressBarView extends View
 
   init: ->
     text = new Surface
-      content: 'Next level'
+      content: 'Progress'
       size: [window.innerWidth, @options.height]
       classes: ['progressBar__title']
     textMod = new StateModifier
@@ -36,7 +36,7 @@ class ProgressBarView extends View
       content: 'images/progress_active.png'
       size: [@last, @options.height]
       properties:
-        zIndex: 10
+        zIndex: 5
     inactiveBar = new ImageSurface
       content: 'images/progress_inactive.png'
       size: [@options.width, @options.height]
