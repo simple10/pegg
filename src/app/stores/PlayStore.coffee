@@ -9,8 +9,9 @@ class PlayStore extends EventEmitter
   _cardSet: {}
   _card: null
   _comments: null
-  _mode: null
+  _mode: Constants.stores.PLAY_PEGGS
   _peggee: null
+  _message: null
 
 
   ## Load set of cards
@@ -18,10 +19,10 @@ class PlayStore extends EventEmitter
   #   PLAY_CHANGE
   _loadGame: ->
     if @_mode is Constants.stores.PLAY_PREFS
-      @_fetchPeggCards 10
+      @_fetchPeggCards 3
       @_mode = Constants.stores.PLAY_PEGGS
     else
-      @_fetchPrefCards 10
+      @_fetchPrefCards 3
       @_mode = Constants.stores.PLAY_PREFS
     @emit Constants.stores.PLAY_CHANGE
 
@@ -35,6 +36,7 @@ class PlayStore extends EventEmitter
     cardQuery = new Parse.Query Card
     cardQuery.limit num
     cardQuery.notContainedIn 'hasPlayed', [user.id]
+    cardQuery.skip Math.floor(Math.random() * 100)
     cardQuery.find
       success: (cards) =>
         for card in cards
@@ -62,7 +64,7 @@ class PlayStore extends EventEmitter
     prefQuery.include 'card'
     prefQuery.include 'choice'
     prefQuery.notEqualTo 'user', prefUser
-    prefQuery.notContainedIn 'peggers', [user.id]
+    prefQuery.notContainedIn 'peggedBy', [user.id]
     prefQuery.find
       success: (prefs) =>
         for pref in prefs
@@ -115,7 +117,35 @@ class PlayStore extends EventEmitter
       error: (error) ->
         console.log "Error: #{error.code}  #{error.message}"
 
-  _savePegg: (peggeeId, cardId, choiceId) ->
+  _fetchMessage: (type) ->
+    fails = [
+      'Almost... but not quite.<br/>Try again.'
+      'You\'re awesome!<br/>But that guess wasn\'t.'
+      'Don\'t worry,<br/>that fail is safe with us.'
+      'Hmm... try again.<br/>You got this.'
+    ]
+    wins = [
+      'Hooray!! You rule!'
+      'Crushin\' it!'
+      'Way to be a decent friend.'
+      'Friend points earned!'
+      'Dude!<br/>Way to not suck at this.'
+    ]
+    prefs = [
+      'Preference saved.'
+      'So that\'s what you\'re into.<br/>Interesting...'
+      'Noted. Carry on.'
+      'Your friends will be relieved.'
+      'Confucius say:<br/>preferences are like buttholes.'
+    ]
+    if type is 'fail'
+      return fails[Math.floor(Math.random() * fails.length)]
+    else if type is 'win'
+      return wins[Math.floor(Math.random() * wins.length)]
+    else if type is 'pref'
+      return prefs[Math.floor(Math.random() * prefs.length)]
+
+  _savePegg: (peggeeId, cardId, choiceId, answerId) ->
     @_peggee = peggeeId
     @_card = cardId
 
@@ -133,10 +163,15 @@ class PlayStore extends EventEmitter
     prefQuery.first
       success: (pref) =>
         pref.set 'choice', choice
-        pref.addUnique 'peggers', UserStore.getUser().id
+        pref.addUnique 'peggedBy', UserStore.getUser().id
         pref.save()
     #TODO: INSERT into Pegg table a row with current user's pegg
-    @emit Constants.stores.PLAY_SAVED
+    if choiceId is answerId
+      @_message = @_fetchMessage 'win'
+      @emit Constants.stores.CARD_WIN
+    else
+      @_message = @_fetchMessage 'fail'
+      @emit Constants.stores.CARD_FAIL
 
 
   _savePref: (cardId, choiceId) ->
@@ -163,7 +198,8 @@ class PlayStore extends EventEmitter
     newPref.set 'card', card
     newPref.set 'user', user
     newPref.save()
-    @emit Constants.stores.PLAY_SAVED
+    @_message = @_fetchMessage 'pref'
+    @emit Constants.stores.PREF_SAVED
 
   _saveRating: (rating) ->
     console.log "rating: #{rating}"
@@ -202,18 +238,22 @@ class PlayStore extends EventEmitter
   getCards: ->
     @_cardSet
 
-  getComments: () ->
+  getComments: ->
     @_comments
 
   getChoices: (cardId) ->
     @_cardSet[cardId].choices
 
-  getPlayState: () ->
-    if @_mode is Constants.stores.PLAY_PREFS and @_cardSet is {}
-        return Constants.stores.NO_PREFS_REMAINING
-    else if @_mode is Constants.stores.PLAY_PEGGS and @_cardSet is {}
-        return Constants.stores.NO_PEGGS_REMAINING
-    @_mode
+  getPlayState: ->
+    if @_mode is Constants.stores.PLAY_PREFS and @_cardSet = {}
+      Constants.stores.NO_PREFS_REMAINING
+    else if @_mode is Constants.stores.PLAY_PEGGS and @_cardSet = {}
+      Constants.stores.NO_PEGGS_REMAINING
+    else
+      @_mode
+
+  getMessage: ->
+    @_message
 
 play = new PlayStore
 
@@ -227,7 +267,7 @@ AppDispatcher.register (payload) ->
     when Constants.actions.SET_LOAD
       play._loadGame()
     when Constants.actions.PEGG_SUBMIT
-      play._savePegg action.peggee, action.card, action.choice
+      play._savePegg action.peggee, action.card, action.choice, action.answer
       play._fetchComments()
     when Constants.actions.PREF_SUBMIT
       play._savePref action.card, action.choice

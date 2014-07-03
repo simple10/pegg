@@ -12,12 +12,13 @@ PlayActions =
       card: card
       choice: choice
 
-  pegg: (peggee, card, choice) ->
+  pegg: (peggee, card, choice, answer) ->
     AppDispatcher.handleViewAction
       actionType: Constants.actions.PEGG_SUBMIT
       peggee: peggee
       card: card
       choice: choice
+      answer: answer
 
   rate: (rating) ->
     AppDispatcher.handleViewAction

@@ -16,7 +16,6 @@ ImageUploadView = require 'views/ImageUploadView'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
 
-
 class CardView extends View
   @DEFAULT_OPTIONS:
     width: window.innerWidth - window.innerWidth * .1
@@ -71,6 +70,8 @@ class CardView extends View
         )
       )
     @mainNode.add(modifier).add @back
+    @back.on 'click', =>
+      @_eventOutput.emit 'comment', @
 
   initQuestion: (width, height, depth) ->
     @pic = new ImageSurface
@@ -115,7 +116,7 @@ class CardView extends View
         borderRadius: "#{@options.borderRadius}px"
         maxHeight: "#{height - 100}px"
     @image.on 'click', =>
-      PlayActions.rate 0
+      @flip()
     @imageModifier = new StateModifier
       transform: Transform.multiply(
         Transform.translate(0, -100, -depth/2 - 2)
@@ -179,21 +180,21 @@ class CardView extends View
       @showChoices = true
 
   pickAnswer: (i) =>
-    @back.on 'click', =>
-      @_eventOutput.emit 'comment', @
     choice = @card.choices[i]
     if @card.peggee?
-      PlayActions.pegg @card.peggee, @id, choice.id
-      if @card.answer.id is choice.id
+      answer = @card.answer.id
+      PlayActions.pegg @card.peggee, @id, choice.id, answer
+      if answer is choice.id
         @back.setContent 'images/Card_Blue.png'
       else
         @back.setContent 'images/Card_Red.png'
-      image = @card.answer.get 'image'
-      text = @card.answer.get 'text'
+      #image = @card.answer.get 'image'
+      #text = @card.answer.get 'text'
     else
       PlayActions.pref @id, choice.id
-      image = choice.image
-      text = choice.text
+
+    image = choice.image
+    text = choice.text
     Timer.after ( =>
       @image.setContent image
     ), 20
@@ -207,7 +208,7 @@ class CardView extends View
       @currentSide = side
     else
       @currentSide = if @currentSide is 1 then 0 else 1
-    @picMod.setOpacity 0
+    @picMod.setOpacity !@currentSide
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
       @options.transition

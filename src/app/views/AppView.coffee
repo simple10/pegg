@@ -131,11 +131,11 @@ class AppView extends View
   togglePage: =>
     pageID = AppStateStore.getCurrentPageID()
     if pageID is 'play'
-      playState = PlayStore.getPlayState()
-      if playState is Constants.stores.PLAY_PREFS or Constants.stores.PLAY_PEGGS
+      #playState = PlayStore.getPlayState()
+      #if playState is Constants.stores.NO_PEGGS_REMAINING
+      #  @showPage @pages.status
+      #else
         @showPage @pages.play
-      else if playState is Constants.stores.UNLOCK_ACHIEVED
-        @showPage @pages.status
     else
       @showPage @getPage pageID
     #@footer.bounceTabs()

@@ -22,7 +22,7 @@ module.exports =
     # Specific
     CARD_RATED: null
     UNLOCK_ACHIEVED: null
-    PLAY_SAVED: null
+    PREF_SAVED: null
     SUBSCRIBE_PASS: null
     SUBSCRIBE_FAIL: null
     LOAD_ERROR: null
@@ -34,3 +34,5 @@ module.exports =
     CHOICES_CHANGE: null
     COMMENTS_CHANGE: null
     PLAY_CHANGE: null
+    CARD_WIN: null
+    CARD_FAIL: null

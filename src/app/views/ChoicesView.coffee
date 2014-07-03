@@ -11,7 +11,7 @@ class ChoicesView extends View
   @DEFAULT_OPTIONS:
     width: window.innerHeight/2
     height: 50
-    padding: 20
+    padding: 40
 
   constructor: () ->
     super
@@ -33,7 +33,7 @@ class ChoicesView extends View
           size: [ @options.width, height ]
           classes: ['card__front__option']
           content: "
-                    <div class='outerContainer' style='width: #{@options.width-@options.padding*2}px; height: #{height}px; padding: 0px #{@options.padding}px'>
+                    <div class='outerContainer' style='width: #{@options.width}px; height: #{height}px;'>
                       <div class='innerContainer'>
                        #{choiceText}
                       </div>
