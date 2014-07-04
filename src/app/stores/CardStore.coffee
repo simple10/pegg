@@ -11,19 +11,27 @@ class CardStore extends EventEmitter
     @_cards
 
   add: (card) ->
-    @_cards.push card
+    newCard = new Card card
+    @_cards.push newCard
+    newCard
 
 class Card
   constructor: (options) ->
-    @_author = options.author # ? raise xxx
+    @_author = options.author ? raise 'author required'
+    @_question = options.question
+    @_answers = []
+
 
   addQuestion: (question) ->
     @_question = question
 
+  addAnswers: (answers...) ->
+    @_answers.push answers...
+
 
 cardStore = new CardStore
 
-module.exports = {cardStore, Card}
-
-
+module.exports =
+  CardStore: cardStore
+  Card: Card
 

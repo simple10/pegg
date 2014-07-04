@@ -13,6 +13,7 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Easing = require 'famous/transitions/Easing'
 Timer = require 'famous/utilities/Timer'
+{CardStore} = require 'stores/CardStore'
 
 
 class NewCardView extends View
@@ -55,13 +56,18 @@ class NewCardView extends View
       classes: ["#{@cssPrefix}__input"]
     )
     @addButton(1,
-      content: "Continue"
+      content: 'Continue'
       classes: ['newcard__button']
     , =>
-      @hideStep(@step1Mods)
+
+      @card = CardStore.add
+        author: UserStore.getUser().id
+        question: 'am i dragon?'
+
+      @hideStep @step1Mods
       @step2()
     )
-    @showStep(190, @step1Mods)
+    @showStep 190, @step1Mods
 
   step2: ->
     @step2Mods = []
