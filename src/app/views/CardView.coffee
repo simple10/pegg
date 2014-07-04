@@ -41,7 +41,7 @@ class CardView extends View
     depth = @options.depth
     @initCard width, height, depth
     @initQuestion width, height, depth
-    @initChoices width, Math.floor(height/6)
+    @initChoices width, Math.floor(height/5)
     @initAnswer width, height, depth
 
   initCard: (width, height, depth) ->
@@ -85,10 +85,11 @@ class CardView extends View
       align: [0.5, 0.5]
       origin: [0.5, 0.5]
       transform: Transform.translate 0, -110, depth/2 + 2
+    question = @card.firstName + ", " + @card.question.charAt(0).toLowerCase() + @card.question.slice(1)
     @question = new Surface
       size: [ width, height ]
       classes: @options.question.classes
-      content: @card.question
+      content: question
     @qModifier = new StateModifier
       transform: Transform.translate 0, height/2 + -40, depth/2 + 2
     @question.on 'click', @toggleChoices
@@ -197,7 +198,7 @@ class CardView extends View
     text = choice.text
     Timer.after ( =>
       @image.setContent image
-    ), 20
+    ), 10
     @text.setContent text
     @flip()
 

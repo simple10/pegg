@@ -194,7 +194,7 @@ class PlayView extends View
     @forwardMod.setTransform Transform.translate(0, 60, 0), { duration: 500, curve: Easing.inCubic }
 
   showMessage: =>
-    @messageMod.setTransform Transform.translate(0, 225, 0), { duration: 500, curve: Easing.inCubic }
+    @messageMod.setTransform Transform.translate(0, 225, -5), { duration: 500, curve: Easing.inCubic }
     #@backMod.setTransform Transform.translate(0, 50, 0), { duration: 500, curve: Easing.inCubic }
 
   showTopComment: =>

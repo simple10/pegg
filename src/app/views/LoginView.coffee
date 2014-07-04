@@ -20,12 +20,14 @@ class LoginView extends View
     markWidth: 150
     markHeight: 70
     transition:
-      duration: 800
+      duration: 600
       curve: Easing.inOutBack
     spring:
       method: "spring"
-      period: 500
+      period: 300
       dampingRatio: 0.3
+    mascotWidth: 417
+    mascotHeight: 800
 
   constructor: (options) ->
     super options
@@ -33,9 +35,9 @@ class LoginView extends View
 
   initSplash: ->
     logo = new ImageSurface
-      size: [@options.logoWidth, @options.logoHeight]
+      size: [@options.mascotWidth, @options.mascotHeight]
       classes: ['login__logo']
-      content: "images/logo_icon-big.png"
+      content: "images/mascot_medium.png"
     logoPosMod = new StateModifier
       align: [0.5,1]
       origin: [0.5,0]
@@ -49,11 +51,11 @@ class LoginView extends View
       origin: [0.5,0]
     @add(logoSizeMod).add(logoPosMod).add logo
     @add(markMod).add mark
-    markMod.setTransform Transform.translate(0, -window.innerHeight/2 - @options.logoHeight/2 + @options.markHeight, 3), @options.transition
+    markMod.setTransform Transform.translate(0, -window.innerHeight + @options.logoHeight + @options.markHeight, 3), @options.transition
     Timer.after (=>
       logoPosMod.setTransform Transform.translate(0, -window.innerHeight/2 - @options.logoHeight, 0), @options.spring, =>
         logoSizeMod.setTransform Transform.translate(0, -300, -2000), @options.transition
-        markMod.setTransform Transform.translate(0, 0, -30000), {duration: 200}, =>
+        markMod.setTransform Transform.translate(0, -window.innerHeight + @options.logoHeight/4, 0), {duration: 200}, =>
           @initLogin()
     ), 20
 
@@ -70,9 +72,9 @@ class LoginView extends View
       align: [0.5,0.5]
       origin: [0.5,0.5]
       opacity: 0
-    node = @add loginTextMod
-    node.add loginText
-    node.add privacyText
+    #node = @add loginTextMod
+    #node.add loginText
+    #node.add privacyText
     fbButton = new Surface
       size: [window.innerWidth, window.innerHeight/4]
       content: 'Login with Facebook'
@@ -94,8 +96,8 @@ class LoginView extends View
       align: [1,1]
       origin: [0,1]
 
-    loginTextMod.setOpacity 1, @options.transition
-    loginTextMod.setTransform Transform.translate(0, -105, 0), @options.transition
+    #loginTextMod.setOpacity 1, @options.transition
+    #loginTextMod.setTransform Transform.translate(0, -105, 0), @options.transition
     @add(fbButtonMod).add fbButton
     fbButtonMod.setTransform Transform.translate(-window.innerWidth, 0, 0), @options.transition
     Timer.after (=>

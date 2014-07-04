@@ -9,9 +9,10 @@ PlayStore = require 'stores/PlayStore'
 
 class ChoicesView extends View
   @DEFAULT_OPTIONS:
-    width: window.innerHeight/2
+    width: null
     height: 50
     padding: 40
+    innerWidth: window.innerWidth - window.innerWidth * .2
 
   constructor: () ->
     super
@@ -33,7 +34,7 @@ class ChoicesView extends View
           size: [ @options.width, height ]
           classes: ['card__front__option']
           content: "
-                    <div class='outerContainer' style='width: #{@options.width}px; height: #{height}px;'>
+                    <div class='outerContainer' style='width: #{@options.innerWidth}px; height: #{height}px;'>
                       <div class='innerContainer'>
                        #{choiceText}
                       </div>
@@ -54,7 +55,7 @@ class ChoicesView extends View
     #surfaces.push newChoice
 
     container = new ContainerSurface
-      size: [window.innerHeight/2, 220]
+      size: [@options.width, 220]
       properties:
         overflow: "hidden"
       classes: ['card__options__box']

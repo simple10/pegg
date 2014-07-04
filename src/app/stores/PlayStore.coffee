@@ -41,6 +41,7 @@ class PlayStore extends EventEmitter
       success: (cards) =>
         for card in cards
           @_cardSet[card.id] = {
+            firstName: user.get 'first_name'
             pic: user.get 'avatar_url'
             question: card.get 'question'
             choices: null
@@ -72,6 +73,7 @@ class PlayStore extends EventEmitter
           peggee = pref.get 'user'
           @_cardSet[card.id] = {
             peggee: peggee.id
+            firstName: peggee.get 'first_name'
             pic: peggee.get 'avatar_url'
             question: card.get 'question'
             choices: null
