@@ -8,5 +8,6 @@ describe 'DeckStore', ->
   beforeEach ->
     @decks = DeckStore
 
-  it 'should exist', ->
+  it 'exists', ->
     expect(@decks).to.exist
+
