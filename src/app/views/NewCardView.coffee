@@ -6,6 +6,7 @@ require './scss/newcard.scss'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
+InputSurface = require 'famous/surfaces/InputSurface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Modifier = require 'famous/core/Modifier'
@@ -14,6 +15,7 @@ Transform = require 'famous/core/Transform'
 Easing = require 'famous/transitions/Easing'
 Timer = require 'famous/utilities/Timer'
 {CardStore} = require 'stores/CardStore'
+UserStore = require 'stores/UserStore'
 
 
 class NewCardView extends View
@@ -49,21 +51,20 @@ class NewCardView extends View
 
   step1: ->
     @step1Mods = []
+    @step1Inputs = []
     @addNum(1)
-    @addSurface(1,
+    @addInput(1,
       size: [@options.input.width, @options.input.height]
-      content: '<input type="text" name="question" placeholder="Write a question" id="question" required/>'
+      placeholder: 'Write a question'
       classes: ["#{@cssPrefix}__input"]
     )
     @addButton(1,
       content: 'Continue'
       classes: ['newcard__button']
     , =>
-
       @card = CardStore.add
         author: UserStore.getUser().id
-        question: 'am i dragon?'
-
+        question: @step1Inputs[0].getValue()
       @hideStep @step1Mods
       @step2()
     )
@@ -71,17 +72,24 @@ class NewCardView extends View
 
   step2: ->
     @step2Mods = []
+    @step2Inputs = []
     @addNum(2)
     for i in [1..4]
-      @addSurface(2,
+      @addInput(2,
         size: [@options.input.width, @options.input.height]
-        content: "<input type='text' name='answer' placeholder='Answer option #{i}' id='answer#{i}' tabindex='#{i}'/>"
+        placeholder: "Answer option #{i}"
         classes: ["#{@cssPrefix}__input"]
       )
     @addButton(2,
       content: "Continue"
       classes: ['newcard__button']
     , =>
+      @card.addAnswers [
+        @step2Inputs[0].getValue()
+        @step2Inputs[1].getValue()
+        @step2Inputs[2].getValue()
+        @step2Inputs[3].getValue()
+      ]
       @hideStep(@step2Mods)
       @step3()
     )
@@ -176,6 +184,19 @@ class NewCardView extends View
       ).bind(@, i), j * 100
       i++
       j--
+
+  addInput: (step, options)->
+    surface = new InputSurface
+      size: options.size
+      content: options.content
+      classes: options.classes
+      placeholder: options.placeholder
+    surfaceMod = new StateModifier
+      origin: [0.5, 1]
+      align: [0.5, -0.05]
+    @["step#{step}Mods"].push surfaceMod
+    @["step#{step}Inputs"].push surface
+    @add(surfaceMod).add surface
 
   addSurface: (step, options)->
     surface = new Surface
