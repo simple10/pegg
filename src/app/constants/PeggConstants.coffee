@@ -14,6 +14,8 @@ module.exports =
     USER_LOGOUT: null
     SUBSCRIBER_SUBMIT: null
     PLAY_CONTINUE: null
+    ADD_QUESTION: null
+    ADD_ANSWERS: null
 
   stores: Utils.keyMirror
     # Generic
@@ -36,3 +38,4 @@ module.exports =
     PLAY_CHANGE: null
     CARD_WIN: null
     CARD_FAIL: null
+

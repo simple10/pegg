@@ -6,8 +6,8 @@ require './scss/newcard.scss'
 
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
-InputSurface = require 'famous/surfaces/InputSurface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
+InputSurface = require 'famous/surfaces/InputSurface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Modifier = require 'famous/core/Modifier'
 StateModifier = require 'famous/modifiers/StateModifier'
@@ -16,6 +16,7 @@ Easing = require 'famous/transitions/Easing'
 Timer = require 'famous/utilities/Timer'
 {CardStore} = require 'stores/CardStore'
 UserStore = require 'stores/UserStore'
+CardActions = require 'actions/CardActions'
 
 
 class NewCardView extends View
@@ -62,9 +63,7 @@ class NewCardView extends View
       content: 'Continue'
       classes: ['newcard__button']
     , =>
-      @card = CardStore.add
-        author: UserStore.getUser().id
-        question: @step1Inputs[0].getValue()
+      CardActions.addQuestion @step1Inputs[0].getValue()
       @hideStep @step1Mods
       @step2()
     )
@@ -81,10 +80,10 @@ class NewCardView extends View
         classes: ["#{@cssPrefix}__input"]
       )
     @addButton(2,
-      content: "Continue"
+      content: 'Continue'
       classes: ['newcard__button']
     , =>
-      @card.addAnswers [
+      CardActions.addAnswers [
         @step2Inputs[0].getValue()
         @step2Inputs[1].getValue()
         @step2Inputs[2].getValue()

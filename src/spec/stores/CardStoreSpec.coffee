@@ -1,36 +1,42 @@
-{CardStore, Card} = require 'stores/CardStore'
+CardStore = require 'stores/CardStore'
 helper = require '../helpers/Common'
 expect = helper.expect
 should = helper.should
 spy = helper.spy
 
+# Mocks
+GetUser = -> 'Augustin'
 
 describe 'CardStore', ->
   beforeEach ->
     @card_store = CardStore
-    @card_store._cards = []
+    @card_store._getUser = -> GetUser
 
   it 'exists', ->
     expect(@card_store).to.exist
 
-  it 'can get its cards', ->
-    card = {name: 'hello', option: 'yes'}
-    @card_store._cards = [card, card]
-    expect(@card_store.getCards()).to.deep.equal [card, card]
+  it 'can get its card', ->
+    author = 'Becca'
+    question = 'Which dress should I wear?'
+    answers = ['That one.', 'Don\'t care', 'Whatever you like.', 'The other one.']
+    categories = ['bored', 'fashion']
+    @card_store._author = author
+    @card_store._question = question
+    @card_store._answers = answers
+    @card_store._categories = categories
+    expect(@card_store.getCard()).to.deep.equal {author: author, question: question, answers: answers, categories: categories}
 
-  it 'can add a question to a card', ->
-    card = new Card {author: 'Becca'}
+  it 'can add a question to its card', ->
     question = 'Are dragons real?'
-    card.addQuestion question
-    expect(card._question).to.equal question
+    @card_store.addQuestion question
+    expect(@card_store._question).to.equal question
 
   it 'can add answers to a card', ->
-    card = new Card {author: 'Becca'}
     answers = ['Yes!!!', 'No, Virginia...']
-    card.addAnswers answers...
-    expect(card._answers).to.deep.equal answers
+    @card_store.addAnswers answers
+    expect(@card_store._answers).to.deep.equal answers
 
-  context '#add', ->
+  xcontext '#add', ->
     beforeEach ->
       @author = 'Becca'
       @question = 'Dragons???'
@@ -48,3 +54,5 @@ describe 'CardStore', ->
     it 'has the expected data', ->
       expect(@card._author).to.equal @author
       expect(@card._question).to.equal @question
+
+

@@ -1,11 +1,16 @@
 AppDispatcher = require 'dispatchers/AppDispatcher'
-Constants = require('constants/PeggConstants').actions
+Constants = require('constants/PeggConstants')
 
 CardActions =
 
-  # selectMenuItem: (pageID) ->
-  #   AppDispatcher.handleViewAction
-  #     actionType: Constants.MENU_SELECT
-  #     pageID: pageID
+  addQuestion: (question) ->
+   AppDispatcher.handleViewAction
+     actionType: Constants.actions.ADD_QUESTION
+     question: question
+
+  addAnswers: (answers) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.ADD_ANSWERS
+      answers: answers
 
 module.exports = CardActions
