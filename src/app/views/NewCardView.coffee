@@ -14,7 +14,7 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Easing = require 'famous/transitions/Easing'
 Timer = require 'famous/utilities/Timer'
-{CardStore} = require 'stores/CardStore'
+CardStore = require 'stores/CardStore'
 UserStore = require 'stores/UserStore'
 CardActions = require 'actions/CardActions'
 

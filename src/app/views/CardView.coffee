@@ -31,6 +31,7 @@ class CardView extends View
     question:
       classes: ['card__front__question']
 
+
   constructor: (id, card, options) ->
     options = _.defaults options, @constructor.DEFAULT_OPTIONS
     super options
@@ -48,6 +49,7 @@ class CardView extends View
     if @card.question.length > 90
       @options.question.classes = ["#{@options.question.classes}--medium"]
     @state = new StateModifier
+      origin: [0.5, 0.5]
     @mainNode = @add @state
     ## Front Card
     front = new ImageSurface

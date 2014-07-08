@@ -10,7 +10,7 @@ PlayStore = require 'stores/PlayStore'
 class ChoicesView extends View
   @DEFAULT_OPTIONS:
     width: null
-    height: 50
+    height: 40
     padding: 40
     innerWidth: window.innerWidth - window.innerWidth * .2
 
@@ -26,8 +26,8 @@ class ChoicesView extends View
     for choice in choices
       choiceText = choice.text
       if choiceText
-        if choiceText.length > 40
-          height = choiceText.length/30 * 30
+        if choiceText.length > 30
+          height = Math.floor(choiceText.length/30) * @options.height
         else
           height = @options.height
         choiceSurface = new Surface
