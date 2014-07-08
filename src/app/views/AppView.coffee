@@ -52,7 +52,7 @@ class AppView extends View
         curve: 'easeOut'
       model: Menu
     header:
-      height: 60
+      height: 50
   # Pages correspond to pageID in constants/menu.coffee
   pages: {}
   menuOpen: false
