@@ -29,7 +29,7 @@ class PlayView extends View
     @initComments()
     #@initProgress()
     @initListeners()
-    @initGestures()
+    #@initGestures()
 
   initListeners: ->
     PlayStore.on Constants.stores.PREF_SAVED, @cardPref
@@ -53,7 +53,11 @@ class PlayView extends View
     #    Transform.translate offset/100, offset/100, 50
     #    Transform.rotateY(1)
     #  )
-    @playNode.add @cards
+    @cardsMod = new StateModifier
+      align: [0, 0]
+      origin: [0, 0]
+    @playNode.add(@cardsMod).add @cards
+
 
     @message = new Surface
       content: 'Generic message'
