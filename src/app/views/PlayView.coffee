@@ -23,11 +23,120 @@ TouchSync = require 'famous/inputs/TouchSync'
 
 class PlayView extends View
 
-  constructor: () ->
-    super
-    @initPlay()
-    @initComments()
-    #@initProgress()
+  @DEFAULT_OPTIONS:
+    cards:
+      align: [0, 0.04]
+      origin: [0, 0]
+      states: [
+        {
+          delay: 0
+          align: [0, 0.04]
+          transition: {duration: 500, curve: Easing.outQuad}
+        }
+        {
+          delay: 0
+          align: [0, -0.6]
+          transition: {duration: 500, curve: Easing.outQuad}
+        }
+      ]
+    unicorn:
+      size: [80, 160]
+      classes: ['play__unicorn']
+      align: [0.17, 0.4]
+      origin: [0.5, 0.5]
+      transform: Transform.translate null, null, -10000
+      states: [
+        {
+          delay: 0
+          align: [0.17, 0.4]
+          transform: Transform.translate null, null, -10000
+          transition: {duration: 1000, curve: Easing.inQuad}
+        }
+        {
+          delay: 0
+          align: [0.17, 0.18]
+          transform: Transform.translate null, null, -3
+          transition: {duration: 500, curve: Easing.outQuad}
+        }
+      ]
+    bubble:
+      size: [250, 100]
+      classes: ['card__message__bubble']
+      align: [0.6, 0.4]
+      origin: [0.5, 0.5]
+      transform: Transform.translate null, null, -10000
+      states: [
+        {
+          delay: 20
+          align: [0.6, 0.4]
+          transform: Transform.translate null, null, -10000
+          transition: {duration: 1000, curve: Easing.inQuad}
+        }
+        {
+          delay: 20
+          align: [0.6, 0.12]
+          transform: Transform.translate null, null, -4
+          transition: {duration: 500, curve: Easing.outQuad}
+        }
+      ]
+    message:
+      size: [300, 200]
+      classes: ['card__message']
+      align: [0.5, 0.4]
+      origin: [0.5, 0.5]
+      transform: Transform.translate null, null, -10000
+      states: [
+        {
+          delay: 20
+          align: [0.5, 0.4]
+          transform: Transform.translate null, null, -10000
+          transition: {duration: 1000, curve: Easing.inQuad}
+        }
+        {
+          delay: 20
+          align: [0.6, 0.26]
+          transform: Transform.translate null, null, -3
+          transition: {duration: 500, curve: Easing.inBounce}
+        }
+      ]
+    comments:
+      origin: [0.5, 0]
+      align: [0.5, 1]
+      states: [
+        {
+          delay: 0
+          align: [0.5, 1]
+          transition: {duration: 500, curve: Easing.inQuad}
+        }
+        {
+          delay: 0
+          align: [0.5, 0.9]
+          transition: {duration: 500, curve: Easing.outQuad}
+        }
+        {
+          delay: 0
+          align: [0.5, 0.3]
+          transition: {duration: 500, curve: Easing.outQuad}
+        }
+      ]
+    newComment:
+      origin: [0.5, 0]
+      align: [0.5, 1]
+      states: [
+        {
+          delay: 0
+          align: [0.5, 1]
+          transition: {duration: 500, curve: Easing.inQuad}
+        }
+        {
+          delay: 0
+          align: [0.5, 0.9]
+          transition: {duration: 500, curve: Easing.outQuad}
+        }
+      ]
+  constructor: (options) ->
+    super options
+    @initSurfaces()
     @initListeners()
     #@initGestures()
 
@@ -40,9 +149,8 @@ class PlayView extends View
     PlayStore.on Constants.stores.CHOICES_CHANGE, (cardId) =>
       @loadChoices cardId
 
-  initPlay: ->
-    @playMod = new StateModifier
-    @playNode = @add @playMod
+  initSurfaces: ->
+    ##  CARDS ##
     @cards = new Scrollview
       direction: Utility.Direction.X
       paginated: true
@@ -54,67 +162,68 @@ class PlayView extends View
     #    Transform.rotateY(1)
     #  )
     @cardsMod = new StateModifier
-      align: [0, 0]
-      origin: [0, 0]
-    @playNode.add(@cardsMod).add @cards
+      align: @options.cards.align
+      origin: @options.cards.origin
+    @add(@cardsMod).add @cards
 
-
+    ## MESSAGE ##
     @message = new Surface
+      size: @options.message.size
       content: 'Generic message'
-      classes: ['card__message']
-      size: [window.innerWidth, 200]
+      classes: @options.message.classes
     @messageMod = new StateModifier
-      align: [0.5, 0]
-      origin: [0.5, 1]
-    @playNode.add(@messageMod).add @message
+      align: @options.message.align
+      origin: @options.message.origin
+      transform: @options.message.transform
+    @add(@messageMod).add @message
 
-    ###@back = new ImageSurface
-      size: [50, 50]
-      content: '/images/back.png'
-      classes: ['play__back']
-    @back.on 'click', =>
-      @cards.goToPreviousPage()
-    @backMod = new StateModifier
-      align: [0, 0]
-      origin: [0, 1]
-    @playNode.add(@backMod).add @back###
+    ## BUBBLE ##
+    @bubble = new ImageSurface
+      size: @options.bubble.size
+      content: '/images/talk_medium.png'
+      classes: @options.bubble.classes
+    @bubbleMod = new StateModifier
+      align: @options.bubble.align
+      origin: @options.bubble.origin
+      transform: @options.bubble.transform
+    @add(@bubbleMod).add @bubble
 
-    @forward = new ImageSurface
-      size: [40, 40]
-      content: '/images/forward.png'
-      classes: ['play__forward']
-    @forward.on 'click', =>
+    ## UNICORN ##
+    @unicorn = new ImageSurface
+      size: @options.unicorn.size
+      content: '/images/mascot_medium.png'
+      classes: @options.unicorn.classes
+    @unicorn.on 'click', =>
       @nextCard()
-    @forwardMod = new StateModifier
-      align: [1, 0]
-      origin: [1, 1]
-    @playNode.add(@forwardMod).add @forward
+    @unicornMod = new StateModifier
+      align: @options.unicorn.align
+      origin: @options.unicorn.origin
+      transform: @options.unicorn.transform
+    @add(@unicornMod).add @unicorn
 
-
-  initProgress: ->
-    @progress = new ProgressBarView
-    progressMod = new StateModifier
-      #size: [window.innerHeight/2-20, 50]
-      align: [0.5, 0.09]
-      origin: [0.5, 0.5]
-    @playNode.add(progressMod).add @progress
-
-  initComments: ->
+    ## COMMENTS ##
     @comments = new CommentsView
     @commentsMod = new StateModifier
-      origin: [0.5, 0]
-      align: [0.5, 1]
+      align: @options.comments.align
+      origin: @options.comments.origin
     @add(@commentsMod).add @comments
     @comments.on 'open', =>
       @toggleComments()
-
     @newComment = new InputView {placeholder: "Enter a comment..."}
     @newCommentMod = new StateModifier
-      origin: [0.5, 0]
-      align: [0.5, 1]
+      align: @options.newComment.align
+      origin: @options.newComment.origin
     @add(@newCommentMod).add @newComment
     @newComment.on 'submit', (comment) =>
       @saveComment comment
+
+#  ## PROGRESS ##
+#    @progress = new ProgressBarView
+#    progressMod = new StateModifier
+#      #size: [window.innerHeight/2-20, 50]
+#      align: [0.5, 0.09]
+#      origin: [0.5, 0.5]
+#    @playNode.add(progressMod).add @progress
 
 
   initGestures: ->
@@ -153,14 +262,9 @@ class PlayView extends View
       @index[k] = @size
       @size++
     #@progress.reset @size
-    @commentsMod.setTransform Transform.translate(0, window.innerHeight, -5), { duration: 500, curve: Easing.inCubic }
-    @messageMod.setTransform Transform.translate(0, 0, 0), { duration: 500, curve: Easing.inCubic }
-    @forwardMod.setTransform Transform.translate(0, 0, 0), { duration: 500, curve: Easing.inCubic }
 
     @cards.on 'pageChange', =>
-      @commentsMod.setTransform Transform.translate(0, window.innerHeight, -5), { duration: 500, curve: Easing.inCubic }
-      @messageMod.setTransform Transform.translate(0, 0, 0), { duration: 500, curve: Easing.inCubic }
-      @forwardMod.setTransform Transform.translate(0, 0, 0), { duration: 500, curve: Easing.inCubic }
+      @hideMessage()
       @pos++
 
   loadChoices: (cardId) =>
@@ -169,12 +273,14 @@ class PlayView extends View
   loadComments: =>
     @comments.load PlayStore.getComments()
 
+  saveComment: (comment) ->
+    PlayActions.comment(comment)
+
   cardPref: =>
     @message.setClasses ['card__message__pref']
     @message.setContent PlayStore.getMessage()
     @showMessage()
-    @showTopComment()
-    @showNext()
+    @animate @commentsMod, @options.comments.states[1]
 
   cardFail: =>
     @message.setClasses ['card__message__fail']
@@ -183,26 +289,24 @@ class PlayView extends View
     @fail++
     if @fail is 3
       @fail = 0
-      @showTopComment()
-      @showNext()
+      @animate @commentsMod, @options.comments.states[1]
     # TODO: if 3rd fail, show comments, disable options
 
   cardWin: =>
     @message.setClasses ['card__message__win']
     @message.setContent PlayStore.getMessage()
     @showMessage()
-    @showTopComment()
-    @showNext()
-
-  showNext: =>
-    @forwardMod.setTransform Transform.translate(0, 60, 0), { duration: 500, curve: Easing.inCubic }
+    @animate @commentsMod, @options.comments.states[1]
 
   showMessage: =>
-    @messageMod.setTransform Transform.translate(0, 225, -5), { duration: 500, curve: Easing.inCubic }
-    #@backMod.setTransform Transform.translate(0, 50, 0), { duration: 500, curve: Easing.inCubic }
+    @animate @messageMod, @options.message.states[1]
+    @animate @bubbleMod, @options.bubble.states[1]
+    @animate @unicornMod, @options.unicorn.states[1]
 
-  showTopComment: =>
-    @commentsMod.setTransform Transform.translate(0, -50, -3), { duration: 500, curve: Easing.outCubic }
+  hideMessage: =>
+    @animate @messageMod, @options.message.states[0]
+    @animate @bubbleMod, @options.bubble.states[0]
+    @animate @unicornMod, @options.unicorn.states[0]
 
   nextCard: =>
     if @pos is @size
@@ -210,22 +314,30 @@ class PlayView extends View
     else
       @cards.goToNextPage()
 
-
   toggleComments: =>
-    transition = { duration: 500, curve: Easing.outCubic }
     if @commentsOpen
-      @playMod.setTransform Transform.translate(0, 0, 0), transition
-      @commentsMod.setTransform Transform.translate(0, -60, -3), transition
-      @newCommentMod.setTransform Transform.translate(0, window.innerHeight-200, 0), transition
+      @animate @cardsMod, @options.cards.states[0]
+      @animate @commentsMod, @options.comments.states[1]
+      @animate @newCommentMod, @options.newComment.states[0]
       @commentsOpen = false
     else
-      @playMod.setTransform Transform.translate(0, -300, 0), transition
-      @commentsMod.setTransform Transform.translate(0, -(window.innerHeight - 210), -3), transition
-      @newCommentMod.setTransform Transform.translate(0, -70, 0), transition
+      @animate @cardsMod, @options.cards.states[1]
+      @animate @commentsMod, @options.comments.states[2]
+      @animate @newCommentMod, @options.newComment.states[1]
       @commentsOpen = true
 
-  saveComment: (comment) ->
-    PlayActions.comment(comment)
+
+  animate: (mod, state) ->
+    Timer.after (->
+      if state.origin?
+        mod.setOrigin state.origin, state.transition
+      if state.align?
+        mod.setAlign state.align, state.transition
+      if state.scale?
+        mod.setTransform Transform.scale(state.scale...), state.transition
+      if state.transform?
+        mod.setTransform state.transform, state.transition
+    ), state.delay
 
 
 module.exports = PlayView
