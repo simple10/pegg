@@ -10,7 +10,7 @@ PlayStore = require 'stores/PlayStore'
 class ChoicesView extends View
   @DEFAULT_OPTIONS:
     width: null
-    height: 40
+    height: 30
     padding: 40
     innerWidth: window.innerWidth - window.innerWidth * .2
 
@@ -21,6 +21,7 @@ class ChoicesView extends View
     choices = PlayStore.getChoices(cardId)
     choiceSurfaces = []
     scrollview = new Scrollview
+      size: [ @options.width, @options.height ]
     scrollview.sequenceFrom choiceSurfaces
     i=0
     for choice in choices
@@ -30,9 +31,13 @@ class ChoicesView extends View
           height = Math.floor(choiceText.length/30) * @options.height
         else
           height = @options.height
+        if i % 2
+          color = 'light'
+        else
+          color = 'dark'
         choiceSurface = new Surface
-          size: [ @options.width, height ]
-          classes: ['card__front__option']
+          size: [ @options.width-6, height ]
+          classes: ["card__front__option", "#{color}"]
           content: "
                     <div class='outerContainer' style='width: #{@options.innerWidth}px; height: #{height}px;'>
                       <div class='innerContainer'>
