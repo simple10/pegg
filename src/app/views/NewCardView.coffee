@@ -32,6 +32,18 @@ class NewCardView extends View
     @init()
 
   init: ->
+
+#    @back = new ImageSurface
+#      size: [50, 50]
+#      content: '/images/back.png'
+#      classes: ['play__back']
+#    @back.on 'click', =>
+#      @cards.goToPreviousPage()
+#    @backMod = new StateModifier
+#      align: [0, 0]
+#      origin: [0, 1]
+#    @playNode.add(@backMod).add @back
+
     cardIcon = new ImageSurface
       size: [83, 58]
       classes: ['newcard_card_icon']
