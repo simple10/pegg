@@ -10,33 +10,110 @@ UserActions = require 'actions/UserActions'
 Easing = require 'famous/transitions/Easing'
 Timer = require 'famous/utilities/Timer'
 Transitionable = require 'famous/transitions/Transitionable'
-SpringTransition = require 'famous/transitions/SpringTransition'
-Transitionable.registerMethod 'spring', SpringTransition
 UserStore = require 'stores/UserStore'
 Constants = require 'constants/PeggConstants'
 Engine = require 'famous/core/Engine'
 MenuActions = require 'actions/MenuActions'
+Transitionable  = require 'famous/transitions/Transitionable'
+TweenTransition = require 'famous/transitions/TweenTransition'
 
 class SignupView extends View
-  window:
-    height: null
 
   @DEFAULT_OPTIONS:
-    logoWidth: 165
-    logoHeight: 122
-    markWidth: 150
-    markHeight: 70
-    transition:
-      duration: 500
-      curve: Easing.outBounce
-    spring:
-      method: "spring"
-      period: 300
-      dampingRatio: 0.3
-    input:
-      width: 300
-      height: 50
 
+    logo:
+      size: [417, 800]
+      classes: ['login__logo']
+      align: [0.5, 1]
+      origin: [0.5, 0]
+      states: [
+        {
+          delay: 10
+          align: [0.45, 0.5]
+          transition: {duration: 1000, curve: Easing.inBounce}
+        }
+        {
+          delay: 100
+          align: [0.45, 0]
+          scale: [0.4, 0.4, 0]
+          transition: {duration: 500, curve: Easing.outBounce}
+        }
+      ]
+
+    mark:
+      size: [150, 70]
+      classes: ['login__mark']
+      align: [0.5, 1]
+      origin: [0.5, 1]
+      states: [
+        {
+          delay: 35
+          align: [0.5, 0.5]
+          origin: [0.5, 0.5]
+          transition: {duration: 500, curve: Easing.inOutBack}
+        }
+        {
+          delay: 100
+          align: [0.5, 0.6]
+          origin: [0.5, 0]
+          transition: {duration: 500, curve: Easing.outBounce}
+        }
+      ]
+
+    signupText:
+      size: [300, 50]
+      classes: ['signup__text--header']
+      align: [0.5, 1]
+      origin: [0.5, 0]
+      states: [
+        {
+          delay: 100
+          align: [0.5, .7]
+          origin: [0.5, 0.5]
+          transition: {duration: 1000, curve: Easing.outBounce}
+        }
+      ]
+
+    signupInput:
+      size: [300, 50]
+      classes: ['signup__email__input']
+      align: [0.5, 1]
+      origin: [0.5, 0]
+      states: [
+        {
+          delay: 120
+          align: [0.5, 0.8]
+          origin: [0.5, 0.5]
+          transition: {duration: 1000, curve: Easing.outBounce}
+        }
+      ]
+
+    signupButton:
+      size: [300, 50]
+      classes: ['signup__submit']
+      align: [0.5, 1]
+      origin: [0.5, 0]
+      states: [
+        {
+          delay: 120
+          align: [0.5, 0.9]
+          origin: [0.5, 0.5]
+          transition: {duration: 1000, curve: Easing.outBounce}
+        }
+      ]
+
+    signupMessage:
+      size: [300, 50]
+      classes: ['signup__response']
+      origin: [0.5, 0.5]
+      align: [0.5, -0.07]
+      states: [
+        {
+          align: [0.5, 1]
+          origin: [0.5, 0.5]
+          transition: {duration: 1000, curve: Easing.outBounce}
+        }
+      ]
 
   #Engine.on "keydown", (e) =>
   #  if e.which is 13
@@ -44,7 +121,6 @@ class SignupView extends View
 
   constructor: (options) ->
     super options
-    @window.height = window.innerHeight
     @initListeners()
     @initSplash()
 
@@ -54,73 +130,80 @@ class SignupView extends View
     UserStore.on Constants.stores.SUBSCRIBE_FAIL, @showMessage
 
   initSplash: ->
-    logo = new ImageSurface
-      size: [@options.logoWidth, @options.logoHeight]
-      classes: ['login__logo']
-      content: "images/logo_icon-big.png"
-    logoPosMod = new StateModifier
-      align: [0.5,1]
-      origin: [0.5,0]
-    logoSizeMod = new StateModifier
-    mark = new ImageSurface
-      size: [@options.markWidth, @options.markHeight]
-      classes: ['login__mark']
+    logoSurface = new ImageSurface
+      size: @options.logo.size
+      classes: @options.logo.classes
+      content: "images/mascot_medium.png"
+    logoMod = new StateModifier
+      origin: @options.logo.origin
+      align: @options.logo.align
+    markSurface = new ImageSurface
+      size: @options.mark.size
+      classes: @options.mark.classes
       content: "images/logo_mark-big.png"
     markMod = new StateModifier
-      align: [0.5,1]
-      origin: [0.5,0]
-    markSizeMod = new StateModifier
-    @add(logoSizeMod).add(logoPosMod).add logo
-    @add(markSizeMod).add(markMod).add mark
-    markMod.setTransform Transform.translate(0, -@window.height/2 - @options.logoHeight/2 + @options.markHeight, 3), @options.transition
-    Timer.after (=>
-      logoPosMod.setTransform Transform.translate(0, -@window.height/2 - @options.logoHeight, 0), @options.spring, =>
-        Timer.after (=>
-          markSizeMod.setTransform Transform.translate(0, -200, -1000), {duration: 500, curve: Easing.inOutBack}
-        ), 20
-        logoSizeMod.setTransform Transform.translate(0, -200, -1000), {duration: 500, curve: Easing.inOutBack}, =>
-          @initSignUp()
-    ), 20
+      origin: @options.mark.origin
+      align: @options.mark.align
+    @add(logoMod).add logoSurface
+    @add(markMod).add markSurface
+
+    @animate logoMod, @options.logo.states
+    @animate markMod, @options.mark.states
+
+    @initSignUp()
+
 
   initSignUp: ->
     signupText = new Surface
-      size: [300, 60]
-      content: 'Coming soon.'
-      classes: ['signup__text--header']
+      size: @options.signupText.size
+      content: 'Who\'s got you pegged?'
+      classes: @options.signupText.classes
     signupTextMod = new StateModifier
-      origin: [0.5, 1]
-      align: [0.5, -0.05]
+      origin: @options.signupText.origin
+      align: @options.signupText.align
     @signupInput = new InputSurface
-      size: [@options.input.width, @options.input.height]
-      placeholder: "Enter your email"
-      classes: ["signup__email__input"]
-      name: "signup"
+      size: @options.signupInput.size
+      placeholder: 'Enter your email'
+      classes: @options.signupInput.classes
+      name: 'signup'
     @signupInputMod = new StateModifier
-      origin: [0.5, 1]
-      align: [0.5, -0.05]
-    signupSubmit = new Surface
-      size: [@options.input.width, @options.input.height]
+      origin: @options.signupInput.origin
+      align: @options.signupInput.align
+    signupButton = new Surface
+      size: @options.signupButton.size
       content: 'I\'m sexy and I know it.'
-      classes: ['signup__submit']
+      classes: @options.signupButton.classes
       properties:
-        lineHeight: @options.input.height + "px"
-    signupSubmitMod = new StateModifier
-      origin: [0.5, 0.5]
-      align: [0.5, -0.07]
+        lineHeight: "#{@options.signupButton.size[1]}px"
+    signupButtonMod = new StateModifier
+      origin: @options.signupButton.origin
+      align:  @options.signupButton.align
     @add(@signupInputMod).add @signupInput
-    @add(signupTextMod).add signupText
-    @add(signupSubmitMod).add signupSubmit
-    signupTextMod.setTransform Transform.translate(0, @window.height/2 + 60, 3), @options.transition, =>
-      @signupInputMod.setTransform Transform.translate(0, @window.height/2 + 120, 3), @options.transition, =>
-        signupSubmitMod.setTransform Transform.translate(0, @window.height/2 + 170, 3), @options.transition, =>
+    #@add(signupTextMod).add signupText
+    @add(signupButtonMod).add signupButton
 
-    signupSubmit.on "click", =>
+    #@animate signupTextMod, @options.signupText.states
+    @animate signupButtonMod, @options.signupButton.states
+    @animate @signupInputMod, @options.signupInput.states
+
+    signupButton.on 'click', =>
       @onSubmit()
-    @signupInput.on "click", =>
+    @signupInput.on 'click', =>
       @onInputFocus()
-    @signupInput.on "keypress", (e) =>
+    @signupInput.on 'keypress', (e) =>
       if e.keyCode is 13
         @onInputBlur()
+
+  animate: (mod, states) ->
+    for state in states
+      Timer.after ((mod, state)->
+        if state.origin
+          mod.setOrigin state.origin, state.transition
+        if state.align
+          mod.setAlign state.align, state.transition
+        if state.scale
+          mod.setTransform Transform.scale(state.scale...), state.transition
+      ).bind(@, mod, state), state.delay
 
   onSubmit: =>
     email = @signupInput.getValue()
@@ -148,21 +231,19 @@ class SignupView extends View
   showMessage: =>
     if UserStore.getSubscriptionStatus()
       message = 'We agree! Welcome.'
-      classes = ['signup__response--success']
-
+      classes = ["#{@options.signupMessage.classes}--success"]
     else
       message = 'Nah, guess not. Fail.'
-      classes = ['signup__response--fail']
+      classes = ["#{@options.signupMessage.classes}--fail"]
     messageText = new Surface
-      size: [300, 60]
+      size: @options.signupMessage.size
       content: message
       classes: classes
     messageMod = new StateModifier
-      origin: [0.5, 0.5]
-      align: [0.5, -0.07]
+      origin: @options.signupMessage.origin
+      align: @options.signupMessage.align
     @add(messageMod).add messageText
-    messageMod.setTransform Transform.translate(0, window.innerHeight/2 + 230, 3), @options.transition, =>
-
+    messageMod.setAlign @options.signupMessage.states[0].align, @options.signupMessage.states[0].transition
 
 
 module.exports = SignupView
