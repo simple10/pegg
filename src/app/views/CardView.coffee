@@ -87,7 +87,10 @@ class CardView extends View
       align: [0.5, 0.5]
       origin: [0.5, 0.5]
       transform: Transform.translate 0, -110, depth/2 + 2
-    question = @card.firstName + ", " + @card.question.charAt(0).toLowerCase() + @card.question.slice(1)
+    if @card.peggee?
+      question = @card.firstName + ", " + @card.question.charAt(0).toLowerCase() + @card.question.slice(1)
+    else
+      question = @card.question
     @question = new Surface
       size: [ width, height ]
       classes: @options.question.classes
