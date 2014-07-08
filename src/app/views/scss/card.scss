@@ -45,7 +45,8 @@
 }
 
 .card__front__option {
-
+  margin: 0 auto;
+  text-align: center;
 }
 
 .card__front__option .outerContainer {
@@ -77,9 +78,24 @@
   margin: 14px;
 }
 
-.card__front__option:hover {
-  background-color: $rainbow-red;
-  opacity: .5;
+.card__front__option {
+  margin: 0px 3px;
+}
+
+.card__front__option.light:hover {
+  background-color:rgba(255,100,100,0.5);
+}
+
+.card__front__option.dark:hover {
+  background-color:rgba(255,100,100,0.5);
+}
+
+.card__front__option.light {
+  background-color:rgba(200,200,200,0.5);
+}
+
+.card__front__option.dark {
+  background-color:rgba(240,240,240,0.5);
 }
 
 .card__front p {
