@@ -1,4 +1,5 @@
 PlayView = require 'views/PlayView'
+PlayViewLayout = require 'views/layouts/iPhone5/PlayViewLayout'
 CardView = require 'views/CardView'
 helper = require '../helpers/Common'
 expect = helper.expect
@@ -7,7 +8,7 @@ spy = helper.spy
 
 describe 'PlayView', ->
   beforeEach ->
-    @view = new PlayView
+    @view = new PlayView PlayViewLayout
 
   it 'should exist', ->
     expect(@view).to.exist
@@ -34,4 +35,5 @@ describe 'PlayView', ->
     expect(newCard).to.have.been.calledWith
       question: cards[0].question
       answer: cards[0].answer
+
 
