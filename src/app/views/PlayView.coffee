@@ -17,6 +17,7 @@ Utils = require 'lib/utils'
 GenericSync = require 'famous/inputs/GenericSync'
 MouseSync = require 'famous/inputs/MouseSync'
 TouchSync = require 'famous/inputs/TouchSync'
+StatusView = require 'views/StatusView'
 
 class PlayView extends View
 
@@ -27,6 +28,7 @@ class PlayView extends View
     #@initGestures()
 
   initListeners: ->
+    PlayStore.on Constants.stores.PLAY_CHANGE, @togglePlay
     PlayStore.on Constants.stores.PREF_SAVED, @cardPref
     PlayStore.on Constants.stores.CARD_FAIL, @cardFail
     PlayStore.on Constants.stores.CARD_WIN, @cardWin
@@ -41,12 +43,6 @@ class PlayView extends View
       direction: Utility.Direction.X
       paginated: true
       margin: 400
-    # TODO: make cards scroll on z axis
-    #@cards.outputFrom (offset) ->
-    #  Transform.multiply(
-    #    Transform.translate offset/100, offset/100, 50
-    #    Transform.rotateY(1)
-    #  )
     @cardsMod = new StateModifier
       align: @options.cards.align
       origin: @options.cards.origin
@@ -66,7 +62,7 @@ class PlayView extends View
     ## BUBBLE ##
     @bubble = new ImageSurface
       size: @options.bubble.size
-      content: '/images/talk_medium.png'
+      content: '/images/talk_rounded-square.png'
       classes: @options.bubble.classes
     @bubbleMod = new StateModifier
       align: @options.bubble.align
@@ -77,7 +73,7 @@ class PlayView extends View
     ## UNICORN ##
     @unicorn = new ImageSurface
       size: @options.unicorn.size
-      content: '/images/mascot_medium.png'
+      content: '/images/unicorn_talk.png'
       classes: @options.unicorn.classes
     @unicorn.on 'click', =>
       @nextCard()
@@ -94,7 +90,7 @@ class PlayView extends View
       origin: @options.comments.origin
     @add(@commentsMod).add @comments
     @comments.on 'open', =>
-      @toggleComments()
+      @showComments()
     @newComment = new InputView {placeholder: "Enter a comment..."}
     @newCommentMod = new StateModifier
       align: @options.newComment.align
@@ -103,13 +99,13 @@ class PlayView extends View
     @newComment.on 'submit', (comment) =>
       @saveComment comment
 
-#  ## PROGRESS ##
-#    @progress = new ProgressBarView
-#    progressMod = new StateModifier
-#      #size: [window.innerHeight/2-20, 50]
-#      align: [0.5, 0.09]
-#      origin: [0.5, 0.5]
-#    @playNode.add(progressMod).add @progress
+    ## STATUS ##
+    @status = new StatusView
+      size: @options.status.size
+    @statusMod = new StateModifier
+      align: @options.status.align
+      origin: @options.status.origin
+    @add(@statusMod).add @status
 
 
   initGestures: ->
@@ -132,7 +128,6 @@ class PlayView extends View
       return
     ).bind(@)
 
-
   loadCards: =>
     @cardSurfaces = []
     @index = []
@@ -142,7 +137,7 @@ class PlayView extends View
     for own k,v of PlayStore.getCards()
       card = new CardView k, v, size: [window.innerWidth, null]
       card.on 'comment', =>
-        @toggleComments()
+        @hideComments()
       card.pipe @cards
       @cardSurfaces.push card
       @index[k] = @size
@@ -158,6 +153,12 @@ class PlayView extends View
 
   loadComments: =>
     @comments.load PlayStore.getComments()
+
+  nextCard: =>
+    if @pos is @size
+      PlayActions.load()
+    else
+      @cards.goToNextPage()
 
   saveComment: (comment) ->
     PlayActions.comment(comment)
@@ -194,23 +195,27 @@ class PlayView extends View
     Utils.animate @bubbleMod, @options.bubble.states[0]
     Utils.animate @unicornMod, @options.unicorn.states[0]
 
-  nextCard: =>
-    if @pos is @size
-      PlayActions.load()
-    else
-      @cards.goToNextPage()
+  hideComments: =>
+    Utils.animate @cardsMod, @options.cards.states[0]
+    Utils.animate @commentsMod, @options.comments.states[1]
+    Utils.animate @newCommentMod, @options.newComment.states[0]
 
-  toggleComments: =>
-    if @commentsOpen
+  showComments: =>
+    Utils.animate @cardsMod, @options.cards.states[1]
+    Utils.animate @commentsMod, @options.comments.states[2]
+    Utils.animate @newCommentMod, @options.newComment.states[1]
+
+  togglePlay: =>
+    if @status
       Utils.animate @cardsMod, @options.cards.states[0]
-      Utils.animate @commentsMod, @options.comments.states[1]
-      Utils.animate @newCommentMod, @options.newComment.states[0]
-      @commentsOpen = false
+      Utils.animate @statusMod, @options.status.states[0]
+      @status = false
     else
-      Utils.animate @cardsMod, @options.cards.states[1]
-      Utils.animate @commentsMod, @options.comments.states[2]
-      Utils.animate @newCommentMod, @options.newComment.states[1]
-      @commentsOpen = true
-
+      @hideMessage()
+      Utils.animate @newCommentMod, @options.newComment.states[0]
+      Utils.animate @commentsMod, @options.comments.states[0]
+      Utils.animate @cardsMod, @options.cards.states[2]
+      Utils.animate @statusMod, @options.status.states[1]
+      @status = true
 
 module.exports = PlayView

@@ -103,7 +103,7 @@ class CardView extends View
 
   initChoices: (width, height) ->
     @showChoices = true
-    @choicesView = new ChoicesView {width: width, height: height}
+    @choicesView = new ChoicesView {width: width, height: 50}
     @choicesMod = new StateModifier
     @mainNode.add(@choicesMod).add @choicesView
     @choicesMod.setTransform Transform.translate(0,0,-10)

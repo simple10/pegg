@@ -16,9 +16,14 @@ module.exports =
         align: [0, -0.6]
         transition: {duration: 500, curve: Easing.outQuad}
       }
+      {
+        delay: 0
+        align: [0, -1]
+        transition: {duration: 500, curve: Easing.outQuad}
+      }
     ]
   unicorn:
-    size: [80, 160]
+    size: [90, 100]
     classes: ['play__unicorn']
     align: [0.17, 0.4]
     origin: [0.5, 0.5]
@@ -32,13 +37,13 @@ module.exports =
       }
       {
         delay: 0
-        align: [0.17, 0.18]
+        align: [0.17, 0.12]
         transform: Transform.translate null, null, -3
         transition: {duration: 500, curve: Easing.outQuad}
       }
     ]
   bubble:
-    size: [250, 100]
+    size: [230, 90]
     classes: ['card__message__bubble']
     align: [0.6, 0.4]
     origin: [0.5, 0.5]
@@ -52,13 +57,13 @@ module.exports =
       }
       {
         delay: 20
-        align: [0.6, 0.12]
+        align: [0.6, 0.1]
         transform: Transform.translate null, null, -4
         transition: {duration: 500, curve: Easing.outQuad}
       }
     ]
   message:
-    size: [300, 200]
+    size: [220, 80]
     classes: ['card__message']
     align: [0.5, 0.4]
     origin: [0.5, 0.5]
@@ -72,7 +77,7 @@ module.exports =
       }
       {
         delay: 20
-        align: [0.6, 0.26]
+        align: [0.62, 0.11]
         transform: Transform.translate null, null, -3
         transition: {duration: 500, curve: Easing.inBounce}
       }
@@ -112,3 +117,20 @@ module.exports =
         transition: {duration: 500, curve: Easing.outQuad}
       }
     ]
+  status:
+    origin: [0.5, 0]
+    align: [0.5, 1]
+    size: [window.innerWidth, window.innerHeight]
+    states: [
+      {
+      delay: 0
+      align: [0.5, 1]
+      transition: {duration: 500, curve: Easing.inQuad}
+      }
+      {
+        delay: 0
+        align: [0.5, 0.09]
+        transition: {duration: 500, curve: Easing.outQuad}
+      }
+    ]
+

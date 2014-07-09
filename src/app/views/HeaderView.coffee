@@ -42,7 +42,7 @@ class HeaderView extends View
     @background = new Surface
       classes: ["#{@cssPrefix}__background"]
     @logo = new ImageSurface
-      size: [130, 50]
+      size: [150, 50]
       classes: ["#{@cssPrefix}__logo"]
       content: 'images/pegg_logo-small.png'
     @pic = new ImageSurface

@@ -28,7 +28,7 @@ class ChoicesView extends View
       choiceText = choice.text
       if choiceText
         if choiceText.length > 30
-          height = Math.floor(choiceText.length/30) * @options.height
+          height = 50 + Math.floor(choiceText.length/30) * 8
         else
           height = @options.height
         if i % 2

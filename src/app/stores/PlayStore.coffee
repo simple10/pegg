@@ -26,12 +26,12 @@ class PlayStore extends EventEmitter
   #   PLAY_CHANGE
   _loadGame: ->
     if @_mode is Constants.stores.PLAY_PREFS
-      @_fetchPeggCards 3
+      @_fetchPeggCards 5
       @_mode = Constants.stores.PLAY_PEGGS
     else
-      @_fetchPrefCards 3
+      @_fetchPrefCards 1
       @_mode = Constants.stores.PLAY_PREFS
-    #@emit Constants.stores.PLAY_CHANGE
+    @emit Constants.stores.PLAY_CHANGE
 
 
   _fetchPrefCards: (num) ->
@@ -40,8 +40,8 @@ class PlayStore extends EventEmitter
     user = UserStore.getUser()
     cardQuery = new Parse.Query Card
     cardQuery.limit num
-    cardQuery.notContainedIn 'hasPlayed', [user.id]
-#    cardQuery.skip Math.floor(Math.random() * 100)
+#    cardQuery.notContainedIn 'hasPlayed', [user.id]
+    cardQuery.skip Math.floor(Math.random() * 180)
     cardQuery.find
       success: (cards) =>
         for card in cards
@@ -69,7 +69,8 @@ class PlayStore extends EventEmitter
     prefQuery.include 'card'
     prefQuery.include 'choice'
     prefQuery.notEqualTo 'user', prefUser
-    prefQuery.notContainedIn 'peggedBy', [user.id]
+    #prefQuery.notContainedIn 'peggedBy', [user.id]
+    prefQuery.skip Math.floor(Math.random() * 280)
     prefQuery.find
       success: (prefs) =>
         for pref in prefs
@@ -229,8 +230,7 @@ class PlayStore extends EventEmitter
     @emit Constants.stores.COMMENTS_CHANGE
 
   _saveStatusAck: ->
-    @_playState = Constants.stores.PLAY_CONTINUED
-    @emit Constants.stores.CHANGE
+    @emit Constants.stores.PLAY_CHANGE
 
   _savePlay: (cardId) ->
     console.log "cardID: " + cardId
