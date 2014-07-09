@@ -38,24 +38,20 @@ describe 'PlayStore', ->
     expect(@playStore._cardSet).to.exist
 
   context 'Game', ->
-    it 'assigns the stages "_stages"', ->
-      expect(@playStore._game._stages[0]._part.type).to.equal 'pref'
-      expect(@playStore._game._stages[0]._part.size).to.equal 3
+    beforeEach ->
+      @stage0 = @playStore._game._stages[0]
+      @stage1 = @playStore._game._stages[1]
 
-      expect(@playStore._game._stages[1]._part.type).to.equal 'pegg'
-      expect(@playStore._game._stages[1]._part.size).to.equal 4
+    it 'assigns the stages "_stages"', ->
+      expect(@stage0._part.type).to.equal 'pref'
+      expect(@stage0._part.size).to.equal 3
+
+      expect(@stage1._part.type).to.equal 'pegg'
+      expect(@stage1._part.size).to.equal 4
 
     it 'calls correct method on loadStage', ->
-      fetch = @playStore._fetchPrefCards() = spy()
+      fetch = @stage0._fetchPrefCards = spy()
       @playStore._game.loadStage()
-      expect(fetch).to.have.been.calledWith 42
-#        @playStore._game._stages[0]._part.size
-
+      expect(fetch).to.have.been.calledWith 3
 
 #  context 'Stage', ->
-#    it 'assigns the first part to "_part"', ->
-#      expect(@stage._part).to.deep.equal {
-#        type: 'pref'
-#        size: 3
-#      }
-
