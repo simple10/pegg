@@ -5,13 +5,13 @@ Parse = require 'Parse'
 
 
 class DeckStore extends EventEmitter
-  _deck: null
+  _decks: null
 
   fetch: ->
     return
 
   getDecks: ->
-    @_nextSet
+    @_decks
 
 decks = new DeckStore
 

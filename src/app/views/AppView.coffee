@@ -19,12 +19,6 @@ Constants = require 'constants/PeggConstants'
 
 # Stores
 AppStateStore = require 'stores/AppStateStore'
-PeggBoxStore = require 'stores/PeggBoxStore'
-PlayStore = require 'stores/PlayStore'
-MoodStore = require 'stores/MoodStore'
-
-# Actions
-PeggBoxActions = require 'actions/PeggBoxActions'
 
 # Menu
 Menu = require 'constants/menu'
@@ -44,6 +38,7 @@ StatusView = require 'views/StatusView'
 
 # Layouts
 PlayViewLayout = require 'views/layouts/iPhone5/PlayViewLayout'
+#HeaderViewLayout = require 'views/layouts/iPhone5/HeaderViewLayout'
 
 
 class AppView extends View
@@ -69,7 +64,7 @@ class AppView extends View
 
   initListeners: ->
     AppStateStore.on Constants.stores.CHANGE, @togglePage
-    PlayStore.on Constants.stores.PLAY_CHANGE, @togglePage
+    #PlayStore.on Constants.stores.PLAY_CHANGE, @togglePage
     #MoodStore.on Constants.stores.CHANGE, @onMoodChange
     #PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @onStatusChange
     #PlayStore.on Constants.stores.PLAY_CONTINUED, @onPlayContinued
@@ -88,19 +83,19 @@ class AppView extends View
       headerSize: @options.header.height
       footerSize: 0
     @layout.header.add @initHeader()
-    @layout.footer.add @initFooter()
+#   @layout.footer.add @initFooter()
     @layout.content.add @initViewManager()
     @layoutState = new StateModifier
     @add(@layoutState).add @layout
-
-  initFooter: ->
-    @footer = new TabMenuView @options.menu
-    @footer
 
   initHeader: ->
     @header = new HeaderView @options.header
     @header.on 'toggleMenu', @toggleMenu
     @header
+
+#  initFooter: ->
+#    @footer = new TabMenuView @options.menu
+#    @footer
 
   initPages: ->
     # Pages correspond to pageID in constants/menu.coffee
@@ -112,6 +107,7 @@ class AppView extends View
     @pages.peggbox = new PeggBoxView
     @pages.status = new StatusView
     #@pages.moods = new MoodsView
+    @togglePage()
 
   initViewManager: ->
     @lightbox = new Lightbox
@@ -133,16 +129,9 @@ class AppView extends View
 
   togglePage: =>
     pageID = AppStateStore.getCurrentPageID()
-    if pageID is 'play'
-      #playState = PlayStore.getPlayState()
-      #if playState is Constants.stores.NO_PEGGS_REMAINING
-      #  @showPage @pages.status
-      #else
-        @showPage @pages.play
-    else
-      @showPage @getPage pageID
+    @showPage @getPage pageID
     #@footer.bounceTabs()
-    @footer.hideTabs()
+    #@footer.hideTabs()
     @closeMenu()
 
   toggleMenu: =>
@@ -169,12 +158,12 @@ class AppView extends View
     )
     @menu.show()
 
-  onScroll: =>
-    if @tabsOpen
-      @footer.hideTabs()
-      @tabsOpen = false
-    else
-      @footer.showTabs()
-      @tabsOpen = true
+#  onScroll: =>
+#    if @tabsOpen
+#      @footer.hideTabs()
+#      @tabsOpen = false
+#    else
+#      @footer.showTabs()
+#      @tabsOpen = true
 
 module.exports = AppView

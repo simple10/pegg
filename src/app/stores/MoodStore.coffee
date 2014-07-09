@@ -34,7 +34,7 @@ AppDispatcher.register (payload) ->
 
   # Pay attention to events relevant to MoodStore
   switch action.actionType
-    when Constants.actions.GAME_FETCH
+    when Constants.actions.MOOD_FETCH
       moods.fetch
 
 
