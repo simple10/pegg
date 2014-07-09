@@ -24,6 +24,7 @@ SignupView = require 'views/SignupView'
 
 # Layouts
 SignupViewLayout = require 'views/layouts/iPhone5/SignupViewLayout'
+LoginViewLayout = require 'views/layouts/iPhone5/LoginViewLayout'
 
 # Stores
 UserStore = require 'stores/UserStore'
@@ -53,7 +54,7 @@ Engine.setFPSCap 60
 mainContext.setPerspective 2000
 
 appView = new AppView
-loginView = new LoginView
+loginView = new LoginView LoginViewLayout
 signupView = new SignupView SignupViewLayout
 lightbox = new Lightbox
   inOpacity: 1

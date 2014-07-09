@@ -5,6 +5,13 @@ UserStore = require 'stores/UserStore'
 Parse = require 'Parse'
 
 
+Choice = Parse.Object.extend 'Choice'
+Card = Parse.Object.extend 'Card'
+Pref = Parse.Object.extend 'Pref'
+Choice = Parse.Object.extend 'Choice'
+Comment = Parse.Object.extend 'Comment'
+
+
 class PlayStore extends EventEmitter
   _cardSet: {}
   _card: null
@@ -31,8 +38,6 @@ class PlayStore extends EventEmitter
     # Gets unanswered preferences: cards the user answers about himself
     @_cardSet = {}
     user = UserStore.getUser()
-    Choice = Parse.Object.extend 'Choice'
-    Card = Parse.Object.extend 'Card'
     cardQuery = new Parse.Query Card
     cardQuery.limit num
     cardQuery.notContainedIn 'hasPlayed', [user.id]
@@ -56,7 +61,6 @@ class PlayStore extends EventEmitter
     # Gets unpegged preferences: cards the user answers about a friend
     @_cardSet = {}
     user = UserStore.getUser()
-    Pref = Parse.Object.extend 'Pref'
     prefUser = new Parse.Object 'User'
     prefUser.set 'id', user.id
     prefQuery = new Parse.Query Pref
@@ -86,7 +90,6 @@ class PlayStore extends EventEmitter
 
 
   _fetchChoices: (cardId) ->
-    Choice = Parse.Object.extend 'Choice'
     choiceQuery = new Parse.Query Choice
     choiceQuery.equalTo 'cardId', cardId
     choiceQuery.find
@@ -103,8 +106,7 @@ class PlayStore extends EventEmitter
 
 
   _fetchComments: ->
-    Comments = Parse.Object.extend 'Comment'
-    query = new Parse.Query Comments
+    query = new Parse.Query Comment
     card = new Parse.Object 'Card'
     card.set 'id', @_card
     peggee = new Parse.Object 'User'

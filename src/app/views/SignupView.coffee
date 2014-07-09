@@ -4,17 +4,13 @@ View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 InputSurface = require 'famous/surfaces/InputSurface'
-Transform = require 'famous/core/Transform'
 StateModifier = require 'famous/modifiers/StateModifier'
 UserActions = require 'actions/UserActions'
-Easing = require 'famous/transitions/Easing'
-Timer = require 'famous/utilities/Timer'
-Transitionable = require 'famous/transitions/Transitionable'
 UserStore = require 'stores/UserStore'
 Constants = require 'constants/PeggConstants'
 Engine = require 'famous/core/Engine'
 MenuActions = require 'actions/MenuActions'
-TweenTransition = require 'famous/transitions/TweenTransition'
+Utils = require 'lib/utils'
 
 class SignupView extends View
 
@@ -26,7 +22,6 @@ class SignupView extends View
     super options
     @initListeners()
     @initSplash()
-
 
   initListeners: ->
     UserStore.on Constants.stores.SUBSCRIBE_PASS, @showMessage
@@ -50,20 +45,21 @@ class SignupView extends View
     @add(logoMod).add logoSurface
     @add(markMod).add markSurface
 
-    @animate logoMod, @options.logo.states
-    @animate markMod, @options.mark.states
+    Utils.animateAll logoMod, @options.logo.states
+    Utils.animateAll markMod, @options.mark.states
 
     @initSignUp()
 
 
   initSignUp: ->
-    signupText = new Surface
-      size: @options.signupText.size
-      content: 'Who\'s got you pegged?'
-      classes: @options.signupText.classes
-    signupTextMod = new StateModifier
-      origin: @options.signupText.origin
-      align: @options.signupText.align
+#    signupText = new Surface
+#      size: @options.signupText.size
+#      content: 'Who\'s got you pegged?'
+#      classes: @options.signupText.classes
+#    signupTextMod = new StateModifier
+#      origin: @options.signupText.origin
+#      align: @options.signupText.align
+#    @add(signupTextMod).add signupText
     @signupInput = new InputSurface
       size: @options.signupInput.size
       placeholder: 'Enter your email'
@@ -72,6 +68,7 @@ class SignupView extends View
     @signupInputMod = new StateModifier
       origin: @options.signupInput.origin
       align: @options.signupInput.align
+    @add(signupButtonMod).add signupButton
     signupButton = new Surface
       size: @options.signupButton.size
       content: 'I\'m sexy and I know it.'
@@ -82,12 +79,10 @@ class SignupView extends View
       origin: @options.signupButton.origin
       align:  @options.signupButton.align
     @add(@signupInputMod).add @signupInput
-    #@add(signupTextMod).add signupText
-    @add(signupButtonMod).add signupButton
 
-    #@animate signupTextMod, @options.signupText.states
-    @animate signupButtonMod, @options.signupButton.states
-    @animate @signupInputMod, @options.signupInput.states
+    #Utils.animateAll signupTextMod, @options.signupText.states
+    Utils.animateAll signupButtonMod, @options.signupButton.states
+    Utils.animateAll @signupInputMod, @options.signupInput.states
 
     signupButton.on 'click', =>
       @onSubmit()
@@ -96,17 +91,6 @@ class SignupView extends View
     @signupInput.on 'keypress', (e) =>
       if e.keyCode is 13
         @onInputBlur()
-
-  animate: (mod, states) ->
-    for state in states
-      Timer.after ((mod, state)->
-        if state.origin
-          mod.setOrigin state.origin, state.transition
-        if state.align
-          mod.setAlign state.align, state.transition
-        if state.scale
-          mod.setTransform Transform.scale(state.scale...), state.transition
-      ).bind(@, mod, state), state.delay
 
   onSubmit: =>
     email = @signupInput.getValue()

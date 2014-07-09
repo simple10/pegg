@@ -3,18 +3,17 @@ require './scss/play.scss'
 View = require 'famous/core/View'
 StateModifier = require 'famous/modifiers/StateModifier'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
+ImageSurface = require 'famous/surfaces/ImageSurface'
 Scrollview = require 'famous/views/Scrollview'
-Timer = require 'famous/utilities/Timer'
 Utility = require 'famous/utilities/Utility'
 Surface = require 'famous/core/Surface'
-ImageSurface = require 'famous/surfaces/ImageSurface'
 CardView = require 'views/CardView'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
 CommentsView = require 'views/CommentsView'
-ProgressBarView = require 'views/ProgressBarView'
 PlayActions = require 'actions/PlayActions'
 InputView = require 'views/InputView'
+Utils = require 'lib/utils'
 GenericSync = require 'famous/inputs/GenericSync'
 MouseSync = require 'famous/inputs/MouseSync'
 TouchSync = require 'famous/inputs/TouchSync'
@@ -167,7 +166,7 @@ class PlayView extends View
     @message.setClasses ['card__message__pref']
     @message.setContent PlayStore.getMessage()
     @showMessage()
-    @animate @commentsMod, @options.comments.states[1]
+    Utils.animate @commentsMod, @options.comments.states[1]
 
   cardFail: =>
     @message.setClasses ['card__message__fail']
@@ -176,24 +175,24 @@ class PlayView extends View
     @fail++
     if @fail is 3
       @fail = 0
-      @animate @commentsMod, @options.comments.states[1]
+      Utils.animate @commentsMod, @options.comments.states[1]
     # TODO: if 3rd fail, show comments, disable options
 
   cardWin: =>
     @message.setClasses ['card__message__win']
     @message.setContent PlayStore.getMessage()
     @showMessage()
-    @animate @commentsMod, @options.comments.states[1]
+    Utils.animate @commentsMod, @options.comments.states[1]
 
   showMessage: =>
-    @animate @messageMod, @options.message.states[1]
-    @animate @bubbleMod, @options.bubble.states[1]
-    @animate @unicornMod, @options.unicorn.states[1]
+    Utils.animate @messageMod, @options.message.states[1]
+    Utils.animate @bubbleMod, @options.bubble.states[1]
+    Utils.animate @unicornMod, @options.unicorn.states[1]
 
   hideMessage: =>
-    @animate @messageMod, @options.message.states[0]
-    @animate @bubbleMod, @options.bubble.states[0]
-    @animate @unicornMod, @options.unicorn.states[0]
+    Utils.animate @messageMod, @options.message.states[0]
+    Utils.animate @bubbleMod, @options.bubble.states[0]
+    Utils.animate @unicornMod, @options.unicorn.states[0]
 
   nextCard: =>
     if @pos is @size
@@ -203,28 +202,15 @@ class PlayView extends View
 
   toggleComments: =>
     if @commentsOpen
-      @animate @cardsMod, @options.cards.states[0]
-      @animate @commentsMod, @options.comments.states[1]
-      @animate @newCommentMod, @options.newComment.states[0]
+      Utils.animate @cardsMod, @options.cards.states[0]
+      Utils.animate @commentsMod, @options.comments.states[1]
+      Utils.animate @newCommentMod, @options.newComment.states[0]
       @commentsOpen = false
     else
-      @animate @cardsMod, @options.cards.states[1]
-      @animate @commentsMod, @options.comments.states[2]
-      @animate @newCommentMod, @options.newComment.states[1]
+      Utils.animate @cardsMod, @options.cards.states[1]
+      Utils.animate @commentsMod, @options.comments.states[2]
+      Utils.animate @newCommentMod, @options.newComment.states[1]
       @commentsOpen = true
-
-
-  animate: (mod, state) ->
-    Timer.after (->
-      if state.origin?
-        mod.setOrigin state.origin, state.transition
-      if state.align?
-        mod.setAlign state.align, state.transition
-      if state.scale?
-        mod.setTransform Transform.scale(state.scale...), state.transition
-      if state.transform?
-        mod.setTransform state.transform, state.transition
-    ), state.delay
 
 
 module.exports = PlayView

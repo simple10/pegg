@@ -3,107 +3,84 @@ require './scss/login.scss'
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
-Transform = require 'famous/core/Transform'
 StateModifier = require 'famous/modifiers/StateModifier'
 UserActions = require 'actions/UserActions'
-Easing = require 'famous/transitions/Easing'
-Timer = require 'famous/utilities/Timer'
-Transitionable = require 'famous/transitions/Transitionable'
-SpringTransition = require 'famous/transitions/SpringTransition'
-Transitionable.registerMethod 'spring', SpringTransition
+Utils = require 'lib/utils'
 
 
 class LoginView extends View
-  @DEFAULT_OPTIONS:
-    logoWidth: 150
-    logoHeight: 110
-    markWidth: 150
-    markHeight: 70
-    transition:
-      duration: 600
-      curve: Easing.inOutBack
-    spring:
-      method: "spring"
-      period: 300
-      dampingRatio: 0.3
-    mascotWidth: 417
-    mascotHeight: 800
 
   constructor: (options) ->
     super options
     @initSplash()
+    @initLogin()
 
   initSplash: ->
     logo = new ImageSurface
-      size: [@options.mascotWidth, @options.mascotHeight]
-      classes: ['login__logo']
+      size: @options.logo.size
+      classes: @options.logo.classes
       content: "images/mascot_medium.png"
-    logoPosMod = new StateModifier
-      align: [0.5,1]
-      origin: [0.5,0]
-    logoSizeMod = new StateModifier
+    logoMod = new StateModifier
+      align: @options.logo.align
+      origin: @options.logo.origin
     mark = new ImageSurface
-      size: [@options.markWidth, @options.markHeight]
-      classes: ['login__mark']
+      size: @options.mark.size
+      classes: @options.mark.classes
       content: "images/logo_mark-big.png"
     markMod = new StateModifier
-      align: [0.5,1]
-      origin: [0.5,0]
-    @add(logoSizeMod).add(logoPosMod).add logo
+      align: @options.mark.align
+      origin: @options.mark.origin
+    @add(logoMod).add logo
     @add(markMod).add mark
-    markMod.setTransform Transform.translate(0, -window.innerHeight + @options.logoHeight + @options.markHeight, 3), @options.transition
-    Timer.after (=>
-      logoPosMod.setTransform Transform.translate(0, -window.innerHeight/2 - @options.logoHeight, 0), @options.spring, =>
-        logoSizeMod.setTransform Transform.translate(0, -300, -2000), @options.transition
-        markMod.setTransform Transform.translate(0, -window.innerHeight + @options.logoHeight/4, 0), {duration: 200}, =>
-          @initLogin()
-    ), 20
+
+    Utils.animateAll logoMod, @options.logo.states
+    Utils.animateAll markMod, @options.mark.states
 
   initLogin: ->
-    loginText = new Surface
-      size: [68, 60]
-      content: 'Login'
-      classes: ['login__text--header']
-    privacyText = new Surface
-      size: [window.innerWidth, 10]
-      content: 'Psst... Pegg respects people and their data.'
-      classes: ['login__text--message']
-    loginTextMod = new StateModifier
-      align: [0.5,0.5]
-      origin: [0.5,0.5]
-      opacity: 0
-    #node = @add loginTextMod
-    #node.add loginText
-    #node.add privacyText
     fbButton = new Surface
-      size: [window.innerWidth, window.innerHeight/4]
+      size: @options.fbButton.size
       content: 'Login with Facebook'
-      classes: ['login__button--facebook']
+      classes: @options.fbButton.classes
       properties:
-        lineHeight: "#{window.innerHeight/4}px"
+        lineHeight: "#{@options.fbButton.size[1]}px"
     fbButtonMod = new StateModifier
-      align: [1,0.5]
-      origin: [0,0]
+      align: @options.fbButton.align
+      origin: @options.fbButton.origin
     fbButton.on "click", ->
       UserActions.login()
     gpButton = new Surface
-      size: [window.innerWidth, window.innerHeight/4]
+      size: @options.gpButton.size
       content: 'Login with Google'
-      classes: ['login__button--google']
+      classes: @options.gpButton.classes
       properties:
-        lineHeight: "#{window.innerHeight/4}px"
+        lineHeight: "#{@options.gpButton.size[1]}px"
     gpButtonMod = new StateModifier
-      align: [1,1]
-      origin: [0,1]
-
-    #loginTextMod.setOpacity 1, @options.transition
-    #loginTextMod.setTransform Transform.translate(0, -105, 0), @options.transition
+      align: @options.gpButton.align
+      origin: @options.gpButton.origin
     @add(fbButtonMod).add fbButton
-    fbButtonMod.setTransform Transform.translate(-window.innerWidth, 0, 0), @options.transition
-    Timer.after (=>
-      @add(gpButtonMod).add gpButton
-      gpButtonMod.setTransform Transform.translate(-window.innerWidth, 0, 0), @options.transition
-    ), 10
+    @add(gpButtonMod).add gpButton
+
+    Utils.animateAll fbButtonMod, @options.fbButton.states
+    Utils.animateAll gpButtonMod, @options.gpButton.states
+
+
+
+#    loginText = new Surface
+#      size: [68, 60]
+#      content: 'Login'
+#      classes: ['login__text--header']
+#    privacyText = new Surface
+#      size: [window.innerWidth, 10]
+#      content: 'Psst... Pegg respects people and their data.'
+#      classes: ['login__text--message']
+#    loginTextMod = new StateModifier
+#      align: [0.5,0.5]
+#      origin: [0.5,0.5]
+#      opacity: 0
+#    node = @add loginTextMod
+#    node.add loginText
+#    node.add privacyText
+
 
 # Causes inexplicable flutter near end of animation:
 #    Transform.multiply(

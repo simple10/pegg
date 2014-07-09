@@ -20,7 +20,7 @@ decks = new DeckStore
 AppDispatcher.register (payload) ->
   action = payload.action
 
-  # Pay attention to events relevant to PeggBoxStore
+  # Pay attention to events relevant to DeckStore
   switch action.actionType
     when Constants.actions.DECKS_FETCH
       decks.fetch action.page
