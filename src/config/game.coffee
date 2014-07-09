@@ -4,7 +4,7 @@ config =
       [      # stage 1
         {
           type: 'pref'
-          set_size: 3
+          size: 3
         }
         {
           type: 'message_next_friend'
@@ -14,7 +14,7 @@ config =
       [      # stage 2
         {
           type: 'pegg'
-          set_size: 3
+          size: 3
         }
         {
           type: 'status_friend_ranking'

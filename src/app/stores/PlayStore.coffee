@@ -3,7 +3,7 @@ Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 UserStore = require 'stores/UserStore'
 Parse = require 'Parse'
-
+GameFlow = require('config/game').game_flows.default
 
 Choice = Parse.Object.extend 'Choice'
 Card = Parse.Object.extend 'Card'
@@ -19,20 +19,21 @@ class PlayStore extends EventEmitter
   _mode: Constants.stores.PLAY_PEGGS
   _peggee: null
   _message: null
+  _stageIndex: 0
+
+
+#  constructor: () ->
+#    @init GameFlow
+
+  load: (gameFlow) ->
+    @_game = new Game gameFlow
 
 
   ## Load set of cards
   # emits:
   #   PLAY_CHANGE
-  _loadGame: ->
-    if @_mode is Constants.stores.PLAY_PREFS
-      @_fetchPeggCards 5
-      @_mode = Constants.stores.PLAY_PEGGS
-    else
-      @_fetchPrefCards 1
-      @_mode = Constants.stores.PLAY_PREFS
-    @emit Constants.stores.PLAY_CHANGE
-
+#  _nextStage: ->
+#    @game.nextStage()
 
   _fetchPrefCards: (num) ->
     # Gets unanswered preferences: cards the user answers about himself
@@ -285,5 +286,27 @@ AppDispatcher.register (payload) ->
     when Constants.actions.CARD_RATE
       play._saveRating action.rating
 
+
+class Game
+  constructor: (data) ->
+    @_stages = for stageData in data
+      new Stage stageData
+#
+#  loadStage: ->
+#    if @_currentStage? then @_currentStage++  else @_currentStage = 0
+#    @_stage = @_stages[@_currentStage]
+#    @_stage.load()
+#
+class Stage
+  constructor: (data) ->
+    @_part = data[0]   # later we will support multiple parts
+#
+#  load: ->
+#    if @_part.type is 'pref'
+#      @_fetchPrefCards @_part.size
+#    else if @_part.type is 'pegg'
+#      @_fetchPeggCards @_part.size
+#    else
+#      raise "unexpected part type: #{@_part.type}"
 
 module.exports = play
