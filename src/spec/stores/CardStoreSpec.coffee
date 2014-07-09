@@ -24,7 +24,7 @@ describe 'CardStore', ->
     @card_store._question = question
     @card_store._answers = answers
     @card_store._categories = categories
-    expect(@card_store.getCard()).to.deep.equal {author: author, question: question, answers: answers, categories: categories}
+    expect(@card_store.getCard()).to.deep.equal {author, question, answers, categories}
 
   it 'can add a question to its card', ->
     question = 'Are dragons real?'
