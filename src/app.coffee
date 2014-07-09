@@ -22,6 +22,9 @@ FpsMeter = require 'views/FpsMeterView'
 LoginView = require 'views/LoginView'
 SignupView = require 'views/SignupView'
 
+# Layouts
+SignupViewLayout = require 'views/layouts/iPhone5/SignupViewLayout'
+
 # Stores
 UserStore = require 'stores/UserStore'
 AppStateStore = require 'stores/AppStateStore'
@@ -51,7 +54,7 @@ mainContext.setPerspective 2000
 
 appView = new AppView
 loginView = new LoginView
-signupView = new SignupView
+signupView = new SignupView SignupViewLayout
 lightbox = new Lightbox
   inOpacity: 1
   outOpacity: 0
