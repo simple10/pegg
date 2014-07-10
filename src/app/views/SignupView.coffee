@@ -10,7 +10,7 @@ UserStore = require 'stores/UserStore'
 Constants = require 'constants/PeggConstants'
 Engine = require 'famous/core/Engine'
 MenuActions = require 'actions/MenuActions'
-Utils = require 'lib/utils'
+Utils = require 'lib/Utils'
 
 class SignupView extends View
 

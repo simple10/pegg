@@ -5,7 +5,7 @@ Surface = require 'famous/core/Surface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 StateModifier = require 'famous/modifiers/StateModifier'
 UserActions = require 'actions/UserActions'
-Utils = require 'lib/utils'
+Utils = require 'lib/Utils'
 
 
 class LoginView extends View
