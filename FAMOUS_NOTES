@@ -15,3 +15,6 @@ you can change the max framerate
 
 Flux- photons per area /sec
 LOOK UP
+
+
+coffee -c src/spec
