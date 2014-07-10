@@ -33,7 +33,7 @@ gulp.task 'help', ->
 
       gulp serve            build and run dev server
       gulp clean            clean production build dir
-      gulp build            production build
+      gulp build            production build [pass in --env dev for dev build]
       gulp test             run tests and watch for changes
       gulp test --once      run tests once
 
@@ -120,7 +120,7 @@ gulp.task 'build', ['webpack:build', 'copy'], ->
 gulp.task 'webpack:build', (callback) ->
   webpackConfig.output.filename = 'bundle-[hash].js'
   webpackConfig.plugins = webpackConfig.plugins.concat(
-    new webpack.DefinePlugin 'process.env': { NODE_ENV: JSON.stringify('production') }
+    new webpack.DefinePlugin 'process.env': { NODE_ENV: JSON.stringify(gutil.env.env || 'production') }
     new webpack.optimize.DedupePlugin()
     new webpack.optimize.UglifyJsPlugin()
   )
