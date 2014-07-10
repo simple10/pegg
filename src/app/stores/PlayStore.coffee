@@ -32,23 +32,8 @@ class PlayStore extends EventEmitter
   ## Load set of cards
   # emits:
   #   PLAY_CHANGE
-#  _nextStage: ->
-#    @game.nextStage()
-
-  _fetchChoices: (cardId) ->
-    choiceQuery = new Parse.Query Choice
-    choiceQuery.equalTo 'cardId', cardId
-    choiceQuery.find
-      success: (choices) =>
-        @_cardSet[cardId].choices = []
-        for choice in choices
-          @_cardSet[cardId].choices.push
-            id: choice.id
-            text: choice.get 'text'
-            image: choice.get 'image'
-        @emit Constants.stores.CHOICES_CHANGE, cardId
-      error: (error) ->
-        console.log "Error fetching choices: " + error.code + " " + error.message
+  _nextStage: ->
+    @_game.loadStage()
 
 
   _fetchComments: ->
@@ -185,7 +170,7 @@ class PlayStore extends EventEmitter
     console.log "cardID: " + cardId
 
   getCards: ->
-    @_cardSet
+    @_game.
 
   getComments: ->
     @_comments
@@ -242,6 +227,9 @@ class Game
     @_stage.load()
 
 class Stage
+  cardSet = {}
+  status = null
+
   constructor: (data) ->
     @_part = data[0]   # later we will support multiple parts
 
@@ -255,7 +243,7 @@ class Stage
 
   _fetchPrefCards: (num) ->
     # Gets unanswered preferences: cards the user answers about himself
-    @_cardSet = {}
+    @cardSet  = {}
     user = UserStore.getUser()
     cardQuery = new Parse.Query Card
     cardQuery.limit num
@@ -264,7 +252,7 @@ class Stage
     cardQuery.find
       success: (cards) =>
         for card in cards
-          @_cardSet[card.id] = {
+          @cardSet[card.id] = {
             firstName: user.get 'first_name'
             pic: user.get 'avatar_url'
             question: card.get 'question'
@@ -278,7 +266,7 @@ class Stage
 
   _fetchPeggCards: (num) ->
     # Gets unpegged preferences: cards the user answers about a friend
-    @_cardSet = {}
+    @cardSet = {}
     user = UserStore.getUser()
     prefUser = new Parse.Object 'User'
     prefUser.set 'id', user.id
@@ -295,7 +283,7 @@ class Stage
         for pref in prefs
           card = pref.get 'card'
           peggee = pref.get 'user'
-          @_cardSet[card.id] = {
+          @cardSet[card.id] = {
             peggee: peggee.id
             firstName: peggee.get 'first_name'
             pic: peggee.get 'avatar_url'
@@ -308,6 +296,19 @@ class Stage
       error: (error) ->
         console.log "Error fetching cards: " + error.code + " " + error.message
 
-
+  _fetchChoices: (cardId) ->
+    choiceQuery = new Parse.Query Choice
+    choiceQuery.equalTo 'cardId', cardId
+    choiceQuery.find
+      success: (choices) =>
+        @cardSet[cardId].choices = []
+        for choice in choices
+          @cardSet[cardId].choices.push
+            id: choice.id
+            text: choice.get 'text'
+            image: choice.get 'image'
+        @emit Constants.stores.CHOICES_CHANGE, cardId
+      error: (error) ->
+        console.log "Error fetching choices: " + error.code + " " + error.message
 
 module.exports = play
