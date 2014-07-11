@@ -30,7 +30,7 @@ class PlayStore extends EventHandler
   # emits:
   #   PLAY_CHANGE
   _nextStage: ->
-    @_game.loadStage()
+    @_game.loadNextStage()
 
 
   _fetchComments: (cardId, peggeeId) ->
