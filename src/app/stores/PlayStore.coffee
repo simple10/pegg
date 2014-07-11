@@ -4,12 +4,11 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 UserStore = require 'stores/UserStore'
 Parse = require 'Parse'
 
-Choice = Parse.Object.extend 'Choice'
-Card = Parse.Object.extend 'Card'
 Pref = Parse.Object.extend 'Pref'
-Choice = Parse.Object.extend 'Choice'
 Comment = Parse.Object.extend 'Comment'
 
+GameState = require 'stores/helpers/GameState'
+MessageState = require 'stores/helpers/MessageState'
 
 class PlayStore extends EventHandler
   _game: null
@@ -20,10 +19,10 @@ class PlayStore extends EventHandler
 #    @init GameFlow
 
   _loadGame: (gameFlow) ->
-    @_game = new Game gameFlow
+    @_game = new GameState gameFlow
 
   _loadScript: (script) ->
-    @_message = new Message script
+    @_message = new MessageState script
 
 
   ## Load set of cards
@@ -179,115 +178,5 @@ AppDispatcher.register (payload) ->
       play._saveRating action.rating
 
 
-class Game extends EventEmitter
-  constructor: (data) ->
-    @_stages = for stageData in data
-      new Stage stageData
-
-  loadStage: ->
-    if @_currentStage? then @_currentStage++  else @_currentStage = 0
-    @_stage = @_stages[@_currentStage]
-    @_stage.load()
-
-  getCards: ->
-    @_stage.cardSet
-
-  getChoices: (cardId) ->
-    # @_cardSet[cardId].choices
-
-class Stage extends EventEmitter
-  cardSet = {}
-  status = null
-
-  constructor: (data) ->
-    @_part = data[0]   # later we will support multiple parts
-
-  load: ->
-    if @_part.type is 'pref'
-      @_fetchPrefCards @_part.size
-    else if @_part.type is 'pegg'
-      @_fetchPeggCards @_part.size
-    else
-      raise "unexpected part type: #{@_part.type}"
-
-  _fetchPrefCards: (num) ->
-    # Gets unanswered preferences: cards the user answers about himself
-    @cardSet  = {}
-    user = UserStore.getUser()
-    cardQuery = new Parse.Query Card
-    cardQuery.limit num
-    #    cardQuery.notContainedIn 'hasPlayed', [user.id]
-    cardQuery.skip Math.floor(Math.random() * 180)
-    cardQuery.find
-      success: (cards) =>
-        for card in cards
-          @cardSet[card.id] = {
-            firstName: user.get 'first_name'
-            pic: user.get 'avatar_url'
-            question: card.get 'question'
-            choices: null
-          }
-          @_fetchChoices(card.id)
-        @emit Constants.stores.CARDS_CHANGE
-      error: (error) ->
-        console.log "Error fetching cards: " + error.code + " " + error.message
-
-
-  _fetchPeggCards: (num) ->
-    # Gets unpegged preferences: cards the user answers about a friend
-    @cardSet = {}
-    user = UserStore.getUser()
-    prefUser = new Parse.Object 'User'
-    prefUser.set 'id', user.id
-    prefQuery = new Parse.Query Pref
-    prefQuery.limit num
-    prefQuery.include 'user'
-    prefQuery.include 'card'
-    prefQuery.include 'choice'
-    prefQuery.notEqualTo 'user', prefUser
-    #prefQuery.notContainedIn 'peggedBy', [user.id]
-    prefQuery.skip Math.floor(Math.random() * 280)
-    prefQuery.find
-      success: (prefs) =>
-        for pref in prefs
-          card = pref.get 'card'
-          peggee = pref.get 'user'
-          @cardSet[card.id] = {
-            peggee: peggee.id
-            firstName: peggee.get 'first_name'
-            pic: peggee.get 'avatar_url'
-            question: card.get 'question'
-            choices: null
-            answer: pref.get 'choice'
-          }
-          @_fetchChoices card.id
-        @emit Constants.stores.CARDS_CHANGE
-      error: (error) ->
-        console.log "Error fetching cards: " + error.code + " " + error.message
-
-  _fetchChoices: (cardId) =>
-    choiceQuery = new Parse.Query Choice
-    choiceQuery.equalTo 'cardId', cardId
-    choiceQuery.find
-      success: (choices) =>
-        @cardSet[cardId].choices = []
-        for choice in choices
-          @cardSet[cardId].choices.push
-            id: choice.id
-            text: choice.get 'text'
-            image: choice.get 'image'
-        @emit Constants.stores.CHOICES_CHANGE, cardId
-      error: (error) ->
-        console.log "Error fetching choices: " + error.code + " " + error.message
-
-class Message
-  constructor: (script) ->
-    @_script = script
-    @_currentMessage = {}
-
-  getMessage: (type) ->
-    index = @_currentMessage[type] or 0
-    @_currentMessage[type] = index + 1
-    @_script[type][index]
 
 module.exports = play
