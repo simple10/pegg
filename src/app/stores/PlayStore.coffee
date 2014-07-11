@@ -1,4 +1,4 @@
-EventEmitter = require 'famous/core/EventEmitter'
+EventHandler = require 'famous/core/EventHandler'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 UserStore = require 'stores/UserStore'
@@ -11,7 +11,7 @@ Choice = Parse.Object.extend 'Choice'
 Comment = Parse.Object.extend 'Comment'
 
 
-class PlayStore extends EventEmitter
+class PlayStore extends EventHandler
   _game: null
   _message: null
   _comments: null
