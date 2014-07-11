@@ -177,12 +177,23 @@ Use Bower for any dependencies that are only used in the browser. Use npm for ev
 
 
 
-# Production
+# Building Distributions
+
+## Production
 
 ```bash
 # Compile assets for production
 gulp build
 ```
+
+## Other Environments
+
+```bash
+# Compile assets for dev (eg heroku dev instance)
+gulp build --env dev
+```
+
+## Notes
 
 The package.json and bower.json files should be updated to use specific versions to ensure
 consistency between development and production.
