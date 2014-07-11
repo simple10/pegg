@@ -20,6 +20,7 @@ class PlayStore extends EventHandler
 
   _loadGame: (gameFlow) ->
     @_game = new GameState gameFlow
+    @_game.pipe @
 
   _loadScript: (script) ->
     @_message = new MessageState script
