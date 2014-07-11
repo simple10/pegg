@@ -3,7 +3,6 @@ Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 UserStore = require 'stores/UserStore'
 Parse = require 'Parse'
-GameFlow = require('config/game').game_flows.default
 
 Choice = Parse.Object.extend 'Choice'
 Card = Parse.Object.extend 'Card'
@@ -20,10 +19,10 @@ class PlayStore extends EventEmitter
 #  constructor: () ->
 #    @init GameFlow
 
-  loadGame: (gameFlow) ->
+  _loadGame: (gameFlow) ->
     @_game = new Game gameFlow
 
-  loadScript: (script) ->
+  _loadScript: (script) ->
     @_message = new Message script
 
 
@@ -161,6 +160,8 @@ AppDispatcher.register (payload) ->
   # Pay attention to events relevant to PlayStore
   switch action.actionType
     when Constants.actions.SET_LOAD #TODO STAGE_COMPLETE
+      play._loadGame action.flow
+      play._loadScript action.script
       play._nextStage()
     when Constants.actions.PEGG_SUBMIT
       play._savePegg action.peggee, action.card, action.choice, action.answer
@@ -178,7 +179,7 @@ AppDispatcher.register (payload) ->
       play._saveRating action.rating
 
 
-class Game
+class Game extends EventEmitter
   constructor: (data) ->
     @_stages = for stageData in data
       new Stage stageData
@@ -194,7 +195,7 @@ class Game
   getChoices: (cardId) ->
     # @_cardSet[cardId].choices
 
-class Stage
+class Stage extends EventEmitter
   cardSet = {}
   status = null
 
@@ -264,7 +265,7 @@ class Stage
       error: (error) ->
         console.log "Error fetching cards: " + error.code + " " + error.message
 
-  _fetchChoices: (cardId) ->
+  _fetchChoices: (cardId) =>
     choiceQuery = new Parse.Query Choice
     choiceQuery.equalTo 'cardId', cardId
     choiceQuery.find

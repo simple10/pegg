@@ -41,6 +41,8 @@ Constants = require 'constants/PeggConstants'
 # Routes
 Routes = require 'routes/AppRoutes'
 
+GameFlow = require('config/game').game_flows.default
+GameScript = require('config/game').scripts.cosmic_unicorn
 
 # Create the main context
 mainContext = Engine.createContext()
@@ -76,7 +78,7 @@ Timer.after (->
 pickView = ->
   if UserStore.getLoggedIn()
     lightbox.show appView
-    PlayActions.load()
+    PlayActions.load GameFlow, GameScript
   else if AppStateStore.getCurrentPageID() is 'login'
     lightbox.show loginView
   else
