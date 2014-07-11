@@ -134,13 +134,13 @@ class PlayView extends View
     @cards.sequenceFrom @cardSurfaces
     @size = 0
     @pos = 1
-    for own k,v of PlayStore.getCards()
-      card = new CardView k, v, size: [window.innerWidth, null]
+    for own cardId,v of PlayStore.getCards()
+      card = new CardView cardId, v, size: [window.innerWidth, null]
       card.on 'comment', =>
         @hideComments()
       card.pipe @cards
       @cardSurfaces.push card
-      @index[k] = @size
+      @index[cardId] = @size
       @size++
     #@progress.reset @size
 
