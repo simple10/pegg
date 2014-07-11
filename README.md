@@ -72,6 +72,9 @@ of the view file.
 
 * [Semantic Versioning](http://semver.org/)
 
+Use `npm shrinkwrap --dev` to lock npm modules between machines.
+
+
 ## Git
 
 * [Git best practices](https://blog.rainforestqa.com/2014-05-28-version-control-best-practices/)
