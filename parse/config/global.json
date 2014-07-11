@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "_default": {
+            "link": "pegg [new]"
+        }, 
+        "pegg [new]": {
+            "applicationId": "sMSeqS1EP23z0vo3TgZKd38MBiP9qzrvnv0OHMk8", 
+            "masterKey": "C8fABMIWRZ7qZeXakTmyifANFniJXpQXHoK5QOBu"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.18"
+    }
+}
