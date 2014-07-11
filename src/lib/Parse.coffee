@@ -14,7 +14,7 @@ require 'script!./parse-1.2.18_fixed-parsedate'
 Config = require('Config').public.parse
 
 Parse = window.Parse
-delete window.Parse
+#delete window.Parse
 
 Parse.initialize Config.appId, Config.jsKey
 
