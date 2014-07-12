@@ -41,7 +41,7 @@ class StatusView extends View
 
     @add container
     next.on "click", ->
-      PlayActions.continue()
+      PlayActions.nextStage()
 
 
 

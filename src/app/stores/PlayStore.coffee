@@ -13,7 +13,7 @@ MessageState = require 'stores/helpers/MessageState'
 class PlayStore extends EventHandler
   _game: null
   _message: null
-  _comments: null
+  _comments: []
 
 #  constructor: () ->
 #    @init GameFlow
@@ -173,8 +173,8 @@ AppDispatcher.register (payload) ->
       play._saveComment action.comment
     when Constants.actions.CARD_PASS
       play._savePass action.cardId
-    when Constants.actions.PLAY_CONTINUE
-      play._saveStatusAck()
+    when Constants.actions.NEXT_STAGE
+      play._nextStage()
     when Constants.actions.CARD_RATE
       play._saveRating action.rating
 

@@ -32,9 +32,9 @@ PlayActions =
       actionType: Constants.actions.CARD_PASS
       card: card
 
-  continue: () ->
+  nextStage: () ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.PLAY_CONTINUE
+      actionType: Constants.actions.NEXT_STAGE
 
   comment: (comment) ->
     AppDispatcher.handleViewAction

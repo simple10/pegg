@@ -28,7 +28,6 @@ class PlayView extends View
     #@initGestures()
 
   initListeners: ->
-    PlayStore.on Constants.stores.PLAY_CHANGE, @togglePlay
     PlayStore.on Constants.stores.PREF_SAVED, @cardPref
     PlayStore.on Constants.stores.CARD_FAIL, @cardFail
     PlayStore.on Constants.stores.CARD_WIN, @cardWin
@@ -39,14 +38,14 @@ class PlayView extends View
 
   initSurfaces: ->
     ##  CARDS ##
-    @cards = new Scrollview
+    @cardScrollView = new Scrollview
       direction: Utility.Direction.X
       paginated: true
       margin: 400
-    @cardsMod = new StateModifier
+    @cardScrollViewMod = new StateModifier
       align: @options.cards.align
       origin: @options.cards.origin
-    @add(@cardsMod).add @cards
+    @add(@cardScrollViewMod).add @cardScrollView
 
     ## MESSAGE ##
     @message = new Surface
@@ -115,7 +114,7 @@ class PlayView extends View
     @pos = 0
     #GenericSync.register MouseSync
     @sync = new GenericSync ['mouse', 'touch'], direction: GenericSync.DIRECTION_X
-    @cards.pipe @sync
+    @cardScrollView.pipe @sync
 
     @sync.on 'update', ((data) ->
       @pos += data.delta
@@ -131,22 +130,24 @@ class PlayView extends View
   loadCards: =>
     @cardSurfaces = []
     @index = []
-    @cards.sequenceFrom @cardSurfaces
+    @cardScrollView.sequenceFrom @cardSurfaces
     @size = 0
     @pos = 1
     for own cardId,v of PlayStore.getCards()
       card = new CardView cardId, v, size: [window.innerWidth, null]
       card.on 'comment', =>
         @hideComments()
-      card.pipe @cards
+      card.pipe @cardScrollView
       @cardSurfaces.push card
       @index[cardId] = @size
       @size++
     #@progress.reset @size
 
-    @cards.on 'pageChange', =>
+    @cardScrollView.on 'pageChange', =>
       @hideMessage()
       @pos++
+
+    @showCards()
 
   loadChoices: (cardId) =>
     @cardSurfaces[@index[cardId]].loadChoices cardId
@@ -156,9 +157,10 @@ class PlayView extends View
 
   nextCard: =>
     if @pos is @size
-      PlayActions.load()
+      @showStatus()
     else
-      @cards.goToNextPage()
+      PlayActions.loadComments()
+      @cardScrollView.goToNextPage()
 
   saveComment: (comment) ->
     PlayActions.comment(comment)
@@ -196,26 +198,24 @@ class PlayView extends View
     Utils.animate @unicornMod, @options.unicorn.states[0]
 
   hideComments: =>
-    Utils.animate @cardsMod, @options.cards.states[0]
+    Utils.animate @cardScrollViewMod, @options.cards.states[0]
     Utils.animate @commentsMod, @options.comments.states[1]
     Utils.animate @newCommentMod, @options.newComment.states[0]
 
   showComments: =>
-    Utils.animate @cardsMod, @options.cards.states[1]
+    Utils.animate @cardScrollViewMod, @options.cards.states[1]
     Utils.animate @commentsMod, @options.comments.states[2]
     Utils.animate @newCommentMod, @options.newComment.states[1]
 
-  togglePlay: =>
-    if @status
-      Utils.animate @cardsMod, @options.cards.states[0]
-      Utils.animate @statusMod, @options.status.states[0]
-      @status = false
-    else
-      @hideMessage()
-      Utils.animate @newCommentMod, @options.newComment.states[0]
-      Utils.animate @commentsMod, @options.comments.states[0]
-      Utils.animate @cardsMod, @options.cards.states[2]
-      Utils.animate @statusMod, @options.status.states[1]
-      @status = true
+  showCards: =>
+    Utils.animate @cardScrollViewMod, @options.cards.states[0]
+    Utils.animate @statusMod, @options.status.states[0]
+
+  showStatus: =>
+    @hideMessage()
+    Utils.animate @newCommentMod, @options.newComment.states[0]
+    Utils.animate @commentsMod, @options.comments.states[0]
+    Utils.animate @cardScrollViewMod, @options.cards.states[2]
+    Utils.animate @statusMod, @options.status.states[1]
 
 module.exports = PlayView
