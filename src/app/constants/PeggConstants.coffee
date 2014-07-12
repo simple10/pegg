@@ -16,6 +16,9 @@ module.exports =
     PLAY_CONTINUE: null
     ADD_QUESTION: null
     ADD_ANSWERS: null
+    PRELOAD_COMMENTS: null
+    NEXT_CARD: null
+    NEXT_STAGE: null
 
   stores: Utils.keyMirror
     # Generic
@@ -38,4 +41,6 @@ module.exports =
     PLAY_CHANGE: null
     CARD_WIN: null
     CARD_FAIL: null
+
+
 
