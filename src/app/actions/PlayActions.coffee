@@ -8,6 +8,12 @@ PlayActions =
       flow: flow
       script: script
 
+  preloadComments: (card, peggee) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.PRELOAD_COMMENTS
+      peggee: peggee
+      card: card
+
   pref: (card, choice) ->
     AppDispatcher.handleViewAction
       actionType: Constants.actions.PREF_SUBMIT

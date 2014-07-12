@@ -159,8 +159,10 @@ class PlayView extends View
     if @pos is @size
       @showStatus()
     else
-      PlayActions.loadComments()
       @cardScrollView.goToNextPage()
+      # cardId = @cardSurfaces[@pos].id
+      # peggeeId = FIXME ?????
+      # PlayActions.preloadComments(cardId, peggeeId)
 
   saveComment: (comment) ->
     PlayActions.comment(comment)

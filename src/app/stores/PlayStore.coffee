@@ -152,7 +152,6 @@ class PlayStore extends EventHandler
 
 play = new PlayStore
 
-
 # Register callback with AppDispatcher to be notified of events
 AppDispatcher.register (payload) ->
   action = payload.action
@@ -167,6 +166,8 @@ AppDispatcher.register (payload) ->
       play._savePegg action.peggee, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
       play._savePref action.card, action.choice
+    when Constants.actions.PRELOAD_COMMENTS
+      play._fetchComments action.card, action.peggee
     when Constants.actions.NEXT_CARD
       play._fetchComments action.card, action.peggee
     when Constants.actions.CARD_COMMENT
