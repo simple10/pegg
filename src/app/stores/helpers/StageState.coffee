@@ -4,6 +4,7 @@ UserStore = require 'stores/UserStore'
 Parse = require 'Parse'
 Card = Parse.Object.extend 'Card'
 Choice = Parse.Object.extend 'Choice'
+Pref = Parse.Object.extend 'Pref'
 
 
 class StageState extends EventHandler

@@ -4,7 +4,6 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 UserStore = require 'stores/UserStore'
 Parse = require 'Parse'
 
-Pref = Parse.Object.extend 'Pref'
 Comment = Parse.Object.extend 'Comment'
 
 GameState = require 'stores/helpers/GameState'
