@@ -167,13 +167,13 @@ class PlayView extends View
 
   cardPref: =>
     @message.setClasses ['card__message__pref']
-    @message.setContent PlayStore.getMessage()
+    @message.setContent PlayStore.getMessage('pref')
     @showMessage()
     Utils.animate @commentsMod, @options.comments.states[1]
 
   cardFail: =>
     @message.setClasses ['card__message__fail']
-    @message.setContent PlayStore.getMessage()
+    @message.setContent PlayStore.getMessage('fail')
     @showMessage()
     @fail++
     if @fail is 3
@@ -183,7 +183,7 @@ class PlayView extends View
 
   cardWin: =>
     @message.setClasses ['card__message__win']
-    @message.setContent PlayStore.getMessage()
+    @message.setContent PlayStore.getMessage('win')
     @showMessage()
     Utils.animate @commentsMod, @options.comments.states[1]
 
