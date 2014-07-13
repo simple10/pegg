@@ -4,7 +4,7 @@ module.exports =
   actions: Utils.keyMirror
     MENU_SELECT: null
     PEGGBOX_FETCH: null
-    SET_LOAD: null
+    LOAD_GAME: null
     PEGG_SUBMIT: null
     PREF_SUBMIT: null
     CARD_RATE: null
@@ -16,7 +16,6 @@ module.exports =
     PLAY_CONTINUE: null
     ADD_QUESTION: null
     ADD_ANSWERS: null
-    LOAD_COMMENTS: null
     NEXT_CARD: null
     NEXT_STAGE: null
 
@@ -41,6 +40,7 @@ module.exports =
     PLAY_CHANGE: null
     CARD_WIN: null
     CARD_FAIL: null
+    STATUS_CHANGE: null
 
 
 

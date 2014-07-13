@@ -13,24 +13,34 @@ class PlayStore extends EventHandler
   _game: null
   _message: null
   _comments: []
+  _cardIndex: []
+  _cardPosition: 0
 
-#  constructor: () ->
-#    @init GameFlow
-
-  _loadGame: (gameFlow) ->
-    @_game = new GameState gameFlow
+  _loadGame: (flow) ->
+    @_game = new GameState flow
     @_game.pipe @
 
   _loadScript: (script) ->
     @_message = new MessageState script
 
-
-  ## Load set of cards
-  # emits:
-  #   PLAY_CHANGE
   _nextStage: ->
     @_game.loadNextStage()
 
+  _nextCard: ->
+    if @_cardPosition is @_cardIndex.length - 1
+      # TODO: load Status
+      @emit Constants.stores.STATUS_CHANGE
+      @_cardPosition = 0
+    else
+      cardId = @_cardIndex[@_cardPosition]
+      cards = @_game.getCards()
+      card = cards[cardId]
+      if card.peggee?
+        peggeeId = card.peggee
+      else
+        peggeeId = UserStore.getUser().id
+      @_fetchComments cardId, peggeeId
+      @_cardPosition++
 
   _fetchComments: (cardId, peggeeId) ->
     query = new Parse.Query Comment
@@ -61,7 +71,7 @@ class PlayStore extends EventHandler
 #    choice = new Parse.Object 'Choice'
 #    choice.set 'id', choiceId
 #    prefQuery = new Parse.Query 'Pref'
-#    prefQuery.equalTo 'card', card
+#    prefQuery.equalTo 'card', card0p
 #    prefQuery.equalTo 'user', peggee
 #    prefQuery.first
 #      success: (pref) =>
@@ -73,7 +83,6 @@ class PlayStore extends EventHandler
       @emit Constants.stores.CARD_WIN
     else
       @emit Constants.stores.CARD_FAIL
-
 
   _savePref: (cardId, choiceId) ->
     @_peggee = UserStore.getUser().id
@@ -135,7 +144,12 @@ class PlayStore extends EventHandler
     console.log "cardID: " + cardId
 
   getCards: ->
-    @_game.getCards()
+    cards = @_game.getCards()
+    i = 0
+    for own cardId of cards
+      @_cardIndex[i] = cardId
+      i++
+    cards
 
   getCurrentCardId: ->
     @_card
@@ -163,7 +177,7 @@ AppDispatcher.register (payload) ->
 
   # Pay attention to events relevant to PlayStore
   switch action.actionType
-    when Constants.actions.SET_LOAD #TODO STAGE_COMPLETE
+    when Constants.actions.LOAD_GAME
       play._loadGame action.flow
       play._loadScript action.script
       play._nextStage()
@@ -171,14 +185,12 @@ AppDispatcher.register (payload) ->
       play._savePegg action.peggee, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
       play._savePref action.card, action.choice
-    when Constants.actions.LOAD_COMMENTS
-      play._fetchComments action.card, action.peggee
     when Constants.actions.NEXT_CARD
-      play._fetchComments action.card, action.peggee
+      play._nextCard()
     when Constants.actions.CARD_COMMENT
       play._saveComment action.comment
     when Constants.actions.CARD_PASS
-      play._savePass action.cardId
+      play._savePass action.card
     when Constants.actions.NEXT_STAGE
       play._nextStage()
     when Constants.actions.CARD_RATE

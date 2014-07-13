@@ -33,6 +33,7 @@ class PlayView extends View
     PlayStore.on Constants.stores.CARD_WIN, @cardWin
     PlayStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
     PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
+    PlayStore.on Constants.stores.STATUS_CHANGE, @loadStatus
     PlayStore.on Constants.stores.CHOICES_CHANGE, (cardId) =>
       @loadChoices cardId
 
@@ -89,7 +90,7 @@ class PlayView extends View
       origin: @options.comments.origin
     @add(@commentsMod).add @comments
     @comments.on 'open', =>
-      @showComments()
+      @expandComments()
     @newComment = new InputView {placeholder: "Enter a comment..."}
     @newCommentMod = new StateModifier
       align: @options.newComment.align
@@ -128,41 +129,38 @@ class PlayView extends View
     ).bind(@)
 
   loadCards: =>
-    @cardSurfaces = []
+    @cardViews = []
     @index = []
-    @cardScrollView.sequenceFrom @cardSurfaces
-    @size = 0
-    @pos = 1
-    for own cardId,v of PlayStore.getCards()
-      card = new CardView cardId, v, size: [window.innerWidth, null]
+    @cardScrollView.sequenceFrom @cardViews
+    i = 0
+    for own cardId, cardObj of PlayStore.getCards()
+      card = new CardView cardId, cardObj, size: [window.innerWidth, null]
       card.on 'comment', =>
-        @hideComments()
+        @collapseComments()
       card.pipe @cardScrollView
-      @cardSurfaces.push card
-      @index[cardId] = @size
-      @size++
-    #@progress.reset @size
+      @cardViews.push card
+      @index[cardId] = i
+      i++
 
-    @cardScrollView.on 'pageChange', =>
-      @hideMessage()
-      @pos++
+    #@cardScrollView.on 'pageChange', =>
+    #  @hideMessage()
 
     @showCards()
 
   loadChoices: (cardId) =>
-    @cardSurfaces[@index[cardId]].loadChoices cardId
+    @cardViews[@index[cardId]].loadChoices cardId
 
   loadComments: =>
     @comments.load PlayStore.getComments()
 
+  loadStatus: =>
+    @showStatus()
+
   nextCard: =>
-    if @pos is @size
-      @showStatus()
-    else
-      @cardScrollView.goToNextPage()
-      cardId = PlayStore.getCurrentCardId()
-      peggeeId = PlayStore.getPeggeeId()
-      PlayActions.loadComments(cardId, peggeeId)
+    @hideMessage()
+    @hideComments()
+    @cardScrollView.goToNextPage()
+    PlayActions.nextCard()
 
   saveComment: (comment) ->
     PlayActions.comment(comment)
@@ -200,11 +198,14 @@ class PlayView extends View
     Utils.animate @unicornMod, @options.unicorn.states[0]
 
   hideComments: =>
+    Utils.animate @commentsMod, @options.comments.states[0]
+
+  collapseComments: =>
     Utils.animate @cardScrollViewMod, @options.cards.states[0]
     Utils.animate @commentsMod, @options.comments.states[1]
     Utils.animate @newCommentMod, @options.newComment.states[0]
 
-  showComments: =>
+  expandComments: =>
     Utils.animate @cardScrollViewMod, @options.cards.states[1]
     Utils.animate @commentsMod, @options.comments.states[2]
     Utils.animate @newCommentMod, @options.newComment.states[1]
