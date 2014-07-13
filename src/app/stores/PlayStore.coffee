@@ -32,6 +32,7 @@ class PlayStore extends EventHandler
       @emit Constants.stores.STATUS_CHANGE
       @_cardPosition = 0
     else
+      @_cardPosition++
       cardId = @_cardIndex[@_cardPosition]
       cards = @_game.getCards()
       card = cards[cardId]
@@ -40,7 +41,6 @@ class PlayStore extends EventHandler
       else
         peggeeId = UserStore.getUser().id
       @_fetchComments cardId, peggeeId
-      @_cardPosition++
 
   _fetchComments: (cardId, peggeeId) ->
     query = new Parse.Query Comment
@@ -150,12 +150,6 @@ class PlayStore extends EventHandler
       @_cardIndex[i] = cardId
       i++
     cards
-
-  getCurrentCardId: ->
-    @_card
-
-  getPeggeeId: ->
-    @_peggee
 
   getStatus: ->
     @_game.getStatus()
