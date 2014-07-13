@@ -91,7 +91,7 @@ class PlayView extends View
     @add(@commentsMod).add @comments
     @comments.on 'open', =>
       @expandComments()
-    @newComment = new InputView {placeholder: "Enter a comment..."}
+    @newComment = new InputView {placeholder: "Enter a comment...", align: @options.newComment.states[1].align}
     @newCommentMod = new StateModifier
       align: @options.newComment.align
       origin: @options.newComment.origin
@@ -199,24 +199,25 @@ class PlayView extends View
 
   hideComments: =>
     Utils.animate @commentsMod, @options.comments.states[0]
+    @newComment.setAlign @options.newComment.states[0].align
 
   collapseComments: =>
     Utils.animate @cardScrollViewMod, @options.cards.states[0]
     Utils.animate @commentsMod, @options.comments.states[1]
-    Utils.animate @newCommentMod, @options.newComment.states[0]
+    @newComment.setAlign @options.newComment.states[0].align
 
   expandComments: =>
     Utils.animate @cardScrollViewMod, @options.cards.states[1]
     Utils.animate @commentsMod, @options.comments.states[2]
-    Utils.animate @newCommentMod, @options.newComment.states[1]
+    @newComment.setAlign @options.newComment.states[1].align
 
   showCards: =>
     Utils.animate @cardScrollViewMod, @options.cards.states[0]
-    Utils.animate @statusMod, @options.status.states[0]
+    Utils.animate @statusMod, @options.status.states[0].align
 
   showStatus: =>
     @hideMessage()
-    Utils.animate @newCommentMod, @options.newComment.states[0]
+    @newComment.setAlign @options.newComment.states[0]
     Utils.animate @commentsMod, @options.comments.states[0]
     Utils.animate @cardScrollViewMod, @options.cards.states[2]
     Utils.animate @statusMod, @options.status.states[1]
