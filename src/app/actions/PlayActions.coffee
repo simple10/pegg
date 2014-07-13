@@ -8,9 +8,9 @@ PlayActions =
       flow: flow
       script: script
 
-  preloadComments: (card, peggee) ->
+  loadComments: (card, peggee) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.PRELOAD_COMMENTS
+      actionType: Constants.actions.LOAD_COMMENTS
       peggee: peggee
       card: card
 

@@ -137,6 +137,12 @@ class PlayStore extends EventHandler
   getCards: ->
     @_game.getCards()
 
+  getCurrentCardId: ->
+    @_card
+
+  getPeggeeId: ->
+    @_peggee
+
   getStatus: ->
     @_game.getStatus()
 
@@ -165,7 +171,7 @@ AppDispatcher.register (payload) ->
       play._savePegg action.peggee, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
       play._savePref action.card, action.choice
-    when Constants.actions.PRELOAD_COMMENTS
+    when Constants.actions.LOAD_COMMENTS
       play._fetchComments action.card, action.peggee
     when Constants.actions.NEXT_CARD
       play._fetchComments action.card, action.peggee

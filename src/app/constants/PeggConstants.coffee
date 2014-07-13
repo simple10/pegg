@@ -16,7 +16,7 @@ module.exports =
     PLAY_CONTINUE: null
     ADD_QUESTION: null
     ADD_ANSWERS: null
-    PRELOAD_COMMENTS: null
+    LOAD_COMMENTS: null
     NEXT_CARD: null
     NEXT_STAGE: null
 
