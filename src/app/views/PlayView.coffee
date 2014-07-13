@@ -213,11 +213,11 @@ class PlayView extends View
 
   showCards: =>
     Utils.animate @cardScrollViewMod, @options.cards.states[0]
-    Utils.animate @statusMod, @options.status.states[0].align
+    Utils.animate @statusMod, @options.status.states[0]
 
   showStatus: =>
     @hideMessage()
-    @newComment.setAlign @options.newComment.states[0]
+    @newComment.setAlign @options.newComment.states[0].align
     Utils.animate @commentsMod, @options.comments.states[0]
     Utils.animate @cardScrollViewMod, @options.cards.states[2]
     Utils.animate @statusMod, @options.status.states[1]
