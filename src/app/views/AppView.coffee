@@ -38,6 +38,7 @@ StatusView = require 'views/StatusView'
 
 # Layouts
 PlayViewLayout = require 'views/layouts/iPhone5/PlayViewLayout'
+NewCardViewLayout = require 'views/layouts/iPhone5/NewCardViewLayout'
 #HeaderViewLayout = require 'views/layouts/iPhone5/HeaderViewLayout'
 
 
@@ -100,7 +101,7 @@ class AppView extends View
   initPages: ->
     # Pages correspond to pageID in constants/menu.coffee
     @pages.play = new PlayView PlayViewLayout
-    @pages.create = new NewCardView
+    @pages.create = new NewCardView NewCardViewLayout
     @pages.decks = new DecksView
     @pages.activity = new PeggBoxView
     @pages.profile = new ProfileView

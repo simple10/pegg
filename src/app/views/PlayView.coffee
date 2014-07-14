@@ -91,12 +91,17 @@ class PlayView extends View
     @add(@commentsMod).add @comments
     @comments.on 'open', =>
       @expandComments()
-    @newComment = new InputView {placeholder: "Enter a comment...", align: @options.newComment.states[1].align}
+    @newComment = new InputView
+      size: @options.newComment.size
+      placeholder: "Enter a comment..."
+      align: @options.newComment.states[1].align
+      origin: @options.newComment.origin
     @newCommentMod = new StateModifier
       align: @options.newComment.align
       origin: @options.newComment.origin
     @add(@newCommentMod).add @newComment
     @newComment.on 'submit', (comment) =>
+      @newComment.setValue ''
       @saveComment comment
 
     ## STATUS ##

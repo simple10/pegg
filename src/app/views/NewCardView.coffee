@@ -17,22 +17,23 @@ Timer = require 'famous/utilities/Timer'
 CardStore = require 'stores/CardStore'
 UserStore = require 'stores/UserStore'
 CardActions = require 'actions/CardActions'
+InputView = require 'views/InputView'
+Utils = require 'lib/Utils'
 
 
 class NewCardView extends View
-  cssPrefix: 'newcard'
-
-  @DEFAULT_OPTIONS:
-    input:
-      width: window.innerWidth - 50
-      height: 40
 
   constructor: ->
     super
-    @init()
+    @initSurfaces()
 
-  init: ->
-
+  initSurfaces: ->
+    @step1Mods = []
+    @step1Inputs = []
+    @step2Mods = []
+    @step2Inputs = []
+    @step4Mods = []
+    @step3Mods = []
 #    @back = new ImageSurface
 #      size: [50, 50]
 #      content: '/images/back.png'
@@ -43,235 +44,185 @@ class NewCardView extends View
 #      align: [0, 0]
 #      origin: [0, 1]
 #    @playNode.add(@backMod).add @back
-
     cardIcon = new ImageSurface
-      size: [83, 58]
-      classes: ['newcard_card_icon']
+      size: @options.cardIcon.size
+      classes: @options.cardIcon.classes
       content: "images/newcard_medium2.png"
     cardIconMod = new StateModifier
-      origin: [0.35, 0.5]
-      align: [0.5, 0.15]
+      origin: @options.cardIcon.origin
+      align: @options.cardIcon.align
     @add(cardIconMod).add cardIcon
     @newCardTitle = new Surface
-      size: [@options.input.width, 50]
+      size: @options.newCardTitle.size
       content: 'NEW CARD'
-      classes: ['newcard__header']
+      classes: @options.newCardTitle.classes
     newCardMod = new StateModifier
-      origin: [0.5, 0.5]
-      align: [0.5, 0.28]
+      origin: @options.newCardTitle.origin
+      align: @options.newCardTitle.align
     @add(newCardMod).add @newCardTitle
-    @step1()
 
-  step1: ->
-    @step1Mods = []
-    @step1Inputs = []
-    @addNum(1)
-    @addInput(1,
-      size: [@options.input.width, @options.input.height]
-      placeholder: 'Write a question'
-      classes: ["#{@cssPrefix}__input"]
-    )
-    @addButton(1,
-      content: 'Continue'
-      classes: ['newcard__button']
-    , =>
+    ## STEP 1
+    @addNum(1, 0)
+    @addInputView(1, 1, 'Enter a question')
+    @addButton(1, 2, 'Continue', =>
       CardActions.addQuestion @step1Inputs[0].getValue()
-      @hideStep @step1Mods
+      @hideStep 'step1', @step1Mods
       @step2()
     )
-    @showStep 190, @step1Mods
-
-  step2: ->
-    @step2Mods = []
-    @step2Inputs = []
-    @addNum(2)
+    ## STEP 2
+    @addNum(2, 0)
     for i in [1..4]
-      @addInput(2,
-        size: [@options.input.width, @options.input.height]
-        placeholder: "Answer option #{i}"
-        classes: ["#{@cssPrefix}__input"]
-      )
-    @addButton(2,
-      content: 'Continue'
-      classes: ['newcard__button']
-    , =>
+      @addInputView(2, i, "Answer option #{i}")
+    @addButton(2, 5, 'Continue', =>
       CardActions.addAnswers [
         @step2Inputs[0].getValue()
         @step2Inputs[1].getValue()
         @step2Inputs[2].getValue()
         @step2Inputs[3].getValue()
       ]
-      @hideStep(@step2Mods)
+      @hideStep 'step2', @step2Mods
       @step3()
     )
-    Timer.after (=>
-      @showStep(190, @step2Mods)
-    ), 20
-
-  step3: ->
-    @step3Mods = []
-    @addNum(3)
-    @addLinkContainer(3,
-      size: [59, 55]
-      image: 'images/deck_existing.png'
-      text: 'Place card in existing deck(s)'
-      classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
+    ## STEP 3
+    @addNum(3, 0)
+    @addLinkContainer(3, 1,
+      'images/deck_existing.png'
+      'Place card in existing deck(s)'
     , =>
-        alert "existing deck"
+      alert "existing deck"
     )
-    @addLinkContainer(3,
-      size: [76, 65]
-      image: 'images/deck_new2.png'
-      text: 'Create a new deck'
-      classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
+    @addLinkContainer(3, 2,
+      'images/deck_new2.png'
+      'Create a new deck'
     , =>
       alert "new deck"
     )
-    @addButton(3,
-      content: "Finish"
-      classes: ['newcard__button']
-    , =>
-      @hideStep(@step3Mods)
+    @addButton(3, 3, 'Finish', =>
+      @hideStep 'step3', @step3Mods
       #TODO: CardStore.create
       @step4()
     )
-    Timer.after (=>
-      @showStep(190, @step3Mods)
-    ), 20
-
-  step4: ->
-    @step4Mods = []
-    #@newCardTitle.setContent "CARD CREATED"
-    @addSurface(4,
-      size: [@options.input.width, 50]
-      content: 'CREATED!'
-      classes: ['newcard__header--big']
-    )
-    @addButton(4,
-      content: "Play this card"
-      classes: ['newcard__button', 'newcard__button--blue']
-    , =>
-      @hideStep(@step4Mods)
+    ## STEP 4
+    @addSurface(4, 0, 'CREATED!')
+    @addButton(4, 1,'Play this card', =>
+      @hideStep 'step4', @step4Mods
+      @step1()
       #TODO: play card
     )
-    @addButton(4,
-      content: "Create another card"
-      classes: ['newcard__button--blue', 'newcard__button']
-    , =>
-      @hideStep(@step4Mods)
-      @newCardTitle.setContent "NEW CARD"
+    @addButton(4, 2, 'Create another card', =>
+      @hideStep 'step4', @step4Mods
       #TODO: reset all fields to empty
       @step1()
     )
+    @step1()
+
+  step1: ->
+    @showStep 'step1', @step1Mods
+
+  step2: ->
     Timer.after (=>
-      @showStep(240, @step4Mods)
-    ), 20
+      @showStep 'step2', @step2Mods
+    ), 25
 
-  showStep: (yOffset, steps) ->
+  step3: ->
+    Timer.after (=>
+      @showStep 'step3', @step3Mods
+    ), 25
+
+  step4: ->
+    Timer.after (=>
+      @showStep 'step4', @step4Mods
+    ), 25
+
+  showStep: (step, mods) ->
     i = 0
-    j = steps.length
-    while i < steps.length
-      Timer.setTimeout ((i) ->
-        steps[i].setTransform(
-          #Transform.thenMove(Transform.rotateX(1), [0, 100*i, -0])
-          Transform.translate(0, yOffset + 60*i, 0)
-          duration: 600
-          curve: Easing.outCubic
-        )
-      ).bind(@, i), j * 100
+    for mod in mods
+      Utils.animate mod, @["options"]["#{step}_#{i}"].states[0]
       i++
-      j--
 
-  hideStep: (steps) ->
+  hideStep: (step, mods) ->
     i = 0
-    j = steps.length
-    while i < steps.length
-      Timer.setTimeout ((i) ->
-        steps[i].setTransform(
-          Transform.thenMove(Transform.rotateZ(1), [0, window.innerHeight*2, -300])
-          duration: 600
-          curve: Easing.inCubic
-        )
-      ).bind(@, i), j * 100
+    for mod in mods
+      Utils.animate mod, @["options"]["#{step}_#{i}"].states[1]
       i++
-      j--
 
-  addInput: (step, options)->
-    surface = new InputSurface
-      size: options.size
-      content: options.content
-      classes: options.classes
-      placeholder: options.placeholder
-    surfaceMod = new StateModifier
-      origin: [0.5, 1]
-      align: [0.5, -0.05]
-    @["step#{step}Mods"].push surfaceMod
-    @["step#{step}Inputs"].push surface
-    @add(surfaceMod).add surface
+  addInputView: (step, num, placeholder)->
+    inputView = new InputView
+      size: @options["step#{step}_#{num}"].size
+      placeholder: placeholder
+      align: @options["step#{step}_#{num}"].states[0].align
+      origin: @options["step#{step}_#{num}"].origin
+      transform: @options["step#{step}_#{num}"].states[0].transform
+    inputViewMod = new StateModifier
+      origin: @options["step#{step}_#{num}"].origin
+      align: @options["step#{step}_#{num}"].align
+    @["step#{step}Mods"].push inputViewMod
+    @["step#{step}Inputs"].push inputView
+    @add(inputViewMod).add inputView
 
-  addSurface: (step, options)->
+  addSurface: (step, num, content)->
     surface = new Surface
-      size: options.size
-      content: options.content
-      classes: options.classes
+      size: @options["step#{step}_#{num}"].size
+      content: content
+      classes: @options["step#{step}_#{num}"].classes
     surfaceMod = new StateModifier
-      origin: [0.5, 1]
-      align: [0.5, -0.05]
+      align: @options["step#{step}_#{num}"].align
+      origin: @options["step#{step}_#{num}"].origin
     @["step#{step}Mods"].push surfaceMod
     @add(surfaceMod).add surface
 
-  addNum: (step)->
-    num = new Surface
-      size: [30, 30]
+  addNum: (step, num)->
+    numSurface = new Surface
+      size: @options["step#{step}_#{num}"].size
       content: step
-      classes: ['newcard__number']
+      classes: @options["step#{step}_#{num}"].classes
     numMod = new StateModifier
-      origin: [0.5, 0.5]
-      align: [0.5, -0.05]
+      origin: @options["step#{step}_#{num}"].origin
+      align: @options["step#{step}_#{num}"].align
     @["step#{step}Mods"].push numMod
-    @add(numMod).add num
+    @add(numMod).add numSurface
 
-  addButton: (step, params, func)->
+  addButton: (step, num, text, func)->
     submit = new Surface
-      size: [@options.input.width, @options.input.height]
-      content: params.content
-      classes: params.classes
+      size: @options["step#{step}_#{num}"].size
+      content: text
+      classes: @options["step#{step}_#{num}"].classes
       properties:
-        lineHeight: @options.input.height + "px"
+        lineHeight: @options["step#{step}_#{num}"].size[1] + 'px'
     submitMod = new StateModifier
-      origin: [0.5, 0.5]
-      align: [0.5, -0.07]
+      origin: @options["step#{step}_#{num}"].origin
+      align: @options["step#{step}_#{num}"].size.align
     @["step#{step}Mods"].push submitMod
     @add(submitMod).add submit
     submit.on 'click', func
 
-  addLinkContainer: (step, options, func) ->
-    image = new ImageSurface
-      size: options.size
-      classes: options.classes.image
-      content: options.image
+  addLinkContainer: (step, num, image, text, func) ->
+    imageSurface = new ImageSurface
+      size: @options["step#{step}_#{num}"].size[1]
+      classes: @options["step#{step}_#{num}"].classes.image
+      content: image
     imageMod = new StateModifier
       origin: [0, 0.5]
       align: [0, 0.5]
-    text = new Surface
-      size: [@options.input.width - 59, 60]
-      content: options.text
-      classes: options.classes.text
+    textSurface = new Surface
+      size: @options["step#{step}_#{num}"].size[2]
+      content: text
+      classes: @options["step#{step}_#{num}"].classes.text
       properties:
-        lineHeight: "#{options.size[0]}px"
+        lineHeight: "#{@options["step#{step}_#{num}"].size[0]}px"
     textMod = new StateModifier
       origin: [0, 0.5]
-      align: [0.3, 0.5]
+      align: [0.25, 0.5]
     container = new ContainerSurface
-      size: [@options.input.width, options.size[1]]
-    container.add(imageMod).add image
-    container.add(textMod).add text
+      size: @options["step#{step}_#{num}"].size[0]
+    container.add(imageMod).add imageSurface
+    container.add(textMod).add textSurface
     containerMod = new StateModifier
-      origin: [0.5, 1]
-      align: [0.5, 0]
+      origin: @options["step#{step}_#{num}"].origin
+      align: @options["step#{step}_#{num}"].align
     @["step#{step}Mods"].push containerMod
     @add(containerMod).add container
-    container.on "click", func
+    container.on 'click', func
 
 
 module.exports = NewCardView
