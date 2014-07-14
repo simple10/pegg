@@ -10,8 +10,14 @@ class GameState extends EventHandler
       stage
 
   loadNextStage: ->
+    # Start with the first stage
     if @_currentStageIdx? then @_currentStageIdx++ else @_currentStageIdx = 0
     @_currentStage = @_stages[@_currentStageIdx]
+
+    # Start over from the first stage if all stages have been loaded
+    if !@_currentStage?
+      @_currentStageIdx = 0
+      @_currentStage = @_stages[@_currentStageIdx]
     @_currentStage.load()
     @_currentStage
 
