@@ -59,25 +59,22 @@ class PlayStore extends EventHandler
         console.log "Error: #{error.code}  #{error.message}"
 
   _savePegg: (peggeeId, cardId, choiceId, answerId) ->
-    @_peggee = peggeeId
-    @_card = cardId
-
     #UPDATE Pref table to include current user in peggers array
     console.log "peggee: #{peggeeId}  card: #{cardId}  choice: #{choiceId} "
-#    card = new Parse.Object 'Card'
-#    card.set 'id', @_card
-#    peggee = new Parse.Object 'User'
-#    peggee.set 'id', @_peggee
-#    choice = new Parse.Object 'Choice'
-#    choice.set 'id', choiceId
-#    prefQuery = new Parse.Query 'Pref'
-#    prefQuery.equalTo 'card', card0p
-#    prefQuery.equalTo 'user', peggee
-#    prefQuery.first
-#      success: (pref) =>
-#        pref.set 'choice', choice
-#        pref.addUnique 'peggedBy', UserStore.getUser().id
-#        pref.save()
+    card = new Parse.Object 'Card'
+    card.set 'id', cardId
+    peggee = new Parse.Object 'User'
+    peggee.set 'id', peggeeId
+    choice = new Parse.Object 'Choice'
+    choice.set 'id', choiceId
+    prefQuery = new Parse.Query 'Pref'
+    prefQuery.equalTo 'card', card
+    prefQuery.equalTo 'user', peggee
+    prefQuery.first
+      success: (pref) =>
+        pref.set 'choice', choice
+        pref.addUnique 'peggedBy', UserStore.getUser().id
+        pref.save()
     #TODO: INSERT into Pegg table a row with current user's pegg
     if choiceId is answerId
       @emit Constants.stores.CARD_WIN
@@ -85,29 +82,26 @@ class PlayStore extends EventHandler
       @emit Constants.stores.CARD_FAIL
 
   _savePref: (cardId, choiceId) ->
-    @_peggee = UserStore.getUser().id
-    @_card = cardId
-
-    #UPDATE Card table to include current user in hasPlayed array
+    # UPDATE Card table to include current user in hasPlayed array
     console.log "card: " + cardId + " choice: " + choiceId
-#    cardQuery = new Parse.Query 'Card'
-#    cardQuery.equalTo 'objectId', cardId
-#    cardQuery.first
-#      success: (card) =>
-#        card.addUnique 'hasPlayed', @_peggee
-#        card.save()
-    #INSERT into Pref table a row with user's choice
-#    card = new Parse.Object 'Card'
-#    card.set 'id', cardId
-#    user = new Parse.Object 'User'
-#    user.set 'id', @_peggee
-#    choice = new Parse.Object 'Choice'
-#    choice.set 'id', choiceId
-#    newPref = new Parse.Object 'Pref'
-#    newPref.set 'choice', choice
-#    newPref.set 'card', card
-#    newPref.set 'user', user
-#    newPref.save()
+    cardQuery = new Parse.Query 'Card'
+    cardQuery.equalTo 'objectId', cardId
+    cardQuery.first
+      success: (card) =>
+        card.addUnique 'hasPlayed', @_peggee
+        card.save()
+    # INSERT into Pref table a row with user's choice
+    card = new Parse.Object 'Card'
+    card.set 'id', cardId
+    user = new Parse.Object 'User'
+    user.set 'id',  UserStore.getUser().id
+    choice = new Parse.Object 'Choice'
+    choice.set 'id', choiceId
+    newPref = new Parse.Object 'Pref'
+    newPref.set 'choice', choice
+    newPref.set 'card', card
+    newPref.set 'user', user
+    newPref.save()
     @emit Constants.stores.PREF_SAVED
 
   _saveRating: (rating) ->
