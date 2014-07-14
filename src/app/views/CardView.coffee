@@ -84,8 +84,6 @@ class CardView extends View
         borderRadius: "#{@options.pic.width}px"
     @pic.on 'click', @toggleChoices
     @picMod = new StateModifier
-      align: [0.5, 0.5]
-      origin: [0.5, 0.5]
       transform: Transform.translate 0, -110, depth/2 + 2
     if @card.peggee?
       question = @card.firstName + ", " + @card.question.charAt(0).toLowerCase() + @card.question.slice(1)
@@ -214,7 +212,7 @@ class CardView extends View
       @currentSide = side
     else
       @currentSide = if @currentSide is 1 then 0 else 1
-    @picMod.setOpacity !@currentSide
+
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
       @options.transition
