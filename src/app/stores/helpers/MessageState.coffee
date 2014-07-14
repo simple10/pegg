@@ -8,6 +8,8 @@ class MessageState extends EventEmitter
 
   getMessage: (type) ->
     index = @_currentMessage[type] or 0
+    if index is @_script[type].length
+      index = 0
     @_currentMessage[type] = index + 1
     @_script[type][index]
 
