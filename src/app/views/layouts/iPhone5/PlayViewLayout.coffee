@@ -33,15 +33,21 @@ module.exports =
         delay: 0
         align: [0.17, 0.4]
         transform: Transform.translate null, null, -10000
-        transition: {duration: 1000, curve: Easing.inQuad}
+        transition: {duration: 500, curve: Easing.inQuad}
       }
       {
         delay: 0
         align: [0.17, 0.12]
+        opacity: 1
         transform: Transform.translate null, null, -3
         transition: {duration: 500, curve: Easing.outQuad}
       }
-    ]
+      {
+        delay: 40
+        opacity: 0
+        transition: {duration: 500, curve: Easing.inBounce}
+      }
+  ]
   bubble:
     size: [230, 90]
     classes: ['card__message__bubble']
@@ -50,16 +56,22 @@ module.exports =
     transform: Transform.translate null, null, -10000
     states: [
       {
-        delay: 20
+        delay: 10
         align: [0.6, 0.4]
         transform: Transform.translate null, null, -10000
-        transition: {duration: 1000, curve: Easing.inQuad}
+        transition: {duration: 500, curve: Easing.inQuad}
       }
       {
-        delay: 20
+        delay: 15
         align: [0.6, 0.1]
+        opacity: 1
         transform: Transform.translate null, null, -4
         transition: {duration: 500, curve: Easing.outQuad}
+      }
+      {
+        delay: 40
+        opacity: 0
+        transition: {duration: 500, curve: Easing.inBounce}
       }
     ]
   message:
@@ -70,15 +82,21 @@ module.exports =
     transform: Transform.translate null, null, -10000
     states: [
       {
-        delay: 20
+        delay: 10
         align: [0.5, 0.4]
         transform: Transform.translate null, null, -10000
-        transition: {duration: 1000, curve: Easing.inQuad}
+        transition: {duration: 500, curve: Easing.inQuad}
       }
       {
-        delay: 20
+        delay: 15
         align: [0.62, 0.11]
+        opacity: 1
         transform: Transform.translate null, null, -3
+        transition: {duration: 500, curve: Easing.inBounce}
+      }
+      {
+        delay: 40
+        opacity: 0
         transition: {duration: 500, curve: Easing.inBounce}
       }
     ]
