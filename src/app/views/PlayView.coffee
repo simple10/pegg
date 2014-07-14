@@ -194,8 +194,11 @@ class PlayView extends View
 
   hideMessage: =>
     Utils.animate @messageMod, @options.message.states[0]
+    Utils.animate @messageMod, @options.message.states[2]
     Utils.animate @bubbleMod, @options.bubble.states[0]
+    Utils.animate @bubbleMod, @options.bubble.states[2]
     Utils.animate @unicornMod, @options.unicorn.states[0]
+    Utils.animate @unicornMod, @options.unicorn.states[2]
 
   hideComments: =>
     Utils.animate @commentsMod, @options.comments.states[0]
