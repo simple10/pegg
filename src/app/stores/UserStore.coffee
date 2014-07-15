@@ -15,12 +15,13 @@ class UserStore extends EventEmitter
             first_name: res.first_name
             last_name: res.last_name
             gender: res.gender
+            facebook_id: res.id
           ,
             wait: false
             error: ->
               debugger
             success: =>
-              Parse.history.navigate('play');
+              Parse.history.navigate('play')
               @emit Constants.stores.CHANGE
         )
         unless user.existed()
