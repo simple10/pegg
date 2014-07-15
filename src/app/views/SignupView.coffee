@@ -68,7 +68,6 @@ class SignupView extends View
     @signupInputMod = new StateModifier
       origin: @options.signupInput.origin
       align: @options.signupInput.align
-    @add(signupButtonMod).add signupButton
     signupButton = new Surface
       size: @options.signupButton.size
       content: 'I\'m sexy and I know it.'
@@ -79,6 +78,7 @@ class SignupView extends View
       origin: @options.signupButton.origin
       align:  @options.signupButton.align
     @add(@signupInputMod).add @signupInput
+    @add(signupButtonMod).add signupButton
 
     #Utils.animateAll signupTextMod, @options.signupText.states
     Utils.animateAll signupButtonMod, @options.signupButton.states

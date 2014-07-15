@@ -1,4 +1,5 @@
 Easing = require 'famous/transitions/Easing'
+Transform = require 'famous/core/Transform'
 
 module.exports =
   logo:
@@ -16,7 +17,7 @@ module.exports =
         delay: 100
         align: [0.45, 0]
         scale: [0.4, 0.4, 0]
-        transition: {duration: 500, curve: Easing.outBounce}
+        transition: {duration: 500, curve: Easing.inCubic}
       }
     ]
 
