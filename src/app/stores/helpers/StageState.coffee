@@ -35,8 +35,8 @@ class StageState extends EventHandler
     user = UserStore.getUser()
     cardQuery = new Parse.Query Card
     cardQuery.limit num
-    #cardQuery.notContainedIn 'hasPlayed', [user.id]
-    cardQuery.skip Math.floor(Math.random() * 180)
+    cardQuery.notContainedIn 'hasPlayed', [user.id]
+    #cardQuery.skip Math.floor(Math.random() * 180)
     cardQuery.find
       success: (cards) =>
         for card in cards
@@ -64,7 +64,7 @@ class StageState extends EventHandler
     prefQuery.include 'card'
     prefQuery.include 'choice'
     prefQuery.notEqualTo 'user', prefUser
-    #prefQuery.notContainedIn 'peggedBy', [user.id]
+    prefQuery.notContainedIn 'peggedBy', [user.id]
     #prefQuery.skip Math.floor(Math.random() * 300)
     prefQuery.find
       success: (prefs) =>
