@@ -39,11 +39,11 @@ config =
         'Dude!<br/>Way to not suck at this.'
       ]
       pref: [
-        'Preference saved.'
+        'Wow. <br/>I\'m learning so much<br/>about you.'
         'So that\'s what you\'re into.<br/>Interesting...'
         'Noted. Carry on.'
-        'Your friends will be relieved.'
-        'Confucius say:<br/>preferences are like buttholes.'
+        'Your friends will be <br/>relieved to know that.'
+        'Confucius say:<br/>preferences are like<br/>buttholes.'
       ]
       misc: [
         ''

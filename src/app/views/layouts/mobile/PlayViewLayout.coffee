@@ -27,17 +27,17 @@ module.exports =
     classes: ['play__unicorn']
     align: [0.17, 0.4]
     origin: [0.5, 0.5]
-    transform: Transform.translate null, null, -10000
+    transform: Transform.translate null, null, -20000
     states: [
       {
         delay: 0
         align: [0.17, 0.4]
-        transform: Transform.translate null, null, -10000
+        transform: Transform.translate null, null, -20000
         transition: {duration: 500, curve: Easing.inQuad}
       }
       {
         delay: 0
-        align: [0.17, 0.12]
+        align: [0.17, 0.13]
         opacity: 1
         transform: Transform.translate null, null, -3
         transition: {duration: 500, curve: Easing.outQuad}
@@ -53,12 +53,12 @@ module.exports =
     classes: ['card__message__bubble']
     align: [0.6, 0.4]
     origin: [0.5, 0.5]
-    transform: Transform.translate null, null, -10000
+    transform: Transform.translate null, null, -20000
     states: [
       {
         delay: 10
         align: [0.6, 0.4]
-        transform: Transform.translate null, null, -10000
+        transform: Transform.translate null, null, -20000
         transition: {duration: 500, curve: Easing.inQuad}
       }
       {
@@ -79,12 +79,12 @@ module.exports =
     classes: ['card__message']
     align: [0.5, 0.4]
     origin: [0.5, 0.5]
-    transform: Transform.translate null, null, -10000
+    transform: Transform.translate null, null, -20000
     states: [
       {
         delay: 10
         align: [0.5, 0.4]
-        transform: Transform.translate null, null, -10000
+        transform: Transform.translate null, null, -20000
         transition: {duration: 500, curve: Easing.inQuad}
       }
       {
