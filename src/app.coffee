@@ -23,8 +23,8 @@ LoginView = require 'views/LoginView'
 SignupView = require 'views/SignupView'
 
 # Layouts
-SignupViewLayout = require 'views/layouts/iPhone5/SignupViewLayout'
-LoginViewLayout = require 'views/layouts/iPhone5/LoginViewLayout'
+SignupViewLayout = require 'views/layouts/mobile/SignupViewLayout'
+LoginViewLayout = require 'views/layouts/mobile/LoginViewLayout'
 
 # Stores
 UserStore = require 'stores/UserStore'

@@ -37,15 +37,14 @@ StatusView = require 'views/StatusView'
 #MoodsView = require 'views/MoodsView'
 
 # Layouts
-PlayViewLayout = require 'views/layouts/iPhone5/PlayViewLayout'
-NewCardViewLayout = require 'views/layouts/iPhone5/NewCardViewLayout'
-#HeaderViewLayout = require 'views/layouts/iPhone5/HeaderViewLayout'
+PlayViewLayout = require 'views/layouts/mobile/PlayViewLayout'
+NewCardViewLayout = require 'views/layouts/mobile/NewCardViewLayout'
 
 
 class AppView extends View
   @DEFAULT_OPTIONS:
     menu:
-      width: 270
+      width: 290
       transition:
         duration: 300
         curve: 'easeOut'

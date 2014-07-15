@@ -1,5 +1,5 @@
 PlayView = require 'views/PlayView'
-PlayViewLayout = require 'views/layouts/iPhone5/PlayViewLayout'
+PlayViewLayout = require 'views/layouts/mobile/PlayViewLayout'
 CardView = require 'views/CardView'
 helper = require '../helpers/Common'
 expect = helper.expect

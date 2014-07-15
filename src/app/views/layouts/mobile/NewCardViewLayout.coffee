@@ -198,14 +198,14 @@ module.exports =
       }
   ]
   step3_1: # link container
-    size: [ [window.innerWidth-20, 55], [59, 55], [window.innerWidth - 59, 55] ]
-    align: [0.5, 0]
-    origin: [0.5, 1]
+    size: [ [window.innerWidth-30, 55], [59, 55], [window.innerWidth - 59, 55] ]
+    align: [0.5, 1]
+    origin: [0.5, 0]
     classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
     states: [
       {
         delay: 0
-        align: [0.5, 0.55]
+        align: [0.5, 0.45]
         transform: Transform.rotateZ(0)
         transition: {duration: 1000, curve: Easing.outCubic}
       }
@@ -217,14 +217,14 @@ module.exports =
       }
     ]
   step3_2: # link container
-    size: [ [window.innerWidth-20, 55], [70, 55], [window.innerWidth - 90, 55] ]
-    align: [0.5, 0]
-    origin: [0.5, 1]
+    size: [ [window.innerWidth-30, 55], [70, 55], [window.innerWidth - 90, 55] ]
+    align: [0.5, 1]
+    origin: [0.5, 0]
     classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
     states: [
       {
         delay: 10
-        align: [0.5, 0.7]
+        align: [0.5, 0.6]
         transform: Transform.rotateZ(0)
         transition: {duration: 1000, curve: Easing.outCubic}
       }
@@ -239,11 +239,11 @@ module.exports =
     size: [window.innerWidth - 50, 40]
     classes: ['newcard__button']
     align: [0.5, 1]
-    origin: [0.5, -0.5]
+    origin: [0.5, 0]
     states: [
       {
         delay: 10
-        align: [0.5, 0.8]
+        align: [0.5, 0.75]
         transform: Transform.rotateZ(0)
         transition: {duration: 1000, curve: Easing.outCubic}
       }
@@ -257,12 +257,12 @@ module.exports =
   step4_0: # surface
     size: [window.innerWidth - 100, 40]
     classes: ['newcard__header--big']
-    align: [0.5, 0]
-    origin: [0.5, 1]
+    align: [0.5, 1]
+    origin: [0.5, 0]
     states: [
       {
         delay: 10
-        align: [0.5, 0.45]
+        align: [0.5, 0.3]
         transform: Transform.rotateZ(0)
         transition: {duration: 1000, curve: Easing.outCubic}
       }
@@ -277,11 +277,11 @@ module.exports =
     size: [window.innerWidth - 50, 40]
     classes: ['newcard__button', 'newcard__button--blue']
     align: [0.5, 1]
-    origin: [0.5, -0.5]
+    origin: [0.5, 0]
     states: [
       {
         delay: 10
-        align: [0.5, 0.55]
+        align: [0.5, 0.45]
         transform: Transform.rotateZ(0)
         transition: {duration: 1000, curve: Easing.outCubic}
       }
@@ -296,11 +296,11 @@ module.exports =
     size: [window.innerWidth - 50, 40]
     classes: ['newcard__button', 'newcard__button--blue']
     align: [0.5, 1]
-    origin: [0.5, -0.5]
+    origin: [0.5, 0]
     states: [
       {
         delay: 20
-        align: [0.5, 0.65]
+        align: [0.5, 0.55]
         transform: Transform.rotateZ(0)
         transition: {duration: 1000, curve: Easing.outCubic}
       }

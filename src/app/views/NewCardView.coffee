@@ -122,17 +122,17 @@ class NewCardView extends View
   step2: ->
     Timer.after (=>
       @showStep 'step2', @step2Mods
-    ), 25
+    ), 30
 
   step3: ->
     Timer.after (=>
       @showStep 'step3', @step3Mods
-    ), 25
+    ), 30
 
   step4: ->
     Timer.after (=>
       @showStep 'step4', @step4Mods
-    ), 25
+    ), 30
 
   showStep: (step, mods) ->
     i = 0
@@ -191,7 +191,7 @@ class NewCardView extends View
         lineHeight: @options["step#{step}_#{num}"].size[1] + 'px'
     submitMod = new StateModifier
       origin: @options["step#{step}_#{num}"].origin
-      align: @options["step#{step}_#{num}"].size.align
+      align: @options["step#{step}_#{num}"].align
     @["step#{step}Mods"].push submitMod
     @add(submitMod).add submit
     submit.on 'click', func
