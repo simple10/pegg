@@ -1,52 +1,76 @@
 var _ = require('underscore');
 
 // Use Parse.Cloud.define to define as many cloud functions as you want.
-// For example:
-Parse.Cloud.define("importFriends", function(request, response) {
-  var user = Parse.User.current();
-  var token = user.attributes.authData.facebook.access_token;
-  getFbFriends(token, {
-    success: function (friends) { getPeggUsersFromFbFriends(response, friends) },
-    error: function (error) { response.error(error) }
-  });
-});
+Parse.Cloud.define("importFriends", importFriends);
 
-function getPeggUsersFromFbFriends(response, friends) {
-  var friendsArray = _.map(friends, function (friend) { return friend.id });
-  var query = new Parse.Query(Parse.User);
-  query.containedIn("facebook_id", friendsArray);
-  query.find({
-    success: function (res) {
-      response.success(res);
-    }
-  });
+function importFriends(request, response) {
+  importer.start(request, response)
 }
 
-function updateACL(response, users) {
-}
+var importer = {
+  start: function(request, response) {
+    this.response = response;
+    this.getFbFriends()
+      .done(this.getPeggUsersFromFbFriends.bind(this))
+      .done(this.updateAcl.bind(this))
+      .done(this.finish.bind(this))
+      .fail(function (error) {
+        response.error(error);
+      })
+  },
 
-function getFbFriends(token, response) {
-  url = 'https://graph.facebook.com/me/friends?fields=id&access_token='+token;
-  _getFbFriends(url, response, []);
-}
+  getFbFriends: function () {
+    var promise = new Parse.Promise();
+    var user = Parse.User.current();
+    var token = user.attributes.authData.facebook.access_token;
+    var url = 'https://graph.facebook.com/me/friends?fields=id&access_token='+token;
+    this._getFbFriends(url, promise, []);
+    return promise;
+  },
 
-function _getFbFriends(url, response, friends) {
-  Parse.Cloud.httpRequest({
-    url: url,
-    success: function(results) {
-      friends = friends.concat(results.data.data);
-      console.log(friends.length);
-      if (results.data.paging.next) {
-        _getFbFriends(results.data.paging.next, response, friends);
-      } else {
-        response.success(friends);
+  _getFbFriends: function (url, promise, friends) {
+    Parse.Cloud.httpRequest({
+      url: url,
+      success: function(results) {
+        friends = friends.concat(results.data.data);
+        if (results.data.paging.next) {
+          this._getFbFriends(results.data.paging.next, promise, friends);
+        } else {
+          this.fbFriends = friends;
+          promise.resolve()
+        }
+      }.bind(this),
+      error: function(httpResponse) {
+        promise.reject(httpResponse);
       }
-    },
-    error: function(httpResponse) {
-      console.error(httpResponse);
-      response.error(httpResponse);
-    }
-  });
-}
+    });
+  },
 
+  getPeggUsersFromFbFriends: function () {
+    var promise = new Parse.Promise();
+    var friendsArray = _.map(this.fbFriends, function (friend) { return friend.id });
+    var query = new Parse.Query(Parse.User);
+    query.containedIn("facebook_id", friendsArray);
+    query.find({
+      success: function (res) {
+        this.peggFriends = res;
+        promise.resolve();
+      }.bind(this),
+      error: function (error) {
+        promise.reject(error);
+      }
+    });
+    return promise;
+  },
+
+  updateAcl: function () {
+    var promise = new Parse.Promise();
+    promise.reject("implement me");
+    return promise;
+  },
+
+  finish: function() {
+    this.response.success("User's friends updated successfully");
+  }
+}
 
