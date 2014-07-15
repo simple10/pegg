@@ -1,15 +1,9 @@
 var _ = require('underscore');
 
-// Use Parse.Cloud.define to define as many cloud functions as you want.
-Parse.Cloud.define("importFriends", importFriends);
-
-function importFriends(request, response) {
-  importer.start(request, response)
-}
-
 var importer = {
   start: function(request, response) {
     this.response = response;
+    this.user = Parse.User.current();
     this.getFbFriends()
       .done(this.getPeggUsersFromFbFriends.bind(this))
       .done(this.updateAcl.bind(this))
@@ -21,8 +15,7 @@ var importer = {
 
   getFbFriends: function () {
     var promise = new Parse.Promise();
-    var user = Parse.User.current();
-    var token = user.attributes.authData.facebook.access_token;
+    var token = this.user.attributes.authData.facebook.access_token;
     var url = 'https://graph.facebook.com/me/friends?fields=id&access_token='+token;
     this._getFbFriends(url, promise, []);
     return promise;
@@ -70,7 +63,10 @@ var importer = {
   },
 
   finish: function() {
-    this.response.success("User's friends updated successfully");
+    var message = "Updated "+ this.user.attributes.first_name +"'s friends from Facebook (Pegg user id "+ this.user.id +")";
+    this.response.success(message);
   }
 }
 
+// Use Parse.Cloud.define to define as many cloud functions as you want.
+Parse.Cloud.define("importFriends", importer.start.bind(importer));
