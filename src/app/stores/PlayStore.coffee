@@ -36,11 +36,7 @@ class PlayStore extends EventHandler
       cardId = @_cardIndex[@_cardPosition]
       cards = @_game.getCards()
       card = cards[cardId]
-      if card.peggee?
-        peggeeId = card.peggee
-      else
-        peggeeId = UserStore.getUser().id
-      @_fetchComments cardId, peggeeId
+      @_fetchComments cardId, if card.peggee? then card.peggee else UserStore.getUser().id
 
   _fetchComments: (cardId, peggeeId) ->
     query = new Parse.Query Comment
@@ -88,7 +84,7 @@ class PlayStore extends EventHandler
     cardQuery.equalTo 'objectId', cardId
     cardQuery.first
       success: (card) =>
-        card.addUnique 'hasPlayed', @_peggee
+        card.addUnique 'hasPlayed', UserStore.getUser().id
         card.save()
     # INSERT into Pref table a row with user's choice
     card = new Parse.Object 'Card'
