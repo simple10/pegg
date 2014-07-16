@@ -23,6 +23,7 @@ class UserStore extends EventEmitter
             success: =>
               Parse.history.navigate('play')
               @emit Constants.stores.CHANGE
+              @importFriends()
         )
         unless user.existed()
           console.log 'User signed up and logged in through Facebook!'
@@ -75,6 +76,13 @@ class UserStore extends EventEmitter
 
   getSubscriptionStatus: ->
     return @_subscribed
+
+  importFriends: ->
+    Parse.Cloud.run "importFriends", null,
+      success: (success) ->
+        console.log success
+      error: (error) ->
+        console.error error.message
 
 user = new UserStore
 

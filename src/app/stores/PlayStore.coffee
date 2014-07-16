@@ -93,10 +93,13 @@ class PlayStore extends EventHandler
     user.set 'id',  UserStore.getUser().id
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
+    newPrefAcl = new Parse.ACL UserStore.getUser()
+    newPrefAcl.setRoleReadAccess "#{UserStore.getUser().id}_Prefs", true
     newPref = new Parse.Object 'Pref'
     newPref.set 'choice', choice
     newPref.set 'card', card
     newPref.set 'user', user
+    newPref.set 'ACL', newPrefAcl
     newPref.save()
     @emit Constants.stores.PREF_SAVED
 
