@@ -186,33 +186,32 @@ class CardView extends View
   pickAnswer: (i) =>
     choice = @card.choices[i]
     if @card.peggee?
-      answer = @card.answer.id
-      PlayActions.pegg @card.peggee, @id, choice.id, answer
-      if answer is choice.id
-        @back.setContent 'images/Card_Blue.png'
+      PlayActions.pegg @card.peggee, @id, choice.id, @card.answer.id
+      if @card.answer.id is choice.id
+        @choiceWin choice
       else
-        @back.setContent 'images/Card_Red.png'
-      #image = @card.answer.get 'image'
-      #text = @card.answer.get 'text'
+        @choiceFail choice
     else
       PlayActions.pref @id, choice.id
+      @flip choice
 
+  choiceFail: (choice) =>
+    @choicesView.fail choice
+
+  choiceWin: (choice) =>
+    @choicesView.win choice
+    Timer.after ( =>
+      @flip choice
+    ), 10
+
+  flip: (choice) =>
     image = choice.image
     text = choice.text
     Timer.after ( =>
       @image.setContent image
     ), 10
     @text.setContent text
-    @flip()
-
-  flip: (side) =>
-    @state.halt()
-    @currentSide ?= 0
-    if side is 0 or side is 1
-      @currentSide = side
-    else
-      @currentSide = if @currentSide is 1 then 0 else 1
-
+    @currentSide = if @currentSide is 1 then 0 else 1
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
       @options.transition

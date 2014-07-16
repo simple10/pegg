@@ -184,7 +184,7 @@ class PlayView extends View
     if @fail is 3
       @fail = 0
       Utils.animate @commentsMod, @options.comments.states[1]
-    # TODO: if 3rd fail, show comments, disable options
+    # TODO: if 2nd fail, show hint
 
   cardWin: =>
     @message.setClasses ['card__message__win']

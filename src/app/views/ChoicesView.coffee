@@ -20,9 +20,9 @@ class ChoicesView extends View
   load: (cardId) ->
     choices = PlayStore.getChoices(cardId)
     choiceSurfaces = []
-    scrollview = new Scrollview
+    @choicesScrollView = new Scrollview
       size: [ @options.width, @options.height ]
-    scrollview.sequenceFrom choiceSurfaces
+    @choicesScrollView.sequenceFrom choiceSurfaces
     i=0
     for choice in choices
       choiceText = choice.text
@@ -50,7 +50,7 @@ class ChoicesView extends View
         choiceSurface.on 'scroll', =>
           @_eventOutput.emit 'scroll'
         choiceSurfaces.push choiceSurface
-        choiceSurface.pipe scrollview
+        choiceSurface.pipe @choicesScrollView
         i++
 
     #newChoice = new Surface
@@ -65,7 +65,16 @@ class ChoicesView extends View
         overflow: "hidden"
       classes: ['card__options__box']
 
-    container.add scrollview
+    container.add @choicesScrollView
     @add container
+
+  fail: (choice) ->
+    # TODO: change the style of this choice, display "WRONG"
+    # TODO: wait 1 sec, hide the failed choice
+
+  win: (choice) ->
+    # TODO: change the style of this choice, display "RIGHT"
+
+
 
 module.exports = ChoicesView
