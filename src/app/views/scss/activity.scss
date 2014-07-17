@@ -1,0 +1,21 @@
+@import "settings";
+
+
+.activity__background {
+  background-color: $darkblue;
+}
+
+.activity__item {
+  color: $white;
+  border-bottom: 1px solid $cloud-lightblue;
+  font-size: 20px;
+  vertical-align: center;
+  padding: 20px;
+}
+
+
+.activity__item span {
+
+  padding: 0px 10px;
+  display: inline-block;
+}
