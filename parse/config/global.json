@@ -1,11 +1,11 @@
 {
     "applications": {
         "_default": {
-            "link": "pegg [new]"
+            "link": "pegg [prod]"
         }, 
-        "pegg [new]": {
-            "applicationId": "sMSeqS1EP23z0vo3TgZKd38MBiP9qzrvnv0OHMk8", 
-            "masterKey": "C8fABMIWRZ7qZeXakTmyifANFniJXpQXHoK5QOBu"
+        "pegg [prod]": {
+            "applicationId": "tR8QqYHsxTCrfuBwZKlBEVgrOcvGBQYoLkrxy0LK",
+            "masterKey": "hUpcwPRMXqs7srkb8ayu0QKJ4G5Aw89gUGqM8GSs"
         }
     }, 
     "global": {

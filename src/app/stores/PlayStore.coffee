@@ -39,6 +39,8 @@ class PlayStore extends EventHandler
       @_fetchComments cardId, if card.peggee? then card.peggee else UserStore.getUser().id
 
   _fetchComments: (cardId, peggeeId) ->
+    @_peggee = peggeeId
+    @_card = cardId
     query = new Parse.Query Comment
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -55,50 +57,72 @@ class PlayStore extends EventHandler
         console.log "Error: #{error.code}  #{error.message}"
 
   _savePegg: (peggeeId, cardId, choiceId, answerId) ->
-    #UPDATE Pref table to include current user in peggers array
+    # UPDATE Pref table to include current user in peggedBy array
     console.log "peggee: #{peggeeId}  card: #{cardId}  choice: #{choiceId} "
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     peggee = new Parse.Object 'User'
     peggee.set 'id', peggeeId
-    choice = new Parse.Object 'Choice'
-    choice.set 'id', choiceId
     prefQuery = new Parse.Query 'Pref'
     prefQuery.equalTo 'card', card
     prefQuery.equalTo 'user', peggee
     prefQuery.first
       success: (pref) =>
-        pref.set 'choice', choice
         pref.addUnique 'peggedBy', UserStore.getUser().id
+        #pref.set 'peggedBy', null
         pref.save()
-    #TODO: INSERT into Pegg table a row with current user's pegg
+
+    # INSERT into Pegg table a row with current user's pegg
+    user = UserStore.getUser()
+    card = new Parse.Object 'Card'
+    card.set 'id', cardId
+    pegger = new Parse.Object 'User'
+    pegger.set 'id',  user.id
+    newPeggAcl = new Parse.ACL user
+    newPeggAcl.setRoleReadAccess "#{user.id}_Friends", true
+    peggee = new Parse.Object 'User'
+    peggee.set 'id',  peggeeId
+    choice = new Parse.Object 'Choice'
+    choice.set 'id', choiceId
+    answer = new Parse.Object 'Answer'
+    answer.set 'id', answerId
+    newPegg = new Parse.Object 'Pegg'
+    newPegg.set 'guess', choice
+    newPegg.set 'answer', answer
+    newPegg.set 'card', card
+    newPegg.set 'user', pegger
+    newPegg.set 'ACL', newPeggAcl
+    newPegg.set 'peggee', peggee
+    newPegg.save()
     if choiceId is answerId
       @emit Constants.stores.CARD_WIN
     else
       @emit Constants.stores.CARD_FAIL
 
   _savePref: (cardId, choiceId) ->
+    user = UserStore.getUser()
     # UPDATE Card table to include current user in hasPlayed array
     console.log "card: " + cardId + " choice: " + choiceId
     cardQuery = new Parse.Query 'Card'
     cardQuery.equalTo 'objectId', cardId
     cardQuery.first
       success: (card) =>
-        card.addUnique 'hasPlayed', UserStore.getUser().id
+        card.addUnique 'hasPlayed', user.id
         card.save()
+
     # INSERT into Pref table a row with user's choice
     card = new Parse.Object 'Card'
     card.set 'id', cardId
-    user = new Parse.Object 'User'
-    user.set 'id',  UserStore.getUser().id
-    choice = new Parse.Object 'Choice'
-    choice.set 'id', choiceId
-    newPrefAcl = new Parse.ACL UserStore.getUser()
-    newPrefAcl.setRoleReadAccess "#{UserStore.getUser().id}_Friends", true
+    preffer = new Parse.Object 'User'
+    preffer.set 'id',  user.id
+    newPrefAcl = new Parse.ACL user
+    newPrefAcl.setRoleReadAccess "#{user.id}_Friends", true
+    answer = new Parse.Object 'Choice'
+    answer.set 'id', choiceId
     newPref = new Parse.Object 'Pref'
-    newPref.set 'choice', choice
+    newPref.set 'answer', answer
     newPref.set 'card', card
-    newPref.set 'user', user
+    newPref.set 'user', preffer
     newPref.set 'ACL', newPrefAcl
     newPref.save()
     @emit Constants.stores.PREF_SAVED
@@ -113,15 +137,18 @@ class PlayStore extends EventHandler
     card = new Parse.Object 'Card'
     card.set 'id', @_card
     user = new Parse.Object 'User'
-    user.set 'id', UserStore.getUser().id
+    user = UserStore.getUser()
     peggee = new Parse.Object 'User'
     peggee.set 'id', @_peggee
     newComment = new Parse.Object 'Comment'
+    newCommentAcl = new Parse.ACL user
+    newCommentAcl.setRoleReadAccess "#{user.id}_Friends", true
     newComment.set 'peggee', peggee
     newComment.set 'card', card
     newComment.set 'text', comment
-    newComment.set 'author', user
+    newComment.set 'author', user.id
     newComment.set 'userImg', UserStore.getAvatar 'type=square'
+    newComment.set 'ACL', newCommentAcl
     newComment.save()
     @_comments.push newComment
     @emit Constants.stores.COMMENTS_CHANGE
@@ -131,7 +158,7 @@ class PlayStore extends EventHandler
 
   _savePlay: (cardId) ->
     console.log "cardID: " + cardId
-    #@_card = cardId
+  #@_card = cardId
 
   _savePass: (cardId) ->
     console.log "cardID: " + cardId
