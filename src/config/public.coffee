@@ -4,11 +4,11 @@
 DEFAULT_ENV = 'dev'
 
 env_config =
-  production:
+  dev:
     parse:
       jsKey: 'WGkL8be69NuEmYdY3kt6yhihK1wcmmmSWtixexAc'
       appId: 'tR8QqYHsxTCrfuBwZKlBEVgrOcvGBQYoLkrxy0LK'
-  dev:
+  production:
     parse:
       jsKey: 'XrA5EweJyzPmhxQZY6DqE8qotDmAk13s5JKhkyql'
       appId: 'sMSeqS1EP23z0vo3TgZKd38MBiP9qzrvnv0OHMk8'
