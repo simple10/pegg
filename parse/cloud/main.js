@@ -4,6 +4,10 @@ var importer = {
   start: function(request, response) {
     this.response = response;
     this.user = Parse.User.current();
+    // XXX this shouldn't be necessary if we call functions with useMasterKey: true
+    // It's a bug: https://developers.facebook.com/bugs/306759706140811/
+    // It's fixed in the latest JS SDK version
+    Parse.Cloud.useMasterKey();
     this.getFbFriends()
       .then(this.getPeggUsersFromFbFriends.bind(this))
       .then(this.updatePermissions.bind(this))
@@ -59,7 +63,7 @@ var importer = {
 
     var query = new Parse.Query(Parse.Role);
     var fbFriendsRoleName = this.user.id + "_FacebookFriends";
-    query.equalTo(fbFriendsRoleName);
+    query.equalTo("name", fbFriendsRoleName);
     query.find({
       userMasterKey: true,
       success: function (results) {
@@ -69,7 +73,7 @@ var importer = {
           fbFriendsRole.getUsers().add(this.peggFriends);
           fbFriendsRole.save().then(function () {
             //create a role that can see user's cards
-            var cardsRoleName = this.user.id +"_Prefs";
+            var cardsRoleName = this.user.id +"_Friends";
             var cardsACL = new Parse.ACL();
             var cardsRole = new Parse.Role(cardsRoleName, cardsACL);
             cardsRole.getRoles().add(fbFriendsRole);
@@ -79,8 +83,17 @@ var importer = {
         } else if (results.length === 1) {
           // role exists, just need to update friends list
           var fbFriendsRole = results[0];
-          // XXX need to also dump ex-friends
-          fbFriendsRole.getUsers().add(this.peggFriends);
+          var relation = fbFriendsRole.getUsers();
+          // dump old friends
+          var query = relation.query();
+          query.find({
+            success: function (friends) {
+              relation.remove(friends);
+            },
+            error: function (error) { promise.reject(error) }
+          });
+          // add current friends
+          relation.add(this.peggFriends);
           fbFriendsRole.save({ userMasterKey: true });
           promise.resolve();
         } else {
