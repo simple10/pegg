@@ -1,50 +1,41 @@
-require './scss/peggbox.scss'
+require './scss/activity.scss'
 
 View = require 'famous/core/View'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Scrollview = require 'famous/views/Scrollview'
-
 ListItemView = require 'views/ListItemView'
+ActivityStore = require 'stores/ActivityStore'
+Constants = require 'constants/PeggConstants'
 
 class ActivityView extends View
-  @DEFAULT_OPTIONS:
-    itemDensity: null
 
   constructor: () ->
     super
-    @init()
-
-  init: ->
     @items = []
+    @initListeners()
 
-  load: (data) ->
+  initListeners: ->
+    ActivityStore.on Constants.stores.ACTIVITY_CHANGE, @loadActivity
 
-    @items = data
-
-    surfaces = []
-    scrollview = new Scrollview
+  loadActivity:  =>
+    @items = ActivityStore.getActivity()
+    activities = []
+    activityScrollview = new Scrollview
       size: [window.innerWidth, window.innerHeight]
-    scrollview.sequenceFrom surfaces
+    activityScrollview.sequenceFrom activities
 
-    i = 0
-    while i < @items.length
-      item = new ListItemView @items[i]
-      item.on 'scroll', =>
+    for item in @items
+      itemView = new ListItemView item
+      itemView.on 'scroll', =>
         @_eventOutput.emit 'scroll'
-      item.pipe scrollview
-      surfaces.push item
-      i++
-
-
+      itemView.pipe activityScrollview
+      activities.push itemView
 
     container = new ContainerSurface
       size: [undefined, undefined]
       properties:
         overflow: "hidden"
-
-    container.add scrollview
+    container.add activityScrollview
     @add container
-
-
 
 module.exports = ActivityView

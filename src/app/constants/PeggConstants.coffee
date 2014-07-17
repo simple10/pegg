@@ -3,7 +3,7 @@ Utils = require 'Utils'
 module.exports =
   actions: Utils.keyMirror
     MENU_SELECT: null
-    PEGGBOX_FETCH: null
+    LOAD_ACTIVITY: null
     LOAD_GAME: null
     PEGG_SUBMIT: null
     PREF_SUBMIT: null
@@ -41,6 +41,7 @@ module.exports =
     CARD_WIN: null
     CARD_FAIL: null
     STATUS_CHANGE: null
+    ACTIVITY_CHANGE: null
 
 
 

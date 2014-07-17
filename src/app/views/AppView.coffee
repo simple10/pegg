@@ -44,7 +44,7 @@ NewCardViewLayout = require 'views/layouts/mobile/NewCardViewLayout'
 class AppView extends View
   @DEFAULT_OPTIONS:
     menu:
-      width: 290
+      width: 270
       transition:
         duration: 300
         curve: 'easeOut'
@@ -64,15 +64,9 @@ class AppView extends View
 
   initListeners: ->
     AppStateStore.on Constants.stores.CHANGE, @togglePage
-    #PlayStore.on Constants.stores.PLAY_CHANGE, @togglePage
-    #MoodStore.on Constants.stores.CHANGE, @onMoodChange
-    #PlayStore.on Constants.stores.UNLOCK_ACHIEVED, @onStatusChange
-    #PlayStore.on Constants.stores.PLAY_CONTINUED, @onPlayContinued
-    #@pages.peggbox.on 'scroll', @onScroll
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
-    #@menu.resetBands()
     @menu.on 'toggleMenu', @toggleMenu
     @menuState = new StateModifier
       origin: [0,0]
@@ -102,7 +96,7 @@ class AppView extends View
     @pages.play = new PlayView PlayViewLayout
     @pages.create = new NewCardView NewCardViewLayout
     @pages.decks = new DecksView
-    @pages.activity = new PeggBoxView
+    @pages.activity = new ActivityView
     @pages.profile = new ProfileView
     @pages.peggbox = new PeggBoxView
     @pages.status = new StatusView

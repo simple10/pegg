@@ -31,9 +31,8 @@ UserStore = require 'stores/UserStore'
 AppStateStore = require 'stores/AppStateStore'
 
 # Actions
-UserActions = require 'actions/UserActions'
-MenuActions = require 'actions/MenuActions'
 PlayActions = require 'actions/PlayActions'
+ActivityActions = require 'actions/ActivityActions'
 
 # Constants
 Constants = require 'constants/PeggConstants'
@@ -79,6 +78,7 @@ pickView = ->
   if UserStore.getLoggedIn()
     lightbox.show appView
     PlayActions.load GameFlow, GameScript
+    ActivityActions.load 1
   else if AppStateStore.getCurrentPageID() is 'login'
     lightbox.show loginView
   else
