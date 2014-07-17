@@ -62,9 +62,10 @@ class StageState extends EventHandler
     prefQuery.limit num
     prefQuery.include 'user'
     prefQuery.include 'card'
-    prefQuery.include 'choice'
+    prefQuery.include 'answer'
     prefQuery.notEqualTo 'user', prefUser
-    prefQuery.notContainedIn 'peggedBy', [user.id]
+    #prefQuery.notContainedIn 'peggedBy', [user.id]
+    #prefQuery.containedIn 'peggedBy', [user.id]
     #prefQuery.skip Math.floor(Math.random() * 300)
     prefQuery.find
       success: (prefs) =>
@@ -77,7 +78,7 @@ class StageState extends EventHandler
             pic: peggee.get 'avatar_url'
             question: card.get 'question'
             choices: null
-            answer: pref.get 'choice'
+            answer: pref.get 'answer'
           }
           @_fetchChoices card.id
         @emit Constants.stores.CARDS_CHANGE
