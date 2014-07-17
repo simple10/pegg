@@ -11,7 +11,7 @@ MenuActions = require 'actions/MenuActions'
 class BandMenuItemView extends View
   @DEFAULT_OPTIONS:
     pageID: null
-    width: 290
+    width: 270
     height: window.innerHeight / 4
     angle: -0.2
     iconUrl: 'images/mark_tiny.png'
