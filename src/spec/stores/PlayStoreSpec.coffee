@@ -73,7 +73,7 @@ describe 'PlayStore', ->
 
   it 'returns game\'s current cards', ->
     @stage0._fetchPrefCards = ->
-      @cardSet = fixtures.cardSet
+      @_cardSet = fixtures.cardSet
     PlayStore._game.loadNextStage()
     cards = PlayStore.getCards()
     expect(cards).to.deep.equal fixtures.cardSet
