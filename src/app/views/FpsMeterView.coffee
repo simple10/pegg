@@ -26,7 +26,7 @@ class FpsMeter extends View
     @initTime()
 
     @surface = new Surface
-      size: [60, 20]
+      size: [70, 20]
       classes: ['fpsmeter']
       content: ''
 
