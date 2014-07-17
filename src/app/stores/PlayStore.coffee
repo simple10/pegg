@@ -57,20 +57,13 @@ class PlayStore extends EventHandler
         console.log "Error: #{error.code}  #{error.message}"
 
   _savePegg: (peggeeId, cardId, choiceId, answerId) ->
-    # UPDATE Pref table to include current user in peggedBy array
-    console.log "peggee: #{peggeeId}  card: #{cardId}  choice: #{choiceId} "
-    card = new Parse.Object 'Card'
-    card.set 'id', cardId
-    peggee = new Parse.Object 'User'
-    peggee.set 'id', peggeeId
-    prefQuery = new Parse.Query 'Pref'
-    prefQuery.equalTo 'card', card
-    prefQuery.equalTo 'user', peggee
-    prefQuery.first
-      success: (pref) =>
-        pref.addUnique 'peggedBy', UserStore.getUser().id
-        #pref.set 'peggedBy', null
-        pref.save()
+
+    # UPDATE Pref table to include current user in hasPegged array
+    Parse.Cloud.run 'hasPegged', {card: cardId, peggee: peggeeId},
+      success: (success) ->
+        console.log success
+      error: (error) ->
+        console.error error.message
 
     # INSERT into Pegg table a row with current user's pegg
     user = UserStore.getUser()
@@ -100,22 +93,22 @@ class PlayStore extends EventHandler
       @emit Constants.stores.CARD_FAIL
 
   _savePref: (cardId, choiceId) ->
-    user = UserStore.getUser()
-    # UPDATE Card table to include current user in hasPlayed array
     console.log "card: " + cardId + " choice: " + choiceId
-    cardQuery = new Parse.Query 'Card'
-    cardQuery.equalTo 'objectId', cardId
-    cardQuery.first
-      success: (card) =>
-        card.addUnique 'hasPlayed', user.id
-        card.save()
+    user = UserStore.getUser()
+
+    # UPDATE Card table to include current user in hasPlayed array
+    Parse.Cloud.run 'hasPreffed', {card: cardId},
+      success: (success) ->
+        console.log success
+      error: (error) ->
+        console.error error.message
 
     # INSERT into Pref table a row with user's choice
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     preffer = new Parse.Object 'User'
     preffer.set 'id',  user.id
-    newPrefAcl = new Parse.ACL user
+    newPrefAcl = new Parse.ACL user.id
     newPrefAcl.setRoleReadAccess "#{user.id}_Friends", true
     answer = new Parse.Object 'Choice'
     answer.set 'id', choiceId
@@ -136,12 +129,11 @@ class PlayStore extends EventHandler
     console.log "comment: #{comment}  peggee: #{@_peggee}  card: #{@_card}"
     card = new Parse.Object 'Card'
     card.set 'id', @_card
-    user = new Parse.Object 'User'
     user = UserStore.getUser()
     peggee = new Parse.Object 'User'
     peggee.set 'id', @_peggee
     newComment = new Parse.Object 'Comment'
-    newCommentAcl = new Parse.ACL user
+    newCommentAcl = new Parse.ACL user.id
     newCommentAcl.setRoleReadAccess "#{user.id}_Friends", true
     newComment.set 'peggee', peggee
     newComment.set 'card', card

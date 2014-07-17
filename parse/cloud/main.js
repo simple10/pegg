@@ -115,3 +115,44 @@ var importer = {
 
 // Use Parse.Cloud.define to define as many cloud functions as you want.
 Parse.Cloud.define("importFriends", importer.start.bind(importer));
+
+
+Parse.Cloud.define('hasPreffed', function(request, response) {
+  var cardQuery = new Parse.Query('Card')
+  cardQuery.equalTo('objectId', request.params.card)
+  cardQuery.first({
+    success: function (card) {
+      card.addUnique('hasPreffed', Parse.User.current().id)
+      card.save()
+      response.success("hasPreffed saved");
+    },
+    error: function () {
+      response.error("hasPreffed failed");
+    }
+  });
+
+});
+
+
+Parse.Cloud.define('hasPegged', function(request, response) {
+  Parse.Cloud.useMasterKey();
+  var card = new Parse.Object('Card');
+  card.set('id', request.params.card);
+  var peggee = new Parse.Object('User');
+  peggee.set('id', request.params.peggee);
+
+  var prefQuery = new Parse.Query('Pref');
+  prefQuery.equalTo('card', card)
+  prefQuery.equalTo('user', peggee)
+  prefQuery.first({
+    success: function (pref) {
+      pref.addUnique('hasPegged', Parse.User.current().id)
+      pref.save()
+      response.success("hasPegged saved");
+    },
+    error: function () {
+      response.error("hasPegged failed");
+    }
+  });
+
+});
