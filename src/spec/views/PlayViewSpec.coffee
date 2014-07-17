@@ -9,12 +9,16 @@ spy = helper.spy
 describe 'PlayView', ->
   beforeEach ->
     @view = new PlayView PlayViewLayout
+    @view.loadCards = ->
+      @cardViews = []
 
   it 'should exist', ->
     expect(@view).to.exist
 
-  it 'should have cards', ->
-    expect(@view.cards).to.exist
+  it 'should populate cardViews on loadCards', ->
+    expect(@view.cardViews).to.not.exist
+    @view.loadCards()
+    expect(@view.cardViews).to.exist
 
   xit 'should load a set of cards', ->
     cards = [
@@ -23,7 +27,6 @@ describe 'PlayView', ->
     ]
     @view.load cards
     expect(@view.cards).to.have.length(2)
-
 
 
   xit 'should create a CardView for each card', ->
