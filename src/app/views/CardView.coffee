@@ -205,12 +205,13 @@ class CardView extends View
     ), 10
 
   flip: (choice) =>
-    image = choice.image
-    text = choice.text
-    Timer.after ( =>
-      @image.setContent image
-    ), 10
-    @text.setContent text
+    if choice?
+      image = choice.image
+      text = choice.text
+      Timer.after ( =>
+        @image.setContent image
+      ), 10
+      @text.setContent text
     @currentSide = if @currentSide is 1 then 0 else 1
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
