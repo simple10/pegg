@@ -41,7 +41,7 @@ class ProfileView extends View
         @options.transition
     ).bind @, picMod
     @name = new Surface
-      size: [220, 35]
+      size: [240, 35]
       classes: ['profile__name__box']
       content: "#{UserStore.getName("first")}'s <strong>profile</strong>"
     nameMod = new StateModifier
