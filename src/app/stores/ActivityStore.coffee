@@ -31,7 +31,6 @@ class ActivityStore extends EventEmitter
             guess: guess.get 'text'
           }
         if results.length
-          debugger
           @emit Constants.stores.ACTIVITY_CHANGE
       error: (error) ->
         console.log "Error: " + error.code + " " + error.message
