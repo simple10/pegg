@@ -8,23 +8,34 @@ Pegg = Parse.Object.extend 'Pegg'
 
 
 class ActivityStore extends EventEmitter
-  _activity: null
+  _activity: []
 
   _fetchActivities: (page) ->
     # TODO: implement pagination
     peggQuery = new Parse.Query Pegg
     peggQuery.include 'card'
-    peggQuery.include 'answer'
+    peggQuery.include 'guess'
     peggQuery.include 'peggee'
+    peggQuery.include 'user'
     peggQuery.find
       success: (results) =>
-        @_activity = results
-        # TODO: process the results from Parse
-        @emit Constants.stores.ACTIVITY_CHANGE
-        return
+        for activity in results
+          card = activity.get 'card'
+          peggee = activity.get 'peggee'
+          user = activity.get 'user'
+          guess = activity.get 'guess'
+          @_activity.push {
+            pegger: user
+            peggee: peggee
+            question: card.get 'question'
+            guess: guess.get 'text'
+          }
+        if results.length
+          debugger
+          @emit Constants.stores.ACTIVITY_CHANGE
       error: (error) ->
         console.log "Error: " + error.code + " " + error.message
-        return
+
 
   getActivity: ->
     @_activity
