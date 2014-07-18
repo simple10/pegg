@@ -28,7 +28,7 @@ var importer = {
       url: url,
       success: function(results) {
         friends = friends.concat(results.data.data);
-        if (results.data.paging.next) {
+        if (results.data.paging && results.data.paging.next) {
           this._getFbFriends(results.data.paging.next, promise, friends);
         } else {
           this.fbFriends = friends;
@@ -61,11 +61,12 @@ var importer = {
   updatePermissions: function () {
     var promise = new Parse.Promise();
 
+    // ADD current user's friends to this.user.id_FacebookFriends role
     var query = new Parse.Query(Parse.Role);
     var fbFriendsRoleName = this.user.id + "_FacebookFriends";
     query.equalTo("name", fbFriendsRoleName);
     query.find({
-      userMasterKey: true,
+      //userMasterKey: true,
       success: function (results) {
         if (results.length === 0) {
           //create a role that lists user's friends from Facebook
@@ -94,7 +95,8 @@ var importer = {
           });
           // add current friends
           relation.add(this.peggFriends);
-          fbFriendsRole.save({ userMasterKey: true });
+          fbFriendsRole.save();
+          //{ userMasterKey: true }
           promise.resolve();
         } else {
           promise.reject("Something went wrong. There should only be one role called "+ fbFriendsRoleName
@@ -104,6 +106,24 @@ var importer = {
       error: function (error) { promise.reject(error) }
     });
 
+    // ADD current user to friends' roles
+    for(var i = 0; i < this.peggFriends; i++){
+      var query = new Parse.Query(Parse.Role);
+      var fbFriendRoleName = this.peggFriends[i].id + "_FacebookFriends";
+      console.log(fbFriendRoleName);
+      query.equalTo("name", fbFriendRoleName);
+      query.find({
+        success: function (results) {
+          var fbFriendsRole = results[0];
+          var relation = fbFriendsRole.getUsers();
+          relation.add(this.user.id);
+          fbFriendsRole.save();
+        }.bind(this),
+        error: function (error) {
+          promise.reject(error)
+        }
+      });
+    }
     return promise;
   },
 

@@ -60,13 +60,13 @@ signupView = new SignupView SignupViewLayout
 lightbox = new Lightbox
   inOpacity: 1
   outOpacity: 0
-  inOrigin: [.5, 1]
+  inOrigin: [1, 1]
   outOrigin: [0, 0]
   showOrigin: [0.5, 0.5]
-  inTransform: Transform.thenMove(Transform.rotateX(1), [0, window.innerHeight, -300])
-  outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, -window.innerHeight, -1000])
-  inTransition: { duration: 1000, curve: Easing.outExpo }
-  outTransition: { duration: 500, curve: Easing.inCubic }
+  inTransform: Transform.thenMove(Transform.rotateX(0), [0, window.innerHeight, -300])
+  outTransform: Transform.thenMove(Transform.rotateZ(0), [0, -window.innerHeight, -1000])
+  inTransition: { duration: 500, curve: Easing.outCubic }
+  outTransition: { duration: 350, curve: Easing.outCubic }
 mainContext.add lightbox
 
 #Wait a couple cycles for Famo.us to boot up, smoother animations
@@ -79,10 +79,10 @@ pickView = ->
     lightbox.show appView
     PlayActions.load GameFlow, GameScript
     ActivityActions.load 1
-  else if AppStateStore.getCurrentPageID() is 'login'
-    lightbox.show loginView
+#  else if AppStateStore.getCurrentPageID() is 'login'
+#    lightbox.show loginView
   else
-    lightbox.show signupView
+    lightbox.show loginView
 
 #AppStateStore.on Constants.stores.CHANGE, pickView
 UserStore.on Constants.stores.CHANGE, pickView
