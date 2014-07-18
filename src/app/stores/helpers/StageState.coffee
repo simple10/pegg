@@ -35,7 +35,7 @@ class StageState extends EventHandler
     user = UserStore.getUser()
     cardQuery = new Parse.Query Card
     cardQuery.limit num
-    cardQuery.notContainedIn 'hasPlayed', [user.id]
+    cardQuery.notContainedIn 'hasPreffed', [user.id]
     #cardQuery.skip Math.floor(Math.random() * 180)
     cardQuery.find
       success: (cards) =>
@@ -64,7 +64,7 @@ class StageState extends EventHandler
     prefQuery.include 'card'
     prefQuery.include 'answer'
     prefQuery.notEqualTo 'user', prefUser
-    #prefQuery.notContainedIn 'peggedBy', [user.id]
+    #prefQuery.notContainedIn 'hasPegged', [user.id]
     #prefQuery.containedIn 'peggedBy', [user.id]
     #prefQuery.skip Math.floor(Math.random() * 300)
     prefQuery.find
@@ -82,6 +82,7 @@ class StageState extends EventHandler
           }
           @_fetchChoices card.id
         @emit Constants.stores.CARDS_CHANGE
+        #TODO: if cardSet empty, emit PEGGS_DONE
       error: (error) ->
         console.log "Error fetching cards: " + error.code + " " + error.message
 

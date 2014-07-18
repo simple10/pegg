@@ -70,7 +70,7 @@ class ChoicesView extends View
 
   fail: (choice) ->
     # TODO: change the style of this choice, display "WRONG"
-    # TODO: wait 1 sec, hide the failed choice
+    # TODO: wait 1 sec, collapse the failed choice
 
   win: (choice) ->
     # TODO: change the style of this choice, display "RIGHT"

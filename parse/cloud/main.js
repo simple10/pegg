@@ -156,3 +156,30 @@ Parse.Cloud.define('hasPegged', function(request, response) {
   });
 
 });
+
+
+Parse.Cloud.define('hasViewedPegg', function(request, response) {
+  Parse.Cloud.useMasterKey();
+  var card = new Parse.Object('Card');
+  card.set('id', request.params.card);
+  var user = new Parse.Object('User');
+  user.set('id', request.params.user);
+  var peggee = new Parse.Object('User');
+  peggee.set('id', request.params.peggee);
+
+  var peggQuery = new Parse.Query('Pegg');
+  peggQuery.equalTo('card', card)
+  peggQuery.equalTo('user', user)
+  peggQuery.equalTo('peggee', peggee)
+  peggQuery.first({
+    success: function (pref) {
+      pref.addUnique('hasViewed', Parse.User.current().id)
+      pref.save()
+      response.success('hasViewed saved');
+    },
+    error: function () {
+      response.error('hasViewed failed');
+    }
+  });
+
+});

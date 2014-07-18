@@ -106,12 +106,6 @@ class CardView extends View
     @mainNode.add(@choicesMod).add @choicesView
     @choicesMod.setTransform Transform.translate(0,0,-10)
 
-  loadChoices: (cardId) ->
-    @choicesView.load cardId
-    @choicesView.on 'choice', ((i) ->
-      @pickAnswer i
-    ).bind @
-
   initAnswer: (width, height, depth) ->
     @image = new ImageSurface
       size: [width - 40, null]
@@ -142,6 +136,13 @@ class CardView extends View
       )
     @mainNode.add(@imageModifier).add @image
     @mainNode.add(@textModifier).add @text
+
+  loadChoices: (cardId) ->
+    @choicesView.load cardId
+    @choicesView.on 'choice', ((i) ->
+      @pickAnswer i
+    ).bind @
+
 
   toggleZoom: =>
     if @big

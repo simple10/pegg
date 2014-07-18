@@ -77,7 +77,7 @@ class PlayStore extends EventHandler
     peggee.set 'id',  peggeeId
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
-    answer = new Parse.Object 'Answer'
+    answer = new Parse.Object 'Choice'
     answer.set 'id', answerId
     newPegg = new Parse.Object 'Pegg'
     newPegg.set 'guess', choice
@@ -147,10 +147,6 @@ class PlayStore extends EventHandler
 
   _saveStatusAck: ->
     @emit Constants.stores.PLAY_CHANGE
-
-  _savePlay: (cardId) ->
-    console.log "cardID: " + cardId
-  #@_card = cardId
 
   _savePass: (cardId) ->
     console.log "cardID: " + cardId

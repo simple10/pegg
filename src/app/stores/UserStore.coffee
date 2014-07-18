@@ -78,7 +78,7 @@ class UserStore extends EventEmitter
     return @_subscribed
 
   importFriends: ->
-    Parse.Cloud.run "importFriends", null,
+    Parse.Cloud.run 'importFriends', null,
       success: (success) ->
         console.log success
       error: (error) ->

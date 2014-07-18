@@ -25,7 +25,7 @@ class PlayView extends View
     super options
     @initSurfaces()
     @initListeners()
-    #@initGestures()
+    @initGestures()
 
   initListeners: ->
     PlayStore.on Constants.stores.PREF_SAVED, @cardPref
@@ -38,6 +38,7 @@ class PlayView extends View
       @loadChoices cardId
 
   initSurfaces: ->
+
     ##  CARDS ##
     @cardScrollView = new Scrollview
       direction: Utility.Direction.X
@@ -125,12 +126,11 @@ class PlayView extends View
     @sync.on 'update', ((data) ->
       @pos += data.delta
       console.log "pos: #{@pos}"
-      return
     ).bind(@)
 
     @sync.on 'end', ((data) ->
       alert "data: #{data}"
-      return
+
     ).bind(@)
 
   loadCards: =>
@@ -144,8 +144,7 @@ class PlayView extends View
         @collapseComments()
       card.pipe @cardScrollView
       @cardViews.push card
-      @index[cardId] = i
-      i++
+      @index[cardId] = i++
 
     #@cardScrollView.on 'pageChange', =>
     #  @hideMessage()

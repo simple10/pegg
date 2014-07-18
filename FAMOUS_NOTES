@@ -18,3 +18,11 @@ LOOK UP
 
 
 coffee -c src/spec
+
+
+
+Touch -
+Views don’t emit, surfaces need to emit, pipe up and out
+
+Collapse Choices -
+Choices need to be Views with modifiers (x2, 1 for rotation, 1 for size, Transitioble to manage state) before surfaces
