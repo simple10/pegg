@@ -40,6 +40,8 @@ class BandMenuItemView extends View
       classes: ['bandmenu__item__logo']
     @iconState = new StateModifier
         transform: Transform.translate 20, @options.height/2 - @options.iconSize/2, 0
+    @icon.on 'click', =>
+      MenuActions.selectMenuItem @getID()
     @add(@iconState).add @icon
 
   getID: ->
