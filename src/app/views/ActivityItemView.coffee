@@ -21,8 +21,10 @@ class ActivityItemView extends View
 
   build: ->
 
-    #pic = @options.get "pic"
-    message = @options.guess
+    peggeeName = @options.peggee.get 'first_name'
+    peggerName = @options.pegger.get 'first_name'
+    guess = @options.guess
+    message = "#{peggerName} pegged #{peggeeName} with #{guess}"
 
     item = new Surface
       size: [window.innerWidth, @options.height]
