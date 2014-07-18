@@ -110,10 +110,10 @@ class AppView extends View
       inOrigin: [1, 1]
       outOrigin: [0, 0]
       showOrigin: [0.5, 0.5]
-      inTransform: Transform.thenMove(Transform.rotateX(1), [0, window.innerHeight, -300])
-      outTransform: Transform.thenMove(Transform.rotateZ(0.7), [0, -window.innerHeight, -1000])
-      inTransition: { duration: 1000, curve: Easing.outExpo }
-      outTransition: { duration: 500, curve: Easing.inCubic }
+      inTransform: Transform.thenMove(Transform.rotateX(0), [0, window.innerHeight, -300])
+      outTransform: Transform.thenMove(Transform.rotateZ(0), [0, -window.innerHeight, -1000])
+      inTransition: { duration: 500, curve: Easing.outCubic }
+      outTransition: { duration: 350, curve: Easing.outCubic }
 
   showPage: (page) ->
     @lightbox.show page
