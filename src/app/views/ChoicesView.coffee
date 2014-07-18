@@ -3,9 +3,13 @@ require './scss/card.scss'
 View = require 'famous/core/View'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Scrollview = require 'famous/views/Scrollview'
+StateModifier = require 'famous/modifiers/StateModifier'
+# SequentialLayout = require 'famous/views/SequentialLayout'
 Surface = require 'famous/core/Surface'
 ListItemView = require 'views/ListItemView'
 PlayStore = require 'stores/PlayStore'
+ChoiceView = require 'views/ChoiceView'
+Transform = require 'famous/core/Transform'
 
 class ChoicesView extends View
   @DEFAULT_OPTIONS:
@@ -19,10 +23,10 @@ class ChoicesView extends View
 
   load: (cardId) ->
     choices = PlayStore.getChoices(cardId)
-    choiceSurfaces = []
-    @choicesScrollView = new Scrollview
+    @choices = []
+    @scrollView = new Scrollview
       size: [ @options.width, @options.height ]
-    @choicesScrollView.sequenceFrom choiceSurfaces
+    @scrollView.sequenceFrom @choices
     i=0
     for choice in choices
       choiceText = choice.text
@@ -35,22 +39,28 @@ class ChoicesView extends View
           color = 'light'
         else
           color = 'dark'
-        choiceSurface = new Surface
-          size: [ @options.width-6, height ]
-          classes: ["card__front__option", "#{color}"]
-          content: "
-                    <div class='outerContainer' style='width: #{@options.innerWidth}px; height: #{height}px;'>
-                      <div class='innerContainer'>
-                       #{choiceText}
-                      </div>
-                    </div>"
+        # choiceSurface = new Surface
+        #   size: [ @options.width-6, height ]
+        #   classes: ["card__front__option", "#{color}"]
+        #   content: "
+        #             <div class='outerContainer' style='width: #{@options.innerWidth}px; height: #{height}px;'>
+        #               <div class='innerContainer'>
+        #                #{choiceText}
+        #               </div>
+        #             </div>"
+        choiceSurface = new ChoiceView
+          width: @options.width
+          height: height
+          innerWidth: @options.innerWidth
+          choiceText: choiceText
+          color: color
         choiceSurface.on 'click', ((i) ->
           @_eventOutput.emit 'choice', i
         ).bind @, i
-        choiceSurface.on 'scroll', =>
-          @_eventOutput.emit 'scroll'
-        choiceSurfaces.push choiceSurface
-        choiceSurface.pipe @choicesScrollView
+        # choiceSurface.on 'scroll', =>
+        #   @_eventOutput.emit 'scroll'
+        @choices.push choiceSurface
+        choiceSurface.pipe @scrollView
         i++
 
     #newChoice = new Surface
@@ -62,18 +72,27 @@ class ChoicesView extends View
     container = new ContainerSurface
       size: [@options.width, 220]
       properties:
-        overflow: "hidden"
+        overflow: 'hidden'
       classes: ['card__options__box']
 
-    container.add @choicesScrollView
+    container.add @scrollView
     @add container
 
-  fail: (choice) ->
-    # TODO: change the style of this choice, display "WRONG"
-    # TODO: wait 1 sec, collapse the failed choice
+  showChoices: () ->
+    for choiceView in @choices
+      choiceView.state.setTransform Transform.translate(0,0,0)
 
-  win: (choice) ->
-    # TODO: change the style of this choice, display "RIGHT"
+  hideChoices: () ->
+    for choiceView in @choices
+      choiceView.state.setTransform Transform.translate(0,0,-3)
+
+  fail: (choice, i) ->
+    choiceView = @choices[i]
+    choiceView.showStatusMsg('fail')
+
+  win: (choice, i) ->
+    choiceView = @choices[i]
+    choiceView.showStatusMsg('win')
 
 
 
