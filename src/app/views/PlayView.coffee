@@ -178,7 +178,7 @@ class PlayView extends View
   cardFail: =>
     @message.setClasses ['card__message__fail']
     @message.setContent PlayStore.getMessage('fail')
-    @showMessage()
+    #@showMessage()
     @fail++
     if @fail is 3
       @fail = 0
