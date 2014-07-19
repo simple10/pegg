@@ -205,7 +205,7 @@ class CardView extends View
     @choicesView.win choice, i
     Timer.after ( =>
       @flip choice
-    ), 10
+    ), 60
 
   flip: (choice) =>
     if choice?
