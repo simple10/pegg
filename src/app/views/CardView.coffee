@@ -167,6 +167,7 @@ class CardView extends View
         ), @options.transition
       )
       @choicesMod.setTransform Transform.translate 0, 50, 0
+      @choicesView.showChoices()
       @showChoices = false
     else
       @question.setClasses @options.question.classes
@@ -182,6 +183,7 @@ class CardView extends View
         ), @options.transition
       )
       @choicesMod.setTransform Transform.translate 0, 0, -10
+      @choicesView.hideChoices()
       @showChoices = true
 
   pickAnswer: (i) =>
@@ -189,18 +191,18 @@ class CardView extends View
     if @card.peggee?
       PlayActions.pegg @card.peggee, @id, choice.id, @card.answer.id
       if @card.answer.id is choice.id
-        @choiceWin choice
+        @choiceWin choice, i
       else
-        @choiceFail choice
+        @choiceFail choice, i
     else
       PlayActions.pref @id, choice.id
       @flip choice
 
-  choiceFail: (choice) =>
-    @choicesView.fail choice
+  choiceFail: (choice, i) =>
+    @choicesView.fail choice, i
 
-  choiceWin: (choice) =>
-    @choicesView.win choice
+  choiceWin: (choice, i) =>
+    @choicesView.win choice, i
     Timer.after ( =>
       @flip choice
     ), 10
