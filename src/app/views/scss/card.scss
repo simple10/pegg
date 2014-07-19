@@ -98,6 +98,14 @@
   background-color:rgba(240,240,240,0.5);
 }
 
+.card__front__option.option__back.win {
+  background-color: $win-green;
+}
+
+.card__front__option.option__back.fail {
+  background-color: $fail-red;
+}
+
 .card__front p {
 
 }
