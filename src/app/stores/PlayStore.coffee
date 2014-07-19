@@ -87,9 +87,23 @@ class PlayStore extends EventHandler
     newPegg.set 'ACL', newPeggAcl
     newPegg.set 'peggee', peggee
     newPegg.save()
+
+    # UPDATE user-friend status
+#    pointsQuery = new Parse.Query 'Points'
+#    pointsQuery.equalTo 'user', pegger
+#    pointsQuery.equalTo 'friend', peggee
+#    pointsQuery.first
+#      success: (points) ->
+#        points.set 'points', points.get('points') + 5
+#      error: (error) ->
+#        console.error error.message
+
+
     if choiceId is answerId
+      @_fail = 0
       @emit Constants.stores.CARD_WIN
     else
+      @_fail++
       @emit Constants.stores.CARD_FAIL
 
   _savePref: (cardId, choiceId) ->
