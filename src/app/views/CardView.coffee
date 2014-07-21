@@ -203,9 +203,10 @@ class CardView extends View
 
   choiceWin: (choice, i) =>
     @choicesView.win choice, i
-    Timer.after ( =>
+
+    # listen for event bubbled up from the choiceView
+    @choicesView.on 'choice:doneShowingStatus', () =>
       @flip choice
-    ), 60
 
   flip: (choice) =>
     if choice?
