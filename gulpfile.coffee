@@ -8,6 +8,7 @@ gulp = require 'gulp'
 gutil = require 'gulp-util'
 clean = require 'gulp-clean'
 watch = require 'gulp-watch'
+coffee = require 'gulp-coffee'
 plumber = require 'gulp-plumber'
 gzip = require 'gulp-gzip' if enableGzip
 mocha = require 'gulp-mocha'
@@ -137,6 +138,16 @@ gulp.task 'clean', ->
 gulp.task 'copy', ['clean'], ->
   gulp.src conf.copyFiles, cwd: conf.src
   .pipe gulp.dest conf.dist
+
+
+############################################################
+# Cloud Code compile
+############################################################
+gulp.task "cloud", ->
+  # path to your file
+  gulp.src("./parse/cloud/main.coffee").pipe(coffee()).pipe gulp.dest("./parse/cloud/")
+  return
+
 
 
 ############################################################
