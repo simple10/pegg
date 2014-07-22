@@ -51,9 +51,13 @@ class ChoiceView extends View
     @back.update(status)
     @flipper.flip(undefined, () =>
 
-      # @TODO Bubble flip done event back up and delay card flip
       if status is 'fail'
         Timer.setTimeout @remove, 1000
+
+      if status is 'win'
+        Timer.setTimeout(() =>
+          @_eventOutput.emit('choice:doneShowingStatus');
+        , 1000)
     )
 
   remove: () =>

@@ -48,19 +48,20 @@ class ChoicesView extends View
         #                #{choiceText}
         #               </div>
         #             </div>"
-        choiceSurface = new ChoiceView
+        choiceView = new ChoiceView
           width: @options.width
           height: height
           innerWidth: @options.innerWidth
           choiceText: choiceText
           color: color
-        choiceSurface.on 'click', ((i) ->
+        choiceView.on 'click', ((i) ->
           @_eventOutput.emit 'choice', i
         ).bind @, i
-        # choiceSurface.on 'scroll', =>
-        #   @_eventOutput.emit 'scroll'
-        @choices.push choiceSurface
-        choiceSurface.pipe @scrollView
+        choiceView.on 'choice:doneShowingStatus', ((i) ->
+          @_eventOutput.emit 'choice:doneShowingStatus', i
+        ).bind @, i
+        @choices.push choiceView
+        choiceView.pipe @scrollView
         i++
 
     #newChoice = new Surface
