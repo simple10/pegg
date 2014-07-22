@@ -32,8 +32,6 @@ class StageState extends EventHandler
     DB.getPrefCards(
       num
       UserStore.getUser()
-      (cardId) =>
-        @_fetchChoices cardId
       (cards) =>
         if cards?
           @_cardSet = cards

@@ -69,7 +69,7 @@ class PlayStore extends EventHandler
   _pref: (cardId, choiceId) ->
     console.log "save Pref: card: " + cardId + " choice: " + choiceId
     userId = UserStore.getUser().id
-    DB.savePref(cardId, choiceId, userId, (res)->
+    DB.savePref(cardId, choiceId, userId, (res)=>
       if res?
         console.log res
       @emit Constants.stores.PREF_SAVED
