@@ -23,7 +23,7 @@ class ParseBackend
     newComment.set 'peggee', peggee
     newComment.set 'card', card
     newComment.set 'text', comment
-    newComment.set 'author', author.id
+    newComment.set 'author', author
     newComment.set 'userImg', userImg
     newComment.set 'ACL', newCommentAcl
     newComment.save()
