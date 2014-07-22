@@ -8,13 +8,17 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Utility = require 'famous/utilities/Utility'
 Easing = require 'famous/transitions/Easing'
-PlayActions = require 'actions/PlayActions'
 Timer = require 'famous/utilities/Timer'
-ChoicesView = require 'views/ChoicesView'
+GenericSync = require 'famous/inputs/GenericSync'
+MouseSync = require 'famous/inputs/MouseSync'
+TouchSync = require 'famous/inputs/TouchSync'
+
 _ = require('Parse')._
+PlayActions = require 'actions/PlayActions'
 ImageUploadView = require 'views/ImageUploadView'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
+ChoicesView = require 'views/ChoicesView'
 
 class CardView extends View
   @DEFAULT_OPTIONS:
@@ -44,6 +48,7 @@ class CardView extends View
     @initQuestion width, height, depth
     @initChoices width, Math.floor(height/5)
     @initAnswer width, height, depth
+    @initGestures()
 
   initCard: (width, height, depth) ->
     if @card.question.length > 90
@@ -52,13 +57,13 @@ class CardView extends View
       origin: [0.5, 0.5]
     @mainNode = @add @state
     ## Front Card
-    front = new ImageSurface
+    @front = new ImageSurface
       size: [ width, height ]
       content: 'images/Card_White.png'
     modifier = new Modifier
       transform: Transform.translate 0, 0, depth/2
-    front.on 'click', @toggleChoices
-    @mainNode.add(modifier).add front
+    @front.on 'click', @toggleChoices
+    @mainNode.add(modifier).add @front
     ## Back Card
     @back = new ImageSurface
       size: [ width, height ]
@@ -76,28 +81,28 @@ class CardView extends View
       @_eventOutput.emit 'comment', @
 
   initQuestion: (width, height, depth) ->
-    @pic = new ImageSurface
+    @frontProfilePic = new ImageSurface
       size: [@options.pic.width, @options.pic.height]
       content: "#{@card.pic}/?height=200&type=normal&width=200"
       #classes: ['card__front__pic--big']
       properties:
         borderRadius: "#{@options.pic.width}px"
-    @pic.on 'click', @toggleChoices
-    @picMod = new StateModifier
+    @frontProfilePic.on 'click', @toggleChoices
+    @frontProfilePicMod = new StateModifier
       transform: Transform.translate 0, -110, depth/2 + 2
     if @card.peggee?
       question = @card.firstName + ", " + @card.question.charAt(0).toLowerCase() + @card.question.slice(1)
     else
       question = @card.question
-    @question = new Surface
+    @frontQuestion = new Surface
       size: [ width, height ]
       classes: @options.question.classes
       content: question
     @qModifier = new StateModifier
       transform: Transform.translate 0, height/2 + -40, depth/2 + 2
-    @question.on 'click', @toggleChoices
-    @mainNode.add(@qModifier).add @question
-    @mainNode.add(@picMod).add @pic
+    @frontQuestion.on 'click', @toggleChoices
+    @mainNode.add(@qModifier).add @frontQuestion
+    @mainNode.add(@frontProfilePicMod).add @frontProfilePic
 
   initChoices: (width, height) ->
     @showChoices = true
@@ -107,15 +112,17 @@ class CardView extends View
     @choicesMod.setTransform Transform.translate(0,0,-10)
 
   initAnswer: (width, height, depth) ->
-    @image = new ImageSurface
+    @backImage = new ImageSurface
       size: [width - 40, null]
       classes: ['card__back__image']
       properties:
         borderRadius: "#{@options.borderRadius}px"
         maxHeight: "#{height - 100}px"
-    @image.on 'click', =>
-      @flip()
-    @imageModifier = new StateModifier
+    
+    @backImage.on 'click', =>
+      #TODO Expand image when
+
+    @backImageModifier = new StateModifier
       transform: Transform.multiply(
         Transform.translate(0, -100, -depth/2 - 2)
         Transform.multiply(
@@ -123,10 +130,10 @@ class CardView extends View
           Transform.rotateX Math.PI
         )
       )
-    @text = new Surface
+    @backText = new Surface
       size: [width - 40, null]
       classes: ['card__back__text']
-    @textModifier = new StateModifier
+    @backTextModifier = new StateModifier
       transform: Transform.multiply(
         Transform.translate(0, -160, -depth/2 - 2)
         Transform.multiply(
@@ -134,8 +141,18 @@ class CardView extends View
           Transform.rotateX Math.PI
         )
       )
-    @mainNode.add(@imageModifier).add @image
-    @mainNode.add(@textModifier).add @text
+    @mainNode.add(@backImageModifier).add @backImage
+    @mainNode.add(@backTextModifier).add @backText
+
+  # Doesn't respond to gestures, just makes sure that the events
+  # get to the right place
+  initGestures: ->
+    @front.pipe @_eventOutput
+    @frontProfilePic.pipe @_eventOutput
+    @frontQuestion.pipe @_eventOutput
+    @back.pipe @_eventOutput
+    @backImage.pipe @_eventOutput
+    @backText.pipe @_eventOutput
 
   loadChoices: (cardId) ->
     @choicesView.load cardId
@@ -147,20 +164,20 @@ class CardView extends View
   toggleZoom: =>
     if @big
       @big = false
-      @image.setSize [@options.width, @options.height]
+      @backImage.setSize [@options.width, @options.height]
     else
       @big = true
-      @image.setSize [window.innerWidth, window.innerHeight]
+      @backImage.setSize [window.innerWidth, window.innerHeight]
 
   toggleChoices: =>
     if @showChoices
-      @question.setClasses ["#{@options.question.classes}--small"]
-      @question.setSize [@options.width - 80, @options.height]
+      @frontQuestion.setClasses ["#{@options.question.classes}--small"]
+      @frontQuestion.setSize [@options.width - 80, @options.height]
       @qModifier.setTransform(
         Transform.translate 30, 20, @options.depth/2 + 2
         @options.transition
       )
-      @picMod.setTransform(
+      @frontProfilePicMod.setTransform(
         Transform.multiply(
           Transform.scale .5, .5, 1
           Transform.translate -210, -260, @options.depth/2 + 2
@@ -169,14 +186,16 @@ class CardView extends View
       @choicesMod.setTransform Transform.translate 0, 50, 0
       @choicesView.showChoices()
       @showChoices = false
+      @_eventOutput.emit 'choices:showing', @
     else
-      @question.setClasses @options.question.classes
-      @question.setSize [@options.width, @options.height]
+      console.log 'toggleChoices'
+      @frontQuestion.setClasses @options.question.classes
+      @frontQuestion.setSize [@options.width, @options.height]
       @qModifier.setTransform(
         Transform.translate 0, @options.height/2 + -40, @options.depth/2 + 2
         @options.transition
       )
-      @picMod.setTransform(
+      @frontProfilePicMod.setTransform(
         Transform.multiply(
           Transform.scale 1, 1, 1
           Transform.translate 0, -110, @options.depth/2 + 2
@@ -185,6 +204,7 @@ class CardView extends View
       @choicesMod.setTransform Transform.translate 0, 0, -10
       @choicesView.hideChoices()
       @showChoices = true
+      @_eventOutput.emit 'choices:hidden', @
 
   pickAnswer: (i) =>
     choice = @card.choices[i]
@@ -213,14 +233,16 @@ class CardView extends View
       image = choice.image
       text = choice.text
       Timer.after ( =>
-        @image.setContent image
+        @backImage.setContent image
       ), 10
-      @text.setContent text
+      @backText.setContent text
     @currentSide = if @currentSide is 1 then 0 else 1
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
       @options.transition
     )
+
+    @_eventOutput.emit 'card:flipped', @
 
 
 module.exports = CardView
