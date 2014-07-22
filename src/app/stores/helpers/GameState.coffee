@@ -27,5 +27,7 @@ class GameState extends EventHandler
   getChoices: (cardId) ->
     @_currentStage.getChoices(cardId)
 
+  getStatus: ->
+    @_currentStage.getStatus()
 
 module.exports = GameState

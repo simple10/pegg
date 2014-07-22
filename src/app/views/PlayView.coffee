@@ -33,7 +33,7 @@ class PlayView extends View
     PlayStore.on Constants.stores.CARD_WIN, @cardWin
     PlayStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
     PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
-    PlayStore.on Constants.stores.STATUS_CHANGE, @loadStatus
+    PlayStore.on Constants.stores.STAGE_END, @loadStatus
     PlayStore.on Constants.stores.CHOICES_CHANGE, (cardId) =>
       @loadChoices cardId
 
@@ -168,6 +168,7 @@ class PlayView extends View
     @comments.load PlayStore.getComments()
 
   loadStatus: =>
+    @status.load PlayStore.getStatus()
     @showStatus()
 
   nextCard: =>
