@@ -2,39 +2,20 @@ EventEmitter = require 'famous/core/EventEmitter'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 UserStore = require 'stores/UserStore'
-Parse = require 'Parse'
+DB = require 'stores/helpers/ParseBackend'
 
-Pegg = Parse.Object.extend 'Pegg'
 
 
 class ActivityStore extends EventEmitter
   _activity: []
 
   _fetchActivities: (page) ->
-    # TODO: implement pagination
-    peggQuery = new Parse.Query Pegg
-    peggQuery.include 'card'
-    peggQuery.include 'guess'
-    peggQuery.include 'peggee'
-    peggQuery.include 'user'
-    peggQuery.find
-      success: (results) =>
-        for activity in results
-          card = activity.get 'card'
-          peggee = activity.get 'peggee'
-          user = activity.get 'user'
-          guess = activity.get 'guess'
-          @_activity.push {
-            pegger: user
-            peggee: peggee
-            question: card.get 'question'
-            guess: guess.get 'text'
-          }
-        if results.length
-          @emit Constants.stores.ACTIVITY_CHANGE
-      error: (error) ->
-        console.log "Error: " + error.code + " " + error.message
 
+    DB.getActivity(page, (results) =>
+      if results.length
+        @_activity = results
+        @emit Constants.stores.ACTIVITY_CHANGE
+    )
 
   getActivity: ->
     @_activity
