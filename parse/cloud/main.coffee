@@ -10,7 +10,8 @@ importer =
     Parse.Cloud.useMasterKey()
     @getFbFriends()
       .then(@getPeggUsersFromFbFriends.bind(this))
-      .then(@updatePermissions.bind(this))
+      .then(@updateForwardPermissions.bind(this))
+      .then(@updateBackwardPermissions.bind(this))
       .then(@finish.bind(this)).fail (error) ->
         response.error error
 
@@ -51,7 +52,7 @@ importer =
         promise.reject error
     promise
 
-  updatePermissions: ->
+  updateForwardPermissions: ->
     promise = new Parse.Promise()
 
     # ADD friends to user's Role
@@ -96,24 +97,35 @@ importer =
       ).bind(this)
       error: (error) ->
         promise.reject error
-
-    # ADD user to friends' roles
-    for peggFriend in @peggFriends
-      query = new Parse.Query(Parse.Role)
-      fbFriendRoleName = peggFriend.id + "_FacebookFriends"
-      console.log fbFriendRoleName
-      query.equalTo "name", fbFriendRoleName
-      query.find
-        success: ((results) ->
-          if results.length is 1
-            fbFriendsRole = results[0]
-            relation = fbFriendsRole.getUsers()
-            relation.add @user.id
-            fbFriendsRole.save()
-        ).bind(this)
-        error: (error) ->
-          promise.reject error
     promise
+
+
+  updateBackwardPermissions: ->
+    promise = new Parse.Promise()
+    # ADD user to friends' roles
+    @_updateFriendRole promise, 0
+
+  _updateFriendRole: (promise, index) ->
+    query = new Parse.Query Parse.Role
+    fbFriendRoleName = "#{@peggFriends[index].id}_FacebookFriends"
+    console.log fbFriendRoleName
+    query.equalTo 'name', fbFriendRoleName
+    query.find
+      success: ((results) ->
+        if results.length is 1
+          fbFriendsRole = results[0]
+          relation = fbFriendsRole.getUsers()
+          friend = new Parse.Object 'User'
+          friend.set 'id', @user.id
+          relation.add friend
+          fbFriendsRole.save()
+          if index is @peggFriends.length - 1
+            promise.resolve()
+          else
+            @_updateFriendRole promise, index++
+      ).bind(this)
+      error: (error) ->
+        promise.reject error
 
   finish: ->
     message = "Updated #{@user.attributes.first_name}'s friends from Facebook (Pegg user id #{@user.id})"
@@ -124,7 +136,7 @@ importer =
 Parse.Cloud.define "importFriends", importer.start.bind(importer)
 
 Parse.Cloud.define "hasPreffed", (request, response) ->
-  cardQuery = new Parse.Query("Card")
+  cardQuery = new Parse.Query 'Card'
   cardQuery.equalTo "objectId", request.params.card
   cardQuery.first
     success: (card) ->
@@ -133,6 +145,7 @@ Parse.Cloud.define "hasPreffed", (request, response) ->
       response.success "hasPreffed saved"
     error: ->
       response.error "hasPreffed failed"
+
 
 Parse.Cloud.define "hasPegged", (request, response) ->
   Parse.Cloud.useMasterKey()
@@ -150,8 +163,7 @@ Parse.Cloud.define "hasPegged", (request, response) ->
       response.success "hasPegged saved"
     error: ->
       response.error "hasPegged failed"
-      return
-  return
+
 
 Parse.Cloud.define "hasViewedPegg", (request, response) ->
   Parse.Cloud.useMasterKey()
@@ -170,8 +182,39 @@ Parse.Cloud.define "hasViewedPegg", (request, response) ->
       pref.addUnique "hasViewed", Parse.User.current().id
       pref.save()
       response.success "hasViewed saved"
-      return
     error: ->
       response.error "hasViewed failed"
-      return
-  return
+
+
+Parse.Cloud.afterSave 'Pegg', (request) ->
+  Parse.Cloud.useMasterKey()
+
+  # UPDATE card row with userId in hasPegged array
+  card = new Parse.Object 'Card'
+  card.set 'id', request.object.get('card').id
+  peggee = new Parse.Object 'User'
+  peggee.set 'id', request.object.get('peggee').id
+  prefQuery = new Parse.Query 'Pref'
+  prefQuery.equalTo 'card', card
+  prefQuery.equalTo 'user', peggee
+  prefQuery.first
+    success: (pref) ->
+      pref.addUnique 'hasPegged', Parse.User.current().id
+      pref.save()
+      console.log 'hasPegged saved: #{pref}'
+    error: ->
+      console.log 'hasPegged failed'
+
+  # UPDATE points row with new points
+  pointsQuery = new Parse.Query 'Points'
+  pointsQuery.equalTo 'user', request.object.get('user').id
+  pointsQuery.equalTo 'friend', request.object.get('peggee').id
+  pointsQuery.first
+    success: (results) ->
+      points = 0
+      if results.length > 0
+        points = results.get('points') + 5
+      results.set 'points',  points
+      results.save()
+    error: (error) ->
+      console.error error.message

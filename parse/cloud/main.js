@@ -8,7 +8,7 @@
       this.response = response;
       this.user = Parse.User.current();
       Parse.Cloud.useMasterKey();
-      return this.getFbFriends().then(this.getPeggUsersFromFbFriends.bind(this)).then(this.updatePermissions.bind(this)).then(this.finish.bind(this)).fail(function(error) {
+      return this.getFbFriends().then(this.getPeggUsersFromFbFriends.bind(this)).then(this.updateForwardPermissions.bind(this)).then(this.updateBackwardPermissions.bind(this)).then(this.finish.bind(this)).fail(function(error) {
         return response.error(error);
       });
     },
@@ -56,8 +56,8 @@
       });
       return promise;
     },
-    updatePermissions: function() {
-      var fbFriendRoleName, fbFriendsRoleName, peggFriend, promise, query, _i, _len, _ref;
+    updateForwardPermissions: function() {
+      var fbFriendsRoleName, promise, query;
       promise = new Parse.Promise();
       query = new Parse.Query(Parse.Role);
       fbFriendsRoleName = "" + this.user.id + "_FacebookFriends";
@@ -106,29 +106,40 @@
           return promise.reject(error);
         }
       });
-      _ref = this.peggFriends;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        peggFriend = _ref[_i];
-        query = new Parse.Query(Parse.Role);
-        fbFriendRoleName = peggFriend.id + "_FacebookFriends";
-        console.log(fbFriendRoleName);
-        query.equalTo("name", fbFriendRoleName);
-        query.find({
-          success: (function(results) {
-            var fbFriendsRole, relation;
-            if (results.length === 1) {
-              fbFriendsRole = results[0];
-              relation = fbFriendsRole.getUsers();
-              relation.add(this.user.id);
-              return fbFriendsRole.save();
-            }
-          }).bind(this),
-          error: function(error) {
-            return promise.reject(error);
-          }
-        });
-      }
       return promise;
+    },
+    updateBackwardPermissions: function() {
+      var promise;
+      promise = new Parse.Promise();
+      return this._updateFriendRole(promise, 0);
+    },
+    _updateFriendRole: function(promise, index) {
+      var fbFriendRoleName, query;
+      query = new Parse.Query(Parse.Role);
+      fbFriendRoleName = "" + this.peggFriends[index].id + "_FacebookFriends";
+      console.log(fbFriendRoleName);
+      query.equalTo('name', fbFriendRoleName);
+      return query.find({
+        success: (function(results) {
+          var fbFriendsRole, friend, relation;
+          if (results.length === 1) {
+            fbFriendsRole = results[0];
+            relation = fbFriendsRole.getUsers();
+            friend = new Parse.Object('User');
+            friend.set('id', this.user.id);
+            relation.add(friend);
+            fbFriendsRole.save();
+            if (index === this.peggFriends.length - 1) {
+              return promise.resolve();
+            } else {
+              return this._updateFriendRole(promise, index++);
+            }
+          }
+        }).bind(this),
+        error: function(error) {
+          return promise.reject(error);
+        }
+      });
     },
     finish: function() {
       var message;
@@ -141,7 +152,7 @@
 
   Parse.Cloud.define("hasPreffed", function(request, response) {
     var cardQuery;
-    cardQuery = new Parse.Query("Card");
+    cardQuery = new Parse.Query('Card');
     cardQuery.equalTo("objectId", request.params.card);
     return cardQuery.first({
       success: function(card) {
@@ -165,14 +176,14 @@
     prefQuery = new Parse.Query("Pref");
     prefQuery.equalTo("card", card);
     prefQuery.equalTo("user", peggee);
-    prefQuery.first({
+    return prefQuery.first({
       success: function(pref) {
         pref.addUnique("hasPegged", Parse.User.current().id);
         pref.save();
         return response.success("hasPegged saved");
       },
       error: function() {
-        response.error("hasPegged failed");
+        return response.error("hasPegged failed");
       }
     });
   });
@@ -190,14 +201,53 @@
     peggQuery.equalTo("card", card);
     peggQuery.equalTo("user", user);
     peggQuery.equalTo("peggee", peggee);
-    peggQuery.first({
+    return peggQuery.first({
       success: function(pref) {
         pref.addUnique("hasViewed", Parse.User.current().id);
         pref.save();
-        response.success("hasViewed saved");
+        return response.success("hasViewed saved");
       },
       error: function() {
-        response.error("hasViewed failed");
+        return response.error("hasViewed failed");
+      }
+    });
+  });
+
+  Parse.Cloud.afterSave('Pegg', function(request) {
+    var card, peggee, pointsQuery, prefQuery;
+    Parse.Cloud.useMasterKey();
+    card = new Parse.Object('Card');
+    card.set('id', request.object.get('card').id);
+    peggee = new Parse.Object('User');
+    peggee.set('id', request.object.get('peggee').id);
+    prefQuery = new Parse.Query('Pref');
+    prefQuery.equalTo('card', card);
+    prefQuery.equalTo('user', peggee);
+    prefQuery.first({
+      success: function(pref) {
+        pref.addUnique('hasPegged', Parse.User.current().id);
+        pref.save();
+        return console.log('hasPegged saved: #{pref}');
+      },
+      error: function() {
+        return console.log('hasPegged failed');
+      }
+    });
+    pointsQuery = new Parse.Query('Points');
+    pointsQuery.equalTo('user', request.object.get('user').id);
+    pointsQuery.equalTo('friend', request.object.get('peggee').id);
+    return pointsQuery.first({
+      success: function(results) {
+        var points;
+        points = 0;
+        if (results.length > 0) {
+          points = results.get('points') + 5;
+        }
+        results.set('points', points);
+        return results.save();
+      },
+      error: function(error) {
+        return console.error(error.message);
       }
     });
   });
