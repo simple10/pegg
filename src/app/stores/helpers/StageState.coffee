@@ -49,7 +49,6 @@ class StageState extends EventHandler
       num
       UserStore.getUser()
       (cards) =>
-        debugger
         if cards?
           @_cardSet = cards
           for own id, card of cards
