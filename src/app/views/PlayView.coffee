@@ -119,17 +119,26 @@ class PlayView extends View
     GenericSync.register touch: TouchSync
 
     @pos = 0
-    #GenericSync.register MouseSync
-    @sync = new GenericSync ['mouse', 'touch'], direction: GenericSync.DIRECTION_X
-    @cardScrollView.pipe @sync
+    @sync = new GenericSync ['mouse', 'touch']
+
+    @_eventInput.on 'choices:showing', (card) =>
+      card.unpipe @cardScrollView
+
+    @_eventInput.on 'choices:hidden', (card) =>
+      card.pipe @cardScrollView
+
+    @_eventInput.on 'card:flipped', (card) =>
+      card.pipe @cardScrollView
+    
+    @cardScrollView._eventInput.pipe @sync
 
     @sync.on 'update', ((data) ->
       @pos += data.delta
-      console.log "pos: #{@pos}"
+      # console.log "pos: #{@pos}"
     ).bind(@)
 
     @sync.on 'end', ((data) ->
-      alert "data: #{data}"
+      # alert "data: #{data}"
 
     ).bind(@)
 
@@ -143,6 +152,7 @@ class PlayView extends View
       card.on 'comment', =>
         @collapseComments()
       card.pipe @cardScrollView
+      card.pipe @
       @cardViews.push card
       @index[cardId] = i++
 
