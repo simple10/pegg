@@ -43,6 +43,10 @@ class StatusView extends View
     next.on "click", ->
       PlayActions.nextStage()
 
+  load: (data) ->
+    # TODO: load status data
+
+
 
 
 module.exports = StatusView

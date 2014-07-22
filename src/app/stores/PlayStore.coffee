@@ -13,12 +13,12 @@ class PlayStore extends EventHandler
   _cardIndex: []
   _cardPosition: 0
   _fail: 0
+  _peggee: ''
+  _card: ''
 
-  _loadGame: (flow) ->
+  _loadGame: (flow, script) ->
     @_game = new GameState flow
     @_game.pipe @
-
-  _loadScript: (script) ->
     @_message = new MessageState script
 
   _loadCard: (position) ->
@@ -38,8 +38,7 @@ class PlayStore extends EventHandler
 
   _nextCard: ->
     if @_cardPosition is @_cardIndex.length - 1
-      # TODO: load Status
-      @emit Constants.stores.STATUS_CHANGE
+      @emit Constants.stores.STAGE_END
       @_cardPosition = 0
     else
       @_cardPosition++
@@ -56,12 +55,12 @@ class PlayStore extends EventHandler
     # Save points
     if choiceId is answerId
       points = 10 - 3 * @_fail
-      @emit Constants.stores.CARD_WIN
       DB.savePoints(userId, peggeeId, points, (res)->
         if res?
           console.log res
       )
       @_fail = 0
+      @emit Constants.stores.CARD_WIN
     else
       @_fail++
       @emit Constants.stores.CARD_FAIL
@@ -131,8 +130,7 @@ AppDispatcher.register (payload) ->
   # Pay attention to events relevant to PlayStore
   switch action.actionType
     when Constants.actions.LOAD_GAME
-      play._loadGame action.flow
-      play._loadScript action.script
+      play._loadGame action.flow, action.script
       play._nextStage()
     when Constants.actions.PEGG_SUBMIT
       play._pegg action.peggee, action.card, action.choice, action.answer

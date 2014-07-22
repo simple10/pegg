@@ -8,8 +8,8 @@ config =
           size: 3
         }
         {
-          type: 'message_next_friend'
-          # Now you’re gonna play about your friend: FriendA
+          type: 'profile_progress'
+          # How am I doing about myself?
         }
       ]
       [      # stage 2
@@ -18,7 +18,7 @@ config =
           size: 3
         }
         {
-          type: 'status_friend_ranking'
+          type: 'friend_ranking'
           # How do I compare to his friends?
         }
       ]

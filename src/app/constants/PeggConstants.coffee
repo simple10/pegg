@@ -40,7 +40,7 @@ module.exports =
     PLAY_CHANGE: null
     CARD_WIN: null
     CARD_FAIL: null
-    STATUS_CHANGE: null
+    STAGE_END: null
     ACTIVITY_CHANGE: null
 
 

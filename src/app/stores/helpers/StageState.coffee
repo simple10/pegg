@@ -6,19 +6,32 @@ DB = require 'stores/helpers/ParseBackend'
 
 class StageState extends EventHandler
   _cardSet = {}
-  status = null
+  _status = null
 
   constructor: (data) ->
     super
-    @_part = data[0]   # later we will support multiple parts
+    @_play = data[0]   # the cards to play
+    @_status = data[1]   # the status screen to display
+
 
   load: ->
-    if @_part.type is 'pref'
-      @_fetchPrefCards @_part.size
-    else if @_part.type is 'pegg'
-      @_fetchPeggCards @_part.size
-    else
-      raise "unexpected part type: #{@_part.type}"
+    switch @_play.type
+      when 'pref'
+        @_fetchPrefCards @_play.size
+      when 'pegg'
+        @_fetchPeggCards @_play.size
+      else
+        raise "unexpected play type: #{@_play.type}"
+
+    switch @_status.type
+      when 'profile_progress'
+        # TODO: load profile progress
+        console.log 'profile_progress'
+      when 'friend_ranking'
+        # TODO: load friend stats
+        console.log 'friend_ranking'
+      else
+        raise "unexpected status type: #{@_status.type}"
 
   getChoices: (cardId) ->
     @_cardSet[cardId].choices
@@ -26,12 +39,13 @@ class StageState extends EventHandler
   getCardSet: ->
     @_cardSet
 
+  getStatus: ->
+    @_status
+
   _fetchPrefCards: (num) ->
     # Gets unanswered preferences: cards the user answers about himself
     @_cardSet  = {}
-    DB.getPrefCards(
-      num
-      UserStore.getUser()
+    DB.getPrefCards( num, UserStore.getUser()
       (cards) =>
         if cards?
           @_cardSet = cards
@@ -43,9 +57,7 @@ class StageState extends EventHandler
   _fetchPeggCards: (num) ->
     # Gets unpegged preferences: cards the user answers about a friend
     @_cardSet = {}
-    DB.getPeggCards(
-      num
-      UserStore.getUser()
+    DB.getPeggCards( num, UserStore.getUser()
       (cards) =>
         if cards?
           @_cardSet = cards
@@ -55,9 +67,7 @@ class StageState extends EventHandler
     )
 
   _fetchChoices: (cardId) ->
-    DB.getChoices(
-      @_cardSet
-      cardId
+    DB.getChoices( @_cardSet, cardId
       (cards) =>
         @_cardSet = cards
         @emit Constants.stores.CHOICES_CHANGE, cardId
