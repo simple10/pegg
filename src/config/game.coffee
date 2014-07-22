@@ -4,7 +4,7 @@ config =
       [      # stage 1
         {
           # type: 'pref'
-          type: 'pegg'
+          type: 'pref'
           size: 3
         }
         {
