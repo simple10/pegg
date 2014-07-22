@@ -21,6 +21,18 @@ class PlayStore extends EventHandler
   _loadScript: (script) ->
     @_message = new MessageState script
 
+  _loadCard: (position) ->
+    cardId = @_cardIndex[position]
+    cards = @_game.getCards()
+    card = cards[cardId]
+    @_peggee = if card.peggee? then card.peggee else UserStore.getUser().id
+    @_card = cardId
+    DB.getComments(@_card, @_peggee, (res) =>
+      if res?
+        @_comments = res
+        @emit Constants.stores.COMMENTS_CHANGE
+    )
+
   _nextStage: ->
     @_game.loadNextStage()
 
@@ -31,16 +43,7 @@ class PlayStore extends EventHandler
       @_cardPosition = 0
     else
       @_cardPosition++
-      cardId = @_cardIndex[@_cardPosition]
-      cards = @_game.getCards()
-      card = cards[cardId]
-      @_peggee = if card.peggee? then card.peggee else UserStore.getUser().id
-      @_card = cardId
-      DB.getComments(cardId, @_peggee, (res) =>
-        if res?
-          @_comments = res
-          @emit Constants.stores.COMMENTS_CHANGE
-      )
+      @_loadCard @_cardPosition
 
   _pegg: (peggeeId, cardId, choiceId, answerId) ->
     console.log "save Pegg: card: " + cardId + " choice: " + choiceId
@@ -62,7 +65,6 @@ class PlayStore extends EventHandler
     else
       @_fail++
       @emit Constants.stores.CARD_FAIL
-
 
   _pref: (cardId, choiceId) ->
     console.log "save Pref: card: " + cardId + " choice: " + choiceId
@@ -104,10 +106,8 @@ class PlayStore extends EventHandler
     for own cardId of cards
       @_cardIndex[i] = cardId
       i++
-    # Populate the ids for the first card in set, so user can comment on the first card
-    cardId = @_cardIndex[0]
-    @_peggee = if cards[cardId].peggee? then cards[cardId].peggee else UserStore.getUser().id
-    @_card = cards[cardId].id
+    # Load the first card in set
+    @_loadCard 0
     cards
 
   getStatus: ->
