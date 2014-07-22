@@ -2,10 +2,7 @@ EventHandler = require 'famous/core/EventHandler'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 UserStore = require 'stores/UserStore'
-Parse = require 'Parse'
-
-Comment = Parse.Object.extend 'Comment'
-
+DB = require 'stores/helpers/ParseBackend'
 GameState = require 'stores/helpers/GameState'
 MessageState = require 'stores/helpers/MessageState'
 
@@ -15,6 +12,7 @@ class PlayStore extends EventHandler
   _comments: []
   _cardIndex: []
   _cardPosition: 0
+  _fail: 0
 
   _loadGame: (flow) ->
     @_game = new GameState flow
@@ -36,141 +34,80 @@ class PlayStore extends EventHandler
       cardId = @_cardIndex[@_cardPosition]
       cards = @_game.getCards()
       card = cards[cardId]
-      @_fetchComments cardId, if card.peggee? then card.peggee else UserStore.getUser().id
+      @_peggee = if card.peggee? then card.peggee else UserStore.getUser().id
+      @_card = cardId
+      DB.getComments(cardId, @_peggee, (res) =>
+        if res?
+          @_comments = res
+          @emit Constants.stores.COMMENTS_CHANGE
+      )
 
-  _fetchComments: (cardId, peggeeId) ->
-    @_peggee = peggeeId
-    @_card = cardId
-    query = new Parse.Query Comment
-    card = new Parse.Object 'Card'
-    card.set 'id', cardId
-    peggee = new Parse.Object 'User'
-    peggee.set 'id', peggeeId
-    query.equalTo 'peggee', peggee
-    query.equalTo 'card', card
-    query.include 'author'
-    query.find
-      success: (results) =>
-        @_comments = results
-        @emit Constants.stores.COMMENTS_CHANGE
-      error: (error) ->
-        console.log "Error: #{error.code}  #{error.message}"
-
-  _savePegg: (peggeeId, cardId, choiceId, answerId) ->
-
-    # UPDATE Pref table to include current user in hasPegged array
-    Parse.Cloud.run 'hasPegged', {card: cardId, peggee: peggeeId},
-      success: (success) ->
-        console.log success
-      error: (error) ->
-        console.error error.message
-
-    # INSERT into Pegg table a row with current user's pegg
-    user = UserStore.getUser()
-    card = new Parse.Object 'Card'
-    card.set 'id', cardId
-    pegger = new Parse.Object 'User'
-    pegger.set 'id',  user.id
-    newPeggAcl = new Parse.ACL user
-    newPeggAcl.setRoleReadAccess "#{user.id}_Friends", true
-    peggee = new Parse.Object 'User'
-    peggee.set 'id',  peggeeId
-    choice = new Parse.Object 'Choice'
-    choice.set 'id', choiceId
-    answer = new Parse.Object 'Choice'
-    answer.set 'id', answerId
-    newPegg = new Parse.Object 'Pegg'
-    newPegg.set 'guess', choice
-    newPegg.set 'answer', answer
-    newPegg.set 'card', card
-    newPegg.set 'user', pegger
-    newPegg.set 'ACL', newPeggAcl
-    newPegg.set 'peggee', peggee
-    newPegg.save()
-
-    # UPDATE user-friend status
-#    pointsQuery = new Parse.Query 'Points'
-#    pointsQuery.equalTo 'user', pegger
-#    pointsQuery.equalTo 'friend', peggee
-#    pointsQuery.first
-#      success: (points) ->
-#        points.set 'points', points.get('points') + 5
-#      error: (error) ->
-#        console.error error.message
-
-
+  _pegg: (peggeeId, cardId, choiceId, answerId) ->
+    console.log "save Pegg: card: " + cardId + " choice: " + choiceId
+    userId = UserStore.getUser().id
+    # Save pegg
+    DB.savePegg(peggeeId, cardId, choiceId, answerId, userId, (res)->
+      if res?
+        console.log res
+    )
+    # Save points
     if choiceId is answerId
-      @_fail = 0
+      points = 10 - 3 * @_fail
       @emit Constants.stores.CARD_WIN
+      DB.savePoints(userId, peggeeId, points, (res)->
+        if res?
+          console.log res
+      )
+      @_fail = 0
     else
       @_fail++
       @emit Constants.stores.CARD_FAIL
 
-  _savePref: (cardId, choiceId) ->
-    console.log "card: " + cardId + " choice: " + choiceId
-    user = UserStore.getUser()
 
-    # UPDATE Card table to include current user in hasPlayed array
-    Parse.Cloud.run 'hasPreffed', {card: cardId},
-      success: (success) ->
-        console.log success
-      error: (error) ->
-        console.error error.message
+  _pref: (cardId, choiceId) ->
+    console.log "save Pref: card: " + cardId + " choice: " + choiceId
+    userId = UserStore.getUser().id
+    DB.savePref(cardId, choiceId, userId, (res)->
+      if res?
+        console.log res
+      @emit Constants.stores.PREF_SAVED
+    )
 
-    # INSERT into Pref table a row with user's choice
-    card = new Parse.Object 'Card'
-    card.set 'id', cardId
-    preffer = new Parse.Object 'User'
-    preffer.set 'id',  user.id
-    newPrefAcl = new Parse.ACL user.id
-    newPrefAcl.setRoleReadAccess "#{user.id}_Friends", true
-    answer = new Parse.Object 'Choice'
-    answer.set 'id', choiceId
-    newPref = new Parse.Object 'Pref'
-    newPref.set 'answer', answer
-    newPref.set 'card', card
-    newPref.set 'user', preffer
-    newPref.set 'ACL', newPrefAcl
-    newPref.save()
-    @emit Constants.stores.PREF_SAVED
-
-  _saveRating: (rating) ->
+  _rate: (rating) ->
     console.log "rating: #{rating}"
     #TODO: send data to Parse
     @emit Constants.stores.CARD_RATED
 
-  _saveComment: (comment) ->
+  _comment: (comment) ->
     console.log "comment: #{comment}  peggee: #{@_peggee}  card: #{@_card}"
-    card = new Parse.Object 'Card'
-    card.set 'id', @_card
-    user = UserStore.getUser()
-    peggee = new Parse.Object 'User'
-    peggee.set 'id', @_peggee
-    newComment = new Parse.Object 'Comment'
-    newCommentAcl = new Parse.ACL user.id
-    newCommentAcl.setRoleReadAccess "#{user.id}_Friends", true
-    newComment.set 'peggee', peggee
-    newComment.set 'card', card
-    newComment.set 'text', comment
-    newComment.set 'author', user.id
-    newComment.set 'userImg', UserStore.getAvatar 'type=square'
-    newComment.set 'ACL', newCommentAcl
-    newComment.save()
-    @_comments.push newComment
-    @emit Constants.stores.COMMENTS_CHANGE
+    DB.saveComment(
+      comment
+      @_card
+      @_peggee
+      UserStore.getUser().id
+      UserStore.getAvatar 'type=square'
+      (res) =>
+        @_comments.push res
+        @emit Constants.stores.COMMENTS_CHANGE
+    )
 
-  _saveStatusAck: ->
+  _statusAck: ->
     @emit Constants.stores.PLAY_CHANGE
 
-  _savePass: (cardId) ->
+  _pass: (cardId) ->
     console.log "cardID: " + cardId
 
   getCards: ->
     cards = @_game.getCards()
+    # Build index of card ids
     i = 0
     for own cardId of cards
       @_cardIndex[i] = cardId
       i++
+    # Populate the ids for the first card in set, so user can comment on the first card
+    cardId = @_cardIndex[0]
+    @_peggee = if cards[cardId].peggee? then cards[cardId].peggee else UserStore.getUser().id
+    @_card = cards[cardId].id
     cards
 
   getStatus: ->
@@ -198,20 +135,18 @@ AppDispatcher.register (payload) ->
       play._loadScript action.script
       play._nextStage()
     when Constants.actions.PEGG_SUBMIT
-      play._savePegg action.peggee, action.card, action.choice, action.answer
+      play._pegg action.peggee, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
-      play._savePref action.card, action.choice
+      play._pref action.card, action.choice
     when Constants.actions.NEXT_CARD
       play._nextCard()
     when Constants.actions.CARD_COMMENT
-      play._saveComment action.comment
+      play._comment action.comment
     when Constants.actions.CARD_PASS
-      play._savePass action.card
+      play._pass action.card
     when Constants.actions.NEXT_STAGE
       play._nextStage()
     when Constants.actions.CARD_RATE
-      play._saveRating action.rating
-
-
+      play._rate action.rating
 
 module.exports = play

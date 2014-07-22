@@ -214,40 +214,28 @@
   });
 
   Parse.Cloud.afterSave('Pegg', function(request) {
-    var card, peggee, pointsQuery, prefQuery;
+    var card, cardId, peggee, peggeeId, pegger, prefQuery, userId;
     Parse.Cloud.useMasterKey();
+    cardId = request.object.get('card').id;
+    peggeeId = request.object.get('peggee').id;
+    userId = Parse.User.current().id;
     card = new Parse.Object('Card');
-    card.set('id', request.object.get('card').id);
+    card.set('id', cardId);
     peggee = new Parse.Object('User');
-    peggee.set('id', request.object.get('peggee').id);
+    peggee.set('id', peggeeId);
+    pegger = new Parse.Object('User');
+    pegger.set('id', userId);
     prefQuery = new Parse.Query('Pref');
     prefQuery.equalTo('card', card);
     prefQuery.equalTo('user', peggee);
-    prefQuery.first({
+    return prefQuery.first({
       success: function(pref) {
-        pref.addUnique('hasPegged', Parse.User.current().id);
+        pref.addUnique('hasPegged', userId);
         pref.save();
-        return console.log('hasPegged saved: #{pref}');
+        return console.log("hasPegged saved: " + pref);
       },
       error: function() {
         return console.log('hasPegged failed');
-      }
-    });
-    pointsQuery = new Parse.Query('Points');
-    pointsQuery.equalTo('user', request.object.get('user').id);
-    pointsQuery.equalTo('friend', request.object.get('peggee').id);
-    return pointsQuery.first({
-      success: function(results) {
-        var points;
-        points = 0;
-        if (results.length > 0) {
-          points = results.get('points') + 5;
-        }
-        results.set('points', points);
-        return results.save();
-      },
-      error: function(error) {
-        return console.error(error.message);
       }
     });
   });
