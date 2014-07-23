@@ -18,8 +18,11 @@ class GameState extends EventHandler
     if !@_currentStage?
       @_currentStageIdx = 0
       @_currentStage = @_stages[@_currentStageIdx]
-    @_currentStage.load()
+    @_currentStage.loadCards()
     @_currentStage
+
+  loadStatus: ->
+    @_currentStage.loadStatus()
 
   getCards: ->
     @_currentStage.getCardSet()
