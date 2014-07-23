@@ -106,11 +106,11 @@ class ParseBackend
           results.set 'points', points
           results.save()
         else
-          newPointsAcl = new Parse.ACL user
-          newPointsAcl.setRoleReadAccess "#{userId}_Friends", true
+          newPointsAcl = new Parse.ACL pegger
+          newPointsAcl.setRoleReadAccess "#{peggerId}_Friends", true
           newPoints = new Parse.Object 'Points'
-          newPoints.set 'pegger', user
-          newPoints.set 'peggee', friend
+          newPoints.set 'pegger', pegger
+          newPoints.set 'peggee', peggee
           newPoints.set 'points', points
           newPoints.set 'cardsPlayed', 1
           newPoints.set 'ACL', newPointsAcl
