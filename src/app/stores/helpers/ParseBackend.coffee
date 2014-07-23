@@ -5,6 +5,7 @@ Card = Parse.Object.extend 'Card'
 Choice = Parse.Object.extend 'Choice'
 Pref = Parse.Object.extend 'Pref'
 Pegg = Parse.Object.extend 'Pegg'
+Points = Parse.Object.extend 'Points'
 
 
 class ParseBackend
@@ -40,7 +41,6 @@ class ParseBackend
     query.include 'author'
     query.find
       success: (results) =>
-        console.log results
         cb results
       error: (error) ->
         console.log "Error: #{error.code}  #{error.message}"
@@ -208,6 +208,20 @@ class ParseBackend
           #console.log @_activity
           cb activities
       error: (error) ->
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
+  getTopPoints: (friendId, cb) ->
+    pointsQuery = new Parse.Query Points
+    friend = new Parse.Object 'User'
+    friend.set 'id', friendId
+    pointsQuery.equalTo 'friend', friend
+    pointsQuery.include 'friend'
+    pointsQuery.include 'user'
+    pointsQuery.find
+      success: (results) =>
+        cb results
+      error: (error) =>
         console.log "Error: " + error.code + " " + error.message
         cb null
 

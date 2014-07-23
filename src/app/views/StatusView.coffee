@@ -40,13 +40,12 @@ class StatusView extends View
     container.add(nextMod).add next
 
     @add container
-    next.on "click", ->
+    next.on 'click', ->
       PlayActions.nextStage()
 
   load: (data) ->
     # TODO: load status data
-
-
+    console.log data
 
 
 module.exports = StatusView
