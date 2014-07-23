@@ -7,6 +7,8 @@ DB = require 'stores/helpers/ParseBackend'
 class StageState extends EventHandler
   _cardSet = {}
   _status = null
+  _play = null
+  _playerId = ""
 
   constructor: (data) ->
     super
@@ -14,7 +16,7 @@ class StageState extends EventHandler
     @_status = data[1]   # the status screen to display
 
 
-  load: ->
+  loadCards: ->
     switch @_play.type
       when 'pref'
         @_fetchPrefs @_play.size
@@ -22,6 +24,16 @@ class StageState extends EventHandler
         @_fetchPeggs @_play.size
       else
         raise "unexpected play type: #{@_play.type}"
+
+  loadStatus: ->
+    switch @_status.type
+      when 'profile_progress'
+        @_fetchStatus @_playerId
+      when 'friend_ranking'
+        @_fetchStatus @_playerId
+      else
+        raise "unexpected status type: #{@_status.type}"
+
 
   getChoices: (cardId) ->
     @_cardSet[cardId].choices
@@ -41,7 +53,7 @@ class StageState extends EventHandler
           @_cardSet = cards
           for own id, card of cards
             @_fetchChoices id
-          @_fetchStatus UserStore.getUser().id
+          @_playerId =  UserStore.getUser().id
           @emit Constants.stores.CARDS_CHANGE
     )
 
@@ -54,9 +66,9 @@ class StageState extends EventHandler
           @_cardSet = cards
           friend = ""
           for own id, card of cards
-            friend = id
+            friend = card.peggee
             @_fetchChoices id
-          @_fetchStatus friend
+          @_playerId = friend
           @emit Constants.stores.CARDS_CHANGE
     )
 
@@ -68,18 +80,11 @@ class StageState extends EventHandler
     )
 
   _fetchStatus: (userId) ->
-    switch @_status.type
-      when 'profile_progress'
-        DB.getTopPoints(userId,
-          (points) =>
-            @_status['points'] = points
-          )
-      when 'friend_ranking'
-        DB.getTopPoints(userId,
-          (points) =>
-            @_status['points'] = points
-          )
-      else
-        raise "unexpected status type: #{@_status.type}"
+    DB.getTopScores(userId,
+      (points) =>
+        @_status['points'] = points
+        @emit Constants.stores.STATUS_CHANGE
+      )
+
 
 module.exports = StageState

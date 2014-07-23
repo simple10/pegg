@@ -88,32 +88,34 @@ class ParseBackend
     newPref.save()
     cb 'savePref done'
 
-  savePoints: (userId, friendId, points, cb) ->
+  savePoints: (peggerId, peggeeId, points, cb) ->
     # UPDATE points row with new points
     pointsQuery = new Parse.Query 'Points'
-    user = new Parse.Object 'User'
-    user.set 'id',  userId
-    friend = new Parse.Object 'User'
-    friend.set 'id',  friendId
-    pointsQuery.equalTo 'user', user
-    pointsQuery.equalTo 'friend', friend
+    pegger = new Parse.Object 'User'
+    pegger.set 'id',  peggerId
+    peggee = new Parse.Object 'User'
+    peggee.set 'id',  peggeeId
+    pointsQuery.equalTo 'pegger', pegger
+    pointsQuery.equalTo 'peggee', peggee
     pointsQuery.first
       success: (results) =>
         if results?
           points = results.get('points') + points
+          cardsPlayed = results.get('cardsPlayed') + 1
+          results.set 'cardsPlayed', cardsPlayed
           results.set 'points', points
           results.save()
-          cb points
         else
           newPointsAcl = new Parse.ACL user
           newPointsAcl.setRoleReadAccess "#{userId}_Friends", true
           newPoints = new Parse.Object 'Points'
-          newPoints.set 'user', user
-          newPoints.set 'friend', friend
+          newPoints.set 'pegger', user
+          newPoints.set 'peggee', friend
           newPoints.set 'points', points
+          newPoints.set 'cardsPlayed', 1
           newPoints.set 'ACL', newPointsAcl
           newPoints.save()
-          cb points
+        cb points
       error: (error) ->
         console.log "Error: #{error.code}  #{error.message}"
         cb null
@@ -211,16 +213,24 @@ class ParseBackend
         console.log "Error: " + error.code + " " + error.message
         cb null
 
-  getTopPoints: (friendId, cb) ->
+  getTopScores: (peggeeId, cb) ->
+    scores = []
     pointsQuery = new Parse.Query Points
-    friend = new Parse.Object 'User'
-    friend.set 'id', friendId
-    pointsQuery.equalTo 'friend', friend
-    pointsQuery.include 'friend'
-    pointsQuery.include 'user'
+    peggee = new Parse.Object 'User'
+    peggee.set 'id', peggeeId
+    pointsQuery.equalTo 'peggee', peggee
+    pointsQuery.include 'peggee'
+    pointsQuery.include 'pegger'
     pointsQuery.find
       success: (results) =>
-        cb results
+        for score in results
+          scores.push {
+            peggee: score.get 'peggee'
+            pegger: score.get 'pegger'
+            points: score.get 'points'
+            cardsPlayed: score.get 'cardsPlayed'
+          }
+        cb scores
       error: (error) =>
         console.log "Error: " + error.code + " " + error.message
         cb null
