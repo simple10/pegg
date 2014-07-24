@@ -35,13 +35,13 @@ class ProfileView extends View
     picMod = new StateModifier
       align: [0.5, 1]
       origin: [0.5, 1]
-      transform: Transform.translate 0, 100, -1
-    @pic.on 'click', ((picMod) =>
-      picMod.setTransform Transform.translate(0, 200, -1),
-        @options.transition
-    ).bind @, picMod
+      transform: Transform.translate 0, 150, -1
+#    @pic.on 'click', ((picMod) =>
+#      picMod.setTransform Transform.translate(0, 200, -1),
+#        @options.transition
+#    ).bind @, picMod
     @name = new Surface
-      size: [240, 35]
+      size: [270, 35]
       classes: ['profile__name__box']
       content: "#{UserStore.getName("first")}'s <strong>profile</strong>"
     nameMod = new StateModifier
