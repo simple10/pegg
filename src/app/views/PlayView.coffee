@@ -213,10 +213,11 @@ class PlayView extends View
       else if delta < -minDelta && Math.abs(velocity) > minVelocity
         @collapseComments()
       # otherwise threshold not met, so return to original position
-      else
-        if !@_commentsIsExpanded then @collapseComments()
-        else @expandComments()
-        
+      else if delta
+        if !@_commentsIsExpanded
+          @collapseComments()
+        else 
+          @expandComments()
 
       # reset axis movement flags
       isMovingY = false;
