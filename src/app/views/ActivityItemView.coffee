@@ -23,7 +23,7 @@ class ActivityItemView extends View
 
     peggeeName = @options.peggee.get 'first_name'
     peggerName = @options.pegger.get 'first_name'
-    guess = @options.guess
+    guess = @options.guess.get 'text'
     message = "#{peggerName} pegged #{peggeeName} with #{guess}"
 
     item = new Surface
