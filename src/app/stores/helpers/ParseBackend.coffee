@@ -220,6 +220,7 @@ class ParseBackend
     peggee = new Parse.Object 'User'
     peggee.set 'id', peggeeId
     pointsQuery.equalTo 'peggee', peggee
+    pointsQuery.ascending 'points'
     pointsQuery.include 'peggee'
     pointsQuery.include 'pegger'
     pointsQuery.find
@@ -235,6 +236,36 @@ class ParseBackend
       error: (error) =>
         console.log "Error: " + error.code + " " + error.message
         cb null
+
+  saveQuestion: (authorId, question, cb) ->
+    user = new Parse.Object 'User'
+    user.set 'id',  authorId
+    newCardAcl = new Parse.ACL user
+    newCardAcl.setRoleReadAccess "#{authorId}_Friends", true
+    newCard = new Parse.Object 'Card'
+    newCard.set 'question', question
+    newCard.set 'ACL', newCardAcl
+    newCard.save
+      success: (result) =>
+        debugger
+        cb result.id
+      error: (error) =>
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
+  saveChoices: (cardId, answers, cb) ->
+    for answer in answers
+      newChoice4 = new Parse.Object 'Choice'
+      newChoice4.set 'text', answer
+      newChoice4.set 'cardId', cardId
+      newChoice4.save()
+
+  saveCategories: (cardId, categories, cb) ->
+    for category in categories
+      newChoice4 = new Parse.Object 'Choice'
+      newChoice4.set 'categoryId', category.Id
+      newChoice4.set 'cardId', cardId
+      newChoice4.save()
 
 parse = new ParseBackend()
 
