@@ -14,7 +14,7 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Easing = require 'famous/transitions/Easing'
 Timer = require 'famous/utilities/Timer'
-CardStore = require 'stores/CardStore'
+NewCardStore = require 'stores/NewCardStore'
 UserStore = require 'stores/UserStore'
 CardActions = require 'actions/CardActions'
 InputView = require 'views/InputView'
@@ -65,23 +65,29 @@ class NewCardView extends View
     @addNum(1, 0)
     @addInputView(1, 1, 'Enter a question')
     @addButton(1, 2, 'Continue', =>
-      CardActions.addQuestion @step1Inputs[0].getValue()
-      @hideStep 'step1', @step1Mods
-      @step2()
+      question =  @step1Inputs[0].getValue()
+      if question.length > 5
+        CardActions.addQuestion question
+        @hideStep 'step1', @step1Mods
+        @step2()
+      else
+        alert 'Please enter a question.'
     )
     ## STEP 2
     @addNum(2, 0)
     for i in [1..4]
       @addInputView(2, i, "Answer option #{i}")
     @addButton(2, 5, 'Continue', =>
-      CardActions.addAnswers [
-        @step2Inputs[0].getValue()
-        @step2Inputs[1].getValue()
-        @step2Inputs[2].getValue()
-        @step2Inputs[3].getValue()
-      ]
-      @hideStep 'step2', @step2Mods
-      @step3()
+      answers = []
+      for input in @step2Inputs
+        answer = input.getValue()
+        if answer.length > 0 then answers.push answer
+      if answers.length >= 2
+        CardActions.addAnswers answers
+        @hideStep 'step2', @step2Mods
+        @step3()
+      else
+        alert 'Please enter at least 2 answer options.'
     )
     ## STEP 3
     @addNum(3, 0)
@@ -99,7 +105,7 @@ class NewCardView extends View
     )
     @addButton(3, 3, 'Finish', =>
       @hideStep 'step3', @step3Mods
-      #TODO: CardStore.create
+      #TODO: NewCardStore.addCategories
       @step4()
     )
     ## STEP 4
