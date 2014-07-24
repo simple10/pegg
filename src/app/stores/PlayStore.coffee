@@ -7,6 +7,7 @@ GameState = require 'stores/helpers/GameState'
 MessageState = require 'stores/helpers/MessageState'
 
 class PlayStore extends EventHandler
+  _card: null
   _game: null
   _message: null
   _comments: []
@@ -14,7 +15,7 @@ class PlayStore extends EventHandler
   _cardPosition: 0
   _fail: 0
   _peggee: ''
-  _card: ''
+  _cardId: ''
 
   _loadGame: (flow, script) ->
     @_game = new GameState flow
@@ -23,11 +24,12 @@ class PlayStore extends EventHandler
 
   _loadCard: (position) ->
     cardId = @_cardIndex[position]
-    cards = @_game.getCards()
-    card = cards[cardId]
+    # cards = @_game.getCards()
+    @_cards = @_game.getCards()
+    card = @_cards[cardId]
     @_peggee = if card.peggee? then card.peggee else UserStore.getUser().id
-    @_card = cardId
-    DB.getComments(@_card, @_peggee, (res) =>
+    @_cardId = cardId
+    DB.getComments(@_cardId, @_peggee, (res) =>
       if res?
         @_comments = res
         @emit Constants.stores.COMMENTS_CHANGE
@@ -37,6 +39,7 @@ class PlayStore extends EventHandler
     @_game.loadNextStage()
 
   _nextCard: ->
+    console.log 'PlayStore:_nextCard'
     if @_cardPosition is @_cardIndex.length - 1
       @_game.loadStatus()
       @_cardPosition = 0
@@ -44,9 +47,18 @@ class PlayStore extends EventHandler
       @_cardPosition++
       @_loadCard @_cardPosition
 
+  _prevCard: ->
+    @_cardPosition--
+    @_loadCard @_cardPosition
+
   _pegg: (peggeeId, cardId, choiceId, answerId) ->
     console.log "save Pegg: card: " + cardId + " choice: " + choiceId
     userId = UserStore.getUser().id
+
+    # save answered status
+    console.log '_pegg', cardId
+    @_cards[cardId].answered = true
+
     # Save pegg
     DB.savePegg(peggeeId, cardId, choiceId, answerId, userId, (res)->
       if res?
@@ -68,7 +80,11 @@ class PlayStore extends EventHandler
   _pref: (cardId, choiceId) ->
     console.log "save Pref: card: " + cardId + " choice: " + choiceId
     userId = UserStore.getUser().id
-    DB.savePref(cardId, choiceId, userId, (res) =>
+
+    # save answered status
+    @_cards[cardId].answered = true
+
+    DB.savePref(cardId, choiceId, userId, (res)=>
       if res?
         console.log res
       @emit Constants.stores.PREF_SAVED
@@ -80,15 +96,15 @@ class PlayStore extends EventHandler
     @emit Constants.stores.CARD_RATED
 
   _comment: (comment) ->
-    console.log "comment: #{comment}  peggee: #{@_peggee}  card: #{@_card}"
+    console.log "comment: #{comment}  peggee: #{@_peggee}  card: #{@_cardId}"
     DB.saveComment(
       comment
-      @_card
+      @_cardId
       @_peggee
       UserStore.getUser().id
       UserStore.getAvatar 'type=square'
       (res) =>
-        @_comments.push res
+        @_comments.unshift res
         @emit Constants.stores.COMMENTS_CHANGE
     )
 
@@ -121,6 +137,11 @@ class PlayStore extends EventHandler
   getMessage: (type) ->
     @_message.getMessage(type)
 
+  getCurrentCardIsAnswered: ->
+    console.log 'getCurrentCardAnswerStatus:cardId', @_cardId
+    @_cards[@_cardId].answered
+
+
 play = new PlayStore
 
 # Register callback with AppDispatcher to be notified of events
@@ -138,6 +159,8 @@ AppDispatcher.register (payload) ->
       play._pref action.card, action.choice
     when Constants.actions.NEXT_CARD
       play._nextCard()
+    when Constants.actions.PREV_CARD
+      play._prevCard()
     when Constants.actions.CARD_COMMENT
       play._comment action.comment
     when Constants.actions.CARD_PASS

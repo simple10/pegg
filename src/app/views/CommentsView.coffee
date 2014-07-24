@@ -15,7 +15,7 @@ ContainerSurface = require 'famous/surfaces/ContainerSurface'
 class CommentsView extends View
   @DEFAULT_OPTIONS:
     width: window.innerWidth - 50
-    height: window.innerHeight - 300
+    height: window.innerHeight - 260
 
   constructor: () ->
     super
@@ -37,6 +37,7 @@ class CommentsView extends View
       @_eventOutput.emit 'open', @
 
   load: (data) ->
+    console.log 'loading comments', data
     surfaces = []
     @comments.sequenceFrom surfaces
     i = 0
