@@ -12,7 +12,7 @@ class ActivityStore extends EventEmitter
   _fetchActivities: (page) ->
 
     DB.getActivity(page, (results) =>
-      if results.length
+      if results
         @_activity = results
         @emit Constants.stores.ACTIVITY_CHANGE
     )
