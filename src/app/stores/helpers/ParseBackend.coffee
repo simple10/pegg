@@ -38,6 +38,7 @@ class ParseBackend
     query.equalTo 'peggee', peggee
     query.equalTo 'card', card
     query.include 'author'
+    query.descending 'createdAt'
     query.find
       success: (results) =>
         console.log results

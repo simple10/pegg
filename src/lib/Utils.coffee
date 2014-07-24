@@ -36,5 +36,11 @@ Utils =
         mod.setOpacity state.opacity
     ), state.delay
 
+  getViewportWidth: () ->
+    Math.max document.documentElement.clientWidth, window.innerWidth || 0
+
+  getViewportHeight: () ->
+    Math.max document.documentElement.clientHeight, window.innerHeight || 0
+
 
 module.exports = Utils

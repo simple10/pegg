@@ -18,7 +18,7 @@ module.exports =
       }
       {
         delay: 0
-        align: [0, -1]
+        align: [0, -1],
         transition: {duration: 500, curve: Easing.outQuad}
       }
     ]
@@ -112,11 +112,13 @@ module.exports =
       {
         delay: 0
         align: [0.5, 0.9]
+        # align: [0.5, 0.25]
         transition: {duration: 500, curve: Easing.outQuad}
       }
       {
         delay: 0
-        align: [0.5, 0.3]
+        align: [0.5, 0.25]
+        # align: [0.5, 0.35]
         transition: {duration: 500, curve: Easing.outQuad}
       }
     ]

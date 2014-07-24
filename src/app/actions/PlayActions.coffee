@@ -40,6 +40,10 @@ PlayActions =
     AppDispatcher.handleViewAction
       actionType: Constants.actions.NEXT_CARD
 
+  prevCard: () ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.PREV_CARD
+
   comment: (comment) ->
     AppDispatcher.handleViewAction
       actionType: Constants.actions.CARD_COMMENT
