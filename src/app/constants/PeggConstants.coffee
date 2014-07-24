@@ -17,6 +17,7 @@ module.exports =
     ADD_QUESTION: null
     ADD_ANSWERS: null
     NEXT_CARD: null
+    PREV_CARD: null
     NEXT_STAGE: null
 
   stores: Utils.keyMirror
