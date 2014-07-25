@@ -39,12 +39,12 @@ class PlayStore extends EventHandler
     @_game.loadNextStage()
 
   _nextCard: ->
-    console.log 'PlayStore:_nextCard'
+    @_cardPosition++ # TEMP until buttons are added. otherwise not possible to move on to next stage
     if @_cardPosition is @_cardIndex.length - 1
       @emit Constants.stores.STAGE_END
       @_cardPosition = 0
     else
-      @_cardPosition++
+      # @_cardPosition++
       @_loadCard @_cardPosition
 
   _prevCard: ->

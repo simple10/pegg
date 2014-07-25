@@ -10,6 +10,7 @@ Utility = require 'famous/utilities/Utility'
 Surface = require 'famous/core/Surface'
 Transform = require 'famous/core/Transform'
 Transitionable = require 'famous/transitions/Transitionable'
+TransitionableTransform = require 'famous/transitions/TransitionableTransform'
 GenericSync = require 'famous/inputs/GenericSync'
 MouseSync = require 'famous/inputs/MouseSync'
 TouchSync = require 'famous/inputs/TouchSync'
@@ -30,8 +31,8 @@ class PlayView extends View
     super options
 
     # create transitionable with initial value of 0
-    @cardYPos = new Transitionable(0);
-    # @cardXPos = new Transitionable(0);
+    @cardYPos = new Transitionable(0)
+    @cardXAlign = new Transitionable(0)
 
     @initSurfaces()
     @initListeners()
@@ -49,16 +50,24 @@ class PlayView extends View
 
   initSurfaces: ->
 
+    console.log 'initSurfaces'
+
     ##  CARDS ##
     @cardScrollView = new Scrollview
       direction: Utility.Direction.X
       paginated: true
-      margin: 400
+      margin: 300
     @cardScrollViewMod = new Modifier
       align: =>
-        [0, @_translateToAlign @cardYPos.get()]
+        xAlign = @cardXAlign.get()
+        yAlign = @_translateToAlign @cardYPos.get()
+        [xAlign, yAlign]
       origin: @options.cards.origin
-    @add(@cardScrollViewMod).add @cardScrollView
+
+    # @add(@containerMod)
+    #   .add(@container)
+    @add(@cardScrollViewMod)
+      .add(@cardScrollView)
 
     ## MESSAGE ##
     @message = new Surface
@@ -89,7 +98,6 @@ class PlayView extends View
       classes: @options.unicorn.classes
     @unicorn.on 'click', =>
       @cardScrollView.goToNextPage()
-      # @nextCard() # TEMP... remove this when 'pageChange' works
     @unicornMod = new StateModifier
       align: @options.unicorn.align
       origin: @options.unicorn.origin
@@ -105,7 +113,6 @@ class PlayView extends View
     @add(@commentsMod).add @comments
     
     @comments.on 'open', =>
-      console.log 'open comments'
       @expandComments()
 
     @newComment = new InputView
@@ -136,27 +143,32 @@ class PlayView extends View
 
     minVelocity = 0.5
     minDelta = 100
+    choicesShowing = false
     @sync = new GenericSync ['mouse', 'touch']
 
     @_eventInput.on 'choices:showing', (card) =>
+      choicesShowing = true
       @_unpipeCardsToScrollView()
 
     @_eventInput.on 'choices:hidden', (card) =>
+      choicesShowing = false
       @_pipeCardsToScrollView()
 
     @_eventInput.on 'card:flipped', (card) =>
+      choicesShowing = false
       @_pipeCardsToScrollView()
     
     @_eventInput.pipe @sync
     
-    # @TODO 'pageChange' is not consistent right now, but Famo.us is working on it
     @cardScrollView.on 'pageChange', (data) =>
-      # get the state of the current card to determine if comments
-      # need to be hidden or shown
+      # get the state of the current card
+      # used to determine if comments need to be hidden or shown
       card = @cardViews[@cardScrollView._node.index]
 
-      if data.direction is 1 then @nextCard()
-      if data.direction is -1 then @prevCard()
+      if data.direction is 1
+        @nextCard()
+      if data.direction is -1
+        @prevCard()
         
       # showChoices is true when the front of the card is visible
       if card.showChoices
@@ -181,7 +193,7 @@ class PlayView extends View
         if Math.abs(dy) > Math.abs(dx)
           @_unpipeCardsToScrollView()
           isMovingY = true
-        else
+        else if !choicesShowing
           @_pipeCardsToScrollView()
           isMovingX = true
 
@@ -226,6 +238,7 @@ class PlayView extends View
     ).bind(@)
 
   loadCards: =>
+    console.log 'loadCards'
     @cardViews = []
     @index = []
     @cardScrollView.sequenceFrom @cardViews
@@ -251,8 +264,12 @@ class PlayView extends View
       @cardViews[i].unpipe @cardScrollView
     null
 
-  _translateToAlign: (delta) =>
-    delta / Utils.getViewportHeight()
+  _translateToAlign: (delta, axis) =>
+    axis = axis || 'Y'
+    if axis is 'Y'
+      delta / Utils.getViewportHeight()
+    else
+      delta / Utils.getViewportWidth()
 
   loadChoices: (cardId) =>
     @cardViews[@index[cardId]].loadChoices cardId
@@ -291,17 +308,6 @@ class PlayView extends View
     @showMessage()
     @showComments()
 
-  slideUp: =>
-    console.log 'slideUp'
-    maxCardYPos = @options.cards.states[1].align[1] * Utils.getViewportHeight()
-    @cardYPos.set(maxCardYPos, @options.cards.states[1].transition)
-    Utils.animate @commentsMod, @options.comments.states[2]
-
-  slideDown: =>
-    console.log 'slideDown'
-    @cardYPos.set(0, @options.cards.states[0].transition)
-    Utils.animate @commentsMod, @options.comments.states[1]
-
   showMessage: =>
     Utils.animate @messageMod, @options.message.states[1]
     Utils.animate @bubbleMod, @options.bubble.states[1]
@@ -323,28 +329,58 @@ class PlayView extends View
     @newComment.setAlign @options.newComment.states[0].align
 
   collapseComments: =>
-    # Utils.animate @cardScrollViewMod, @options.cards.states[0]
-    # Utils.animate @commentsMod, @options.comments.states[1]
-    @slideDown()
+    # slide the cards down to their starting position
+    @cardYPos.set(0, @options.cards.states[0].transition)
+    # slide the comments down to their starting position
+    Utils.animate @commentsMod, @options.comments.states[1]
     @._commentsIsExpanded = false;
     @newComment.setAlign @options.newComment.states[0].align
 
   expandComments: =>
-    # Utils.animate @cardScrollViewMod, @options.cards.states[1]
-    # Utils.animate @commentsMod, @options.comments.states[2]
-    @slideUp()
+    maxCardYPos = @options.cards.states[1].align[1] * Utils.getViewportHeight()
+    # move the cards up
+    @cardYPos.set(maxCardYPos, @options.cards.states[1].transition)
+    # slide the comments up
+    Utils.animate @commentsMod, @options.comments.states[2]
     @._commentsIsExpanded = true;
     @newComment.setAlign @options.newComment.states[1].align
 
   showCards: =>
-    Utils.animate @cardScrollViewMod, @options.cards.states[0]
-    Utils.animate @statusMod, @options.status.states[0]
+    @cardScrollViewMod.opacityFrom 0.999
+    cardsTransition = @options.cards.states[0].transition
+    cardX = @options.cards.states[0].align[0]
+    cardY = @options.cards.states[0].align[1] * Utils.getViewportHeight()
+
+    # slide the cards left onto the screen
+    @cardXAlign.set(cardX, cardsTransition)
+    @cardYPos.set(cardY, cardsTransition)
+
+    # slide the status left off the screen
+    Utils.animate @statusMod, @options.status.states[2], @moveStatusToStart
 
   showStatus: =>
+    @statusMod.setOpacity 0.999
+    cardsTransition = @options.cards.states[2].transition
+    cardX = @options.cards.states[2].align[0]
+
     @hideMessage()
-    @newComment.setAlign @options.newComment.states[0].align
-    Utils.animate @commentsMod, @options.comments.states[0]
-    Utils.animate @cardScrollViewMod, @options.cards.states[2]
-    Utils.animate @statusMod, @options.status.states[1]
+    @hideComments()
+
+    # slide cards left off the screen
+    @cardXAlign.set cardX, cardsTransition
+
+    # slide status left onto the screen
+    Utils.animate @statusMod, @options.status.states[1], @moveCardsToStart
+
+  moveCardsToStart: =>
+    @cardScrollViewMod.opacityFrom 0.001
+    cardX = @options.cards.states[3].align[0]
+    cardY = @options.cards.states[3].align[1] * Utils.getViewportHeight()
+    @cardXAlign.set cardX
+    @cardYPos.set cardY
+
+  moveStatusToStart: =>
+    @statusMod.setOpacity 0.001
+    Utils.animate @statusMod, @options.status.states[0]
 
 module.exports = PlayView
