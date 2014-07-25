@@ -15,7 +15,7 @@ TouchSync = require 'famous/inputs/TouchSync'
 
 _ = require('Parse')._
 PlayActions = require 'actions/PlayActions'
-ImageUploadView = require 'views/ImageUploadView'
+ImageEditView = require 'views/ImageEditView'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
 ChoicesView = require 'views/ChoicesView'
@@ -143,6 +143,24 @@ class CardView extends View
       )
     @mainNode.add(@backImageModifier).add @backImage
     @mainNode.add(@backTextModifier).add @backText
+
+    addImageButton = new ImageSurface
+      size: [43, 48]
+      classes: ['card__back__image']
+      content: 'images/add-image.png'
+    addImageModifier = new StateModifier
+      transform: Transform.multiply(
+        Transform.translate(0, 160, -depth/2 - 2)
+        Transform.multiply(
+            Transform.rotateZ Math.PI
+            Transform.rotateX Math.PI
+        )
+      )
+    aviaryView = new ImageEditView()
+    addImageButton.on 'click', =>
+      aviaryView.launchEditor()
+    @mainNode.add aviaryView
+    @mainNode.add(addImageModifier).add addImageButton
 
   # Doesn't respond to gestures, just makes sure that the events
   # get to the right place

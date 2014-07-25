@@ -12,25 +12,17 @@ class ImageEditView extends View
   constructor: (options) ->
     super options
     @initEditor()
-    @build()
-
-  # Build view
-  build: ->
-    @surface = new Surface
-      content: "
-              <div id='injection_site' style='width:400; height: 800'></div>
-              <img id='image1' src='#{@src}'>
-            "
-      size: [undefined, undefined]
-    @surface.on 'click', =>
-      @launchEditor 'image1', @src
-
-    @add @surface
 
   launchEditor: (id, src) ->
+    @surface = new Surface
+      content: "<div id='injection_site' style='width:300; height: 800'></div>
+                <img id='image1' src='#{@src}'>"
+      size: [300, 800]
+    @add @surface
+
     @aviary.launch
-      image: id
-      url: src
+      image: 'image1'
+      url: 'http://images.aviary.com/imagesv5/feather_default.jpg'
 
   initEditor: ->
     @aviary = new Aviary.Feather
