@@ -22,18 +22,19 @@ Utils =
           mod.setTransform state.transform, state.transition
       ).bind(@, mod, state), state.delay
 
-  animate: (mod, state) ->
+  animate: (mod, state, callback) ->
+    if !callback then callback = (->)
     Timer.after (->
       if state.origin?
-        mod.setOrigin state.origin, state.transition
+        mod.setOrigin state.origin, state.transition, callback
       if state.align?
-        mod.setAlign state.align, state.transition
+        mod.setAlign state.align, state.transition, callback
       if state.scale?
-        mod.setTransform Transform.scale(state.scale...), state.transition
+        mod.setTransform Transform.scale(state.scale...), state.transition, callback
       if state.transform?
-        mod.setTransform state.transform, state.transition
+        mod.setTransform state.transform, state.transition, callback
       if state.opacity?
-        mod.setOpacity state.opacity
+        mod.setOpacity state.opacity, state.transition, callback
     ), state.delay
 
   getViewportWidth: () ->
