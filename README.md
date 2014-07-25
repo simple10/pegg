@@ -39,6 +39,8 @@ npm install
 
 # Development
 
+Follow [contributing guidelines](https://github.com/Famous/famous/blob/master/CONTRIBUTING.md) for feature and bug branches.
+
 For BDD, simply run `gulp test` and write failing tests first and
 then get them to pass by writing the code. The test task automatically
 runs a development server. No other commands are needed.
