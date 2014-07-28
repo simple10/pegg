@@ -19,22 +19,30 @@ class LoginView extends View
     logo = new ImageSurface
       size: @options.logo.size
       classes: @options.logo.classes
-      content: "images/mascot_medium.png"
+      content: "images/cosmic-unicorn-head-circle.svg"
     logoMod = new StateModifier
       align: @options.logo.align
       origin: @options.logo.origin
-    mark = new ImageSurface
-      size: @options.mark.size
-      classes: @options.mark.classes
-      content: "images/logo_mark-big.png"
-    markMod = new StateModifier
-      align: @options.mark.align
-      origin: @options.mark.origin
+#    mark = new ImageSurface
+#      size: @options.mark.size
+#      classes: @options.mark.classes
+#      content: "images/pegg.svg"
+#    markMod = new StateModifier
+#      align: @options.mark.align
+#      origin: @options.mark.origin
+    text = new Surface
+      size: @options.text.size
+      classes: @options.text.classes
+      content: "LOGIN"
+    textMod = new StateModifier
+      align: @options.text.align
+      origin: @options.text.origin
+
     @add(logoMod).add logo
-    @add(markMod).add mark
+    @add(textMod).add text
 
     Utils.animateAll logoMod, @options.logo.states
-    Utils.animateAll markMod, @options.mark.states
+    Utils.animateAll textMod, @options.text.states
 
   initLogin: ->
     fbButton = new Surface

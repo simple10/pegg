@@ -60,11 +60,11 @@ signupView = new SignupView SignupViewLayout
 lightbox = new Lightbox
   inOpacity: 1
   outOpacity: 0
-  inOrigin: [1, 1]
-  outOrigin: [0, 0]
+  inOrigin: [1, -1]
+  outOrigin: [0, -1]
   showOrigin: [0.5, 0.5]
-  inTransform: Transform.thenMove(Transform.rotateX(0), [0, window.innerHeight, -300])
-  outTransform: Transform.thenMove(Transform.rotateZ(0), [0, -window.innerHeight, -1000])
+  inTransform: Transform.thenMove(Transform.rotateX(0), [0, -window.innerHeight, 0])
+  outTransform: Transform.thenMove(Transform.rotateZ(0), [0, window.innerHeight, 0])
   inTransition: { duration: 500, curve: Easing.outCubic }
   outTransition: { duration: 350, curve: Easing.outCubic }
 mainContext.add lightbox
@@ -79,10 +79,10 @@ pickView = ->
     lightbox.show appView
     PlayActions.load GameFlow, GameScript
     ActivityActions.load 1
-#  else if AppStateStore.getCurrentPageID() is 'login'
-#    lightbox.show loginView
-  else
+  else if AppStateStore.getCurrentPageID() is 'login'
     lightbox.show loginView
+  else
+    lightbox.show signupView
 
 #AppStateStore.on Constants.stores.CHANGE, pickView
 UserStore.on Constants.stores.CHANGE, pickView

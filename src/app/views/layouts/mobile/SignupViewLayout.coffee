@@ -3,41 +3,39 @@ Transform = require 'famous/core/Transform'
 
 module.exports =
   logo:
-    size: [417, 800]
+    size: [undefined, 250]
     classes: ['login__logo']
-    align: [0.5, 1]
-    origin: [0.5, 0]
+    align: [0.5, 0]
+    origin: [0.5, 1]
     states: [
       {
-        delay: 10
-        align: [0.45, 0.5]
-        transition: {duration: 1000, curve: Easing.inBounce}
+        delay: 0
+        scale: [0,0,0]
       }
       {
-        delay: 100
-        align: [0.45, 0]
-        scale: [0.4, 0.4, 0]
-        transition: {duration: 500, curve: Easing.inCubic}
+        delay: 30
+        align: [0.5, 0.1]
+        origin: [0.5, 0.1]
+        scale: [1,1,0]
+        transition: {duration: 800, curve: Easing.outExpo}
       }
     ]
 
   mark:
     size: [150, 70]
     classes: ['login__mark']
-    align: [0.5, 1]
-    origin: [0.5, 1]
+    align: [0.5, 0.5]
+    origin: [0.5, 0]
     states: [
       {
         delay: 35
-        align: [0.5, 0.5]
-        origin: [0.5, 0.5]
-        transition: {duration: 500, curve: Easing.inOutBack}
+        scale: [1.3,1.3,0]
+        transition: {duration: 300, curve: Easing.outExpo}
       }
       {
-        delay: 100
-        align: [0.5, 0.6]
-        origin: [0.5, 0]
-        transition: {duration: 500, curve: Easing.outBounce}
+        delay: 55
+        scale: [1,1,0]
+        transition: {duration: 300, curve: Easing.outExpo}
       }
     ]
 
@@ -49,8 +47,8 @@ module.exports =
     states: [
       {
         delay: 100
-        align: [0.5, .7]
-        origin: [0.5, 0.5]
+        align: [0.5, .9]
+        origin: [0.5, 0]
         transition: {duration: 1000, curve: Easing.outBounce}
       }
     ]
@@ -58,28 +56,30 @@ module.exports =
   signupInput:
     size: [300, 50]
     classes: ['signup__email__input']
-    align: [0.5, 1]
-    origin: [0.5, 0]
+    align: [1, 0.8]
+    origin: [0, 0.5]
     states: [
       {
-        delay: 120
-        align: [0.5, 0.8]
+        delay: 60
+        align: [0.5, 0.75]
         origin: [0.5, 0.5]
-        transition: {duration: 1000, curve: Easing.outBounce}
+        transform: Transform.translate null, null, 1
+        transition: {duration: 600, curve: Easing.inOutBack}
       }
     ]
 
   signupButton:
     size: [300, 50]
     classes: ['signup__submit']
-    align: [0.5, 1]
-    origin: [0.5, 0]
+    align: [1, 0.9]
+    origin: [0, 0.5]
     states: [
       {
-        delay: 120
-        align: [0.5, 0.9]
+        delay: 80
+        align: [0.5, 0.85]
         origin: [0.5, 0.5]
-        transition: {duration: 1000, curve: Easing.outBounce}
+        transform: Transform.translate null, null, 1
+        transition: {duration: 600, curve: Easing.inOutBack}
       }
     ]
 
@@ -90,7 +90,7 @@ module.exports =
     align: [0.5, -0.07]
     states: [
       {
-        align: [0.5, 1]
+        align: [0.5, 0.9]
         origin: [0.5, 0.5]
         transition: {duration: 1000, curve: Easing.outBounce}
       }
