@@ -21,6 +21,7 @@ class PlayStore extends EventHandler
     @_game = new GameState flow
     @_game.pipe @
     @_message = new MessageState script
+    @_nextStage()
 
   _loadCard: (position) ->
     cardId = @_cardIndex[position]
@@ -40,7 +41,7 @@ class PlayStore extends EventHandler
 
   _nextCard: ->
     if @_cardPosition is @_cardIndex.length - 1
-      @emit Constants.stores.STAGE_END
+      @_game.loadStatus()
       @_cardPosition = 0
     else
       @_cardPosition++
@@ -151,7 +152,6 @@ AppDispatcher.register (payload) ->
   switch action.actionType
     when Constants.actions.LOAD_GAME
       play._loadGame action.flow, action.script
-      play._nextStage()
     when Constants.actions.PEGG_SUBMIT
       play._pegg action.peggee, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT

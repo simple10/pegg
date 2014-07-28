@@ -9,8 +9,8 @@
 .login__text--header {
   text-transform: uppercase;
   color: $white;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
 }
 
 .login__text--message {
@@ -23,7 +23,6 @@
   background-color: $fb-blue;
   text-align: center;
   color: white;
-  font-weight: bold;
   cursor: pointer;
 }
 
@@ -31,7 +30,6 @@
   background-color: $gp-red;
   text-align: center;
   color: white;
-  font-weight: bold;
   cursor: pointer;
 }
 
@@ -83,7 +81,7 @@
 
 .signup__response--success {
   text-align: center;
-  color: $rainbow-green;
+  color: $white;
   font-size: 25px;
   font-weight: bold;
 }

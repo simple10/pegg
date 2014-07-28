@@ -2,9 +2,10 @@ EventEmitter = require 'famous/core/EventEmitter'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 UserStore = require 'stores/UserStore'
+DB = require 'stores/helpers/ParseBackend'
 
 
-class CardStore extends EventEmitter
+class NewCardStore extends EventEmitter
   _author: null
   _question: null
   _answers: []
@@ -21,28 +22,26 @@ class CardStore extends EventEmitter
   addQuestion: (question) ->
     @_author = @_getUser()
     @_question = question
-    @_saveCard()
+    DB.saveQuestion( @_author, @_question, (cardId) =>
+      @_cardId = cardId
+    )
 
   addAnswers: (answers) ->
     @_answers = []
     @_answers.push answers...
-    @_saveCard()
+    DB.saveChoices @_cardId, @_answers
 
   addCategories: (categories) ->
     @_categories = []
     @_categories.push categories...
-    @_saveCard()
-
-  _saveCard: ->
-    console.log @getCard()
-    # TODO: save to Parse
+    DB.saveCategories @_cardId, @_categories
 
   _getUser: ->
     user = UserStore.getUser() ? raise 'not logged in'
     user.id
 
 
-cardStore = new CardStore
+newCardStore = new NewCardStore
 
 # Register callback with AppDispatcher to be notified of events
 AppDispatcher.register (payload) ->
@@ -50,10 +49,10 @@ AppDispatcher.register (payload) ->
   # Pay attention to events relevant to PeggBoxStore
   switch action.actionType
     when Constants.actions.ADD_QUESTION
-      cardStore.addQuestion action.question
+      newCardStore.addQuestion action.question
     when Constants.actions.ADD_ANSWERS
-      cardStore.addAnswers action.answers
+      newCardStore.addAnswers action.answers
 
-module.exports = cardStore
+module.exports = newCardStore
 
 
