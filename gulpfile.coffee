@@ -112,7 +112,7 @@ gulp.task 'webpack-dev-server', (callback) ->
 ############################################################
 # Production build
 ############################################################
-gulp.task 'build', ['webpack:build', 'copy'], ->
+gulp.task 'build', ['webpack:build', 'copy', 'cloud'], ->
   if enableGzip
     gulp.src gzipFiles, cwd: conf.dist
     .pipe gzip()
@@ -145,8 +145,9 @@ gulp.task 'copy', ['clean'], ->
 ############################################################
 gulp.task "cloud", ->
   # path to your file
-  gulp.src("./parse/cloud/main.coffee").pipe(coffee()).pipe gulp.dest("./parse/cloud/")
-  return
+  gulp.src "./parse/cloud/main.coffee")
+  .pipe coffee()
+  .pipe gulp.dest "./parse/cloud/"
 
 
 
