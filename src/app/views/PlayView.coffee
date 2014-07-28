@@ -141,6 +141,7 @@ class PlayView extends View
     GenericSync.register mouse: MouseSync
     GenericSync.register touch: TouchSync
 
+    onEdgeEnd = false
     minVelocity = 0.5
     minDelta = 100
     choicesShowing = false
@@ -157,8 +158,17 @@ class PlayView extends View
     @_eventInput.on 'card:flipped', (card) =>
       choicesShowing = false
       @_pipeCardsToScrollView()
+
     
     @_eventInput.pipe @sync
+
+    @cardScrollView.on 'onEdge', () =>
+      # check to see if we have hit the end, i.e. bottom or right most item
+      if @cardScrollView._onEdge is 1 then onEdgeEnd = true
+
+    @cardScrollView.on 'offEdge', () =>
+      onEdgeEnd = false
+        
     
     @cardScrollView.on 'pageChange', (data) =>
       # get the state of the current card
@@ -212,24 +222,28 @@ class PlayView extends View
     ).bind(@)
 
     @sync.on 'end', ((data) ->
-      # retrieve the Y velocity
-      velocity = data.velocity[1]
+      # figure out if we need to show/hide the comments if moving along the Y axis
+      if isMovingY
+        # retrieve the Y velocity
+        velocity = data.velocity[1]
 
-      # calculate the total position change
-      delta = startPos - @cardYPos.get()
+        # calculate the total position change
+        delta = startPos - @cardYPos.get()
 
-      # swiping/dragging up and crossed pos and vel threshold
-      if delta > minDelta && Math.abs(velocity) > minVelocity
-        @expandComments()
-      # swiping/dragging down and crossed pos and vel threshold
-      else if delta < -minDelta && Math.abs(velocity) > minVelocity
-        @collapseComments()
-      # otherwise threshold not met, so return to original position
-      else if delta
-        if !@_commentsIsExpanded
-          @collapseComments()
-        else 
+        # swiping/dragging up and crossed pos and vel threshold
+        if delta > minDelta && Math.abs(velocity) > minVelocity
           @expandComments()
+        # swiping/dragging down and crossed pos and vel threshold
+        else if delta < -minDelta && Math.abs(velocity) > minVelocity
+          @collapseComments()
+        # otherwise threshold not met, so return to original position
+        else if delta
+          if !@_commentsIsExpanded
+            @collapseComments()
+          else 
+            @expandComments()
+      else if isMovingX
+        if onEdgeEnd then @nextCard()
 
       # reset axis movement flags
       isMovingY = false;
