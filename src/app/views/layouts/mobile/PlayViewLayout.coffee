@@ -6,20 +6,32 @@ module.exports =
     align: [0, 0.04]
     origin: [0, 0]
     states: [
+      # showing state
       {
         delay: 0
         align: [0, 0.04]
         transition: {duration: 500, curve: Easing.outQuad}
       }
+
+      # comments showing state
       {
         delay: 0
         align: [0, -0.6]
         transition: {duration: 500, curve: Easing.outQuad}
       }
+
+      # end state
       {
         delay: 0
-        align: [0, -1],
+        align: [-1, 0.04],
         transition: {duration: 500, curve: Easing.outQuad}
+      }
+
+      # start state
+      {
+        delay: 0,
+        align: [3, 0.04],
+        # transition: {duration: 500, curve: Easing.outQuad}
       }
     ]
   unicorn:
@@ -143,15 +155,26 @@ module.exports =
     align: [0.5, 1]
     size: [window.innerWidth, window.innerHeight]
     states: [
+
+      # start state 
       {
-      delay: 0
-      align: [0.5, 1]
-      transition: {duration: 500, curve: Easing.inQuad}
+        delay: 0
+        align: [2, 0.09]
+        transition: {duration: 500, curve: Easing.inQuad}
       }
+
+      # showing state
       {
         delay: 0
         align: [0.5, 0.09]
         transition: {duration: 500, curve: Easing.outQuad}
+      }
+
+      # end state
+      {
+        delay: 0
+        align: [-1, 0.09]
+        transition: {duration: 1000, curve: Easing.outQuad}
       }
     ]
 
