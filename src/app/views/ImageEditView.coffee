@@ -2,7 +2,7 @@ Config = require('Config').public.aviary
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 
-# todo: add script to dom and init view when loaded
+# todo: use bower to load Aviary
 # <script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
 
 class ImageEditView extends View
@@ -11,7 +11,6 @@ class ImageEditView extends View
 
   constructor: (options) ->
     super options
-    @initEditor()
 
   launchEditor: (id, src) ->
     @surface = new Surface
@@ -19,6 +18,9 @@ class ImageEditView extends View
                 <img id='image1' src='#{@src}'>"
       size: [300, 800]
     @add @surface
+
+    if !@aviary?
+      @initEditor()
 
     @aviary.launch
       image: 'image1'
