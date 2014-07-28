@@ -31,7 +31,7 @@ class SignupView extends View
     logoSurface = new ImageSurface
       size: @options.logo.size
       classes: @options.logo.classes
-      content: "images/mascot_medium.png"
+      content: "images/cosmic-unicorn-head-circle.svg"
     logoMod = new StateModifier
       origin: @options.logo.origin
       align: @options.logo.align
