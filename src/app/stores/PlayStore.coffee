@@ -40,7 +40,6 @@ class PlayStore extends EventHandler
     @_game.loadNextStage()
 
   _nextCard: ->
-    console.log 'PlayStore:_nextCard'
     if @_cardPosition is @_cardIndex.length - 1
       @_game.loadStatus()
       @_cardPosition = 0
