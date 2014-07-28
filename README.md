@@ -23,6 +23,7 @@ Parse is the data layer as well as the backend server.
 
 * [Flux Overview](http://facebook.github.io/react/docs/flux-overview.html)
 * [Flux vs MVC](http://www.infoq.com/news/2014/05/facebook-mvc-flux)
+* [Flux on Hacker News](https://news.ycombinator.com/item?id=8097776)
 
 
 # Install
