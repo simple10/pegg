@@ -145,7 +145,7 @@ gulp.task 'copy', ['clean'], ->
 ############################################################
 gulp.task "cloud", ->
   # path to your file
-  gulp.src "./parse/cloud/main.coffee")
+  gulp.src "./parse/cloud/main.coffee"
   .pipe coffee()
   .pipe gulp.dest "./parse/cloud/"
 
