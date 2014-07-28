@@ -72,6 +72,11 @@ class PlayStore extends EventHandler
     DB.savePref(cardId, choiceId, userId, (res) =>
       if res?
         console.log res
+    )
+
+    DB.savePrefCount(cardId, choiceId, (res)=>
+      if res?
+        console.log res
       @emit Constants.stores.PREF_SAVED
     )
 

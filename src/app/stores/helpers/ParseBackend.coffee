@@ -6,6 +6,7 @@ Choice = Parse.Object.extend 'Choice'
 Pref = Parse.Object.extend 'Pref'
 Pegg = Parse.Object.extend 'Pegg'
 Points = Parse.Object.extend 'Points'
+PrefCounts = Parse.Object.extend 'PrefCounts'
 
 
 class ParseBackend
@@ -88,6 +89,30 @@ class ParseBackend
     newPref.set 'ACL', newPrefAcl
     newPref.save()
     cb 'savePref done'
+
+  savePrefCount: (cardId, choiceId, cb) ->
+    card = new Parse.Object 'Card'
+    card.set 'id', cardId
+    choice = new Parse.Object 'Choice'
+    choice.set 'id', choiceId
+    
+    prefCount = new Parse.Object 'PrefCounts'
+    prefCount.set 'card', card
+    prefCount.set 'choice', choice
+    
+    @getPrefCount choiceId, (res) =>
+      # if it already exists... update it
+      if res
+        count = res.get 'count'
+        count = count + 1
+        res.set 'count', count
+        res.save()
+      # otherwise create a new object and save
+      else 
+        prefCount.set 'count', 1
+        prefCount.save()
+
+      cb 'savePrefCounts done'
 
   savePoints: (peggerId, peggeeId, points, cb) ->
     # UPDATE points row with new points
@@ -233,6 +258,44 @@ class ParseBackend
             cardsPlayed: score.get 'cardsPlayed'
           }
         cb scores
+      error: (error) =>
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
+  getPrefCount: (choiceId, cb) ->
+    choice = new Parse.Object 'Choice'
+    choice.set 'id', choiceId
+    prefCountQuery = new Parse.Query PrefCounts
+    prefCountQuery.equalTo 'choice', choice
+    prefCountQuery.first
+      success: (result) =>
+        cb result
+      error: (error) =>
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
+
+  getPrefCounts: (cardId, cb) ->
+    card = new Parse.Object 'Card'
+    card.set 'id', cardId
+    prefCountsQuery = new Parse.Query PrefCounts
+    prefCountsQuery.equalTo 'card', card
+    prefCountsQuery.include 'card'
+    prefCountsQuery.include 'choice'
+    prefCountsQuery.find
+      success: (results) =>
+        counts = {
+          total: 0
+          choices: {}
+        }
+
+        for res in results
+          choice = res.get 'choice'
+          count = res.get 'count'
+          counts.total += count
+          counts.choices[choice.id] = count
+
+        cb counts
       error: (error) =>
         console.log "Error: " + error.code + " " + error.message
         cb null
