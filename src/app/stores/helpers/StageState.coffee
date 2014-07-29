@@ -52,7 +52,7 @@ class StageState extends EventHandler
         if cards?
           @_cardSet = cards
           for own id, card of cards
-            @_fetchChoices id
+            @_fetchPrefChoices id
           @_playerId =  UserStore.getUser().id
           @emit Constants.stores.CARDS_CHANGE
     )
@@ -67,13 +67,20 @@ class StageState extends EventHandler
           friend = ""
           for own id, card of cards
             friend = card.peggee
-            @_fetchChoices id
+            @_fetchPeggChoices id, friend
           @_playerId = friend
           @emit Constants.stores.CARDS_CHANGE
     )
 
-  _fetchChoices: (cardId) ->
-    DB.getChoices( @_cardSet, cardId
+  _fetchPrefChoices: (cardId) ->
+    DB.getPrefChoices( @_cardSet, cardId
+      (cards) =>
+        @_cardSet = cards
+        @emit Constants.stores.CHOICES_CHANGE, cardId
+    )
+
+  _fetchPeggChoices: (cardId, friendId) ->
+    DB.getPeggChoices( @_cardSet, cardId, friendId
       (cards) =>
         @_cardSet = cards
         @emit Constants.stores.CHOICES_CHANGE, cardId

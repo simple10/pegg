@@ -7,6 +7,7 @@ module.exports =
     LOAD_GAME: null
     PEGG_SUBMIT: null
     PREF_SUBMIT: null
+    PLUG_IMAGE: null
     CARD_RATE: null
     CARD_PASS: null
     CARD_COMMENT: null
@@ -43,6 +44,7 @@ module.exports =
     CARD_FAIL: null
     STATUS_CHANGE: null
     ACTIVITY_CHANGE: null
+    PLUG_SAVED: null
 
 
 

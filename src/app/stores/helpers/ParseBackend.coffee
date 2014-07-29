@@ -89,6 +89,25 @@ class ParseBackend
     newPref.save()
     cb 'savePref done'
 
+  savePlug: (cardId, imageUrl, peggeeId, cb) ->
+    # UPDATE Pref table with user's new image
+    card = new Parse.Object 'Card'
+    card.set 'id', cardId
+    peggee = new Parse.Object 'User'
+    peggee.set 'id', peggeeId
+    prefQuery = new Parse.Query Pref
+    prefQuery.equalTo 'user', peggee
+    prefQuery.equalTo 'card', card
+    prefQuery.first
+      success: (results) =>
+        results.set 'plug', imageUrl
+        results.save()
+        cb "Plug saved: #{imageUrl}"
+      error: (error) ->
+        console.log "Error: #{error.code}  #{error.message}"
+        cb null
+
+
   savePoints: (peggerId, peggeeId, points, cb) ->
     # UPDATE points row with new points
     pointsQuery = new Parse.Query 'Points'
@@ -175,7 +194,7 @@ class ParseBackend
         console.log "Error fetching cards: " + error.code + " " + error.message
         cb null
 
-  getChoices: (cards, cardId, cb) ->
+  getPrefChoices: (cards, cardId, cb) ->
     choiceQuery = new Parse.Query Choice
     choiceQuery.equalTo 'cardId', cardId
     choiceQuery.find
@@ -190,6 +209,44 @@ class ParseBackend
       error: (error) ->
         console.log "Error fetching choices: " + error.code + " " + error.message
         cb null
+
+  getPeggChoices: (cards, cardId, peggeeId, cb) ->
+    card = new Parse.Object 'Card'
+    card.set 'id', cardId
+    peggee = new Parse.Object 'User'
+    peggee.set 'id', peggeeId
+    prefQuery = new Parse.Query Pref
+    prefQuery.include 'answer'
+    prefQuery.equalTo 'user', peggee
+    prefQuery.equalTo 'card', card
+    prefQuery.first
+      success: (results) =>
+        if results? and results.get('plug')?
+          cards[cardId].choices.push
+            id: results.get('answer').id
+            text: results.get('answer').get 'text'
+            image: results.get 'plug'
+          debugger
+        @getPrefChoices(cards, cardId, cb)
+      error: (error) ->
+        console.log "Error fetching choices: " + error.code + " " + error.message
+        cb null
+
+#
+#    choiceQuery = new Parse.Query Choice
+#    choiceQuery.equalTo 'cardId', cardId
+#    choiceQuery.find
+#      success: (choices) =>
+#        cards[cardId].choices = []
+#        for choice in choices
+#          cards[cardId].choices.push
+#            id: choice.id
+#            text: choice.get 'text'
+#            image: choice.get 'image'
+#        cb cards
+#      error: (error) ->
+#        console.log "Error fetching choices: " + error.code + " " + error.message
+#        cb null
 
   getActivity: (page, cb) ->
     activities = []
@@ -221,7 +278,7 @@ class ParseBackend
     peggee = new Parse.Object 'User'
     peggee.set 'id', peggeeId
     pointsQuery.equalTo 'peggee', peggee
-    #pointsQuery.ascending 'points'
+    pointsQuery.descending 'points'
     pointsQuery.include 'peggee'
     pointsQuery.include 'pegger'
     pointsQuery.find

@@ -93,6 +93,16 @@ class PlayStore extends EventHandler
       @emit Constants.stores.PREF_SAVED
     )
 
+  _plug: (cardId, url) ->
+    console.log "save Plug: card: " + cardId + " image: " + url
+    userId = UserStore.getUser().id
+
+    DB.savePlug(cardId, url, userId, (res)=>
+      if res?
+        console.log res
+      @emit Constants.stores.PLUG_SAVED
+    )
+
   _rate: (rating) ->
     console.log "rating: #{rating}"
     #TODO: send data to Parse
@@ -160,6 +170,8 @@ AppDispatcher.register (payload) ->
       play._pegg action.peggee, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
       play._pref action.card, action.choice
+    when Constants.actions.PLUG_IMAGE
+      play._plug action.card, action.url
     when Constants.actions.NEXT_CARD
       play._nextCard()
     when Constants.actions.PREV_CARD
