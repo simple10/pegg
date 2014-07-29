@@ -28,13 +28,16 @@ class PlayStore extends EventHandler
     # cards = @_game.getCards()
     @_cards = @_game.getCards()
     card = @_cards[cardId]
-    @_peggee = if card.peggee? then card.peggee else UserStore.getUser().id
-    @_cardId = cardId
-    DB.getComments(@_cardId, @_peggee, (res) =>
-      if res?
-        @_comments = res
-        @emit Constants.stores.COMMENTS_CHANGE
-    )
+    if card?
+      @_peggee = if card.peggee? then card.peggee else UserStore.getUser().id
+      @_cardId = cardId
+      DB.getComments(@_cardId, @_peggee, (res) =>
+        if res?
+          @_comments = res
+          @emit Constants.stores.COMMENTS_CHANGE
+      )
+    else
+      # TODO: emit no cards to play
 
   _nextStage: ->
     @_game.loadNextStage()
@@ -116,7 +119,8 @@ class PlayStore extends EventHandler
 
   getCards: ->
     cards = @_game.getCards()
-    # Build index of card ids
+    @_cardIndex = []
+    # rebuild index of card ids
     i = 0
     for own cardId of cards
       @_cardIndex[i] = cardId
