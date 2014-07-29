@@ -16,6 +16,7 @@ MouseSync = require 'famous/inputs/MouseSync'
 TouchSync = require 'famous/inputs/TouchSync'
 Timer = require 'famous/utilities/Timer'
 
+PeggStatusView = require 'views/PeggStatusView'
 CardView = require 'views/CardView'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
@@ -23,7 +24,6 @@ CommentsView = require 'views/CommentsView'
 PlayActions = require 'actions/PlayActions'
 InputView = require 'views/InputView'
 Utils = require 'lib/Utils'
-StatusView = require 'views/StatusView'
 
 class PlayView extends View
 
@@ -70,39 +70,39 @@ class PlayView extends View
       .add(@cardScrollView)
 
     ## MESSAGE ##
-    @message = new Surface
-      size: @options.message.size
-      content: 'Generic message'
-      classes: @options.message.classes
-    @messageMod = new StateModifier
-      align: @options.message.align
-      origin: @options.message.origin
-      transform: @options.message.transform
-    @add(@messageMod).add @message
-
-    ## BUBBLE ##
-    @bubble = new ImageSurface
-      size: @options.bubble.size
-      content: '/images/talk_rounded-square.png'
-      classes: @options.bubble.classes
-    @bubbleMod = new StateModifier
-      align: @options.bubble.align
-      origin: @options.bubble.origin
-      transform: @options.bubble.transform
-    @add(@bubbleMod).add @bubble
-
-    ## UNICORN ##
-    @unicorn = new ImageSurface
-      size: @options.unicorn.size
-      content: '/images/unicorn_talk.png'
-      classes: @options.unicorn.classes
-    @unicorn.on 'click', =>
-      @cardScrollView.goToNextPage()
-    @unicornMod = new StateModifier
-      align: @options.unicorn.align
-      origin: @options.unicorn.origin
-      transform: @options.unicorn.transform
-    @add(@unicornMod).add @unicorn
+#    @message = new Surface
+#      size: @options.message.size
+#      content: 'Generic message'
+#      classes: @options.message.classes
+#    @messageMod = new StateModifier
+#      align: @options.message.align
+#      origin: @options.message.origin
+#      transform: @options.message.transform
+#    @add(@messageMod).add @message
+#
+#    ## BUBBLE ##
+#    @bubble = new ImageSurface
+#      size: @options.bubble.size
+#      content: '/images/talk_rounded-square.png'
+#      classes: @options.bubble.classes
+#    @bubbleMod = new StateModifier
+#      align: @options.bubble.align
+#      origin: @options.bubble.origin
+#      transform: @options.bubble.transform
+#    @add(@bubbleMod).add @bubble
+#
+#    ## UNICORN ##
+#    @unicorn = new ImageSurface
+#      size: @options.unicorn.size
+#      content: '/images/unicorn_talk.png'
+#      classes: @options.unicorn.classes
+#    @unicorn.on 'click', =>
+#      @cardScrollView.goToNextPage()
+#    @unicornMod = new StateModifier
+#      align: @options.unicorn.align
+#      origin: @options.unicorn.origin
+#      transform: @options.unicorn.transform
+#    @add(@unicornMod).add @unicorn
 
     ## COMMENTS ##
     @comments = new CommentsView
@@ -129,7 +129,7 @@ class PlayView extends View
       @saveComment comment
 
     ## STATUS ##
-    @status = new StatusView
+    @status = new PeggStatusView
       size: @options.status.size
     @statusMod = new StateModifier
       align: @options.status.align
@@ -293,7 +293,7 @@ class PlayView extends View
 
   loadStatus: =>
     @hideComments()
-    @hideMessage()
+    #@hideMessage()
     @status.load PlayStore.getStatus()
     @showStatus()
 
@@ -307,33 +307,33 @@ class PlayView extends View
     PlayActions.comment(comment)
 
   cardPref: =>
-    @message.setClasses ['card__message__pref']
-    @message.setContent PlayStore.getMessage('pref')
-    @showMessage()
+    #@message.setClasses ['card__message__pref']
+    #@message.setContent PlayStore.getMessage('pref')
+    #@showMessage()
     Utils.animate @commentsMod, @options.comments.states[1]
 
   cardFail: =>
-    @message.setClasses ['card__message__fail']
-    @message.setContent PlayStore.getMessage('fail')
+    #@message.setClasses ['card__message__fail']
+    #@message.setContent PlayStore.getMessage('fail')
 
   cardWin: =>
-    @message.setClasses ['card__message__win']
-    @message.setContent PlayStore.getMessage('win')
-    @showMessage()
+    #@message.setClasses ['card__message__win']
+    #@message.setContent PlayStore.getMessage('win')
+    #@showMessage()
     @showComments()
 
   showMessage: =>
-    Utils.animate @messageMod, @options.message.states[1]
-    Utils.animate @bubbleMod, @options.bubble.states[1]
-    Utils.animate @unicornMod, @options.unicorn.states[1]
+    #Utils.animate @messageMod, @options.message.states[1]
+    #Utils.animate @bubbleMod, @options.bubble.states[1]
+    #Utils.animate @unicornMod, @options.unicorn.states[1]
 
   hideMessage: =>
-    Utils.animate @messageMod, @options.message.states[0]
-    Utils.animate @messageMod, @options.message.states[2]
-    Utils.animate @bubbleMod, @options.bubble.states[0]
-    Utils.animate @bubbleMod, @options.bubble.states[2]
-    Utils.animate @unicornMod, @options.unicorn.states[0]
-    Utils.animate @unicornMod, @options.unicorn.states[2]
+    #Utils.animate @messageMod, @options.message.states[0]
+    #Utils.animate @messageMod, @options.message.states[2]
+    #Utils.animate @bubbleMod, @options.bubble.states[0]
+    #Utils.animate @bubbleMod, @options.bubble.states[2]
+    #Utils.animate @unicornMod, @options.unicorn.states[0]
+    #Utils.animate @unicornMod, @options.unicorn.states[2]
 
   showComments: =>
     Utils.animate @commentsMod, @options.comments.states[1]
@@ -377,7 +377,7 @@ class PlayView extends View
     cardsTransition = @options.cards.states[2].transition
     cardX = @options.cards.states[2].align[0]
 
-    @hideMessage()
+    #@hideMessage()
     @hideComments()
 
     # slide cards left off the screen
