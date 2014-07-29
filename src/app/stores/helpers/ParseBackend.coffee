@@ -108,7 +108,8 @@ class ParseBackend
           results.save()
         else
           newPointsAcl = new Parse.ACL pegger
-          newPointsAcl.setRoleReadAccess "#{peggerId}_Friends", true
+          #newPointsAcl.setRoleReadAccess "#{peggeeId}_Friends", true
+          newPointsAcl.setPublicReadAccess true
           newPoints = new Parse.Object 'Points'
           newPoints.set 'pegger', pegger
           newPoints.set 'peggee', peggee
@@ -154,7 +155,7 @@ class ParseBackend
     prefQuery.include 'answer'
     prefQuery.notEqualTo 'user', prefUser
     #prefQuery.notContainedIn 'hasPegged', [user.id]
-    #prefQuery.containedIn 'peggedBy', [user.id]
+    #prefQuery.containedIn 'hasPegged', [user.id]
     #prefQuery.skip Math.floor(Math.random() * 300)
     prefQuery.find
       success: (results) =>
@@ -220,7 +221,7 @@ class ParseBackend
     peggee = new Parse.Object 'User'
     peggee.set 'id', peggeeId
     pointsQuery.equalTo 'peggee', peggee
-    pointsQuery.ascending 'points'
+    #pointsQuery.ascending 'points'
     pointsQuery.include 'peggee'
     pointsQuery.include 'pegger'
     pointsQuery.find
