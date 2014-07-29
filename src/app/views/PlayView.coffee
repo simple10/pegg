@@ -63,11 +63,31 @@ class PlayView extends View
         yAlign = @_translateToAlign @cardYPos.get()
         [xAlign, yAlign]
       origin: @options.cards.origin
+    @add(@cardScrollViewMod).add @cardScrollView
 
-    # @add(@containerMod)
-    #   .add(@container)
-    @add(@cardScrollViewMod)
-      .add(@cardScrollView)
+    ## LEFT ARROW ##
+    @leftArrow = new ImageSurface
+      size: @options.leftArrow.size
+      content: '/images/left-arrow.png'
+      classes: @options.leftArrow.classes
+    @leftArrowMod = new StateModifier
+      align: @options.leftArrow.align
+      origin: @options.leftArrow.origin
+    @add(@leftArrowMod).add @leftArrow
+    @leftArrow.on 'click', =>
+      @prevCard()
+
+    ## RIGHT ARROW ##
+    @rightArrow = new ImageSurface
+      size: @options.rightArrow.size
+      content: '/images/right-arrow.png'
+      classes: @options.rightArrow.classes
+    @rightArrowMod = new StateModifier
+      align: @options.rightArrow.align
+      origin: @options.rightArrow.origin
+    @add(@rightArrowMod).add @rightArrow
+    @rightArrow.on 'click', =>
+      @nextCard()
 
     ## MESSAGE ##
 #    @message = new Surface
@@ -214,7 +234,7 @@ class PlayView extends View
         if PlayStore.getCurrentCardIsAnswered()
           currentPosition = @cardYPos.get();
           # calculate the max Y offset to prevent the user from being able
-          # to drap the card past this point
+          # to drag the card past this point
           max = @options.cards.states[1].align[1] * Utils.getViewportHeight()
           pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
           @cardYPos.set(-pos)
@@ -267,6 +287,7 @@ class PlayView extends View
 
     @_pipeCardsToScrollView()
     @showCards()
+    @showArrows()
 
   _pipeCardsToScrollView: () =>
     for i of @cardViews
@@ -293,7 +314,8 @@ class PlayView extends View
 
   loadStatus: =>
     @hideComments()
-    #@hideMessage()
+    @hideArrows()
+    @hideMessage()
     @status.load PlayStore.getStatus()
     @showStatus()
 
@@ -321,6 +343,14 @@ class PlayView extends View
     #@message.setContent PlayStore.getMessage('win')
     #@showMessage()
     @showComments()
+
+  showArrows: =>
+    Utils.animate @leftArrowMod, @options.leftArrow.states[0]
+    Utils.animate @rightArrowMod, @options.rightArrow.states[0]
+
+  hideArrows: =>
+    Utils.animate @leftArrowMod, @options.leftArrow.states[1]
+    Utils.animate @rightArrowMod, @options.rightArrow.states[1]
 
   showMessage: =>
     #Utils.animate @messageMod, @options.message.states[1]
@@ -376,9 +406,6 @@ class PlayView extends View
     @statusMod.setOpacity 0.999
     cardsTransition = @options.cards.states[2].transition
     cardX = @options.cards.states[2].align[0]
-
-    #@hideMessage()
-    @hideComments()
 
     # slide cards left off the screen
     @cardXAlign.set cardX, cardsTransition
