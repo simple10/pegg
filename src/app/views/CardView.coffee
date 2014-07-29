@@ -15,7 +15,7 @@ TouchSync = require 'famous/inputs/TouchSync'
 
 _ = require('Parse')._
 PlayActions = require 'actions/PlayActions'
-ImageEditView = require 'views/ImageEditView'
+ImagePickView = require 'views/ImagePickView'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
 ChoicesView = require 'views/ChoicesView'
@@ -148,7 +148,7 @@ class CardView extends View
       size: [43, 48]
       classes: ['card__back__image']
       content: 'images/add-image.png'
-    addImageModifier = new StateModifier
+    @addImageModifier = new StateModifier
       transform: Transform.multiply(
         Transform.translate(0, 160, -depth/2 - 2)
         Transform.multiply(
@@ -156,11 +156,15 @@ class CardView extends View
             Transform.rotateX Math.PI
         )
       )
-    aviaryView = new ImageEditView()
+    imagePickView = new ImagePickView()
     addImageButton.on 'click', =>
-      aviaryView.launchEditor()
-    @mainNode.add aviaryView
-    @mainNode.add(addImageModifier).add addImageButton
+      imagePickView.pick( (results) =>
+        console.log JSON.stringify(results)
+        @backImage.setContent results[0].url
+        PlayActions.plug @id, results[0].url
+      )
+    @mainNode.add imagePickView
+    @mainNode.add(@addImageModifier).add addImageButton
 
   # Doesn't respond to gestures, just makes sure that the events
   # get to the right place
@@ -232,6 +236,7 @@ class CardView extends View
         @choiceWin choice, i
       else
         @choiceFail choice, i
+      @addImageModifier.setTransform Transform.translate 0,0, -1000
     else
       PlayActions.pref @id, choice.id
       @flip choice

@@ -22,6 +22,12 @@ PlayActions =
       choice: choice
       answer: answer
 
+  plug: (card, url) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.PLUG_IMAGE
+      card: card
+      url: url
+
   rate: (rating) ->
     AppDispatcher.handleViewAction
       actionType: Constants.actions.CARD_RATE
