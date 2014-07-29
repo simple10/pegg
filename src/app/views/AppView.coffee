@@ -103,8 +103,6 @@ class AppView extends View
     @pages.decks = new DecksView
     @pages.activity = new ActivityView
     @pages.profile = new ProfileView
-    @pages.peggbox = new PeggBoxView
-    @pages.status = new StatusView
     #@pages.moods = new MoodsView
     @togglePage()
 
