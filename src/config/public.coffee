@@ -23,4 +23,7 @@ config =
   aviary:
     apiKey: 'cdef40f2d4f076a2'
 
+  filepicker:
+    apiKey: 'A36NnDQaISmXZ8IOmKGEQz'
+
 module.exports = config
