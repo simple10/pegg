@@ -89,7 +89,7 @@ module.exports =
   message:
     size: [220, 80]
     classes: ['card__message']
-    align: [0.5, 0.4]
+    align: [0.5, 0.5]
     origin: [0.5, 0.5]
     transform: Transform.translate null, null, -20000
     states: [
@@ -177,4 +177,39 @@ module.exports =
         transition: {duration: 1000, curve: Easing.outQuad}
       }
     ]
-
+  leftArrow:
+    origin: [0.5, 0.5]
+    align: [0.1, 0.08]
+    size: [36, 36]
+    states: [
+      # show
+      {
+        delay: 0
+        transform: Transform.translate null, 0, null
+        transition: {duration: 500, curve: Easing.inQuad}
+      }
+      # hide
+      {
+        delay: 0
+        transform: Transform.translate null, -200, null
+        transition: {duration: 500, curve: Easing.inQuad}
+      }
+    ]
+  rightArrow:
+    origin: [0.5, 0.5]
+    align: [0.9, 0.08]
+    size: [36, 36]
+    states: [
+      # show
+      {
+        delay: 0
+        transform: Transform.translate null, 0, null
+        transition: {duration: 500, curve: Easing.inQuad}
+      }
+      # hide
+      {
+        delay: 0
+        transform: Transform.translate null, -200, null
+        transition: {duration: 500, curve: Easing.inQuad}
+      }
+    ]
