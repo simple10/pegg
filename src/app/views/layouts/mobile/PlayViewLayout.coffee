@@ -9,7 +9,7 @@ module.exports =
       # showing state
       {
         delay: 0
-        align: [0, 0.04]
+        align: [0, 0]
         transition: {duration: 500, curve: Easing.outQuad}
       }
 
@@ -23,14 +23,14 @@ module.exports =
       # end state
       {
         delay: 0
-        align: [-1, 0.04],
+        align: [-1, 0],
         transition: {duration: 500, curve: Easing.outQuad}
       }
 
       # start state
       {
         delay: 0,
-        align: [3, 0.04],
+        align: [3, 0],
         # transition: {duration: 500, curve: Easing.outQuad}
       }
     ]
@@ -159,21 +159,21 @@ module.exports =
       # start state 
       {
         delay: 0
-        align: [2, 0.09]
+        align: [2, 0]
         transition: {duration: 500, curve: Easing.inQuad}
       }
 
       # showing state
       {
         delay: 0
-        align: [0.5, 0.09]
+        align: [0.5, 0]
         transition: {duration: 500, curve: Easing.outQuad}
       }
 
       # end state
       {
         delay: 0
-        align: [-1, 0.09]
+        align: [-1, 0]
         transition: {duration: 1000, curve: Easing.outQuad}
       }
     ]
