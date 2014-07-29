@@ -240,4 +240,23 @@
     });
   });
 
+  Parse.Cloud.afterSave('Pref', function(request) {
+    var cardId, cardQuery, userId;
+    Parse.Cloud.useMasterKey();
+    cardId = request.object.get('card').id;
+    userId = Parse.User.current().id;
+    cardQuery = new Parse.Query('Card');
+    cardQuery.equalTo('objectId', cardId);
+    return cardQuery.first({
+      success: function(card) {
+        card.addUnique('hasPreffed', userId);
+        card.save();
+        return console.log("hasPreffed saved: " + card);
+      },
+      error: function() {
+        return console.log('hasPreffed failed');
+      }
+    });
+  });
+
 }).call(this);
