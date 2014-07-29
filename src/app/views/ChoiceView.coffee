@@ -52,12 +52,12 @@ class ChoiceView extends View
     @flipper.flip(undefined, () =>
 
       if status is 'fail'
-        Timer.setTimeout @remove, 1000
+        Timer.setTimeout @remove, 500
 
       if status is 'win'
         Timer.setTimeout(() =>
           @_eventOutput.emit('choice:doneShowingStatus');
-        , 1000)
+        , 500)
     )
 
   remove: () =>
