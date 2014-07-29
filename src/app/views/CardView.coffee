@@ -90,9 +90,9 @@ class CardView extends View
     @frontProfilePic.on 'click', @toggleChoices
     @frontProfilePicMod = new StateModifier
       transform: Transform.translate 0, -110, depth/2 + 2
-    if @card.peggee?
-      question = @card.firstName + ", " + @card.question.charAt(0).toLowerCase() + @card.question.slice(1)
-    else
+#    if @card.peggee?
+#      question = @card.firstName + ", " + @card.question.charAt(0).toLowerCase() + @card.question.slice(1)
+#    else
       question = @card.question
     @frontQuestion = new Surface
       size: [ width, height ]
