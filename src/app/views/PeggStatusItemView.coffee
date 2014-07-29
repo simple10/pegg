@@ -42,6 +42,13 @@ class PeggStatusItemView extends View
       align: [0.3, 0.1]
       origin: [0, 0]
     container.add(peggerNameMod).add @peggerName
+    @points = new Surface
+      classes: ['status__pegger__points']
+      size: [window.innerWidth, 30]
+    pointsMod = new StateModifier
+      align: [0.3, 0.34]
+      origin: [0, 0]
+    container.add(pointsMod).add @points
     @add container
 
   load: (data) =>
@@ -49,6 +56,7 @@ class PeggStatusItemView extends View
       pegger = data.pegger
       @peggerPic.setContent "#{pegger.get 'avatar_url'}?height=50&type=normal&width=50"
       @peggerName.setContent "#{pegger.get 'first_name'} #{pegger.get 'last_name'}"
+      @points.setContent "#{data.points} points"
 
 
 

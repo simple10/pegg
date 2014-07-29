@@ -35,7 +35,7 @@ class PeggStatusView extends View
       properties:
         borderRadius: '200px'
     userPicMod = new StateModifier
-      align: [0.5, 0]
+      align: [0.5, 0.04]
       origin: [0.5, 0]
     container.add(userPicMod).add userPic
     userName = new Surface
@@ -64,9 +64,17 @@ class PeggStatusView extends View
       content: 'images/continue_big_text.png'
       size: [60, 120]
     nextMod = new StateModifier
-      align: [0.9, 0.1]
-      origin: [0.5, 1]
+      align: [0.6, 0.91]
+      origin: [0, 1]
     container.add(nextMod).add next
+
+    share = new ImageSurface
+      content: 'images/share_big_text.png'
+      size: [48, 95]
+    shareMod = new StateModifier
+      align: [0.2, 0.9]
+      origin: [0, 1]
+    container.add(shareMod).add share
 
     @add container
     next.on 'click', ->
@@ -83,6 +91,9 @@ class PeggStatusView extends View
       for point in data.points
         itemViews[i].load point
         i++
+
+      while itemViews.length > data.points.length
+        itemViews.pop()
 
     return
 
