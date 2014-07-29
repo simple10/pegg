@@ -210,3 +210,19 @@ Parse.Cloud.afterSave 'Pegg', (request) ->
       console.log "hasPegged saved: #{pref}"
     error: ->
       console.log 'hasPegged failed'
+
+Parse.Cloud.afterSave 'Pref', (request) ->
+  Parse.Cloud.useMasterKey()
+  cardId = request.object.get('card').id
+  userId = Parse.User.current().id
+
+  # UPDATE card row with userId in hasPreffed array
+  cardQuery = new Parse.Query 'Card'
+  cardQuery.equalTo 'objectId', cardId
+  cardQuery.first
+    success: (card) ->
+      card.addUnique 'hasPreffed', userId
+      card.save()
+      console.log "hasPreffed saved: #{card}"
+    error: ->
+      console.log 'hasPreffed failed'
