@@ -74,7 +74,7 @@ class PlayView extends View
       origin: @options.leftArrow.origin
     @add(@leftArrowMod).add @leftArrow
     @leftArrow.on 'click', =>
-      @prevCard()
+      @prevCard(true)
 
     ## RIGHT ARROW ##
     @rightArrow = new ImageSurface
@@ -86,7 +86,7 @@ class PlayView extends View
       origin: @options.rightArrow.origin
     @add(@rightArrowMod).add @rightArrow
     @rightArrow.on 'click', =>
-      @nextCard()
+      @nextCard(true)
 
     # MESSAGE ##
     @message = new Surface
@@ -303,11 +303,13 @@ class PlayView extends View
     @status.load PlayStore.getStatus()
     @showStatus()
 
-  nextCard: () =>
+  nextCard: (triggerPageChange) =>
     @showLeftArrow()
+    if triggerPageChange then @cardScrollView.goToNextPage()
     PlayActions.nextCard()
 
-  prevCard: () =>
+  prevCard: (triggerPageChange) =>
+    if triggerPageChange then @cardScrollView.goToPreviousPage()
     PlayActions.prevCard()
 
   saveComment: (comment) ->
