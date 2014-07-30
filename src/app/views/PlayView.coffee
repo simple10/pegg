@@ -14,20 +14,28 @@ GenericSync = require 'famous/inputs/GenericSync'
 MouseSync = require 'famous/inputs/MouseSync'
 TouchSync = require 'famous/inputs/TouchSync'
 Timer = require 'famous/utilities/Timer'
+
+Utils = require 'lib/Utils'
+Constants = require 'constants/PeggConstants'
+PlayStore = require 'stores/PlayStore'
+PlayActions = require 'actions/PlayActions'
+
 StatusView = require 'views/StatusView'
 CardView = require 'views/CardView'
-PlayStore = require 'stores/PlayStore'
-Constants = require 'constants/PeggConstants'
 CommentsView = require 'views/CommentsView'
-PlayActions = require 'actions/PlayActions'
 InputView = require 'views/InputView'
-Utils = require 'lib/Utils'
+PlayNavView = require 'views/PlayNavView'
+
+LayoutManager = require 'views/layouts/LayoutManager'
 StatusViewLayout = require 'views/layouts/mobile/StatusViewLayout'
 
 class PlayView extends View
 
   constructor: (options) ->
     super options
+
+    @layoutManager = new LayoutManager()
+    @layout = @layoutManager.getViewLayout 'PlayView'
 
     # create transitionable with initial value of 0
     @cardYPos = new Transitionable(0)
@@ -49,9 +57,7 @@ class PlayView extends View
 
   initSurfaces: ->
 
-    console.log 'initSurfaces'
-
-    ##  CARDS ##
+    ## CARDS ##
     @cardScrollView = new Scrollview
       direction: Utility.Direction.X
       paginated: true
@@ -64,64 +70,14 @@ class PlayView extends View
       origin: @options.cards.origin
     @add(@cardScrollViewMod).add @cardScrollView
 
-    ## LEFT ARROW ##
-    @leftArrow = new ImageSurface
-      size: @options.leftArrow.size
-      content: '/images/left-arrow.png'
-      classes: @options.leftArrow.classes
-    @leftArrowMod = new StateModifier
-      align: @options.leftArrow.align
-      origin: @options.leftArrow.origin
-    @add(@leftArrowMod).add @leftArrow
-    @leftArrow.on 'click', =>
-      @prevCard(true)
-
-    ## RIGHT ARROW ##
-    @rightArrow = new ImageSurface
-      size: @options.rightArrow.size
-      content: '/images/right-arrow.png'
-      classes: @options.rightArrow.classes
-    @rightArrowMod = new StateModifier
-      align: @options.rightArrow.align
-      origin: @options.rightArrow.origin
-    @add(@rightArrowMod).add @rightArrow
-    @rightArrow.on 'click', =>
-      @nextCard(true)
-
-    # MESSAGE ##
-    @message = new Surface
-      size: @options.message.size
-      content: 'Generic message'
-      classes: @options.message.classes
-    @messageMod = new StateModifier
-      align: @options.message.align
-      origin: @options.message.origin
-      transform: @options.message.transform
-    @add(@messageMod).add @message
-
-#    ## BUBBLE ##
-#    @bubble = new ImageSurface
-#      size: @options.bubble.size
-#      content: '/images/talk_rounded-square.png'
-#      classes: @options.bubble.classes
-#    @bubbleMod = new StateModifier
-#      align: @options.bubble.align
-#      origin: @options.bubble.origin
-#      transform: @options.bubble.transform
-#    @add(@bubbleMod).add @bubble
-#
-#    ## UNICORN ##
-#    @unicorn = new ImageSurface
-#      size: @options.unicorn.size
-#      content: '/images/unicorn_talk.png'
-#      classes: @options.unicorn.classes
-#    @unicorn.on 'click', =>
-#      @cardScrollView.goToNextPage()
-#    @unicornMod = new StateModifier
-#      align: @options.unicorn.align
-#      origin: @options.unicorn.origin
-#      transform: @options.unicorn.transform
-#    @add(@unicornMod).add @unicorn
+    ## NAV ##
+    @navView = new PlayNavView
+    @navView._eventOutput.on 'click', (data) =>
+      if data is 'prevCard'
+        @prevCard(true)
+      else if data is 'nextCard'
+        @nextCard(true)  
+    @add(@navView)
 
     ## COMMENTS ##
     @comments = new CommentsView
@@ -267,10 +223,9 @@ class PlayView extends View
 
     @_pipeCardsToScrollView()
     @showCards()
-    @showRightArrow()
-    @showMessage()
-    @hideLeftArrow()
-    @message.setContent PlayStore.getMessage(@cardViews[0].getType())
+    @navView.setOptions {
+      'cardType': PlayStore.getCurrentCardsType()
+    }
 
   _pipeCardsToScrollView: () =>
     for i of @cardViews
@@ -297,20 +252,23 @@ class PlayView extends View
 
   loadStatus: =>
     @hideComments()
-    @hideRightArrow()
-    @hideLeftArrow()
-    @hideMessage()
+    @navView.hideNav()
     @status.load PlayStore.getStatus()
     @showStatus()
 
   nextCard: (triggerPageChange) =>
-    @showLeftArrow()
-    if triggerPageChange then @cardScrollView.goToNextPage()
-    PlayActions.nextCard()
+    if triggerPageChange
+      if @cardScrollView.getCurrentIndex() is 2
+        PlayActions.nextCard()
+      else
+        @cardScrollView.goToNextPage()
+    else PlayActions.nextCard()
 
   prevCard: (triggerPageChange) =>
-    if triggerPageChange then @cardScrollView.goToPreviousPage()
-    PlayActions.prevCard()
+    if triggerPageChange
+      @cardScrollView.goToPreviousPage()
+      console.log @cardScrollView.getCurrentIndex()
+    else PlayActions.prevCard()
 
   saveComment: (comment) ->
     PlayActions.comment(comment)
@@ -329,24 +287,6 @@ class PlayView extends View
     #@message.setContent PlayStore.getMessage('win')
     @showComments()
 
-  showRightArrow: =>
-    Utils.animate @rightArrowMod, @options.rightArrow.states[0]
-
-  hideRightArrow: =>
-    Utils.animate @rightArrowMod, @options.rightArrow.states[1]
-
-  showLeftArrow: =>
-    Utils.animate @leftArrowMod, @options.leftArrow.states[0]
-
-  hideLeftArrow: =>
-    Utils.animate @leftArrowMod, @options.leftArrow.states[1]
-
-  showMessage: =>
-    Utils.animate @messageMod, @options.message.states[0]
-
-  hideMessage: =>
-    Utils.animate @messageMod, @options.message.states[1]
-
   showComments: =>
     Utils.animate @commentsMod, @options.comments.states[1]
 
@@ -355,6 +295,7 @@ class PlayView extends View
     @newComment.setAlign @options.newComment.states[0].align
 
   collapseComments: =>
+    @navView.showNav()
     # slide the cards down to their starting position
     @cardYPos.set(0, @options.cards.states[0].transition)
     # slide the comments down to their starting position
@@ -363,6 +304,7 @@ class PlayView extends View
     @newComment.setAlign @options.newComment.states[0].align
 
   expandComments: =>
+    @navView.hideNav()
     maxCardYPos = @options.cards.states[1].align[1] * Utils.getViewportHeight()
     # move the cards up
     @cardYPos.set(maxCardYPos, @options.cards.states[1].transition)

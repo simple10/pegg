@@ -34,76 +34,6 @@ module.exports =
         # transition: {duration: 500, curve: Easing.outQuad}
       }
     ]
-#  unicorn:
-#    size: [90, 100]
-#    classes: ['play__unicorn']
-#    align: [0.17, 0.4]
-#    origin: [0.5, 0.5]
-#    transform: Transform.translate null, null, -20000
-#    states: [
-#      {
-#        delay: 0
-#        align: [0.17, 0.4]
-#        transform: Transform.translate null, null, -20000
-#        transition: {duration: 500, curve: Easing.inQuad}
-#      }
-#      {
-#        delay: 0
-#        align: [0.17, 0.13]
-#        opacity: 1
-#        transform: Transform.translate null, null, -3
-#        transition: {duration: 500, curve: Easing.outQuad}
-#      }
-#      {
-#        delay: 40
-#        opacity: 0
-#        transition: {duration: 500, curve: Easing.inBounce}
-#      }
-#  ]
-#  bubble:
-#    size: [230, 90]
-#    classes: ['card__message__bubble']
-#    align: [0.6, 0.4]
-#    origin: [0.5, 0.5]
-#    transform: Transform.translate null, null, -20000
-#    states: [
-#      {
-#        delay: 10
-#        align: [0.6, 0.4]
-#        transform: Transform.translate null, null, -20000
-#        transition: {duration: 500, curve: Easing.inQuad}
-#      }
-#      {
-#        delay: 15
-#        align: [0.6, 0.1]
-#        opacity: 1
-#        transform: Transform.translate null, null, -4
-#        transition: {duration: 500, curve: Easing.outQuad}
-#      }
-#      {
-#        delay: 40
-#        opacity: 0
-#        transition: {duration: 500, curve: Easing.inBounce}
-#      }
-#    ]
-  message:
-    size: [220, 80]
-    classes: ['card__message']
-    align: [0.5, -1]
-    origin: [0.5, 0.5]
-    states: [
-      {
-        delay: 0
-        align: [0.5, 0.12]
-        transform: Transform.translate null, null, 0
-        transition: {duration: 500, curve: Easing.inQuad}
-      }
-      {
-        delay: 15
-        align: [0.5, -0.5]
-        transition: {duration: 500, curve: Easing.inExpo}
-      }
-    ]
   comments:
     origin: [0.5, 0]
     align: [0.5, 1]
@@ -167,41 +97,5 @@ module.exports =
         delay: 0
         align: [-1, 0]
         transition: {duration: 1000, curve: Easing.outQuad}
-      }
-    ]
-  leftArrow:
-    origin: [0.5, 0.5]
-    align: [0.1, 0.08]
-    size: [36, 36]
-    states: [
-      # show
-      {
-        delay: 0
-        transform: Transform.translate null, 0, null
-        transition: {duration: 500, curve: Easing.inQuad}
-      }
-      # hide
-      {
-        delay: 0
-        transform: Transform.translate null, -200, null
-        transition: {duration: 500, curve: Easing.inQuad}
-      }
-    ]
-  rightArrow:
-    origin: [0.5, 0.5]
-    align: [0.9, 0.08]
-    size: [36, 36]
-    states: [
-      # show
-      {
-        delay: 0
-        transform: Transform.translate null, 0, null
-        transition: {duration: 500, curve: Easing.inQuad}
-      }
-      # hide
-      {
-        delay: 0
-        transform: Transform.translate null, -200, null
-        transition: {duration: 500, curve: Easing.inQuad}
       }
     ]
