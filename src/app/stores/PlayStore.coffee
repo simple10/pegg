@@ -59,20 +59,19 @@ class PlayStore extends EventHandler
     userId = UserStore.getUser().id
 
     # save answered status
-    console.log '_pegg', cardId
     @_cards[cardId].answered = true
 
     # Save pegg
     DB.savePegg(peggeeId, cardId, choiceId, answerId, userId, (res)->
-      if res?
-        console.log res
+      # TODO: catch save fail
+      #if res?
     )
     # Save points
     if choiceId is answerId
       points = 10 - 3 * @_fail
       DB.savePoints(userId, peggeeId, points, (res)->
-        if res?
-          console.log res
+        # TODO: catch save fail
+        #if res?
       )
       @_fail = 0
       @emit Constants.stores.CARD_WIN
@@ -88,8 +87,8 @@ class PlayStore extends EventHandler
     @_cards[cardId].answered = true
 
     DB.savePref(cardId, choiceId, userId, (res)=>
-      if res?
-        console.log res
+      # TODO: catch save fail
+      #if res?
       @emit Constants.stores.PREF_SAVED
     )
 
@@ -98,14 +97,13 @@ class PlayStore extends EventHandler
     userId = UserStore.getUser().id
 
     DB.savePlug(cardId, url, userId, (res)=>
-      if res?
-        console.log res
+      # TODO: catch save fail
+      #if res?
       @emit Constants.stores.PLUG_SAVED
     )
 
   _rate: (rating) ->
     console.log "rating: #{rating}"
-    #TODO: send data to Parse
     @emit Constants.stores.CARD_RATED
 
   _comment: (comment) ->
@@ -120,9 +118,6 @@ class PlayStore extends EventHandler
         @_comments.unshift res
         @emit Constants.stores.COMMENTS_CHANGE
     )
-
-  _statusAck: ->
-    @emit Constants.stores.PLAY_CHANGE
 
   _pass: (cardId) ->
     console.log "cardID: " + cardId
