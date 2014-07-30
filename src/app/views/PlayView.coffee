@@ -10,13 +10,11 @@ Utility = require 'famous/utilities/Utility'
 Surface = require 'famous/core/Surface'
 Transform = require 'famous/core/Transform'
 Transitionable = require 'famous/transitions/Transitionable'
-TransitionableTransform = require 'famous/transitions/TransitionableTransform'
 GenericSync = require 'famous/inputs/GenericSync'
 MouseSync = require 'famous/inputs/MouseSync'
 TouchSync = require 'famous/inputs/TouchSync'
 Timer = require 'famous/utilities/Timer'
-
-PeggStatusView = require 'views/PeggStatusView'
+StatusView = require 'views/StatusView'
 CardView = require 'views/CardView'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
@@ -24,6 +22,7 @@ CommentsView = require 'views/CommentsView'
 PlayActions = require 'actions/PlayActions'
 InputView = require 'views/InputView'
 Utils = require 'lib/Utils'
+StatusViewLayout = require 'views/layouts/mobile/StatusViewLayout'
 
 class PlayView extends View
 
@@ -149,8 +148,7 @@ class PlayView extends View
       @saveComment comment
 
     ## STATUS ##
-    @status = new PeggStatusView
-      size: @options.status.size
+    @status = new StatusView StatusViewLayout
     @statusMod = new StateModifier
       align: @options.status.align
       origin: @options.status.origin
@@ -272,7 +270,6 @@ class PlayView extends View
     ).bind(@)
 
   loadCards: =>
-    console.log 'loadCards'
     @cardViews = []
     @index = []
     @cardScrollView.sequenceFrom @cardViews
