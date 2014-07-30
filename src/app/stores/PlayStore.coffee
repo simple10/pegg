@@ -25,7 +25,6 @@ class PlayStore extends EventHandler
 
   _loadCard: (position) ->
     cardId = @_cardIndex[position]
-    # cards = @_game.getCards()
     @_cards = @_game.getCards()
     card = @_cards[cardId]
     if card?
@@ -43,16 +42,20 @@ class PlayStore extends EventHandler
     @_game.loadNextStage()
 
   _nextCard: ->
+    console.log 'playstore nextcard'
     if @_cardPosition is @_cardIndex.length - 1
       @_game.loadStatus()
       @_cardPosition = 0
     else
       @_cardPosition++
       @_loadCard @_cardPosition
+      @emit Constants.stores.CARD_CHANGE, @_cardPosition
 
   _prevCard: ->
+    console.log 'playstore prevcard'
     @_cardPosition--
     @_loadCard @_cardPosition
+    @emit Constants.stores.CARD_CHANGE, @_cardPosition
 
   _pegg: (peggeeId, cardId, choiceId, answerId) ->
     console.log "save Pegg: card: " + cardId + " choice: " + choiceId
@@ -123,16 +126,16 @@ class PlayStore extends EventHandler
     console.log "cardID: " + cardId
 
   getCards: ->
-    cards = @_game.getCards()
+    @_cards = @_game.getCards()
     @_cardIndex = []
     # rebuild index of card ids
     i = 0
-    for own cardId of cards
+    for own cardId of @_cards
       @_cardIndex[i] = cardId
       i++
     # Load the first card in set
     @_loadCard 0
-    cards
+    @_cards
 
   getStatus: ->
     @_game.getStatus()
@@ -147,8 +150,15 @@ class PlayStore extends EventHandler
     @_message.getMessage(type)
 
   getCurrentCardIsAnswered: ->
-    console.log 'getCurrentCardAnswerStatus:cardId', @_cardId
     @_cards[@_cardId].answered
+
+  getCurrentCardsType: =>
+    type = 'pref'
+    id = @_cardIndex[0]
+    if @_cards[id].peggee
+      type = 'pegg'
+    type
+
 
 
 play = new PlayStore

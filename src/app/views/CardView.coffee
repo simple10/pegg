@@ -267,10 +267,10 @@ class CardView extends View
 
     @_eventOutput.emit 'card:flipped', @
 
-  getType: =>
-    if @card.peggee?
-      return 'pegg'
-    else
-      return 'pref'
+  # getType: =>
+  #   if @card.peggee?
+  #     return 'pegg'
+  #   else
+  #     return 'pref'
 
 module.exports = CardView
