@@ -88,17 +88,17 @@ class PlayView extends View
     @rightArrow.on 'click', =>
       @nextCard()
 
-    ## MESSAGE ##
-#    @message = new Surface
-#      size: @options.message.size
-#      content: 'Generic message'
-#      classes: @options.message.classes
-#    @messageMod = new StateModifier
-#      align: @options.message.align
-#      origin: @options.message.origin
-#      transform: @options.message.transform
-#    @add(@messageMod).add @message
-#
+    # MESSAGE ##
+    @message = new Surface
+      size: @options.message.size
+      content: 'Generic message'
+      classes: @options.message.classes
+    @messageMod = new StateModifier
+      align: @options.message.align
+      origin: @options.message.origin
+      transform: @options.message.transform
+    @add(@messageMod).add @message
+
 #    ## BUBBLE ##
 #    @bubble = new ImageSurface
 #      size: @options.bubble.size
@@ -177,30 +177,22 @@ class PlayView extends View
       choicesShowing = false
       @_pipeCardsToScrollView()
 
-    
     @_eventInput.pipe @sync
-
     @cardScrollView.on 'onEdge', () =>
       # check to see if we have hit the end, i.e. bottom or right most item
       if @cardScrollView._onEdge is 1 then onEdgeEnd = true
-
     @cardScrollView.on 'offEdge', () =>
       onEdgeEnd = false
-        
-    
     @cardScrollView.on 'pageChange', (data) =>
       # get the state of the current card
       # used to determine if comments need to be hidden or shown
       card = @cardViews[@cardScrollView._node.index]
-
       if data.direction is 1
         @nextCard()
       if data.direction is -1
         @prevCard()
-        
       # showChoices is true when the front of the card is visible
       if card.showChoices
-        @hideMessage()
         @hideComments()
       else
         @showComments()
@@ -209,14 +201,12 @@ class PlayView extends View
     isMovingX = false
     startPos = 0
 
-    @sync.on 'start', ((data) =>
-      startPos = @cardYPos.get();
-    )
+    @sync.on 'start', (data) =>
+      startPos = @cardYPos.get()
 
     @sync.on 'update', ((data) ->
       dx = data.delta[0]
       dy = data.delta[1]
-
       if !isMovingX && !isMovingY
         if Math.abs(dy) > Math.abs(dx)
           @_unpipeCardsToScrollView()
@@ -224,19 +214,16 @@ class PlayView extends View
         else if !choicesShowing
           @_pipeCardsToScrollView()
           isMovingX = true
-
       if @_commentsIsExpanded
         @_unpipeCardsToScrollView()
-
       if isMovingY
         if PlayStore.getCurrentCardIsAnswered()
-          currentPosition = @cardYPos.get();
+          currentPosition = @cardYPos.get()
           # calculate the max Y offset to prevent the user from being able
           # to drag the card past this point
           max = @options.cards.states[1].align[1] * Utils.getViewportHeight()
           pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
           @cardYPos.set(-pos)
-
     ).bind(@)
 
     @sync.on 'end', ((data) ->
@@ -244,10 +231,8 @@ class PlayView extends View
       if isMovingY
         # retrieve the Y velocity
         velocity = data.velocity[1]
-
         # calculate the total position change
         delta = startPos - @cardYPos.get()
-
         # swiping/dragging up and crossed pos and vel threshold
         if delta > minDelta && Math.abs(velocity) > minVelocity
           @expandComments()
@@ -262,11 +247,9 @@ class PlayView extends View
             @expandComments()
       else if isMovingX
         if onEdgeEnd then @nextCard()
-
       # reset axis movement flags
       isMovingY = false;
       isMovingX = false;
-
     ).bind(@)
 
   loadCards: =>
@@ -284,7 +267,10 @@ class PlayView extends View
 
     @_pipeCardsToScrollView()
     @showCards()
-    @showArrows()
+    @showRightArrow()
+    @showMessage()
+    @hideLeftArrow()
+    @message.setContent PlayStore.getMessage(@cardViews[0].getType())
 
   _pipeCardsToScrollView: () =>
     for i of @cardViews
@@ -311,12 +297,14 @@ class PlayView extends View
 
   loadStatus: =>
     @hideComments()
-    @hideArrows()
+    @hideRightArrow()
+    @hideLeftArrow()
     @hideMessage()
     @status.load PlayStore.getStatus()
     @showStatus()
 
   nextCard: () =>
+    @showLeftArrow()
     PlayActions.nextCard()
 
   prevCard: () =>
@@ -328,7 +316,6 @@ class PlayView extends View
   cardPref: =>
     #@message.setClasses ['card__message__pref']
     #@message.setContent PlayStore.getMessage('pref')
-    #@showMessage()
     Utils.animate @commentsMod, @options.comments.states[1]
 
   cardFail: =>
@@ -338,29 +325,25 @@ class PlayView extends View
   cardWin: =>
     #@message.setClasses ['card__message__win']
     #@message.setContent PlayStore.getMessage('win')
-    #@showMessage()
     @showComments()
 
-  showArrows: =>
-    Utils.animate @leftArrowMod, @options.leftArrow.states[0]
+  showRightArrow: =>
     Utils.animate @rightArrowMod, @options.rightArrow.states[0]
 
-  hideArrows: =>
-    Utils.animate @leftArrowMod, @options.leftArrow.states[1]
+  hideRightArrow: =>
     Utils.animate @rightArrowMod, @options.rightArrow.states[1]
 
+  showLeftArrow: =>
+    Utils.animate @leftArrowMod, @options.leftArrow.states[0]
+
+  hideLeftArrow: =>
+    Utils.animate @leftArrowMod, @options.leftArrow.states[1]
+
   showMessage: =>
-    #Utils.animate @messageMod, @options.message.states[1]
-    #Utils.animate @bubbleMod, @options.bubble.states[1]
-    #Utils.animate @unicornMod, @options.unicorn.states[1]
+    Utils.animate @messageMod, @options.message.states[0]
 
   hideMessage: =>
-    #Utils.animate @messageMod, @options.message.states[0]
-    #Utils.animate @messageMod, @options.message.states[2]
-    #Utils.animate @bubbleMod, @options.bubble.states[0]
-    #Utils.animate @bubbleMod, @options.bubble.states[2]
-    #Utils.animate @unicornMod, @options.unicorn.states[0]
-    #Utils.animate @unicornMod, @options.unicorn.states[2]
+    Utils.animate @messageMod, @options.message.states[1]
 
   showComments: =>
     Utils.animate @commentsMod, @options.comments.states[1]
@@ -391,11 +374,9 @@ class PlayView extends View
     cardsTransition = @options.cards.states[0].transition
     cardX = @options.cards.states[0].align[0]
     cardY = @options.cards.states[0].align[1] * Utils.getViewportHeight()
-
     # slide the cards left onto the screen
     @cardXAlign.set(cardX, cardsTransition)
     @cardYPos.set(cardY, cardsTransition)
-
     # slide the status left off the screen
     Utils.animate @statusMod, @options.status.states[2], @moveStatusToStart
 
@@ -403,10 +384,8 @@ class PlayView extends View
     @statusMod.setOpacity 0.999
     cardsTransition = @options.cards.states[2].transition
     cardX = @options.cards.states[2].align[0]
-
     # slide cards left off the screen
     @cardXAlign.set cardX, cardsTransition
-
     # slide status left onto the screen
     Utils.animate @statusMod, @options.status.states[1], @moveCardsToStart
 
