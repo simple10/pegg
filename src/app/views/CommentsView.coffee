@@ -37,7 +37,7 @@ class CommentsView extends View
       @_eventOutput.emit 'open', @
 
   load: (data) ->
-    console.log 'loading comments', data
+#   console.log 'loading comments', data
     surfaces = []
     @comments.sequenceFrom surfaces
     i = 0
