@@ -21,7 +21,7 @@ class PrefStatusView extends View
       content: 'images/Unicorn_Cosmic_win.png'
       size: [239, 239]
     unicornMod = new StateModifier
-      align: [0.5, 0]
+      align: [0.5, 0.1]
       origin: [0.5, 0]
     container.add(unicornMod).add unicorn
 
@@ -29,7 +29,7 @@ class PrefStatusView extends View
       content: 'images/continue_big_text.png'
       size: [60, 120]
     nextMod = new StateModifier
-      align: [0.5, .8]
+      align: [0.5, .91]
       origin: [0.5, 1]
     container.add(nextMod).add next
 
