@@ -40,14 +40,17 @@ config =
         'Dude!<br/>Way to not suck at this.'
       ]
       pref: [
-        'Wow. <br/>I\'m learning so much<br/>about you.'
-        'So that\'s what you\'re into.<br/>Interesting...'
-        'Noted. Carry on.'
-        'Your friends will be <br/>relieved to know that.'
-        'Confucius say:<br/>preferences are like<br/>buttholes.'
+        'Time to learn about you!'
+        'Go on...<br/>Pegg yourself.'
+        'Dig deep and uncover your true self.'
+        'Know thyself, <br/>grasshopper.'
+        'Pegg yourself.'
       ]
-      misc: [
-        ''
+      pegg: [
+        'Pegg your friend.'
+        'What did your friend choose?'
+        'This isn\'t all about you.'
+        'Can you pegg your friend?'
       ]
 
 module.exports = config
