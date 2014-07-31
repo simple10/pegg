@@ -87,6 +87,6 @@ pickView = ->
 #AppStateStore.on Constants.stores.CHANGE, pickView
 UserStore.on Constants.stores.CHANGE, pickView
 
-mainContext.add new FpsMeter
+#mainContext.add new FpsMeter
 
 

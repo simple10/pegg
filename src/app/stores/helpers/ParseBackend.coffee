@@ -332,27 +332,35 @@ class ParseBackend
         cb null
 
 
-  getPrefCounts: (cardId, cb) ->
-    card = new Parse.Object 'Card'
-    card.set 'id', cardId
+  getPrefCounts: (cards, cb) ->
+    cardObjs = []
+    for own id, card of cards
+      cardObj = new Parse.Object 'Card'
+      cardObj.set 'id', id
+      cardObjs.push cardObj
     prefCountsQuery = new Parse.Query PrefCounts
-    prefCountsQuery.equalTo 'card', card
+    prefCountsQuery.containedIn 'card', cardObjs
     prefCountsQuery.include 'card'
     prefCountsQuery.include 'choice'
     prefCountsQuery.find
       success: (results) =>
-        counts = {
-          total: 0
-          choices: {}
-        }
-
+        cards = {}
         for res in results
           choice = res.get 'choice'
           count = res.get 'count'
-          counts.total += count
-          counts.choices[choice.id] = count
-
-        cb counts
+          card = res.get 'card'
+          if !cards[card.id]?
+            cards[card.id] = {
+              question: card.get 'question'
+              choices: {}
+              total: 0
+            }
+          cards[card.id].choices[choice.id] = {
+            choiceText: choice.get 'text'
+            count: count
+          }
+          cards[card.id].total += count
+        cb cards
       error: (error) =>
         console.log "Error: " + error.code + " " + error.message
         cb null

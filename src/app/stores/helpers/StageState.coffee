@@ -27,10 +27,10 @@ class StageState extends EventHandler
 
   loadStatus: ->
     switch @_status.type
-      when 'profile_progress'
-        @_fetchStatus @_playerId
+      when 'likeness_report'
+        @_fetchLikeness @_cardSet
       when 'friend_ranking'
-        @_fetchStatus @_playerId
+        @_fetchRanking @_playerId
       else
         raise "unexpected status type: #{@_status.type}"
 
@@ -86,10 +86,19 @@ class StageState extends EventHandler
         @emit Constants.stores.CHOICES_CHANGE, cardId
     )
 
-  _fetchStatus: (userId) ->
+  _fetchRanking: (userId) ->
     DB.getTopScores(userId,
       (points) =>
-        @_status['points'] = points
+        @_status['stats'] = points
+        @emit Constants.stores.STATUS_CHANGE
+      )
+
+  _fetchLikeness: (cards) ->
+    DB.getPrefCounts(cards,
+      (results) =>
+        console.log results
+        @_status['stats'] = results
+        @_status['played'] = cards
         @emit Constants.stores.STATUS_CHANGE
       )
 
