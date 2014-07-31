@@ -37,6 +37,7 @@ module.exports =
     PLAY_PREFS: null
     PLAY_PEGGS: null
     CARDS_CHANGE: null
+    CARD_CHANGE: null
     CHOICES_CHANGE: null
     COMMENTS_CHANGE: null
     PLAY_CHANGE: null
