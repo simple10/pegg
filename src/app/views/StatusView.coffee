@@ -46,7 +46,7 @@ class StatusView extends View
         @peggStatus.load status
         Utils.animate @prefStatusMod, @options.view.states[1]
         Utils.animate @peggStatusMod, @options.view.states[0]
-      when 'profile_progress'
+      when 'likeness_report'
         @prefStatus.load status
         Utils.animate @prefStatusMod, @options.view.states[0]
         Utils.animate @peggStatusMod, @options.view.states[1]
