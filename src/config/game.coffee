@@ -3,6 +3,7 @@ config =
     default: [
       [      # stage 1
         {
+          # type: 'pref'
           type: 'pref'
           # type: 'pegg'
           size: 3

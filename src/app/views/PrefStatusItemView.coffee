@@ -10,6 +10,8 @@ ContainerSurface = require 'famous/surfaces/ContainerSurface'
 
 class PrefStatusItemView extends View
 
+  container = null
+
   constructor: (options) ->
     super options
     @init()
@@ -19,15 +21,22 @@ class PrefStatusItemView extends View
       size: [window.innerWidth, 70]
       properties:
         overflow: 'hidden'
-    @peggerPic = new ImageSurface
-      classes: ['status__pegger__pic']
+
+    # Question
+    @question = new Surface
+      classes: ['status__pref__question']
       size: [50, 50]
       properties:
         borderRadius: '50px'
-    peggerPicMod = new StateModifier
+    questionMod = new StateModifier
       align: [0.1, 0]
       origin: [0, 0]
-    container.add(peggerPicMod).add @peggerPic
+    container.add(questionMod).add @question
+
+    # Answer choice x 4
+    @_addChoice()
+    # percent chosen
+    # color bar
 
     @peggerName = new Surface
       classes: ['status__pegger__name']
@@ -44,6 +53,17 @@ class PrefStatusItemView extends View
       origin: [0, 0]
     container.add(pointsMod).add @points
     @add container
+
+  _addChoice: ->
+    @question = new Surface
+      classes: ['status__pref__question']
+      size: [50, 50]
+      properties:
+        borderRadius: '50px'
+    questionMod = new StateModifier
+      align: [0.1, 0]
+      origin: [0, 0]
+    container.add(questionMod).add @question
 
   load: (data) =>
 

@@ -54,10 +54,10 @@ class PeggStatusView extends View
     itemsScrollViewMod = new StateModifier
       align: [0, 0.4]
       origin: [0, 0]
-#    i = 0
-#    while i < 4
-#      itemViews.push new PeggStatusItemView
-#      i++
+    i = 0
+    while i < 4
+      itemViews.push new PeggStatusItemView
+      i++
     container.add(itemsScrollViewMod).add itemsScrollView
 
     next = new ImageSurface
@@ -89,12 +89,13 @@ class PeggStatusView extends View
 
       i = 0
       for stat in data.stats
-        itemViews.push new PeggStatusItemView
+        if !itemViews[i]?
+          itemViews.push new PeggStatusItemView
         itemViews[i].load stat
         i++
 
-#      while itemViews.length > data.stats.length
-#        itemViews.pop()
+      while itemViews.length > data.stats.length
+        itemViews.pop()
 
 
 

@@ -108,7 +108,6 @@ class ParseBackend
         console.log "Error: #{error.code}  #{error.message}"
         cb null
 
-
   savePrefCount: (cardId, choiceId, cb) ->
     card = new Parse.Object 'Card'
     card.set 'id', cardId

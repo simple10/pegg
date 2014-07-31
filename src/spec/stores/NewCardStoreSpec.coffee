@@ -1,16 +1,17 @@
-CardStore = require 'stores/CardStore'
+NewCardStore = require 'stores/NewCardStore'
 helper = require '../helpers/Common'
 expect = helper.expect
 should = helper.should
 spy = helper.spy
 
 # Mocks
-GetUser = -> 'Augustin'
+user = 'Augustin'
 
-describe 'CardStore', ->
+describe 'NewCardStore', ->
   beforeEach ->
-    @card_store = CardStore
-    @card_store._getUser = -> GetUser
+    @card_store = NewCardStore
+    @card_store._getUser = -> user
+
 
   it 'exists', ->
     expect(@card_store).to.exist
