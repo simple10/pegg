@@ -41,7 +41,7 @@ class PlayView extends View
     @cardYPos = new Transitionable(0)
     @cardXAlign = new Transitionable(0)
 
-    @initSurfaces()
+    @initViews()
     @initListeners()
     @initGestures()
 
@@ -55,7 +55,7 @@ class PlayView extends View
     PlayStore.on Constants.stores.CHOICES_CHANGE, (cardId) =>
       @loadChoices cardId
 
-  initSurfaces: ->
+  initViews: ->
 
     ## CARDS ##
     @cardScrollView = new Scrollview
