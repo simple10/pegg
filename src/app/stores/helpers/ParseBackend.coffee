@@ -170,7 +170,7 @@ class ParseBackend
     cards  = {}
     cardQuery = new Parse.Query Card
     cardQuery.limit num
-    cardQuery.notContainedIn 'hasPreffed', [user.id]
+    #cardQuery.notContainedIn 'hasPreffed', [user.id]
     #cardQuery.skip Math.floor(Math.random() * 180)
     cardQuery.find
       success: (results) =>

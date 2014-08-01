@@ -24,3 +24,32 @@
   color: $white;
   text-align: left;
 }
+
+.status__pref__choice {
+  color: $white;
+}
+
+.status__pref__question {
+  color: $white;
+  font-size: 20px;
+}
+
+.status__pref__percentage--red {
+  background-color: $rainbow-red;
+  z-index: -10;
+}
+
+.status__pref__percentage--yellow {
+  background-color: $rainbow-yellow;
+  z-index: -10;
+}
+
+.status__pref__percentage--green {
+  background-color: $rainbow-green;
+  z-index: -10;
+}
+
+.status__pref__percentage--blue {
+  background-color: $rainbow-blue;
+  z-index: -10;
+}

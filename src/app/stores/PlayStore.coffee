@@ -42,7 +42,7 @@ class PlayStore extends EventHandler
     @_game.loadNextStage()
 
   _nextCard: ->
-    console.log 'playstore nextcard'
+    #console.log 'playstore nextcard'
     if @_cardPosition is @_cardIndex.length - 1
       @_game.loadStatus()
       @_cardPosition = 0
@@ -52,7 +52,7 @@ class PlayStore extends EventHandler
       @emit Constants.stores.CARD_CHANGE, @_cardPosition
 
   _prevCard: ->
-    console.log 'playstore prevcard'
+    #console.log 'playstore prevcard'
     @_cardPosition--
     @_loadCard @_cardPosition
     @emit Constants.stores.CARD_CHANGE, @_cardPosition

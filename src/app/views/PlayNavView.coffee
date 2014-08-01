@@ -79,11 +79,11 @@ class PlayNavView extends View
 
   initEvents: =>
     @leftArrow.on 'click', =>
-      console.log 'left arrow'
+      #console.log 'left arrow'
       @_eventOutput.emit('click', 'prevCard')
 
     @rightArrow.on 'click', =>
-      console.log 'right arrow'
+      #console.log 'right arrow'
       @_eventOutput.emit('click', 'nextCard')
 
   initViewState: =>
@@ -93,7 +93,7 @@ class PlayNavView extends View
     @hideLeftArrow()
 
   updateViewState: (cardIndex) =>
-    console.log cardIndex
+    #console.log cardIndex
     if cardIndex is 0
       @hideLeftArrow()
       @showRightArrow()
@@ -104,13 +104,13 @@ class PlayNavView extends View
       @showLeftArrow()
 
   showNav: =>
-    console.log 'show nav'
-    console.log @layout.wrapper.states
+    #console.log 'show nav'
+    #console.log @layout.wrapper.states
     Utils.animate @mainMod, @layout.wrapper.states[0]
 
   hideNav: =>
-    console.log 'hide nav'
-    console.log @layout.wrapper.states[1]
+    #console.log 'hide nav'
+    #console.log @layout.wrapper.states[1]
     Utils.animate @mainMod, @layout.wrapper.states[1]
 
   showLeftArrow: =>

@@ -96,9 +96,16 @@ class StageState extends EventHandler
   _fetchLikeness: (cards) ->
     DB.getPrefCounts(cards,
       (results) =>
-        console.log results
+        # mash up results with cards played
+        for own id, card of cards
+          for choice in card.choices
+            unless choice.id of results[id].choices
+              results[id].choices[choice.id] = {
+                choiceText: choice.text
+                count: 0
+              }
+        # TODO: handle edge case: no results
         @_status['stats'] = results
-        @_status['played'] = cards
         @emit Constants.stores.STATUS_CHANGE
       )
 
