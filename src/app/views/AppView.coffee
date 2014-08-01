@@ -68,7 +68,7 @@ class AppView extends View
     MenuActions.selectMenuItem AppStateStore.getCurrentPageID()
 
   initListeners: ->
-    AppStateStore.on Constants.stores.CHANGE, @togglePage
+    AppStateStore.on Constants.stores.MENU_CHANGE, @togglePage
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
