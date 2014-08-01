@@ -29,7 +29,7 @@ module.exports =
     states: [
       {
         delay: 0
-        align: [0.5, 0.12]
+        align: [0.5, 0.3]
         transform: Transform.translate null, null, 0
         transition: {duration: 500, curve: Easing.inQuad}
       }
