@@ -103,7 +103,9 @@ importer =
   updateBackwardPermissions: ->
     promise = new Parse.Promise()
     # ADD user to friends' roles
-    @_updateFriendRole promise, 0
+    if @peggFriends.length > 0
+    # only run if user has at least one friend in the app
+      @_updateFriendRole promise, 0
 
   _updateFriendRole: (promise, index) ->
     query = new Parse.Query Parse.Role

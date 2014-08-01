@@ -111,7 +111,9 @@
     updateBackwardPermissions: function() {
       var promise;
       promise = new Parse.Promise();
-      return this._updateFriendRole(promise, 0);
+      if (this.peggFriends.length > 0) {
+        return this._updateFriendRole(promise, 0);
+      }
     },
     _updateFriendRole: function(promise, index) {
       var fbFriendRoleName, query;
