@@ -33,7 +33,7 @@ class PrefStatusView extends View
 
     @itemsScrollView = new Scrollview
       direction: Utility.Direction.Y
-      paginated: true
+      paginated: false
       margin: 300
     @itemsScrollView.sequenceFrom @_itemViews
     itemsScrollViewMod = new StateModifier
