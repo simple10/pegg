@@ -23,7 +23,7 @@ ChoicesView = require 'views/ChoicesView'
 class CardView extends View
   @DEFAULT_OPTIONS:
     width: window.innerWidth - window.innerWidth * .1
-    height: window.innerHeight - window.innerHeight * .38
+    height: window.innerHeight - window.innerHeight * .35
     depth: -5
     borderRadius: 10
     transition:
@@ -41,16 +41,13 @@ class CardView extends View
     super options
     @card = card
     @id = id
-    width = @options.width
-    height = @options.height
-    depth = @options.depth
-    @initCard width, height, depth
-    @initQuestion width, height, depth
-    @initChoices width, Math.floor(height/5)
-    @initAnswer width, height, depth
+    @initCard()
+    @initQuestion()
+    @initChoices()
+    @initAnswer()
     @initGestures()
 
-  initCard: (width, height, depth) ->
+  initCard: ->
     if @card.question.length > 90
       @options.question.classes = ["#{@options.question.classes}--medium"]
     @state = new StateModifier
@@ -58,19 +55,19 @@ class CardView extends View
     @mainNode = @add @state
     ## Front Card
     @front = new ImageSurface
-      size: [ width, height ]
+      size: [ @options.width, @options.height ]
       content: 'images/Card_White.png'
     modifier = new Modifier
-      transform: Transform.translate 0, 0, depth/2
+      transform: Transform.translate 0, 0, @options.depth/2
     @front.on 'click', @toggleChoices
     @mainNode.add(modifier).add @front
     ## Back Card
     @back = new ImageSurface
-      size: [ width, height ]
+      size: [ @options.width, @options.height ]
       content: 'images/Card_White.png'
     modifier = new Modifier
       transform: Transform.multiply(
-        Transform.translate(0, 0, -depth/2)
+        Transform.translate(0, 0, -@options.depth/2)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
@@ -80,7 +77,7 @@ class CardView extends View
     @back.on 'click', =>
       @_eventOutput.emit 'comment', @
 
-  initQuestion: (width, height, depth) ->
+  initQuestion: ->
     @frontProfilePic = new ImageSurface
       size: [@options.pic.width, @options.pic.height]
       content: "#{@card.pic}/?height=200&type=normal&width=200"
@@ -89,53 +86,53 @@ class CardView extends View
         borderRadius: "#{@options.pic.width}px"
     @frontProfilePic.on 'click', @toggleChoices
     @frontProfilePicMod = new StateModifier
-      transform: Transform.translate 0, -110, depth/2 + 2
+      transform: Transform.translate 0, -110, @options.depth/2 + 2
 #    if @card.peggee?
 #      question = @card.firstName + ", " + @card.question.charAt(0).toLowerCase() + @card.question.slice(1)
 #    else
       question = @card.question
     @frontQuestion = new Surface
-      size: [ width, height ]
+      size: [ @options.width, @options.height ]
       classes: @options.question.classes
       content: question
     @qModifier = new StateModifier
-      transform: Transform.translate 0, height/2 + -40, depth/2 + 2
+      transform: Transform.translate 0, @options.height/2 + -40, @options.depth/2 + 2
     @frontQuestion.on 'click', @toggleChoices
     @mainNode.add(@qModifier).add @frontQuestion
     @mainNode.add(@frontProfilePicMod).add @frontProfilePic
 
-  initChoices: (width, height) ->
+  initChoices: ->
     @showChoices = true
-    @choicesView = new ChoicesView {width: width, height: 50}
+    @choicesView = new ChoicesView {width: @options.width, height: @options.height}
     @choicesMod = new StateModifier
     @mainNode.add(@choicesMod).add @choicesView
     @choicesMod.setTransform Transform.translate(0,0,-10)
 
-  initAnswer: (width, height, depth) ->
+  initAnswer: ->
     @backImage = new ImageSurface
-      size: [width - 40, null]
+      size: [@options.width - 40, null]
       classes: ['card__back__image']
       properties:
         borderRadius: "#{@options.borderRadius}px"
-        maxHeight: "#{height - 100}px"
+        maxHeight: "#{@options.height - 100}px"
     
     @backImage.on 'click', =>
       #TODO Expand image when
 
     @backImageModifier = new StateModifier
       transform: Transform.multiply(
-        Transform.translate(0, -100, -depth/2 - 2)
+        Transform.translate(0, -100, -@options.depth/2 - 2)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
         )
       )
     @backText = new Surface
-      size: [width - 40, null]
+      size: [@options.width - 40, null]
       classes: ['card__back__text']
     @backTextModifier = new StateModifier
       transform: Transform.multiply(
-        Transform.translate(0, -160, -depth/2 - 2)
+        Transform.translate(0, -160, -@options.depth/2 - 2)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
@@ -150,7 +147,7 @@ class CardView extends View
       content: 'images/add-image.png'
     @addImageModifier = new StateModifier
       transform: Transform.multiply(
-        Transform.translate(0, 160, -depth/2 - 2)
+        Transform.translate(0, 150, -@options.depth/2 - 2)
         Transform.multiply(
             Transform.rotateZ Math.PI
             Transform.rotateX Math.PI
@@ -239,6 +236,7 @@ class CardView extends View
       @addImageModifier.setTransform Transform.translate 0,0, -1000
     else
       PlayActions.pref @id, choice.id
+      PlayActions.plug @id, choice.image
       @flip choice
 
   choiceFail: (choice, i) =>
