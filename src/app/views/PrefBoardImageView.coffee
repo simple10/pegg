@@ -7,41 +7,51 @@ Transform = require 'famous/core/Transform'
 
 Utils = require 'lib/Utils'
 
-class PeggBoardImageView extends View
+class PrefBoardImageView extends View
   @DEFAULT_OPTIONS:
     data: {}
     height: 100
     width: 100
+    gutter: 5
 
   constructor: (options) ->
     super options
 
     @initSurfaces()
+    @initListeners()
 
   initSurfaces: () ->
     
     ## Container ##
-    @container = new ContainerSurface
+    @containerMod = new StateModifier
       size: [@options.width, @options.height]
+    @container = new ContainerSurface
+      size: [@options.width - @options.gutter, @options.height - @options.gutter]
       properties:
         overflow: 'hidden'
+        margin: ~~(@options.gutter/2)+'px'
 
     ## Image ##
     @image = new ImageSurface
-      size: [true, true]
+      size: [undefined, undefined]
       content: 'http://media0.giphy.com/media/jj2A4jj5D2qre/200.gif'
     @imageMod = new StateModifier
-      origin: [0.5, 0.5]
-      align: [0.5, 0.5]
+      origin: [0, 0]
+      align: [0, 0]
 
     ## Add to render tree
-    @add(@container).add(@imageMod).add(@image)
+    @container.add(@imageMod).add(@image)
+    @add(@containerMod).add(@container)
+
+  initListeners: () ->
+    @image.pipe @_eventOutput
 
   _updateImageSize: () ->
     # TODO - use original image ratio to determine new image size
+    console.log @image.getSize()
 
   showFullSize: () ->
     # TODO - black out the background, show a larger version of the image, display a nav bar
 
 
-module.exports = PeggBoardImageView
+module.exports = PrefBoardImageView

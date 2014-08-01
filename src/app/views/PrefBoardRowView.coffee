@@ -5,13 +5,15 @@ Transform = require 'famous/core/Transform'
 Utility = require 'famous/utilities/Utility'
 
 Utils = require 'lib/Utils'
-PeggBoardImageView = require 'views/PeggBoardImageView'
+PrefBoardImageView = require 'views/PrefBoardImageView'
 
-class PeggBoardRowView extends View
+class PrefBoardRowView extends View
   @DEFAULT_OPTIONS:
     data: []
+    width: Utils.getViewportWidth()
+    height: Utils.getViewportHeight()
     columns: 4
-    spacing: 5
+    gutter: 5
     transition: {
       duration: 300
       curve: 'easeInOut'
@@ -31,25 +33,28 @@ class PeggBoardRowView extends View
 
     @images = []
     for datum,i in @options.data
-      # offset is equal to album (width + spacing) * row position
+      # offset is equal to album (width + gutter) * row position
       # multiply by -1 to move it off the screen
-      offset = (w + @options.spacing) * (i+1) * -1;
+      offset = w * -1;
       mod = new StateModifier
         transform: Transform.translate(offset, 0, 0)
         opacity: 0.1
       mod._offset = offset
 
-      image = new PeggBoardImageView
+      image = new PrefBoardImageView
+        gutter: @options.gutter
         width: w
         height:h
         data: datum
+
+      image.pipe @_eventOutput
       image._mod = mod;
       
       @images.push(image)
 
     row = new SequentialLayout
       direction: Utility.Direction.X,
-      itemSpacing: 5
+      itemSpacing: 0
       defaultItemSize: [w, h]
     row.sequenceFrom(@images)
 
@@ -58,7 +63,7 @@ class PeggBoardRowView extends View
 
   getImageWidth: () ->
     cols = @options.columns
-    (Utils.getViewportWidth() - (cols - 1) * @options.spacing) / cols
+    @options.width / cols
 
   getImageHeight: () ->
     @getImageWidth()
@@ -79,4 +84,4 @@ class PeggBoardRowView extends View
       )
       mod.setOpacity(0.1, @options.transition)
 
-module.exports = PeggBoardRowView
+module.exports = PrefBoardRowView
