@@ -31,11 +31,11 @@ class PrefStatusView extends View
     container = new ContainerSurface
       size: [window.innerWidth, window.innerHeight]
 
-    itemsScrollView = new Scrollview
+    @itemsScrollView = new Scrollview
       direction: Utility.Direction.Y
       paginated: true
       margin: 300
-    itemsScrollView.sequenceFrom @_itemViews
+    @itemsScrollView.sequenceFrom @_itemViews
     itemsScrollViewMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
@@ -69,7 +69,7 @@ class PrefStatusView extends View
       prefStatusItem = new PrefStatusItemView
       @_itemViews.push prefStatusItem
       @_statsViews.push prefStatusItem
-      prefStatusItem.pipe itemsScrollView
+      prefStatusItem.pipe @itemsScrollView
       i++
 
     next = new ImageSurface
@@ -92,17 +92,19 @@ class PrefStatusView extends View
     @_itemViews.push nextNode
     @_itemViews.push shareNode
 
-    container.add(itemsScrollViewMod).add itemsScrollView
+    container.add(itemsScrollViewMod).add @itemsScrollView
 
     @add container
     next.on 'click', ->
       PlayActions.nextStage()
+
 
   load: (data) ->
     i = 0
     for own id, stat of data.stats
       @_statsViews[i].load stat
       i++
+    @itemsScrollView.goToPage(0)
 
 
 
