@@ -16,6 +16,7 @@ class ChoicesView extends View
     width: null
     height: 30
     padding: 40
+    containerHeight: 260
     innerWidth: window.innerWidth - window.innerWidth * .2
 
   constructor: () ->
@@ -24,6 +25,12 @@ class ChoicesView extends View
   load: (cardId) ->
     choices = PlayStore.getChoices(cardId)
     @choices = []
+    container = new ContainerSurface
+      size: [@options.width, @options.containerHeight]
+      properties:
+        overflow: 'hidden'
+      classes: ['card__options__box']
+
     @scrollView = new Scrollview
       size: [ @options.width, @options.height ]
     @scrollView.sequenceFrom @choices
@@ -31,23 +38,14 @@ class ChoicesView extends View
     for choice in choices
       choiceText = choice.text
       if choiceText
-        if choiceText.length > 30
-          height = 50 + Math.floor(choiceText.length/30) * 8
-        else
-          height = @options.height
+#        if choiceText.length > 30
+#          height = 50 + Math.floor(choiceText.length/30) * 8
+#        else
+        height = @options.containerHeight / 4
         if i % 2
           color = 'light'
         else
           color = 'dark'
-        # choiceSurface = new Surface
-        #   size: [ @options.width-6, height ]
-        #   classes: ["card__front__option", "#{color}"]
-        #   content: "
-        #             <div class='outerContainer' style='width: #{@options.innerWidth}px; height: #{height}px;'>
-        #               <div class='innerContainer'>
-        #                #{choiceText}
-        #               </div>
-        #             </div>"
         choiceView = new ChoiceView
           width: @options.width
           height: height
@@ -70,11 +68,7 @@ class ChoicesView extends View
     #  classes: ['card__front__input']
     #surfaces.push newChoice
 
-    container = new ContainerSurface
-      size: [@options.width, 220]
-      properties:
-        overflow: 'hidden'
-      classes: ['card__options__box']
+
 
     container.add @scrollView
     @add container
