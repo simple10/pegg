@@ -26,6 +26,8 @@ module.exports =
     CHANGE: null
 
     # Specific
+    LOGIN_CHANGE: null
+    MENU_CHANGE: null
     CARD_RATED: null
     UNLOCK_ACHIEVED: null
     PREF_SAVED: null
