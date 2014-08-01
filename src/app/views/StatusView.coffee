@@ -9,6 +9,7 @@ PlayActions = require 'actions/PlayActions'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 PeggStatusView = require 'views/PeggStatusView'
 PrefStatusView = require 'views/PrefStatusView'
+DoneStatusView = require 'views/DoneStatusView'
 Utils = require 'lib/Utils'
 
 class StatusView extends View
@@ -38,17 +39,32 @@ class StatusView extends View
       origin: @options.view.origin
     container.add(@peggStatusMod).add @peggStatus
 
+    ## DONE STATUS ##
+    @doneStatus = new DoneStatusView
+      size: @options.view.size
+    @doneStatusMod = new StateModifier
+      align: @options.view.align
+      origin: @options.view.origin
+    container.add(@doneStatusMod).add @doneStatus
+
     @add container
 
   load: (status) ->
     switch status.type
       when 'friend_ranking'
         @peggStatus.load status
+        Utils.animate @peggStatusMod, @options.view.states[0] #show
         Utils.animate @prefStatusMod, @options.view.states[1]
-        Utils.animate @peggStatusMod, @options.view.states[0]
+        Utils.animate @doneStatusMod, @options.view.states[1]
       when 'likeness_report'
         @prefStatus.load status
-        Utils.animate @prefStatusMod, @options.view.states[0]
+        Utils.animate @prefStatusMod, @options.view.states[0] #show
+        Utils.animate @peggStatusMod, @options.view.states[1]
+        Utils.animate @doneStatusMod, @options.view.states[1]
+      when 'peggs_done', 'prefs_done'
+        @doneStatus.load status
+        Utils.animate @doneStatusMod, @options.view.states[0] #show
+        Utils.animate @prefStatusMod, @options.view.states[1]
         Utils.animate @peggStatusMod, @options.view.states[1]
 
 

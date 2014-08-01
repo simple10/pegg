@@ -46,30 +46,34 @@ class StageState extends EventHandler
 
   _fetchPrefs: (num) ->
     # Gets unanswered preferences: cards the user answers about himself
-    @_cardSet  = {}
+    cardsLoaded = false
     DB.getPrefCards( num, UserStore.getUser()
       (cards) =>
-        if cards?
-          @_cardSet = cards
-          for own id, card of cards
-            @_fetchPrefChoices id
+        @_cardSet = cards
+        for own id, card of cards
+          cardsLoaded = true
+          @_fetchPrefChoices id
+        if cardsLoaded
           @_playerId =  UserStore.getUser().id
           @emit Constants.stores.CARDS_CHANGE
+        else
+          @_fetchPrefsDone()
     )
 
   _fetchPeggs: (num) ->
     # Gets unpegged preferences: cards the user answers about a friend
-    @_cardSet = {}
+    cardsLoaded = false
     DB.getPeggCards( num, UserStore.getUser()
       (cards) =>
-        if cards?
-          @_cardSet = cards
-          friend = ""
-          for own id, card of cards
-            friend = card.peggee
-            @_fetchPeggChoices id, friend
-          @_playerId = friend
+        @_cardSet = cards
+        for own id, card of cards
+          cardsLoaded = true
+          @_playerId = card.peggee
+          @_fetchPeggChoices id, @_playerId
+        if cardsLoaded
           @emit Constants.stores.CARDS_CHANGE
+        else
+          @_fetchPeggsDone()
     )
 
   _fetchPrefChoices: (cardId) ->
@@ -108,6 +112,14 @@ class StageState extends EventHandler
         @_status['stats'] = results
         @emit Constants.stores.STATUS_CHANGE
       )
+
+  _fetchPrefsDone: ->
+    @_status['type'] = 'prefs_done'
+    @emit Constants.stores.STATUS_CHANGE
+
+  _fetchPeggsDone: ->
+    @_status['type'] = 'peggs_done'
+    @emit Constants.stores.STATUS_CHANGE
 
 
 module.exports = StageState

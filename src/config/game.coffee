@@ -6,25 +6,26 @@ config =
           # type: 'pref'
           type: 'pref'
           # type: 'pegg'
-          size: 3
+          size: 1
         }
         {
           type: 'likeness_report'
-          # How am I doing about myself?
+          # What did everyone else pick?
+          done: 'You\'ve pegged yourself plenty.<br/>Give it a rest for a day.'
         }
       ]
-      [      # stage 2
+      [     # stage 2
         {
           type: 'pegg'
-          size: 3
+          size: 1
         }
         {
           type: 'friend_ranking'
           # How do I compare to his friends?
+          done: 'You\'ve nobody left to pegg!<br/>Invite some friends...'
         }
       ]
     ]
-
   scripts:
     cosmic_unicorn:
       fail: [
