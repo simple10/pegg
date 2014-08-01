@@ -3,20 +3,20 @@ Transform = require 'famous/core/Transform'
 
 module.exports =
   logo:
-    size: [undefined, 220]
+    size: [320, 220]
     classes: ['login__logo']
     align: [0.5, 0]
     origin: [0.5, 1]
     states: [
       {
         delay: 10
-        scale: [0, 0, 0]
+#        scale: [0, 0, 0]
         transition: {duration: 500, curve: Easing.inBounce}
       }
       {
         delay: 50
         align: [0.5, 0.4]
-        scale: [1, 1, 0]
+#        scale: [1, 1, 0]
         transition: {duration: 500, curve: Easing.inOutBack}
       }
     ]
