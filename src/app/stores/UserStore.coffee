@@ -3,6 +3,8 @@ Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 
+DB = require 'stores/helpers/ParseBackend'
+
 class UserStore extends EventEmitter
   _subscribed: false
 
@@ -73,6 +75,12 @@ class UserStore extends EventEmitter
       return true
     else
       return false
+
+  getPrefImages: ->
+    user = @getUser()
+    userId = user.id
+    DB.getPrefImages userId, (images) =>
+      @emit Constants.stores.PREF_IMAGES_CHANGE, images
 
   getSubscriptionStatus: ->
     return @_subscribed

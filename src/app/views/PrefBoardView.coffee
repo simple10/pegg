@@ -26,8 +26,6 @@ class PrefBoardView extends View
     @init()
 
   init: () ->
-    @rows = []
-
     @container = new ContainerSurface
       size: [@options.width, @options.height]
       classes: ['peggBoard']
@@ -43,11 +41,21 @@ class PrefBoardView extends View
       paginated: false
       margin: 500
 
-    pics = @getPics()
+    @container.add @scrollview
+    @container.pipe @scrollview
+    @add(@container)
+
+  loadImages: (images) ->
+    # TEMP
+    # images = [1..20]
+    
+    # TODO will need to figure out some way of reusing current surfaces
+    @rows = []
+    @scrollview.sequenceFrom @rows
 
     ## Initialize Rows
-    while pics.length
-      set = pics.splice 0, @options.columns
+    while images.length
+      set = images.splice 0, @options.columns
       row = new PrefBoardRowView
         width: @options.width
         height: @options.height
@@ -57,15 +65,5 @@ class PrefBoardView extends View
 
       row.pipe @scrollview
       @rows.push row
-
-    @scrollview.sequenceFrom @rows
-    @container.add @scrollview
-    @container.pipe @scrollview
-    @add(@container)
-    
-
-  getPics: () ->
-    # TODO implement this
-    return [1..20]
 
 module.exports = PrefBoardView

@@ -46,10 +46,6 @@ class PrefBoardImageView extends View
   initListeners: () ->
     @image.pipe @_eventOutput
 
-  _updateImageSize: () ->
-    # TODO - use original image ratio to determine new image size
-    console.log @image.getSize()
-
   showFullSize: () ->
     # TODO - black out the background, show a larger version of the image, display a nav bar
 

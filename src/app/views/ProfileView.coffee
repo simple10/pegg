@@ -35,6 +35,7 @@ class ProfileView extends View
       profileContainerHeight: (Utils.getViewportHeight() - @options.headerHeight) * @options.profileContainerRatio
 
     @init()
+    @initListeners()
 
   _update: =>
     @pic.setContent UserStore.getAvatar 'height=300&type=normal&width=300'
@@ -83,6 +84,9 @@ class ProfileView extends View
       height: (Utils.getViewportHeight() - @options.headerHeight) * (1 - @options.profileContainerRatio)
       gutter: 5
 
+    ## Retrieve Pref Images ##
+    UserStore.getPrefImages()
+
     @picContainer.add @pic
     # @picContainer.add(@nameMod).add @name
     @add(picMod).add @picContainer
@@ -94,5 +98,8 @@ class ProfileView extends View
     # logoutMod.setTransform Transform.translate(0, -200, 0), {duration: 800, easing: Easing.outBounce}
     nameMod.setTransform Transform.translate(0, 160, 0), {duration: 500, easing: Easing.outCubic}
 
+  initListeners: ->
+    UserStore.on Constants.stores.PREF_IMAGES_CHANGE, (images) =>
+      @prefBoard.loadImages images
 
 module.exports = ProfileView
