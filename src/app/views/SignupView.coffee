@@ -20,6 +20,7 @@ class SignupView extends View
 
   constructor: (options) ->
     super options
+    @letmeinCount = 0
     @initListeners()
     @initSplash()
 
@@ -49,6 +50,12 @@ class SignupView extends View
     Utils.animateAll markMod, @options.mark.states
 
     @initSignUp()
+
+    logoSurface.on 'click', =>
+      @letmeinCount++
+      if @letmeinCount > 3
+        MenuActions.selectMenuItem 'login'
+
 
 
   initSignUp: ->
