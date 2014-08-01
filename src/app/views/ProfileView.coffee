@@ -10,6 +10,8 @@ Easing = require 'famous/transitions/Easing'
 UserStore = require 'stores/UserStore'
 Constants = require 'constants/PeggConstants'
 
+PeggBoardView = require 'views/PeggBoardView'
+
 class ProfileView extends View
   @DEFAULT_OPTIONS:
     width: window.innerWidth
@@ -57,9 +59,16 @@ class ProfileView extends View
     logout.on 'click', ->
       UserStore.logout()
 
+    @peggBoardMod = new StateModifier
+      align: [0.5, 0.45]
+      origin: [0.5, 0]
+    @peggBoard = new PeggBoardView
+
     @add(picMod).add @pic
     @add(nameMod).add @name
-    @add(logoutMod).add logout
+    # @add(logoutMod).add logout
+    @add(@peggBoardMod).add @peggBoard
+
     picMod.setAlign [0.5, -0.5], {duration: 300, easing: Easing.linear}
     logoutMod.setTransform Transform.translate(0, -200, 0), {duration: 800, easing: Easing.outBounce}
     nameMod.setTransform Transform.translate(0, 160, 0), {duration: 500, easing: Easing.outCubic}
