@@ -84,9 +84,11 @@ class UserStore extends EventEmitter
 
   getPrefImages: ->
     user = @getUser()
-    userId = user.id
-    DB.getPrefImages userId, (images) =>
-      @emit Constants.stores.PREF_IMAGES_CHANGE, images
+    console.log user
+    if user
+      userId = user.id
+      DB.getPrefImages userId, (images) =>
+        @emit Constants.stores.PREF_IMAGES_CHANGE, images
 
   getSubscriptionStatus: ->
     return @_subscribed
