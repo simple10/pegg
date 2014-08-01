@@ -31,18 +31,18 @@ class PeggStatusView extends View
         overflow: 'hidden'
     userPic = new ImageSurface
       classes: ['status__peggee__pic']
-      size: [200, 200]
+      size: [150, 150]
       properties:
         borderRadius: '200px'
     userPicMod = new StateModifier
-      align: [0.5, 0.04]
+      align: [0.5, 0.02]
       origin: [0.5, 0]
     container.add(userPicMod).add userPic
     userName = new Surface
       classes: ['status__peggee__name']
       size: [window.innerWidth, 50]
     userNameMod = new StateModifier
-      align: [0.5, 0.3]
+      align: [0.5, 0.28]
       origin: [0.5, 0]
     container.add(userNameMod).add userName
 
@@ -82,20 +82,20 @@ class PeggStatusView extends View
 
   load: (data) ->
     console.log data
-    if data.points.length > 0
-      peggee = data.points[0].peggee
+    if data.stats.length > 0
+      peggee = data.stats[0].peggee
       userName.setContent "#{peggee.get 'first_name'} #{peggee.get 'last_name'}"
-      userPic.setContent "#{peggee.get 'avatar_url'}?height=300&type=normal&width=300"
+      userPic.setContent "#{peggee.get 'avatar_url'}?height=150&type=normal&width=150"
 
       i = 0
-      for point in data.points
-        itemViews[i].load point
+      for stat in data.stats
+        if !itemViews[i]?
+          itemViews.push new PeggStatusItemView
+        itemViews[i].load stat
         i++
 
-      while itemViews.length > data.points.length
+      while itemViews.length > data.stats.length
         itemViews.pop()
-
-    return
 
 
 

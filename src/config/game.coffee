@@ -5,10 +5,11 @@ config =
         {
           # type: 'pref'
           type: 'pref'
+          # type: 'pegg'
           size: 3
         }
         {
-          type: 'profile_progress'
+          type: 'likeness_report'
           # How am I doing about myself?
         }
       ]

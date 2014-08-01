@@ -63,15 +63,21 @@ class UserStore extends EventEmitter
     Parse.User.current()
 
   getName: (part) ->
-    if Parse.User.current()
-      return Parse.User.current().get("#{part}_name")
+    user = @getUser()
+    if user?
+      user.get "#{part}_name"
+    else
+      'not logged in'
 
   getAvatar: (params)->
-    if Parse.User.current()
-      return Parse.User.current().get('avatar_url') + "?#{params}"
+    user = @getUser()
+    if user?
+      user.get('avatar_url') + "?#{params}"
+    else
+      'not logged in'
 
   getLoggedIn: ->
-    if Parse.User.current()
+    if @getUser()
       return true
     else
       return false

@@ -57,8 +57,7 @@ fixtures = {
 
 describe 'PlayStore', ->
   beforeEach ->
-    PlayStore._loadGame fixtures.gameFlow
-    PlayStore._loadScript fixtures.scripts.fluffy_unicorn
+    PlayStore._loadGame fixtures.gameFlow, fixtures.scripts.fluffy_unicorn
     @stage0 = PlayStore._game._stages[0]
     @stage1 = PlayStore._game._stages[1]
 

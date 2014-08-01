@@ -84,9 +84,9 @@ pickView = ->
   else
     lightbox.show signupView
 
-#AppStateStore.on Constants.stores.CHANGE, pickView
+AppStateStore.on Constants.stores.LOGIN_CHANGE, pickView
 UserStore.on Constants.stores.CHANGE, pickView
 
-mainContext.add new FpsMeter
+#mainContext.add new FpsMeter
 
 

@@ -68,7 +68,7 @@ class AppView extends View
     MenuActions.selectMenuItem AppStateStore.getCurrentPageID()
 
   initListeners: ->
-    AppStateStore.on Constants.stores.CHANGE, @togglePage
+    AppStateStore.on Constants.stores.MENU_CHANGE, @togglePage
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
@@ -82,7 +82,7 @@ class AppView extends View
       headerSize: @options.header.height
       footerSize: 0
     @layout.header.add @initHeader()
-#   @layout.footer.add @initFooter()
+#    @layout.footer.add @initFooter()
     @layout.content.add @initViewManager()
     @layoutState = new StateModifier
     @add(@layoutState).add @layout

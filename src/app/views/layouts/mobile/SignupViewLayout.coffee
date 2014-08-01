@@ -10,13 +10,13 @@ module.exports =
     states: [
       {
         delay: 0
-        scale: [0,0,0]
+#        scale: [0,0,0]
       }
       {
         delay: 30
         align: [0.5, 0.1]
         origin: [0.5, 0.1]
-        scale: [1,1,0]
+#        scale: [1,1,0]
         transition: {duration: 800, curve: Easing.outExpo}
       }
     ]
@@ -29,12 +29,12 @@ module.exports =
     states: [
       {
         delay: 35
-        scale: [1.3,1.3,0]
+#        scale: [1.3,1.3,0]
         transition: {duration: 300, curve: Easing.outExpo}
       }
       {
         delay: 55
-        scale: [1,1,0]
+#        scale: [1,1,0]
         transition: {duration: 300, curve: Easing.outExpo}
       }
     ]
@@ -90,7 +90,7 @@ module.exports =
     align: [0.5, -0.07]
     states: [
       {
-        align: [0.5, 0.9]
+        align: [0.5, 0.95]
         origin: [0.5, 0.5]
         transition: {duration: 1000, curve: Easing.outBounce}
       }

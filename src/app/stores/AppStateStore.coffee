@@ -25,7 +25,10 @@ class AppStateStore extends EventEmitter
   changePage: (pageID) ->
     @_currentPageID = pageID
     Parse.history.navigate(pageID, true);
-    @emit Constants.stores.CHANGE
+    if pageID is 'login' or pageID is 'signup'
+      @emit Constants.stores.LOGIN_CHANGE
+    else
+      @emit Constants.stores.MENU_CHANGE
     # TODO: stash currentPageID in Parse or localStorage and
     #   auto load previous app state when user returns to app.
 
