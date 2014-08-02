@@ -8,11 +8,12 @@ PlayActions =
       flow: flow
       script: script
 
-  pref: (card, choice) ->
+  pref: (card, choice, plug) ->
     AppDispatcher.handleViewAction
       actionType: Constants.actions.PREF_SUBMIT
       card: card
       choice: choice
+      plug: plug
 
   pegg: (peggee, card, choice, answer) ->
     AppDispatcher.handleViewAction

@@ -72,7 +72,7 @@ class ParseBackend
     newPegg.save()
     cb 'savePegg done'
 
-  savePref: (cardId, choiceId, userId, cb) ->
+  savePref: (cardId, choiceId, plugUrl, userId, cb) ->
     # INSERT into Pref table a row with user's choice
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -85,6 +85,7 @@ class ParseBackend
     newPref = new Parse.Object 'Pref'
     newPref.set 'answer', answer
     newPref.set 'card', card
+    newPref.set 'plug', plugUrl
     newPref.set 'user', preffer
     newPref.set 'ACL', newPrefAcl
     newPref.save()

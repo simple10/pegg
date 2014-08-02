@@ -235,8 +235,7 @@ class CardView extends View
         @choiceFail choice, i
       @addImageModifier.setTransform Transform.translate 0,0, -1000
     else
-      PlayActions.pref @id, choice.id
-      PlayActions.plug @id, choice.image
+      PlayActions.pref @id, choice.id, choice.image
       @flip choice
 
   choiceFail: (choice, i) =>
