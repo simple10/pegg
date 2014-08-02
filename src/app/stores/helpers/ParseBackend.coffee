@@ -226,10 +226,14 @@ class ParseBackend
       success: (choices) =>
         cards[cardId].choices = []
         for choice in choices
-          cards[cardId].choices.push
-            id: choice.id
-            text: choice.get 'text'
-            image: choice.get 'image'
+          text = choice.get 'text'
+          image = choice.get 'image'
+          # only add choices that are not blank
+          if image isnt '' and text isnt ''
+            cards[cardId].choices.push
+              id: choice.id
+              text: text
+              image: image
         cb cards
       error: (error) ->
         console.log "Error fetching choices: " + error.code + " " + error.message
