@@ -27,6 +27,9 @@ class AppStateStore extends EventEmitter
     Parse.history.navigate(pageID, true);
     if pageID is 'login' or pageID is 'signup'
       @emit Constants.stores.LOGIN_CHANGE
+    else if pageID is 'profile'
+      @emit Constants.stores.PROFILE_LOAD
+      @emit Constants.stores.MENU_CHANGE
     else
       @emit Constants.stores.MENU_CHANGE
     # TODO: stash currentPageID in Parse or localStorage and

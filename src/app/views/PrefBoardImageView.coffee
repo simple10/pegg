@@ -9,7 +9,7 @@ Utils = require 'lib/Utils'
 
 class PrefBoardImageView extends View
   @DEFAULT_OPTIONS:
-    data: {}
+    url: 'http://media0.giphy.com/media/jj2A4jj5D2qre/200.gif'
     height: 100
     width: 100
     gutter: 5
@@ -34,7 +34,7 @@ class PrefBoardImageView extends View
     ## Image ##
     @image = new ImageSurface
       size: [undefined, undefined]
-      content: 'http://media0.giphy.com/media/jj2A4jj5D2qre/200.gif'
+      content: @options.url
     @imageMod = new StateModifier
       origin: [0, 0]
       align: [0, 0]

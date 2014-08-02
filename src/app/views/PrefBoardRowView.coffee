@@ -32,7 +32,7 @@ class PrefBoardRowView extends View
       size: [null, h]
 
     @images = []
-    for datum,i in @options.data
+    for url,i in @options.data
       # offset is equal to album (width + gutter) * row position
       # multiply by -1 to move it off the screen
       offset = w * -1;
@@ -45,7 +45,7 @@ class PrefBoardRowView extends View
         gutter: @options.gutter
         width: w
         height:h
-        data: datum
+        url: url
 
       image.pipe @_eventOutput
       image._mod = mod;
@@ -68,6 +68,7 @@ class PrefBoardRowView extends View
   getImageHeight: () ->
     @getImageWidth()
 
+  # currently unused... to be used when animating in rows
   show: () ->
     for image in @images
       image._mod.setTransform(
@@ -75,6 +76,7 @@ class PrefBoardRowView extends View
         @options.transition
       )
 
+  # currently unused... to be used when animating in rows
   hide: () ->
     for image in @images
       mod = image._mod

@@ -84,7 +84,6 @@ class UserStore extends EventEmitter
 
   getPrefImages: ->
     user = @getUser()
-    console.log user
     if user
       userId = user.id
       DB.getPrefImages userId, (images) =>
