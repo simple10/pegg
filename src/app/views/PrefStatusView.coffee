@@ -17,14 +17,11 @@ RenderNode = require 'famous/core/RenderNode'
 
 class PrefStatusView extends View
   _itemViews: []
-  _statsViews: []
   _userName: ''
-  _userPhoto: ''
+  _userPic: ''
 
   constructor: (options) ->
     super options
-    @_userName = UserStore.getName 'first'
-    @_userPhoto = UserStore.getAvatar 'height=150&type=normal&width=150'
     @init()
 
   init: ->
@@ -41,36 +38,37 @@ class PrefStatusView extends View
       origin: [0, 0]
 
     userPicNode = new RenderNode
-    userPic = new ImageSurface
+    @_userPic = new ImageSurface
       classes: ['status__preffer__pic']
       size: [150, 150]
       properties:
         borderRadius: '200px'
-      content: @_userPhoto
     userPicMod = new StateModifier
       align: [0.5, 0]
       origin: [0.5, 0]
-    userPicNode.add(userPicMod).add userPic
+    userPicNode.add(userPicMod).add @_userPic
     @_itemViews.push userPicNode
 
     userNameNode = new RenderNode
-    userName = new Surface
+    @_userName = new Surface
       classes: ['status__preffer__name']
       size: [window.innerWidth, 50]
-      content: @_userName
     userNameMod = new StateModifier
       align: [0.5, 0]
       origin: [0.5, 0]
-    userNameNode.add(userNameMod).add userName
+    userNameNode.add(userNameMod).add @_userName
     @_itemViews.push userNameNode
 
-    i = 0
-    while i < 3
-      prefStatusItem = new PrefStatusItemView
-      @_itemViews.push prefStatusItem
-      @_statsViews.push prefStatusItem
-      prefStatusItem.pipe @itemsScrollView
-      i++
+
+    # On load() PrefStatusItemView will be added here in the @_itemViews array
+
+#    i = 0
+#    while i < @options.numCards
+#      prefStatusItem = new PrefStatusItemView
+#      @_itemViews.push prefStatusItem
+#      @_statsViews.push prefStatusItem
+#      prefStatusItem.pipe @itemsScrollView
+#      i++
 
     next = new ImageSurface
       content: 'images/continue_big_text.png'
@@ -100,11 +98,35 @@ class PrefStatusView extends View
 
 
   load: (data) ->
+    @_userName.setContent UserStore.getName 'first'
+    @_userPic.setContent UserStore.getAvatar 'height=150&type=normal&width=150'
+
+    debugger
+    # Remove all the PrefStatusItemViews
+    while @_itemViews.length > 4
+      @_itemViews.splice 2, 1
+
+    # Add back a PrefStatusItemViews for every stat
     i = 0
     for own id, stat of data.stats
-      @_statsViews[i].load stat
+      prefStatusItem = new PrefStatusItemView
+      prefStatusItem.load stat
+      prefStatusItem.pipe @itemsScrollView
+      @_itemViews.splice i + 2, 0, prefStatusItem
       i++
+
     @itemsScrollView.goToPage(0)
+
+#
+#
+#    fixedItems = @_itemViews.length - @options.numCards
+#    while @_itemViews.length > i + fixedItems
+#      # remove the unnecessary PrefStatusItemViews.
+#      # skip the first 3 items in the array
+#      @_itemViews.splice i + 2, 1
+#      @_statsViews.pop()
+
+
 
 
 
