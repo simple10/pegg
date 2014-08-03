@@ -180,7 +180,7 @@ class ParseBackend
             firstName: user.get 'first_name'
             pic: user.get 'avatar_url'
             question: card.get 'question'
-            choices: null
+            choices: []
           }
         cb cards
       error: (error) ->
@@ -211,7 +211,7 @@ class ParseBackend
             firstName: peggee.get 'first_name'
             pic: peggee.get 'avatar_url'
             question: card.get 'question'
-            choices: null
+            choices: []
             answer: pref.get 'answer'
           }
         cb cards
@@ -240,26 +240,33 @@ class ParseBackend
         cb null
 
   getPeggChoices: (cards, cardId, peggeeId, cb) ->
-    card = new Parse.Object 'Card'
-    card.set 'id', cardId
-    peggee = new Parse.Object 'User'
-    peggee.set 'id', peggeeId
-    prefQuery = new Parse.Query Pref
-    prefQuery.include 'answer'
-    prefQuery.equalTo 'user', peggee
-    prefQuery.equalTo 'card', card
-    prefQuery.first
-      success: (results) =>
-        if results? and results.get('plug')?
-          cards[cardId].choices.push
-            id: results.get('answer').id
-            text: results.get('answer').get 'text'
-            image: results.get 'plug'
+    # first get the default choices
+    # then replace the one the peggee preffed
+    @getPrefChoices(cards, cardId, (cards) ->
+      debugger
+      card = new Parse.Object 'Card'
+      card.set 'id', cardId
+      peggee = new Parse.Object 'User'
+      peggee.set 'id', peggeeId
+      prefQuery = new Parse.Query Pref
+      prefQuery.include 'answer'
+      prefQuery.equalTo 'user', peggee
+      prefQuery.equalTo 'card', card
+      prefQuery.first
+        success: (results) =>
           debugger
-        @getPrefChoices(cards, cardId, cb)
-      error: (error) ->
-        console.log "Error fetching choices: " + error.code + " " + error.message
-        cb null
+          for choice in cards[cardId].choices
+            if choice.id is results.get('answer').id
+              choice.id = results.get('answer').id
+              choice.text = results.get('answer').get 'text'
+              choice.image = results.get 'plug'
+              break
+          debugger
+          cb cards
+        error: (error) ->
+          console.log "Error fetching choices: " + error.code + " " + error.message
+          cb null
+    )
 
 #
 #    choiceQuery = new Parse.Query Choice
