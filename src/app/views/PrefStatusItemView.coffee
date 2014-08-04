@@ -37,11 +37,11 @@ class PrefStatusItemView extends View
     questionNode = new RenderNode
     @_question = new Surface
       classes: ['status__pref__question']
-      size: [window.innerWidth-40, 80]
+      size: [window.innerWidth-40, 40]
     questionMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
-      transform: Transform.translate 20, null, null
+      transform: Transform.translate 30, null, null
     questionNode.add(questionMod).add @_question
     @_sequence.push questionNode
 
@@ -99,7 +99,7 @@ class PrefStatusItemView extends View
     for id, choice of data.choices
       @_choices[i].setContent choice.choiceText
       @_percentages[i].setSize [ (window.innerWidth-60) * (choice.count / @_total) + 3, 10 ]
-      @_question.setSize [window.innerWidth-40, 80 + Math.floor(data.question.length/25) * 10]
+      @_question.setSize [window.innerWidth-40, 60 + Math.floor(data.question.length/25) * 10]
       if i is 3 then break
       i++
 
