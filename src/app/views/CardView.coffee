@@ -250,7 +250,6 @@ class CardView extends View
 
   flip: (choice) =>
     if choice?
-      debugger
       if @card.peggee?
         image = @card.plug
       else
