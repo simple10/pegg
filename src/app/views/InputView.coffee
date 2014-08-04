@@ -28,12 +28,9 @@ class InputView extends View
       @onInputFocus()
     @textInput.on 'keypress', (e) =>
       if e.keyCode is 13
-        console.log @textInput
-        # @textInput.setValue 'testing auto set value'
         @onInputBlur()
-        debugger
-        @_eventOutput.emit 'submit', @textInput.getValue()
-        #@textInput.setValue ''
+        @_eventOutput.emit 'submit', e.currentTarget.value
+        @textInput.setValue e.currentTarget.value
 
   onInputFocus: =>
     @textInput.focus()
