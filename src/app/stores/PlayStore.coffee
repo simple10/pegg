@@ -23,6 +23,9 @@ class PlayStore extends EventHandler
     @_message = new MessageState script
     @_nextStage()
 
+  _nextStage: ->
+    @_game.loadNextStage()
+
   _loadCard: (position) ->
     cardId = @_cardIndex[position]
     @_cards = @_game.getCards()
@@ -35,14 +38,8 @@ class PlayStore extends EventHandler
           @_comments = res
           @emit Constants.stores.COMMENTS_CHANGE
       )
-    else
-      # TODO: emit no cards to play
-
-  _nextStage: ->
-    @_game.loadNextStage()
 
   _nextCard: ->
-    #console.log 'playstore nextcard'
     if @_cardPosition is @_cardIndex.length - 1
       @_game.loadStatus()
       @_cardPosition = 0
@@ -52,7 +49,6 @@ class PlayStore extends EventHandler
       @emit Constants.stores.CARD_CHANGE, @_cardPosition
 
   _prevCard: ->
-    #console.log 'playstore prevcard'
     @_cardPosition--
     @_loadCard @_cardPosition
     @emit Constants.stores.CARD_CHANGE, @_cardPosition
