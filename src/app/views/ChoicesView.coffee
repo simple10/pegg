@@ -42,16 +42,16 @@ class ChoicesView extends View
 #          height = 50 + Math.floor(choiceText.length/30) * 8
 #        else
         height = @options.containerHeight / 4
-        if i % 2
-          color = 'light'
-        else
-          color = 'dark'
+#        if i % 2
+#          color = 'light'
+#        else
+#          color = 'dark'
         choiceView = new ChoiceView
           width: @options.width
           height: height
           innerWidth: @options.innerWidth
           choiceText: choiceText
-          color: color
+          #color: color
         choiceView.on 'click', ((i) ->
           @_eventOutput.emit 'choice', i
         ).bind @, i

@@ -95,8 +95,9 @@ class ChoiceFrontView extends View
     @mainNode.add @backing
 
   createBacking: () ->
+
     @backing = new Surface
-      classes: ["card__front__option", "option__front", "#{@options.color}"]
+      classes: ["card__front__option", "option__front"] #, "#{@options.color}"
       content: "
                 <div class='outerContainer' style='width: #{@options.innerWidth}px; height: #{@options.height}px;'>
                   <div class='innerContainer'>
@@ -139,7 +140,8 @@ class ChoiceBackView extends View
   # @param status {string} either 'fail' or 'win'
   update: (status) ->
     msg = PlayStore.getMessage(status)
-    @backing.setClasses(["card__front__option", "option__back", "#{@options.color}", "#{status}"])
+#    , "#{@options.color}"
+    @backing.setClasses(["card__front__option", "option__back", "#{status}"])
     @backing.setContent("
       <div class='outerContainer' style='width: #{@options.innerWidth}px; height: #{@options.height}px;'>
         <div class='innerContainer'>
