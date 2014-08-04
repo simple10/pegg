@@ -79,8 +79,8 @@ class ProfileView extends View
       content: 'Logout'
       classes: ['profile__logout__button']
     logoutMod = new StateModifier
-      align: [0.5, 1]
-      origin: [0.5, 1]
+      align: [0.5, 0.32]
+      origin: [0.5, 0]
     logout.on 'click', ->
       UserStore.logout()
 
@@ -98,8 +98,8 @@ class ProfileView extends View
     @picContainer.add @pic
     # @picContainer.add(@nameMod).add @name
     @add(picMod).add @picContainer
-    # @add(nameMod).add @name
-    # @add(logoutMod).add logout
+    @add(nameMod).add @name
+    @add(logoutMod).add logout
     @add(@prefBoardMod).add @prefBoard
 
     # picMod.setAlign [0.5, -0.5], {duration: 300, easing: Easing.linear}
