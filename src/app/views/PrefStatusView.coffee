@@ -14,6 +14,7 @@ UserStore = require 'stores/UserStore'
 Utility = require 'famous/utilities/Utility'
 PrefStatusItemView = require 'views/PrefStatusItemView'
 RenderNode = require 'famous/core/RenderNode'
+PlayStore = require 'stores/PlayStore'
 
 class PrefStatusView extends View
   _itemViews: []
@@ -44,7 +45,7 @@ class PrefStatusView extends View
       properties:
         borderRadius: '200px'
     userPicMod = new StateModifier
-      align: [0.5, 0]
+      align: [0.5, 0.05]
       origin: [0.5, 0]
     userPicNode.add(userPicMod).add @_userPic
     @_itemViews.push userPicNode
@@ -52,9 +53,9 @@ class PrefStatusView extends View
     userNameNode = new RenderNode
     @_userName = new Surface
       classes: ['status__preffer__name']
-      size: [window.innerWidth, 50]
+      size: [window.innerWidth, 175]
     userNameMod = new StateModifier
-      align: [0.5, 0]
+      align: [0.5, 0.1]
       origin: [0.5, 0]
     userNameNode.add(userNameMod).add @_userName
     @_itemViews.push userNameNode
@@ -98,10 +99,11 @@ class PrefStatusView extends View
 
 
   load: (data) ->
-    @_userName.setContent UserStore.getName 'first'
-    @_userPic.setContent UserStore.getAvatar 'height=150&type=normal&width=150'
+#    @_userName.setContent UserStore.getName 'first'
+    @_userName.setContent "What did everyone else choose?"
+#    @_userPic.setContent UserStore.getAvatar 'height=150&type=normal&width=150'
+    @_userPic.setContent PlayStore.getMessage 'unicorn'
 
-    debugger
     # Remove all the PrefStatusItemViews
     while @_itemViews.length > 4
       @_itemViews.splice 2, 1
