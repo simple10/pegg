@@ -54,7 +54,7 @@ class SignupView extends View
     logoSurface.on 'click', =>
       @letmeinCount++
       if @letmeinCount is 4
-        # TODO: keep from firing twice
+        @letmeinCount = 0
         MenuActions.selectMenuItem 'login'
 
 
