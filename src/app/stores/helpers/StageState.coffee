@@ -52,7 +52,7 @@ class StageState extends EventHandler
         @_cardSet = cards
         for own id, card of cards
           cardsLoaded = true
-          @_fetchPrefChoices id
+          @_fetchChoices id
         if cardsLoaded
           @_playerId =  UserStore.getUser().id
           @emit Constants.stores.CARDS_CHANGE
@@ -69,22 +69,15 @@ class StageState extends EventHandler
         for own id, card of cards
           cardsLoaded = true
           @_playerId = card.peggee
-          @_fetchPeggChoices id, @_playerId
+          @_fetchChoices id
         if cardsLoaded
           @emit Constants.stores.CARDS_CHANGE
         else
           @_fetchPeggsDone()
     )
 
-  _fetchPrefChoices: (cardId) ->
-    DB.getPrefChoices( @_cardSet, cardId
-      (cards) =>
-        @_cardSet = cards
-        @emit Constants.stores.CHOICES_CHANGE, cardId
-    )
-
-  _fetchPeggChoices: (cardId, friendId) ->
-    DB.getPeggChoices( @_cardSet, cardId, friendId
+  _fetchChoices: (cardId) ->
+    DB.getChoices( @_cardSet, cardId
       (cards) =>
         @_cardSet = cards
         @emit Constants.stores.CHOICES_CHANGE, cardId
@@ -103,12 +96,12 @@ class StageState extends EventHandler
         # mash up results with cards played
         for own id, card of cards
           for choice in card.choices
-            unless choice.id of results[id].choices
-              results[id].choices[choice.id] = {
-                choiceText: choice.text
-                count: 0
-              }
-        # TODO: handle edge case: no results
+            if results[id]?
+              unless choice.id of results[id].choices
+                results[id].choices[choice.id] = {
+                  choiceText: choice.text
+                  count: 0
+                }
         @_status['stats'] = results
         @emit Constants.stores.STATUS_CHANGE
       )
