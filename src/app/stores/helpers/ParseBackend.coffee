@@ -334,6 +334,22 @@ class ParseBackend
         console.log "Error: " + error.code + " " + error.message
         cb null
 
+  getPrefImages: (userId, cb) ->
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    prefImagesQuery = new Parse.Query Pref
+    prefImagesQuery.equalTo 'user', user
+    prefImagesQuery.find
+      success: (results) =>
+        images = []
+        for res in results
+          plug = res.get 'plug'
+          if plug then images.push plug
+        cb images
+      error: (error) =>
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
   saveQuestion: (authorId, question, cb) ->
     user = new Parse.Object 'User'
     user.set 'id',  authorId

@@ -48,6 +48,8 @@ module.exports =
     STATUS_CHANGE: null
     ACTIVITY_CHANGE: null
     PLUG_SAVED: null
+    PREF_IMAGES_CHANGE: null
+    PROFILE_LOAD: null
 
 
 
