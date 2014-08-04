@@ -4,7 +4,7 @@ config =
       [      # stage 1
         {
           # type: 'pref'
-          type: 'pegg'
+          type: 'pref'
           # type: 'pegg'
           size: 1
         }
@@ -17,7 +17,7 @@ config =
       [     # stage 2
         {
           type: 'pegg'
-          size: 1
+          size: 3
         }
         {
           type: 'friend_ranking'
@@ -53,6 +53,13 @@ config =
         'What did your friend choose?'
         'This isn\'t all about you.'
         'Can you pegg your friend?'
+      ]
+      unicorn: [
+        'images/Unicorn_Rookie1@2x.png'
+        'images/Unicorn_Space1@2x.png'
+        'images/Unicorn_Glowing1@2x.png'
+        'images/Unicorn_Cosmic1@2x.png'
+        'images/Unicorn_Fire1@2x.png'
       ]
 
 module.exports = config
