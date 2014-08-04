@@ -59,3 +59,14 @@
   color: $white;
   font-size: 25px;
 }
+
+
+​.status__pref__question__parent {
+   display: ​table;
+   margin-bottom: 20px;
+ }
+
+ .status__pref__question__child {
+   display: table-cell;
+   vertical-align: bottom;
+ }​

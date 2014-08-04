@@ -37,7 +37,7 @@ class PrefStatusItemView extends View
     questionNode = new RenderNode
     @_question = new Surface
       classes: ['status__pref__question']
-      size: [window.innerWidth-40, 40]
+      size: [window.innerWidth-40, 60]
     questionMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
@@ -91,7 +91,12 @@ class PrefStatusItemView extends View
     @_choices.push choice
 
   load: (data) =>
-    @_question.setContent data.question
+    @_question.setContent "
+      <div class='status__pref__question__parent'>
+          <div class='status__pref__question__child'>
+          #{data.question}
+          </div>
+      </div>​​​​​​​​​​​​​​​​​​​​​​​​"
     @_total = data.total
 
     console.log data
