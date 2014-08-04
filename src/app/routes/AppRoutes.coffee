@@ -8,13 +8,13 @@ AppRouter = Parse.Router.extend(
     "play": "play"
 
   login: ->
-    MenuActions.selectMenuItem "login"
+    #MenuActions.selectMenuItem "login"
 
   play: ->
     #MenuActions.selectMenuItem "play"
 
   decks: ->
-    MenuActions.selectMenuItem "decks"
+    #MenuActions.selectMenuItem "decks"
 )
 
 appRoutes = new AppRouter()
