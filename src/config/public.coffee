@@ -6,8 +6,8 @@ DEFAULT_ENV = 'dev'
 env_config =
   dev:
     parse:
-      jsKey: 'njMWLAbxk8oQz40BmaV4pgD4f0rwAdqchGA0eZeh'
-      appId: 'y72ZYB84RP5URmyme3Fg8yzZJvQB2xqXyKzwuUzk'
+      jsKey: 'oBVGtJcA1YL8qAHtRHE1sm46edv3CdxSDCCBAyH3'
+      appId: 'jOzfgxXTgD83QGnSyEcJgdCGEE4tNQz2bMEP4Zxe'
   production:
     parse:
       jsKey: 'XrA5EweJyzPmhxQZY6DqE8qotDmAk13s5JKhkyql'
