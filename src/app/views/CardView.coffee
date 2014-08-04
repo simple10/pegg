@@ -250,7 +250,11 @@ class CardView extends View
 
   flip: (choice) =>
     if choice?
-      image = choice.image
+      debugger
+      if @card.peggee?
+        image = @card.plug
+      else
+        image = choice.image
       text = choice.text
       Timer.after ( =>
         @backImage.setContent image
