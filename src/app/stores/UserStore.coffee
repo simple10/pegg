@@ -7,6 +7,58 @@ class UserStore extends EventEmitter
   _subscribed: false
 
   login: ->
+
+
+#    if navigator.userAgent.match('CriOS')
+#      clientId = '1410524409215955'
+#      redirectUri = 'http://localhost:8080/login'
+#      window.open("https://www.facebook.com/dialog/oauth?client_id=#{clientId}&redirect_uri=#{redirectUri}&scope=email,public_profile", '', null);
+#      "id": "4914848"
+#      "access_token": "CAAUC3U5bu9MBALdbkapZBrbifK44RTD2KoqBEhdq7yd286yW2NDZAmgBWxBdZBTHJ9v56EpKuemowdIHQ9NSWHQG6JkHVCO4KPbDY9IqfEHw4TFfcrUF0YhmjBiyZCu7eHOEM88MiYBzZCuu3pBr9AQOkWyk0wIIxlZCnaIY1l0ACUxLKaTyvHJwndZB1g9O1Kn4SGAabp9aO190ZCjDtIlE"
+#      "expiration_date": "2014-08-30T15:05:00.000Z"
+#    else
+#      FB.login ((response) ->
+#          debugger
+#          if response.status is "connected"
+#            console.log "logged in"
+#            authData = facebook:
+#              expiration_date: "2014-08-30T15:05:00.000Z"
+#              id: response.authResponse.userID
+#              access_token: response.authResponse.accessToken
+#
+#            Parse.FacebookUtils.logIn authData,
+#              success: (user) =>
+#                FB.api("/me", "get", (res) =>
+#                  user.save
+#                    avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture"
+#                    first_name: res.first_name
+#                    last_name: res.last_name
+#                    gender: res.gender
+#                    facebook_id: res.id
+#                  ,
+#                    wait: false
+#                    error: ->
+#                      debugger
+#                    success: =>
+#                      Parse.history.navigate('play')
+#                      @emit Constants.stores.CHANGE
+#                      @importFriends()
+#                )
+#                unless user.existed()
+#                  console.log 'User signed up and logged in through Facebook!'
+#                else
+#                  console.log 'User logged in through Facebook!'
+#              error: (user, error) =>
+#                console.log "UserStore.login Error: #{user} - #{error} "
+#                @emit Constants.stores.CHANGE
+#                Parse.User.logOut()
+#                FB.logout()
+#          else
+#            console.log "not logged in " + JSON.stringify(response)
+#          return
+#        ),
+#        scope: "email"
+#
     Parse.FacebookUtils.logIn null,
       success: (user) =>
         FB.api("/me", "get", (res) =>
