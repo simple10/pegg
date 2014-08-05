@@ -53,7 +53,7 @@ class PrefStatusView extends View
     userNameNode = new RenderNode
     @_userName = new Surface
       classes: ['status__preffer__name']
-      size: [window.innerWidth, 175]
+      size: [window.innerWidth - 60, 175]
     userNameMod = new StateModifier
       align: [0.5, 0.1]
       origin: [0.5, 0]
