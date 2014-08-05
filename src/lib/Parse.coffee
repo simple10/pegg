@@ -19,3 +19,8 @@ Parse = window.Parse
 Parse.initialize Config.appId, Config.jsKey
 
 module.exports = Parse
+
+String::truncate = (n) ->
+  @substr(0, n - 1) + ((if @length > n then "&hellip;" else ""))
+
+

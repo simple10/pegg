@@ -1,21 +1,28 @@
 @import "settings";
 
 
-.peggbox__background {
-  background-color: $darkblue;
-}
 
 .peggbox__item {
-  color: $white;
   border-bottom: 1px solid $cloud-lightblue;
-  font-size: 20px;
-  vertical-align: center;
-  padding: 20px;
+
 }
 
+.peggbox__item__text {
+  color: $white;
+  font-size: 18px;
+  display: ​table;
+  margin-bottom: 20px;
+}
 
-.peggbox__item span {
+.peggbox__item__text__child {
+  display: table-cell;
+  vertical-align: middle;
+}
 
-  padding: 0px 10px;
-  display: inline-block;
+.peggbox__item__text.pegger {
+  color: $cloud-lightblue
+}
+
+.peggbox__item__pic {
+  border-radius: 25px;
 }

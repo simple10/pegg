@@ -4,6 +4,8 @@ View = require 'famous/core/View'
 Transform = require 'famous/core/Transform'
 Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
+ImageSurface = require 'famous/surfaces/ImageSurface'
+ContainerSurface = require 'famous/surfaces/ContainerSurface'
 
 class ActivityItemView extends View
   @DEFAULT_OPTIONS:
@@ -20,29 +22,48 @@ class ActivityItemView extends View
     @build()
 
   build: ->
+    container = new ContainerSurface
+      size: [window.innerWidth, @options.height]
+      properties:
+        overflow: 'hidden'
+      classes: ['peggbox__item']
+    container.pipe @._eventOutput
 
     peggeeName = @options.peggee.get 'first_name'
     peggerName = @options.pegger.get 'first_name'
+    peggerPic = @options.pegger.get 'avatar_url'
     guess = @options.guess.get 'text'
-    message = "#{peggerName} pegged #{peggeeName} with #{guess}"
+    message = "
+          <div class='peggbox__item__text__child'>
+            <span class='pegger'>#{peggerName}</span> pegged #{peggeeName} with #{guess.truncate 15}
+          </div>
+      ​​​​​​​​​​​​​​​​​​​​​​"
 
-    item = new Surface
-      size: [window.innerWidth, @options.height]
+
+    textSurface = new Surface
+      size: [window.innerWidth - 80, @options.height]
       content: message
       properties:
         width: window.innerWidth
-      classes: ['peggbox__item']
+      classes: ['peggbox__item__text']
+    textSurfaceModifier = new StateModifier
+      origin: [0, 0]
+      align: [0, 0]
+      transform: Transform.translate 80, null, null
+    container.add(textSurfaceModifier).add textSurface
 
-    item.pipe @_eventOutput
+    picSurface = new ImageSurface
+      size: [50, 50]
+      classes: ['peggbox__item__pic']
+      content: peggerPic
+    picSurfaceMod = new StateModifier
+      origin: [0, 0.5]
+      align: [0.05, 0.5]
+    container.add(picSurfaceMod).add picSurface
+    @add container
 
-    item.on 'click', =>
-      @_eventOutput.emit 'selectItem', @
+    container.on 'click', (e)->
+      console.log e
 
-    item.on 'mousedown', (options) =>
-      @_eventOutput.emit 'scroll', @
-
-    itemModifier = new StateModifier
-
-    @add(itemModifier).add item
 
 module.exports = ActivityItemView
