@@ -6,6 +6,8 @@ Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
+NavActions = require 'actions/NavActions'
+ReviewActions = require 'actions/ReviewActions'
 
 class ActivityItemView extends View
   @DEFAULT_OPTIONS:
@@ -39,7 +41,6 @@ class ActivityItemView extends View
           </div>
       ​​​​​​​​​​​​​​​​​​​​​​"
 
-
     textSurface = new Surface
       size: [window.innerWidth - 80, @options.height]
       content: message
@@ -62,8 +63,9 @@ class ActivityItemView extends View
     container.add(picSurfaceMod).add picSurface
     @add container
 
-    container.on 'click', (e)->
-      console.log e
-
+    container.on 'click', ((e) ->
+      ReviewActions.load @options.card.id, @options.peggee.id
+      NavActions.selectReviewItem @options.card.id, @options.peggee.id
+    ).bind @
 
 module.exports = ActivityItemView

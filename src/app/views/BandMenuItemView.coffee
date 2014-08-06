@@ -5,7 +5,7 @@ Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 ImageSurface = require 'famous/surfaces/ImageSurface'
-MenuActions = require 'actions/MenuActions'
+NavActions = require 'actions/NavActions'
 
 
 class BandMenuItemView extends View
@@ -31,7 +31,7 @@ class BandMenuItemView extends View
       classes: ['bandmenu__item', "bandmenu__item--#{@options.pageID}"]
     @add @background
     @background.on 'click', =>
-      MenuActions.selectMenuItem @getID()
+      NavActions.selectMenuItem @getID()
 
   createIcon: ->
     @icon = new ImageSurface
@@ -41,7 +41,7 @@ class BandMenuItemView extends View
     @iconState = new StateModifier
         transform: Transform.translate 20, @options.height/2 - @options.iconSize/2, 0
     @icon.on 'click', =>
-      MenuActions.selectMenuItem @getID()
+      NavActions.selectMenuItem @getID()
     @add(@iconState).add @icon
 
   getID: ->

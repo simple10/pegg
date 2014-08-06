@@ -12,7 +12,7 @@ UserActions = require 'actions/UserActions'
 UserStore = require 'stores/UserStore'
 AppStateStore = require 'stores/AppStateStore'
 Constants = require 'constants/PeggConstants'
-MenuActions = require 'actions/MenuActions'
+NavActions = require 'actions/NavActions'
 Easing = require 'famous/transitions/Easing'
 Timer = require 'famous/utilities/Timer'
 
@@ -69,7 +69,7 @@ class HeaderView extends View
     @logo.on 'click', =>
       @_eventOutput.emit 'toggleMenu'
     @pic.on 'click', ->
-      MenuActions.selectMenuItem 'profile'
+      NavActions.selectMenuItem 'profile'
 
 
 module.exports = HeaderView

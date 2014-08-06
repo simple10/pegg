@@ -1,5 +1,5 @@
 Parse = require 'Parse'
-MenuActions = require 'actions/MenuActions'
+NavActions = require 'actions/NavActions'
 
 #define router class
 AppRouter = Parse.Router.extend(
@@ -8,13 +8,13 @@ AppRouter = Parse.Router.extend(
     "play": "play"
 
   login: ->
-    #MenuActions.selectMenuItem "login"
+    #NavActions.selectMenuItem "login"
 
   play: ->
-    #MenuActions.selectMenuItem "play"
+    #NavActions.selectMenuItem "play"
 
   decks: ->
-    #MenuActions.selectMenuItem "decks"
+    #NavActions.selectMenuItem "decks"
 )
 
 appRoutes = new AppRouter()

@@ -41,7 +41,7 @@ PlayViewLayout = require 'views/layouts/mobile/PlayViewLayout'
 NewCardViewLayout = require 'views/layouts/mobile/NewCardViewLayout'
 
 #Actions
-MenuActions = require 'actions/MenuActions'
+NavActions = require 'actions/NavActions'
 AppStateStore = require 'stores/AppStateStore'
 
 
@@ -65,7 +65,7 @@ class AppView extends View
     @initLayout()
     @initPages()
     @initListeners()
-    MenuActions.selectMenuItem AppStateStore.getCurrentPageID()
+    NavActions.selectMenuItem AppStateStore.getCurrentPageID()
 
   initListeners: ->
     AppStateStore.on Constants.stores.MENU_CHANGE, @togglePage

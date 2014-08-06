@@ -1,18 +1,18 @@
-MenuActions = require 'actions/MenuActions'
+NavActions = require 'actions/NavActions'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require('constants/PeggConstants').actions
 helper = require 'spec/helpers/Common'
 expect = helper.expect
 spy = helper.spy
 
-describe 'MenuActions', ->
+describe 'NavActions', ->
 
   describe '#selectMenuItem', ->
     it 'dispatches MENU_SELECT', ->
       pageID = 'testPage'
       handleViewAction = spy()
       AppDispatcher.handleViewAction = handleViewAction
-      MenuActions.selectMenuItem(pageID)
+      NavActions.selectMenuItem(pageID)
       expect(handleViewAction).to.have.been.calledWith
         actionType: Constants.MENU_SELECT
         pageID: pageID

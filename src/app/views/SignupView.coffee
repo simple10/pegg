@@ -9,7 +9,7 @@ UserActions = require 'actions/UserActions'
 UserStore = require 'stores/UserStore'
 Constants = require 'constants/PeggConstants'
 Engine = require 'famous/core/Engine'
-MenuActions = require 'actions/MenuActions'
+NavActions = require 'actions/NavActions'
 Utils = require 'lib/Utils'
 
 class SignupView extends View
@@ -55,7 +55,7 @@ class SignupView extends View
       @letmeinCount++
       if @letmeinCount is 4
         @letmeinCount = 0
-        MenuActions.selectMenuItem 'login'
+        NavActions.selectMenuItem 'login'
 
 
 

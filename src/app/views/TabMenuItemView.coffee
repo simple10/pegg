@@ -5,7 +5,7 @@ Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 ImageSurface = require 'famous/surfaces/ImageSurface'
-MenuActions = require 'actions/MenuActions'
+NavActions = require 'actions/NavActions'
 
 class TabMenuItemView extends View
   @DEFAULT_OPTIONS:
@@ -31,7 +31,7 @@ class TabMenuItemView extends View
       classes: ['tabmenu__item', "tabmenu__item--#{@options.pageID}"]
     @add @background
     @background.on 'click', =>
-      MenuActions.selectMenuItem @getID()
+      NavActions.selectMenuItem @getID()
 
   createIcon: ->
     @icon = new ImageSurface
