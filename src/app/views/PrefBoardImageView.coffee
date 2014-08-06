@@ -4,6 +4,8 @@ Surface = require 'famous/core/Surface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 Transform = require 'famous/core/Transform'
+NavActions = require 'actions/NavActions'
+ReviewActions = require 'actions/ReviewActions'
 
 Utils = require 'lib/Utils'
 
@@ -45,6 +47,10 @@ class PrefBoardImageView extends View
 
   initListeners: () ->
     @image.pipe @_eventOutput
+    @image.on 'click', ((e) ->
+      ReviewActions.load @options.cardId, @options.userId
+      NavActions.selectReviewItem @options.cardId, @options.userId
+    ).bind @
 
   showFullSize: () ->
     # TODO - black out the background, show a larger version of the image, display a nav bar

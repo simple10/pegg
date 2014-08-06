@@ -17,6 +17,7 @@ Timer = require 'famous/utilities/Timer'
 Utils = require 'lib/Utils'
 Constants = require 'constants/PeggConstants'
 ReviewActions = require 'actions/ReviewActions'
+NavActions = require 'actions/NavActions'
 ReviewStore = require 'stores/ReviewStore'
 CardView = require 'views/CardView'
 CommentsView = require 'views/CommentsView'
@@ -36,7 +37,6 @@ class ReviewView extends View
 
     # create transitionable with initial value of 0
     @cardYPos = new Transitionable(0)
-    @cardXAlign = new Transitionable(0)
 
     @initViews()
     @initListeners()
@@ -49,26 +49,27 @@ class ReviewView extends View
   initViews: ->
 
     ## CARD ##
-    @cardView = new CardView card.id, card, size: [window.innerWidth, null]
+    @cardView = new CardView
+      size: [window.innerWidth, null]
+      type: 'review'
     @cardViewMod = new Modifier
       align: =>
-        xAlign = @cardXAlign.get()
-        yAlign = @_translateToAlign @cardYPos.get()
-        [xAlign, yAlign]
-      origin: @options.cards.origin
+        yAlign = @cardYPos.get() / Utils.getViewportHeight()
+        [@layout.card.align[0], @layout.card.align[1] + yAlign]
+      origin: @layout.card.origin
     @add(@cardViewMod).add @cardView
 
     ## NAV ##
     @navView = new ReviewNavView
     @navView._eventOutput.on 'back', =>
-      ReviewActions.back()
+      NavActions.back()
     @add(@navView)
 
     ## COMMENTS ##
     @comments = new CommentsView
     @commentsMod = new StateModifier
-      align: @options.comments.align
-      origin: @options.comments.origin
+      align: @layout.comments.align
+      origin: @layout.comments.origin
       transform: Transform.translate null, null, -3
     @add(@commentsMod).add @comments
     
@@ -76,87 +77,49 @@ class ReviewView extends View
       @expandComments()
 
     @newComment = new InputView
-      size: @options.newComment.size
-      placeholder: "Enter a comment..."
-      align: @options.newComment.states[1].align
-      origin: @options.newComment.origin
+      size: @layout.newComment.size
+      placeholder: 'Enter a comment...'
+      align: @layout.newComment.states[1].align
+      origin: @layout.newComment.origin
     @newCommentMod = new StateModifier
-      align: @options.newComment.align
-      origin: @options.newComment.origin
+      align: @layout.newComment.align
+      origin: @layout.newComment.origin
     @add(@newCommentMod).add @newComment
     @newComment.on 'submit', (comment) =>
       @newComment.setValue ''
       @saveComment comment
 
+    @collapseComments()
+
   initGestures: ->
     GenericSync.register mouse: MouseSync
     GenericSync.register touch: TouchSync
 
-    onEdgeEnd = false
     minVelocity = 0.5
     minDelta = 100
-    choicesShowing = false
+
     @sync = new GenericSync ['mouse', 'touch']
-
-    @_eventInput.on 'choices:showing', (card) =>
-      choicesShowing = true
-      @_unpipeCardsToScrollView()
-
-    @_eventInput.on 'choices:hidden', (card) =>
-      choicesShowing = false
-      @_pipeCardsToScrollView()
-
-    @_eventInput.on 'card:flipped', (card) =>
-      choicesShowing = false
-      @_pipeCardsToScrollView()
-
     @_eventInput.pipe @sync
-    @cardScrollView.on 'onEdge', () =>
-      # check to see if we have hit the end, i.e. bottom or right most item
-      if @cardScrollView._onEdge is 1 then onEdgeEnd = true
-    @cardScrollView.on 'offEdge', () =>
-      onEdgeEnd = false
-    @cardScrollView.on 'pageChange', (data) =>
-      # get the state of the current card
-      # used to determine if comments need to be hidden or shown
-      card = @cardViews[@cardScrollView._node.index]
-      if data.direction is 1
-        @nextCard()
-      if data.direction is -1
-        @prevCard()
-      # showChoices is true when the front of the card is visible
-      if card.showChoices
-        @hideComments()
-      else
-        @showComments()
 
     isMovingY = false
-    isMovingX = false
     startPos = 0
 
     @sync.on 'start', (data) =>
       startPos = @cardYPos.get()
 
     @sync.on 'update', ((data) ->
-      dx = data.delta[0]
       dy = data.delta[1]
-      if !isMovingX && !isMovingY
-        if Math.abs(dy) > Math.abs(dx)
-          @_unpipeCardsToScrollView()
+      if !isMovingY
+        if Math.abs(dy) > 0
           isMovingY = true
-        else if !choicesShowing
-          @_pipeCardsToScrollView()
-          isMovingX = true
-      if @_commentsIsExpanded
-        @_unpipeCardsToScrollView()
       if isMovingY
-        if PlayStore.getCurrentCardIsAnswered()
-          currentPosition = @cardYPos.get()
-          # calculate the max Y offset to prevent the user from being able
-          # to drag the card past this point
-          max = @options.cards.states[1].align[1] * Utils.getViewportHeight()
-          pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
-          @cardYPos.set(-pos)
+        currentPosition = @cardYPos.get()
+#        console.log 'currentPosition', currentPosition
+        # calculate the max Y offset to prevent the user from being able
+        # to drag the card past this point
+        max = @layout.card.states[1].align[1] * Utils.getViewportHeight()
+        pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
+        @cardYPos.set(-pos)
     ).bind(@)
 
     @sync.on 'end', ((data) ->
@@ -178,16 +141,13 @@ class ReviewView extends View
             @collapseComments()
           else 
             @expandComments()
-      else if isMovingX
-        if onEdgeEnd then @nextCard()
       # reset axis movement flags
       isMovingY = false;
-      isMovingX = false;
     ).bind(@)
 
   loadCard: =>
     card = ReviewStore.getCard()
-    @cardView.load card
+    @cardView.loadCard card.id, card
     @cardView.on 'comment', =>
       @collapseComments()
     @cardView.pipe @
@@ -206,20 +166,19 @@ class ReviewView extends View
 
   collapseComments: =>
     # slide the cards down to their starting position
-    @cardYPos.set(0, @options.cards.states[0].transition)
+    @cardYPos.set(0, @layout.card.states[0].transition)
     # slide the comments down to their starting position
-    Utils.animate @commentsMod, @options.comments.states[1]
+    Utils.animate @commentsMod, @layout.comments.states[1]
     @._commentsIsExpanded = false;
-    @newComment.setAlign @options.newComment.states[0].align
+    @newComment.setAlign @layout.newComment.states[0].align
 
   expandComments: =>
-    maxCardYPos = @options.cards.states[1].align[1] * Utils.getViewportHeight()
+    maxCardYPos = @layout.card.states[1].align[1] * Utils.getViewportHeight()
     # move the cards up
-    @cardYPos.set(maxCardYPos, @options.cards.states[1].transition)
+    @cardYPos.set(maxCardYPos, @layout.card.states[1].transition)
     # slide the comments up
-    Utils.animate @commentsMod, @options.comments.states[2]
+    Utils.animate @commentsMod, @layout.comments.states[2]
     @._commentsIsExpanded = true;
-    @newComment.setAlign @options.newComment.states[1].align
-
+    @newComment.setAlign @layout.newComment.states[1].align
 
 module.exports = ReviewView

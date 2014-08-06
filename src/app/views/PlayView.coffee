@@ -214,7 +214,8 @@ class PlayView extends View
     @cardScrollView.sequenceFrom @cardViews
     i = 0
     for own cardId, cardObj of PlayStore.getCards()
-      card = new CardView cardId, cardObj, size: [window.innerWidth, null]
+      card = new CardView size: [window.innerWidth, null]
+      card.loadCard cardId, cardObj
       card.on 'comment', =>
         @collapseComments()
       card.pipe @

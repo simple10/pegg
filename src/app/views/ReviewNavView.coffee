@@ -7,13 +7,12 @@ RenderNode = require 'famous/core/RenderNode'
 
 Utils = require 'lib/Utils'
 Constants = require 'constants/PeggConstants'
-PlayStore = require 'stores/PlayStore'
+ReviewStore = require 'stores/ReviewStore'
 LayoutManager = require 'views/layouts/LayoutManager'
 
-class PlayNavView extends View
-
+class ReviewNavView extends View
   @DEFAULT_OPTIONS:
-    cardType: 'pegg'
+    cardType: 'review'
   
   constructor: (options) ->
     super options
@@ -24,14 +23,11 @@ class PlayNavView extends View
     @initSurfaces()
     @initEvents()
 
-    PlayStore.on Constants.stores.CARDS_CHANGE, @initViewState
-    PlayStore.on Constants.stores.CARD_CHANGE, @updateViewState
-
   setOptions: (options) => 
     @_optionsManager.patch(options);
 
     # update the card message
-    @message.setContent PlayStore.getMessage(@options.cardType)
+    @message.setContent ReviewStore.getMessage()
 
 
   initSurfaces: =>
@@ -50,16 +46,6 @@ class PlayNavView extends View
     @leftArrowMod = new StateModifier
       align: @layout.leftArrow.align
       origin: @layout.leftArrow.origin
-    
-
-    ## RIGHT ARROW ##
-    @rightArrow = new ImageSurface
-      size: @layout.rightArrow.size
-      content: '/images/right-arrow.png'
-      classes: @layout.rightArrow.classes
-    @rightArrowMod = new StateModifier
-      align: @layout.rightArrow.align
-      origin: @layout.rightArrow.origin
 
     ## MESSAGE ##
     @message = new Surface
@@ -74,34 +60,12 @@ class PlayNavView extends View
     # Attach modifiers and surfaces to the view
     @node = @add @mainMod
     @node.add(@leftArrowMod).add @leftArrow
-    @node.add(@rightArrowMod).add @rightArrow
     @node.add(@messageMod).add @message
 
   initEvents: =>
     @leftArrow.on 'click', =>
       #console.log 'left arrow'
       @_eventOutput.emit('click', 'prevCard')
-
-    @rightArrow.on 'click', =>
-      #console.log 'right arrow'
-      @_eventOutput.emit('click', 'nextCard')
-
-  initViewState: =>
-    @showNav()
-    @showRightArrow()
-    @showMessage()
-    @hideLeftArrow()
-
-  updateViewState: (cardIndex) =>
-    #console.log cardIndex
-    if cardIndex is 0
-      @hideLeftArrow()
-      @showRightArrow()
-    else if cardIndex is 2
-      @showLeftArrow()
-    else
-      @showRightArrow()
-      @showLeftArrow()
 
   showNav: =>
     #console.log 'show nav'
@@ -119,18 +83,12 @@ class PlayNavView extends View
   hideLeftArrow: =>
     Utils.animate @leftArrowMod, @layout.leftArrow.states[1]
 
-  showRightArrow: =>
-    Utils.animate @rightArrowMod, @layout.rightArrow.states[0]
-
-  hideRightArrow: =>
-    Utils.animate @rightArrowMod, @layout.rightArrow.states[1]
-
   showMessage: =>
     Utils.animate @messageMod, @layout.message.states[0]
 
   hideMessage: =>
     Utils.animate @messageMod, @layout.message.states[1]
 
-module.exports = PlayNavView
+module.exports = ReviewNavView
 
 

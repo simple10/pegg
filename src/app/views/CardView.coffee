@@ -36,11 +36,9 @@ class CardView extends View
       classes: ['card__front__question']
 
 
-  constructor: (id, card, options) ->
+  constructor: (options) ->
     options = _.defaults options, @constructor.DEFAULT_OPTIONS
     super options
-    @card = card
-    @id = id
     @initCard()
     @initQuestion()
     @initChoices()
@@ -48,8 +46,6 @@ class CardView extends View
     @initGestures()
 
   initCard: ->
-    if @card.question.length > 90
-      @options.question.classes = ["#{@options.question.classes}--medium"]
     @state = new StateModifier
       origin: [0.5, 0.5]
     @mainNode = @add @state
@@ -59,7 +55,6 @@ class CardView extends View
       content: 'images/Card_White.png'
     modifier = new Modifier
       transform: Transform.translate 0, 0, @options.depth/2
-    @front.on 'click', @toggleChoices
     @mainNode.add(modifier).add @front
     ## Back Card
     @back = new ImageSurface
@@ -74,32 +69,37 @@ class CardView extends View
         )
       )
     @mainNode.add(modifier).add @back
-    @back.on 'click', =>
-      @_eventOutput.emit 'comment', @
+
+    if @options.type is 'review'
+      @front.on 'click', @flip
+      @back.on 'click', @flip
+    else
+      @front.on 'click', @toggleChoices
+      @back.on 'click', =>
+        @_eventOutput.emit 'comment', @
 
   initQuestion: ->
     @frontProfilePic = new ImageSurface
       size: [@options.pic.width, @options.pic.height]
-      content: "#{@card.pic}/?height=200&type=normal&width=200"
       #classes: ['card__front__pic--big']
       properties:
         borderRadius: "#{@options.pic.width}px"
-    @frontProfilePic.on 'click', @toggleChoices
     @frontProfilePicMod = new StateModifier
       transform: Transform.translate 0, -110, @options.depth/2 + 2
-#    if @card.peggee?
-#      question = @card.firstName + ", " + @card.question.charAt(0).toLowerCase() + @card.question.slice(1)
-#    else
-      question = @card.question
     @frontQuestion = new Surface
       size: [ @options.width, @options.height ]
       classes: @options.question.classes
-      content: question
     @qModifier = new StateModifier
       transform: Transform.translate 0, @options.height/2 + -40, @options.depth/2 + 2
-    @frontQuestion.on 'click', @toggleChoices
     @mainNode.add(@qModifier).add @frontQuestion
     @mainNode.add(@frontProfilePicMod).add @frontProfilePic
+
+    if @options.type is 'review'
+      @frontProfilePic.on 'click', @flip
+      @frontQuestion.on 'click', @flip
+    else
+      @frontProfilePic.on 'click', @toggleChoices
+      @frontQuestion.on 'click', @toggleChoices
 
   initChoices: ->
     @showChoices = true
@@ -141,27 +141,28 @@ class CardView extends View
     @mainNode.add(@backImageModifier).add @backImage
     @mainNode.add(@backTextModifier).add @backText
 
-    addImageButton = new ImageSurface
-      size: [43, 48]
-      classes: ['card__back__image']
-      content: 'images/add-image.png'
-    @addImageModifier = new StateModifier
-      transform: Transform.multiply(
-        Transform.translate(0, 150, -@options.depth/2 - 2)
-        Transform.multiply(
-            Transform.rotateZ Math.PI
-            Transform.rotateX Math.PI
+    if @options.type isnt 'review'
+      addImageButton = new ImageSurface
+        size: [43, 48]
+        classes: ['card__back__image']
+        content: 'images/add-image.png'
+      @addImageModifier = new StateModifier
+        transform: Transform.multiply(
+          Transform.translate(0, 150, -@options.depth/2 - 2)
+          Transform.multiply(
+              Transform.rotateZ Math.PI
+              Transform.rotateX Math.PI
+          )
         )
-      )
-    imagePickView = new ImagePickView()
-    addImageButton.on 'click', =>
-      imagePickView.pick( (results) =>
-        console.log JSON.stringify(results)
-        @backImage.setContent results[0].url
-        PlayActions.plug @id, results[0].url
-      )
-    @mainNode.add imagePickView
-    @mainNode.add(@addImageModifier).add addImageButton
+      imagePickView = new ImagePickView()
+      addImageButton.on 'click', =>
+        imagePickView.pick( (results) =>
+          console.log JSON.stringify(results)
+          @backImage.setContent results[0].url
+          PlayActions.plug @id, results[0].url
+        )
+      @mainNode.add imagePickView
+      @mainNode.add(@addImageModifier).add addImageButton
 
   # Doesn't respond to gestures, just makes sure that the events
   # get to the right place
@@ -173,12 +174,21 @@ class CardView extends View
     @backImage.pipe @_eventOutput
     @backText.pipe @_eventOutput
 
+  loadCard: (id, card) ->
+    @card = card
+    @id = id
+    if @card.question.length > 90
+      @options.question.classes = ["#{@options.question.classes}--medium"]
+    @frontQuestion.setContent @card.question
+    @frontProfilePic.setContent "#{@card.pic}/?height=200&type=normal&width=200"
+    if @options.type is 'review'
+      @loadAnswer @card.plug, @card.answer.get 'text'
+
   loadChoices: (cardId) ->
     @choicesView.load cardId
     @choicesView.on 'choice', ((i) ->
       @pickAnswer i
     ).bind @
-
 
   toggleZoom: =>
     if @big
@@ -236,6 +246,7 @@ class CardView extends View
       @addImageModifier.setTransform Transform.translate 0,0, -1000
     else
       PlayActions.pref @id, choice.id, choice.image
+      @loadAnswer choice.image, choice.text
       @flip choice
 
   choiceFail: (choice, i) =>
@@ -243,34 +254,20 @@ class CardView extends View
 
   choiceWin: (choice, i) =>
     @choicesView.win choice, i
-
-    # listen for event bubbled up from the choiceView
     @choicesView.on 'choice:doneShowingStatus', () =>
-      @flip choice
+      @loadAnswer @card.plug, choice.text
+      @flip()
 
-  flip: (choice) =>
-    if choice?
-      if @card.peggee?
-        image = @card.plug
-      else
-        image = choice.image
-      text = choice.text
-      Timer.after ( =>
-        @backImage.setContent image
-      ), 10
-      @backText.setContent text
+  flip: =>
     @currentSide = if @currentSide is 1 then 0 else 1
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
       @options.transition
     )
-
     @_eventOutput.emit 'card:flipped', @
 
-  # getType: =>
-  #   if @card.peggee?
-  #     return 'pegg'
-  #   else
-  #     return 'pref'
+  loadAnswer: (image, text) =>
+    @backImage.setContent image
+    @backText.setContent text
 
 module.exports = CardView

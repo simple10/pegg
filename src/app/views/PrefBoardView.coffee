@@ -45,17 +45,14 @@ class PrefBoardView extends View
     @container.pipe @scrollview
     @add(@container)
 
-  loadImages: (images) ->
-    # TEMP
-    # images = [1..20]
-    
+  loadImages: (data) ->
     # TODO will need to figure out some way of reusing current surfaces
     @rows = []
     @scrollview.sequenceFrom @rows
 
     ## Initialize Rows
-    while images.length
-      set = images.splice 0, @options.columns
+    while data.length
+      set = data.splice 0, @options.columns
       row = new PrefBoardRowView
         width: @options.width
         height: @options.height
@@ -65,5 +62,7 @@ class PrefBoardView extends View
 
       row.pipe @scrollview
       @rows.push row
+
+
 
 module.exports = PrefBoardView

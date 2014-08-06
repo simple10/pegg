@@ -32,7 +32,7 @@ class PrefBoardRowView extends View
       size: [null, h]
 
     @images = []
-    for url,i in @options.data
+    for block in @options.data
       # offset is equal to album (width + gutter) * row position
       # multiply by -1 to move it off the screen
       offset = w * -1;
@@ -45,10 +45,12 @@ class PrefBoardRowView extends View
         gutter: @options.gutter
         width: w
         height:h
-        url: url
+        url: block.imageUrl
+        cardId: block.cardId
+        userId: block.userId
 
       image.pipe @_eventOutput
-      image._mod = mod;
+      image._mod = mod
       
       @images.push(image)
 

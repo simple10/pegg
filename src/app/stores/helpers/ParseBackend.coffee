@@ -220,6 +220,38 @@ class ParseBackend
         console.log "Error fetching cards: " + error.code + " " + error.message
         cb null
 
+
+  getCard: (cardId, peggeeId, cb) ->
+    peggee = new Parse.Object 'User'
+    peggee.set 'id',  peggeeId
+    card = new Parse.Object 'Card'
+    card.set 'id',  cardId
+    prefQuery = new Parse.Query Pref
+    prefQuery.include 'user'
+    prefQuery.include 'card'
+    prefQuery.include 'answer'
+    prefQuery.equalTo 'user', peggee
+    prefQuery.equalTo 'card', card
+    prefQuery.find
+      success: (results) =>
+        for pref in results
+          card = pref.get 'card'
+          peggee = pref.get 'user'
+          cardObj = {
+            id: card.id
+            peggee: peggee.id
+            firstName: peggee.get 'first_name'
+            pic: peggee.get 'avatar_url'
+            question: card.get 'question'
+            choices: []
+            answer: pref.get 'answer'
+            plug: pref.get 'plug'
+          }
+        cb cardObj
+      error: (error) ->
+        console.log "Error fetching card: " + error.code + " " + error.message
+        cb null
+
   getChoices: (cards, cardId, cb) ->
     choiceQuery = new Parse.Query Choice
     choiceQuery.equalTo 'cardId', cardId
@@ -344,7 +376,8 @@ class ParseBackend
         images = []
         for res in results
           plug = res.get 'plug'
-          if plug then images.push plug
+          card = res.get 'card'
+          if plug then images.push { cardId: card.id, imageUrl: plug, userId: userId }
         cb images
       error: (error) =>
         console.log "Error: " + error.code + " " + error.message
@@ -360,7 +393,6 @@ class ParseBackend
     newCard.set 'ACL', newCardAcl
     newCard.save
       success: (result) =>
-        debugger
         cb result.id
       error: (error) =>
         console.log "Error: " + error.code + " " + error.message

@@ -34,6 +34,7 @@ ActivityView = require 'views/ActivityView'
 DecksView = require 'views/DecksView'
 NewCardView = require 'views/NewCardView'
 StatusView = require 'views/StatusView'
+ReviewView = require 'views/ReviewView'
 #MoodsView = require 'views/MoodsView'
 
 # Layouts
@@ -103,6 +104,7 @@ class AppView extends View
     @pages.decks = new DecksView
     @pages.activity = new ActivityView
     @pages.profile = new ProfileView
+    @pages.review = new ReviewView
     #@pages.moods = new MoodsView
     @togglePage()
 

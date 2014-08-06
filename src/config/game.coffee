@@ -83,5 +83,8 @@ config =
         'images/Unicorn_Cosmic1@2x.png'
         'images/Unicorn_Fire1@2x.png'
       ]
+      review: [
+        ''
+      ]
 
 module.exports = config
