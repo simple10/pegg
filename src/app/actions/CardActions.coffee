@@ -13,4 +13,8 @@ CardActions =
       actionType: Constants.actions.ADD_ANSWERS
       answers: answers
 
+  loadCategories: () ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.LOAD_CATEGORIES
+
 module.exports = CardActions

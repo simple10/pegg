@@ -7,6 +7,7 @@ module.exports =
     LOAD_ACTIVITY: null
     LOAD_GAME: null
     LOAD_CARD: null
+    LOAD_CATEGORIES: null
     PEGG_SUBMIT: null
     PREF_SUBMIT: null
     PLUG_IMAGE: null
@@ -53,6 +54,7 @@ module.exports =
     PLUG_SAVED: null
     PREF_IMAGES_CHANGE: null
     PROFILE_LOAD: null
+    CATEGORIES_CHANGE: null
 
 
 

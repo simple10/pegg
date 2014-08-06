@@ -19,13 +19,30 @@ UserStore = require 'stores/UserStore'
 CardActions = require 'actions/CardActions'
 InputView = require 'views/InputView'
 Utils = require 'lib/Utils'
-
+Scrollview = require 'famous/views/Scrollview'
+ContainerSurface = require 'famous/surfaces/ContainerSurface'
+Constants = require 'constants/PeggConstants'
 
 class NewCardView extends View
 
   constructor: ->
     super
     @initSurfaces()
+    @initListeners()
+
+
+  initListeners: ->
+    NewCardStore.on Constants.stores.CATEGORIES_CHANGE, @loadCategories
+
+  loadCategories: =>
+    categories = NewCardStore.getCategories()
+    for category in categories
+      categorySurface = new Surface
+        size: @options.category.size
+        classes: @options.category.classes
+        content: category.get 'name'
+      @categorySurfaces.push categorySurface
+      categorySurface.pipe @categoryScrollview
 
   initSurfaces: ->
     @step1Mods = []
@@ -47,7 +64,7 @@ class NewCardView extends View
     cardIcon = new ImageSurface
       size: @options.cardIcon.size
       classes: @options.cardIcon.classes
-      content: "images/newcard_medium2.png"
+      content: 'images/newcard_medium2.png'
     cardIconMod = new StateModifier
       origin: @options.cardIcon.origin
       align: @options.cardIcon.align
@@ -60,6 +77,17 @@ class NewCardView extends View
       origin: @options.newCardTitle.origin
       align: @options.newCardTitle.align
     @add(newCardMod).add @newCardTitle
+
+
+    @categoryScrollview = new Scrollview
+      size: @options.categories.size
+      classes: @options.categories.classes
+    @categorySurfaces = []
+    @categoryScrollview.sequenceFrom @categorySurfaces
+    @categoryScrollviewMod = new StateModifier
+      origin: @options.categories.origin
+      align: @options.categories.align
+    @add(@categoryScrollviewMod).add @categoryScrollview
 
     ## STEP 1
     @addNum(1, 0)
@@ -95,7 +123,7 @@ class NewCardView extends View
       'images/deck_existing.png'
       'Place card in existing deck(s)'
     , =>
-      alert "existing deck"
+      Utils.animate @categoryScrollviewMod, @options.categories.states[0]
     )
     @addLinkContainer(3, 2,
       'images/deck_new2.png'

@@ -12,6 +12,27 @@ module.exports =
     classes: ['newcard__header']
     align: [0.5, 0.28]
     origin: [0.5, 0.5]
+  categories:
+    size: [window.innerWidth, window.innerHeight]
+    classes: ['newcard__categories']
+    align: [0, 1]
+    origin: [0, 0]
+    states: [
+      {
+        delay: 10
+        align: [0, 0]
+        transform: Transform.translate null, null, 10
+        transition: {duration: 1000, curve: Easing.outCubic}
+      }
+      {
+        delay: 20
+        align: [0, 1]
+        transition: {duration: 500, curve: Easing.inCubic}
+      }
+    ]
+  category:
+    size: [window.innerWidth, 100]
+    classes: ['newcard__category']
   step1_0: # number
     size: [30, 30]
     classes: ['newcard__number']

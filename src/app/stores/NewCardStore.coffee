@@ -11,27 +11,19 @@ class NewCardStore extends EventEmitter
   _answers: []
   _categories: []
 
-  getCard: ->
-    {
-      author: @_author
-      question: @_question
-      answers: @_answers
-      categories: @_categories
-    }
-
-  addQuestion: (question) ->
+  _addQuestion: (question) ->
     @_author = @_getUser()
     @_question = question
     DB.saveQuestion( @_author, @_question, (cardId) =>
       @_cardId = cardId
     )
 
-  addAnswers: (answers) ->
+  _addAnswers: (answers) ->
     @_answers = []
     @_answers.push answers...
     DB.saveChoices @_cardId, @_answers
 
-  addCategories: (categories) ->
+  _addCategories: (categories) ->
     @_categories = []
     @_categories.push categories...
     DB.saveCategories @_cardId, @_categories
@@ -39,6 +31,23 @@ class NewCardStore extends EventEmitter
   _getUser: ->
     user = UserStore.getUser() ? raise 'not logged in'
     user.id
+
+  _loadCategories: ->
+    DB.getCategories((results) =>
+      @_categories = results
+      @emit Constants.stores.CATEGORIES_CHANGE
+    )
+
+  getCard: ->
+    {
+    author: @_author
+    question: @_question
+    answers: @_answers
+    categories: @_categories
+    }
+
+  getCategories: ->
+    @_categories
 
 
 newCardStore = new NewCardStore
@@ -49,9 +58,12 @@ AppDispatcher.register (payload) ->
   # Pay attention to events relevant to PeggBoxStore
   switch action.actionType
     when Constants.actions.ADD_QUESTION
-      newCardStore.addQuestion action.question
+      newCardStore._addQuestion action.question
     when Constants.actions.ADD_ANSWERS
-      newCardStore.addAnswers action.answers
+      newCardStore._addAnswers action.answers
+    when Constants.actions.LOAD_CATEGORIES
+      newCardStore._loadCategories()
+
 
 module.exports = newCardStore
 

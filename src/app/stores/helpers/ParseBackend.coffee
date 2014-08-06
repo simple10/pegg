@@ -3,6 +3,7 @@ Parse = require 'Parse'
 Comment = Parse.Object.extend 'Comment'
 Card = Parse.Object.extend 'Card'
 Choice = Parse.Object.extend 'Choice'
+Category = Parse.Object.extend 'Category'
 Pref = Parse.Object.extend 'Pref'
 Pegg = Parse.Object.extend 'Pegg'
 Points = Parse.Object.extend 'Points'
@@ -185,6 +186,16 @@ class ParseBackend
         cb cards
       error: (error) ->
         console.log "Error fetching cards: " + error.code + " " + error.message
+        cb null
+
+  getCategories: (cb) ->
+    catQuery = new Parse.Query Category
+    catQuery.find
+      success: (results) =>
+        debugger
+        cb results
+      error: (error) ->
+        console.log "Error fetching categories: " + error.code + " " + error.message
         cb null
 
   getPeggCards: (num, user, cb) ->

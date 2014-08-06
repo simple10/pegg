@@ -23,7 +23,7 @@ class ActivityView extends View
     container = new ContainerSurface
       size: [undefined, undefined]
       properties:
-        overflow: "hidden"
+        overflow: 'hidden'
     container.add @activityScrollview
     @add container
 

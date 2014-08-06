@@ -34,6 +34,7 @@ AppStateStore = require 'stores/AppStateStore'
 PlayActions = require 'actions/PlayActions'
 ActivityActions = require 'actions/ActivityActions'
 UserActions = require 'actions/UserActions'
+CardActions = require 'actions/CardActions'
 
 # Constants
 Constants = require 'constants/PeggConstants'
@@ -81,6 +82,7 @@ pickView = ->
     PlayActions.load GameFlow, GameScript
     ActivityActions.load 1
     UserActions.load()
+    CardActions.loadCategories()
   else if AppStateStore.getCurrentPageID() is 'login'
     lightbox.show loginView
   else

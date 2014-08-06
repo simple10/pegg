@@ -46,3 +46,15 @@
   font-size: 36px;
   text-align: center;
 }
+
+.newcard__category {
+  color: $black;
+  border-bottom: 2px solid #ccc;
+  font-size: 26px;
+  background-color: $white;
+  z-index: 10;
+}
+
+.newcard__categories {
+  background-color: $white;
+}
