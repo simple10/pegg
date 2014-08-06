@@ -7,6 +7,7 @@ DB = require 'stores/helpers/ParseBackend'
 
 class UserStore extends EventEmitter
   _subscribed: false
+  _images: []
 
   login: ->
 
@@ -76,7 +77,7 @@ class UserStore extends EventEmitter
               debugger
             success: =>
               Parse.history.navigate('play')
-              @emit Constants.stores.CHANGE
+              @emit Constants.stores.LOGIN_CHANGE
               @importFriends()
         )
         unless user.existed()
@@ -106,10 +107,15 @@ class UserStore extends EventEmitter
         console.log "Failed to create subscriber, with error code: #{error.description}"
         return
 
+  load: ->
+    DB.getPrefImages @getUser().id, (images) =>
+      @_images = images
+      @emit Constants.stores.PREF_IMAGES_CHANGE
+
   logout: ->
     FB.logout()
     Parse.User.logOut()
-    @emit Constants.stores.CHANGE
+    @emit Constants.stores.LOGIN_CHANGE
 
   getUser: ->
     Parse.User.current()
@@ -135,11 +141,7 @@ class UserStore extends EventEmitter
       return false
 
   getPrefImages: ->
-    user = @getUser()
-    if user
-      userId = user.id
-      DB.getPrefImages userId, (images) =>
-        @emit Constants.stores.PREF_IMAGES_CHANGE, images
+    @_images
 
   getSubscriptionStatus: ->
     return @_subscribed
@@ -164,7 +166,10 @@ AppDispatcher.register (payload) ->
       user.login()
     when Constants.actions.USER_LOGOUT
       user.logout()
+    when Constants.actions.USER_LOAD
+      user.load()
     when Constants.actions.SUBSCRIBER_SUBMIT
       user.subscribe action.email
+
 
 module.exports = user

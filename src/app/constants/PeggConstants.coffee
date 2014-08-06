@@ -3,6 +3,7 @@ Utils = require 'Utils'
 module.exports =
   actions: Utils.keyMirror
     MENU_SELECT: null
+    CARD_SELECT: null
     LOAD_ACTIVITY: null
     LOAD_GAME: null
     LOAD_CARD: null
@@ -14,6 +15,7 @@ module.exports =
     CARD_COMMENT: null
     USER_LOGIN: null
     USER_LOGOUT: null
+    USER_LOAD: null
     SUBSCRIBER_SUBMIT: null
     PLAY_CONTINUE: null
     ADD_QUESTION: null

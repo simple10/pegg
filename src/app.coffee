@@ -33,6 +33,7 @@ AppStateStore = require 'stores/AppStateStore'
 # Actions
 PlayActions = require 'actions/PlayActions'
 ActivityActions = require 'actions/ActivityActions'
+UserActions = require 'actions/UserActions'
 
 # Constants
 Constants = require 'constants/PeggConstants'
@@ -79,13 +80,15 @@ pickView = ->
     lightbox.show appView
     PlayActions.load GameFlow, GameScript
     ActivityActions.load 1
+    UserActions.load()
   else if AppStateStore.getCurrentPageID() is 'login'
     lightbox.show loginView
   else
     lightbox.show signupView
+  return
 
 AppStateStore.on Constants.stores.LOGIN_CHANGE, pickView
-UserStore.on Constants.stores.CHANGE, pickView
+UserStore.on Constants.stores.LOGIN_CHANGE, pickView
 
 #mainContext.add new FpsMeter
 

@@ -22,22 +22,26 @@ Parse = require 'Parse'
 class AppStateStore extends EventEmitter
   _currentPageID: 'play'
 
-  changePage: (pageID) ->
+  _changePage: (pageID) ->
     @_currentPageID = pageID
     Parse.history.navigate(pageID, true);
     if pageID is 'login' or pageID is 'signup'
       @emit Constants.stores.LOGIN_CHANGE
     else if pageID is 'profile'
-      @emit Constants.stores.PROFILE_LOAD
       @emit Constants.stores.MENU_CHANGE
     else
       @emit Constants.stores.MENU_CHANGE
     # TODO: stash currentPageID in Parse or localStorage and
     #   auto load previous app state when user returns to app.
 
+  _loadCard: (cardId, peggeeId) ->
+    console.log cardId, peggeeId
+    @_currentPageID = 'review'
+    Parse.history.navigate(@_currentPageID, true);
+    @emit Constants.stores.MENU_CHANGE
+
   getCurrentPageID: ->
     @_currentPageID
-
 
 appstate = new AppStateStore
 
@@ -48,7 +52,9 @@ AppDispatcher.register (payload) ->
   # Pay attention to events relevant to AppStateStore
   switch action.actionType
     when Constants.actions.MENU_SELECT
-      appstate.changePage action.pageID
+      appstate._changePage action.pageId
+    when Constants.actions.CARD_SELECT
+      appstate._loadCard action.cardId, action.peggeeId
 
 
 module.exports = appstate

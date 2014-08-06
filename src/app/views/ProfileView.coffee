@@ -39,15 +39,8 @@ class ProfileView extends View
     @initListeners()
 
   initListeners: ->
-    AppStateStore.on Constants.stores.PROFILE_LOAD, () ->
-      UserStore.getPrefImages()
-    UserStore.on Constants.stores.CHANGE, @_update
-    UserStore.on Constants.stores.PREF_IMAGES_CHANGE, (images) =>
-      @prefBoard.loadImages images
-
-  _update: =>
-    @pic.setContent UserStore.getAvatar 'height=300&type=normal&width=300'
-    @name.setContent "#{UserStore.getName('first')}'s <strong>profile</strong>"
+    UserStore.on Constants.stores.LOGIN_CHANGE, @_loadUser
+    UserStore.on Constants.stores.PREF_IMAGES_CHANGE, @_loadImages
 
   init: ->
     @picContainer = new ContainerSurface
@@ -92,9 +85,6 @@ class ProfileView extends View
       height: (Utils.getViewportHeight() - @options.headerHeight) * (1 - @options.profileContainerRatio)
       gutter: 5
 
-    ## Retrieve Pref Images ##
-    UserStore.getPrefImages()
-
     @picContainer.add @pic
     # @picContainer.add(@nameMod).add @name
     @add(picMod).add @picContainer
@@ -105,5 +95,12 @@ class ProfileView extends View
     # picMod.setAlign [0.5, -0.5], {duration: 300, easing: Easing.linear}
     # logoutMod.setTransform Transform.translate(0, -200, 0), {duration: 800, easing: Easing.outBounce}
     nameMod.setTransform Transform.translate(0, 160, 0), {duration: 500, easing: Easing.outCubic}
+
+  _loadUser: =>
+    @pic.setContent UserStore.getAvatar 'height=300&type=normal&width=300'
+    @name.setContent "#{UserStore.getName('first')}'s <strong>profile</strong>"
+
+  _loadImages: =>
+    @prefBoard.loadImages UserStore.getPrefImages()
 
 module.exports = ProfileView

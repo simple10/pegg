@@ -15,4 +15,8 @@ UserActions =
       actionType: Constants.actions.SUBSCRIBER_SUBMIT
       email: email
 
+  load: ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.USER_LOAD
+
 module.exports = UserActions
