@@ -6,12 +6,9 @@ Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
-<<<<<<< HEAD
 NavActions = require 'actions/NavActions'
 ReviewActions = require 'actions/ReviewActions'
-=======
 Utils = require 'lib/Utils';
->>>>>>> bugfix
 
 class ActivityItemView extends View
   @DEFAULT_OPTIONS:
