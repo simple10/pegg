@@ -78,7 +78,7 @@ class LoginView extends View
 #      content: 'Login'
 #      classes: ['login__text--header']
 #    privacyText = new Surface
-#      size: [window.innerWidth, 10]
+#      size: [Utils.getViewportWidth(), 10]
 #      content: 'Psst... Pegg respects people and their data.'
 #      classes: ['login__text--message']
 #    loginTextMod = new StateModifier

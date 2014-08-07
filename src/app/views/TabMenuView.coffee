@@ -8,6 +8,7 @@ Timer = require 'famous/utilities/Timer'
 _ = require('Parse')._
 
 TabMenuItemView = require 'views/TabMenuItemView'
+Utils = require 'lib/Utils'
 
 
 ###
@@ -41,7 +42,7 @@ class TabMenuView extends View
         title: @options.model[i].title
         icon: @options.model[i].iconUrl
         xOffset: xOffset
-        width: window.innerWidth / @options.model.length
+        width: Utils.getViewportWidth() / @options.model.length
         height: @options.tab.height
       i++
       xOffset += 1/@options.model.length

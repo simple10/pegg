@@ -49,7 +49,7 @@ class ReviewView extends View
   initViews: ->
 
     ## CARD ##
-    @cardView = new CardView card.id, card, size: [window.innerWidth, null]
+    @cardView = new CardView card.id, card, size: [Utils.getViewportWidth(), null]
     @cardViewMod = new Modifier
       align: =>
         xAlign = @cardXAlign.get()

@@ -6,13 +6,14 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 MenuActions = require 'actions/MenuActions'
+Utils = require 'lib/Utils'
 
 
 class BandMenuItemView extends View
   @DEFAULT_OPTIONS:
     pageID: null
     width: 270
-    height: window.innerHeight / 4
+    height: Utils.getViewportHeight() / 4
     angle: -0.2
     iconUrl: 'images/mark_tiny.png'
     title: 'pegg'

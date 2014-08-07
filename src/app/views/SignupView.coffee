@@ -108,7 +108,7 @@ class SignupView extends View
   onInputFocus: =>
     @signupInput.focus()
     ###@signupInput.setClasses ["signup__email__input--big"]
-    @signupInput.setSize [window.innerWidth, window.innerHeight/2 + 50]
+    @signupInput.setSize [Utils.getViewportWidth(), Utils.getViewportHeight()/2 + 50]
     @signupInputMod.setAlign [0.5, 0]
     @signupInputMod.setOrigin [0.5, 1]###
 

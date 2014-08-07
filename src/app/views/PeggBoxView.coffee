@@ -5,6 +5,7 @@ ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Scrollview = require 'famous/views/Scrollview'
 
 ListItemView = require 'views/ListItemView'
+Utils = require 'lib/Utils'
 
 class PeggBoxView extends View
   @DEFAULT_OPTIONS:
@@ -22,7 +23,7 @@ class PeggBoxView extends View
 
     surfaces = []
     scrollview = new Scrollview
-      size: [window.innerWidth, window.innerHeight]
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
     scrollview.sequenceFrom surfaces
 
     i = 0
