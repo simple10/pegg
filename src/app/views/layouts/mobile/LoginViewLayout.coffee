@@ -1,5 +1,6 @@
 Easing = require 'famous/transitions/Easing'
 Transform = require 'famous/core/Transform'
+Utils = require 'lib/Utils'
 
 module.exports =
   logo:
@@ -59,7 +60,7 @@ module.exports =
       }
     ]
   fbButton:
-    size: [window.innerWidth, window.innerHeight / 4]
+    size: [Utils.getViewportWidth(), Utils.getViewportHeight() / 4]
     classes: ['login__button--facebook']
     align: [1, 0.45]
     origin: [0, 0]
@@ -72,7 +73,7 @@ module.exports =
       }
     ]
   gpButton:
-    size: [window.innerWidth, window.innerHeight / 4]
+    size: [Utils.getViewportWidth(), Utils.getViewportHeight() / 4]
     classes: ['login__button--google']
     align: [1, 0.7]
     origin: [0, 0]

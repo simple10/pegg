@@ -1,5 +1,6 @@
 Easing = require 'famous/transitions/Easing'
 Transform = require 'famous/core/Transform'
+Utils = require 'lib/Utils'
 
 module.exports =
   cardIcon:
@@ -8,7 +9,7 @@ module.exports =
     align: [0.5, 0.15]
     origin: [0.35, 0.5]
   newCardTitle:
-    size: [window.innerWidth - 50, 50]
+    size: [Utils.getViewportWidth() - 50, 50]
     classes: ['newcard__header']
     align: [0.5, 0.28]
     origin: [0.5, 0.5]
@@ -53,7 +54,7 @@ module.exports =
       }
     ]
   step1_1: # input field
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     align: [0.5, 1]
     origin: [0.5, 0]
     states: [
@@ -71,7 +72,7 @@ module.exports =
       }
     ]
   step1_2: # button
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button']
     align: [0.5, 1]
     origin: [0.5, 0]
@@ -109,7 +110,7 @@ module.exports =
         }
       ]
   step2_1: # input field
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     align: [0.5, 1]
     origin: [0.5, 0]
     states: [
@@ -127,7 +128,7 @@ module.exports =
       }
     ]
   step2_2: # input field
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     align: [0.5, 1]
     origin: [0.5, 0]
     states: [
@@ -145,7 +146,7 @@ module.exports =
       }
     ]
   step2_3: # input field
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     align: [0.5, 1]
     origin: [0.5, 0]
     states: [
@@ -163,7 +164,7 @@ module.exports =
       }
     ]
   step2_4: # input field
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     align: [0.5, 1]
     origin: [0.5, 0]
     states: [
@@ -181,7 +182,7 @@ module.exports =
       }
     ]
   step2_5: # button
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button']
     align: [0.5, 1]
     origin: [0.5, -0.5]
@@ -219,7 +220,7 @@ module.exports =
       }
   ]
   step3_1: # link container
-    size: [ [window.innerWidth-30, 55], [59, 55], [window.innerWidth - 59, 55] ]
+    size: [ [Utils.getViewportWidth()-30, 55], [59, 55], [Utils.getViewportWidth() - 59, 55] ]
     align: [0.5, 1]
     origin: [0.5, 0]
     classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
@@ -238,7 +239,7 @@ module.exports =
       }
     ]
   step3_2: # link container
-    size: [ [window.innerWidth-30, 55], [70, 55], [window.innerWidth - 90, 55] ]
+    size: [ [Utils.getViewportWidth()-30, 55], [70, 55], [Utils.getViewportWidth() - 90, 55] ]
     align: [0.5, 1]
     origin: [0.5, 0]
     classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
@@ -257,7 +258,7 @@ module.exports =
       }
     ]
   step3_3: # button
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button']
     align: [0.5, 1]
     origin: [0.5, 0]
@@ -276,7 +277,7 @@ module.exports =
       }
     ]
   step4_0: # surface
-    size: [window.innerWidth - 100, 40]
+    size: [Utils.getViewportWidth() - 100, 40]
     classes: ['newcard__header--big']
     align: [0.5, 1]
     origin: [0.5, 0]
@@ -295,7 +296,7 @@ module.exports =
       }
     ]
   step4_1: # button
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button', 'newcard__button--blue']
     align: [0.5, 1]
     origin: [0.5, 0]
@@ -314,7 +315,7 @@ module.exports =
       }
     ]
   step4_2: # button
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button', 'newcard__button--blue']
     align: [0.5, 1]
     origin: [0.5, 0]

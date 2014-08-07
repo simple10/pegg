@@ -4,6 +4,7 @@ View = require 'famous/core/View'
 Transform = require 'famous/core/Transform'
 Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
+Utils = require 'lib/Utils'
 
 class ListItemView extends View
   @DEFAULT_OPTIONS:
@@ -25,10 +26,10 @@ class ListItemView extends View
     message = @options.get "message"
 
     item = new Surface
-      size: [window.innerWidth, @options.height]
+      size: [Utils.getViewportWidth(), @options.height]
       content: message
       properties:
-        width: window.innerWidth
+        width: Utils.getViewportWidth()
       classes: ['peggbox__item']
 
     item.pipe @_eventOutput

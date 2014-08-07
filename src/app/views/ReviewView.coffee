@@ -50,7 +50,7 @@ class ReviewView extends View
 
     ## CARD ##
     @cardView = new CardView
-      size: [window.innerWidth, null]
+      size: [Utils.getViewportWidth(), null]
       type: 'review'
     @cardViewMod = new Modifier
       align: =>

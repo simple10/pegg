@@ -17,6 +17,9 @@ Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 Constants = require 'constants/PeggConstants'
 
+# Helpers
+Utils = require 'lib/Utils'
+
 # Stores
 AppStateStore = require 'stores/AppStateStore'
 
@@ -115,8 +118,8 @@ class AppView extends View
       inOrigin: [1, 1]
       outOrigin: [0, 0]
       showOrigin: [0.5, 0.5]
-      inTransform: Transform.thenMove(Transform.rotateX(0), [0, window.innerHeight, -300])
-      outTransform: Transform.thenMove(Transform.rotateZ(0), [0, -window.innerHeight, -1000])
+      inTransform: Transform.thenMove(Transform.rotateX(0), [0, Utils.getViewportHeight(), -300])
+      outTransform: Transform.thenMove(Transform.rotateZ(0), [0, -Utils.getViewportHeight(), -1000])
       inTransition: { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
 

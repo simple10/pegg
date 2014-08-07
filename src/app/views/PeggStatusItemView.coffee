@@ -7,6 +7,7 @@ ImageSurface = require 'famous/surfaces/ImageSurface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
+Utils = require 'lib/Utils'
 
 class PeggStatusItemView extends View
 
@@ -16,7 +17,7 @@ class PeggStatusItemView extends View
 
   init: ->
     container = new ContainerSurface
-      size: [window.innerWidth, 70]
+      size: [Utils.getViewportWidth(), 70]
       properties:
         overflow: 'hidden'
     @peggerPic = new ImageSurface
@@ -37,14 +38,14 @@ class PeggStatusItemView extends View
 #    container.add(unicornPicMod).add unicornPic
     @peggerName = new Surface
       classes: ['status__pegger__name']
-      size: [window.innerWidth, 30]
+      size: [Utils.getViewportWidth(), 30]
     peggerNameMod = new StateModifier
       align: [0.3, 0.1]
       origin: [0, 0]
     container.add(peggerNameMod).add @peggerName
     @points = new Surface
       classes: ['status__pegger__points']
-      size: [window.innerWidth, 30]
+      size: [Utils.getViewportWidth(), 30]
     pointsMod = new StateModifier
       align: [0.3, 0.34]
       origin: [0, 0]

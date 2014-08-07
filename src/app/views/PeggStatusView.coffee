@@ -13,6 +13,7 @@ UserStore = require 'stores/UserStore'
 Utility = require 'famous/utilities/Utility'
 Scrollview = require 'famous/views/Scrollview'
 PeggStatusItemView = require 'views/PeggStatusItemView'
+Utils = require 'lib/Utils'
 
 class PeggStatusView extends View
 
@@ -26,7 +27,7 @@ class PeggStatusView extends View
 
   init: ->
     container = new ContainerSurface
-      size: [window.innerWidth, window.innerHeight]
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
       properties:
         overflow: 'hidden'
     userPic = new ImageSurface
@@ -40,7 +41,7 @@ class PeggStatusView extends View
     container.add(userPicMod).add userPic
     userName = new Surface
       classes: ['status__peggee__name']
-      size: [window.innerWidth, 50]
+      size: [Utils.getViewportWidth(), 50]
     userNameMod = new StateModifier
       align: [0.5, 0.28]
       origin: [0.5, 0]

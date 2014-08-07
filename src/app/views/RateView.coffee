@@ -6,10 +6,11 @@ StateModifier = require 'famous/modifiers/StateModifier'
 PlayActions = require 'actions/PlayActions'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
+Utils = require 'lib/Utils'
 
 class RateView extends View
   @DEFAULT_OPTIONS:
-    width: window.innerWidth
+    width: Utils.getViewportWidth()
     height: 50
     scale: 5
     staggerDelay: 50
@@ -52,7 +53,7 @@ class RateView extends View
     i = 0
     while i < @starModifiers.length
       Timer.setTimeout ((i) ->
-        @starModifiers[i].setTransform Transform.translate(0, -window.innerHeight/2+@options.height, 0), @options.transition
+        @starModifiers[i].setTransform Transform.translate(0, -Utils.getViewportHeight()/2+@options.height, 0), @options.transition
         return
       ).bind(this, i), i * @options.staggerDelay
       i++

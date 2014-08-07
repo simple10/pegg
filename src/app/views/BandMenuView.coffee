@@ -7,6 +7,7 @@ Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
 BandMenuItemView = require 'views/BandMenuItemView'
 _ = require('Parse')._
+Utils = require 'lib/Utils'
 
 ###
 # Events:
@@ -17,7 +18,7 @@ class BandMenuView extends View
     width: null
     topOffset: 0
     band:
-      offset: window.innerHeight / 4
+      offset: Utils.getViewportHeight() / 4
       staggerDelay: 35
       transition:
         duration: 400

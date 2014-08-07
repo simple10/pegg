@@ -6,8 +6,12 @@ Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
+<<<<<<< HEAD
 NavActions = require 'actions/NavActions'
 ReviewActions = require 'actions/ReviewActions'
+=======
+Utils = require 'lib/Utils';
+>>>>>>> bugfix
 
 class ActivityItemView extends View
   @DEFAULT_OPTIONS:
@@ -25,7 +29,7 @@ class ActivityItemView extends View
 
   build: ->
     container = new ContainerSurface
-      size: [window.innerWidth, @options.height]
+      size: [Utils.getViewportWidth(), @options.height]
       properties:
         overflow: 'hidden'
       classes: ['peggbox__item']
@@ -42,10 +46,10 @@ class ActivityItemView extends View
       ​​​​​​​​​​​​​​​​​​​​​​"
 
     textSurface = new Surface
-      size: [window.innerWidth - 80, @options.height]
+      size: [Utils.getViewportWidth() - 80, @options.height]
       content: message
       properties:
-        width: window.innerWidth
+        width: Utils.getViewportWidth()
       classes: ['peggbox__item__text']
     textSurfaceModifier = new StateModifier
       origin: [0, 0]

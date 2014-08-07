@@ -9,13 +9,14 @@ Timer = require 'famous/utilities/Timer'
 PlayStore = require 'stores/PlayStore'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 _ = require('Parse')._
+Utils = require 'lib/Utils'
 
 class CommentsItemView extends View
   @DEFAULT_OPTIONS:
     width: undefined
     height: 60
     text:
-      width: window.innerWidth - 87
+      width: Utils.getViewportWidth() - 87
       height: 15
     pic:
       width: 35
