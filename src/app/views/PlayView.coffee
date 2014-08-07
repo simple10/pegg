@@ -36,6 +36,9 @@ class PlayView extends View
 
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'PlayView'
+    
+    @_viewportHeight = Utils.getViewportHeight();
+    @_viewportWidth = Utils.getViewportWidth();
 
     # create transitionable with initial value of 0
     @cardYPos = new Transitionable(0)
@@ -214,7 +217,7 @@ class PlayView extends View
     @cardScrollView.sequenceFrom @cardViews
     i = 0
     for own cardId, cardObj of PlayStore.getCards()
-      card = new CardView size: [Utils.getViewportWidth(), null]
+      card = new CardView size: [@_viewportWidth, null]
       card.loadCard cardId, cardObj
       card.on 'comment', =>
         @collapseComments()
@@ -241,9 +244,9 @@ class PlayView extends View
   _translateToAlign: (delta, axis) =>
     axis = axis || 'Y'
     if axis is 'Y'
-      delta / Utils.getViewportHeight()
+      delta / @_viewportHeight
     else
-      delta / Utils.getViewportWidth()
+      delta / @_viewportWidth
 
   loadChoices: (cardId) =>
     @cardViews[@index[cardId]].loadChoices cardId
