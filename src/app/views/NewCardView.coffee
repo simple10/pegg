@@ -23,6 +23,9 @@ Scrollview = require 'famous/views/Scrollview'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Constants = require 'constants/PeggConstants'
 
+# Layouts
+HeaderViewLayout = require 'views/layouts/mobile/HeaderViewLayout'
+
 class NewCardView extends View
 
   constructor: ->
@@ -51,6 +54,8 @@ class NewCardView extends View
     @step2Inputs = []
     @step4Mods = []
     @step3Mods = []
+
+    headerHeight = HeaderViewLayout.size[1]
 #    @back = new ImageSurface
 #      size: [50, 50]
 #      content: '/images/back.png'
@@ -79,15 +84,24 @@ class NewCardView extends View
     @add(newCardMod).add @newCardTitle
 
 
-    @categoryScrollview = new Scrollview
-      size: @options.categories.size
-      classes: @options.categories.classes
-    @categorySurfaces = []
-    @categoryScrollview.sequenceFrom @categorySurfaces
+    @container = new ContainerSurface
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight() - headerHeight]
+      classes: ['categoriesContainer']
+      properties:
+        overflow: 'hidden'
     @categoryScrollviewMod = new StateModifier
       origin: @options.categories.origin
       align: @options.categories.align
-    @add(@categoryScrollviewMod).add @categoryScrollview
+      transform: Transform.translate 0, headerHeight, 1
+    @categoryScrollview = new Scrollview
+      # size: @options.categories.size
+      # classes: @options.categories.classes
+    @categorySurfaces = []
+    @categoryScrollview.sequenceFrom @categorySurfaces
+
+    @container.add @categoryScrollview
+    @add(@categoryScrollviewMod).add @container
+
 
     ## STEP 1
     @addNum(1, 0)

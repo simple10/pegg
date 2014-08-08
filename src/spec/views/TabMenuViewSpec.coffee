@@ -5,6 +5,7 @@ expect = helper.expect
 should = helper.should
 spy = helper.spy
 
+Utils = require 'lib/Utils'
 
 describe 'TabMenuView', ->
   beforeEach ->
@@ -23,7 +24,7 @@ describe 'TabMenuView', ->
     expect(@view.tabs[0].getID()).to.equal @model[0].pageID
 
   it 'tabs should fill window width', ->
-    expect(window.innerWidth).to.equal @view.tabs[0].options.width * @model.length
+    expect(Utils.getViewportWidth()).to.equal @view.tabs[0].options.width * @model.length
     expect(@view.tabs[1].options.xOffset).to.equal 1 / @model.length
 
   it 'tabs should show', ->

@@ -15,6 +15,7 @@ Utility = require 'famous/utilities/Utility'
 PrefStatusItemView = require 'views/PrefStatusItemView'
 RenderNode = require 'famous/core/RenderNode'
 PlayStore = require 'stores/PlayStore'
+Utils = require 'lib/Utils'
 
 class PrefStatusView extends View
   _itemViews: []
@@ -27,7 +28,7 @@ class PrefStatusView extends View
 
   init: ->
     container = new ContainerSurface
-      size: [window.innerWidth, window.innerHeight]
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
 
     @itemsScrollView = new Scrollview
       direction: Utility.Direction.Y
@@ -53,7 +54,7 @@ class PrefStatusView extends View
     userNameNode = new RenderNode
     @_userName = new Surface
       classes: ['status__preffer__name']
-      size: [window.innerWidth - 60, 175]
+      size: [Utils.getViewportWidth() - 60, 175]
     userNameMod = new StateModifier
       align: [0.5, 0.1]
       origin: [0.5, 0]

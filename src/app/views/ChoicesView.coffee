@@ -10,6 +10,7 @@ ListItemView = require 'views/ListItemView'
 PlayStore = require 'stores/PlayStore'
 ChoiceView = require 'views/ChoiceView'
 Transform = require 'famous/core/Transform'
+Utils = require 'lib/Utils'
 
 class ChoicesView extends View
   @DEFAULT_OPTIONS:
@@ -17,7 +18,7 @@ class ChoicesView extends View
     height: 30
     padding: 40
     containerHeight: 260
-    innerWidth: window.innerWidth - window.innerWidth * .2
+    innerWidth: Utils.getViewportWidth() - Utils.getViewportWidth() * .2
 
   constructor: () ->
     super

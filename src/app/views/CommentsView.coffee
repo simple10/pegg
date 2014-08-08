@@ -11,11 +11,12 @@ Utility = require 'famous/utilities/Utility'
 Scrollview = require 'famous/views/Scrollview'
 CommentItemView = require 'views/CommentItemView'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
+Utils = require 'lib/Utils'
 
 class CommentsView extends View
   @DEFAULT_OPTIONS:
-    width: window.innerWidth - 50
-    height: window.innerHeight - 260
+    width: Utils.getViewportWidth() - 50
+    height: Utils.getViewportHeight() - 260
 
   constructor: () ->
     super

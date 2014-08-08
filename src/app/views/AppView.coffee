@@ -17,6 +17,9 @@ Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 Constants = require 'constants/PeggConstants'
 
+# Helpers
+Utils = require 'lib/Utils'
+
 # Stores
 AppStateStore = require 'stores/AppStateStore'
 
@@ -40,6 +43,7 @@ ReviewView = require 'views/ReviewView'
 # Layouts
 PlayViewLayout = require 'views/layouts/mobile/PlayViewLayout'
 NewCardViewLayout = require 'views/layouts/mobile/NewCardViewLayout'
+HeaderViewLayout = require 'views/layouts/mobile/HeaderViewLayout'
 
 #Actions
 NavActions = require 'actions/NavActions'
@@ -55,7 +59,7 @@ class AppView extends View
         curve: 'easeOut'
       model: Menu
     header:
-      height: 50
+      height: HeaderViewLayout.size[1]
   # Pages correspond to pageID in constants/menu.coffee
   pages: {}
   menuOpen: false
@@ -109,14 +113,15 @@ class AppView extends View
     @togglePage()
 
   initViewManager: ->
+    viewportHeight = Utils.getViewportHeight()
     @lightbox = new Lightbox
       inOpacity: 1
       outOpacity: 0
       inOrigin: [1, 1]
       outOrigin: [0, 0]
       showOrigin: [0.5, 0.5]
-      inTransform: Transform.thenMove(Transform.rotateX(0), [0, window.innerHeight, -300])
-      outTransform: Transform.thenMove(Transform.rotateZ(0), [0, -window.innerHeight, -1000])
+      inTransform: Transform.thenMove(Transform.rotateX(0), [0, viewportHeight, -300])
+      outTransform: Transform.thenMove(Transform.rotateZ(0), [0, -viewportHeight, -1000])
       inTransition: { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
 

@@ -9,10 +9,11 @@ Transform = require 'famous/core/Transform'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 SequentialLayout = require 'famous/views/SequentialLayout'
 RenderNode = require 'famous/core/RenderNode'
+Utils = require 'lib/Utils'
 
 class PrefStatusItemView extends View
   @DEFAULT_OPTIONS:
-    size: [undefined, window.innerHeight]
+    size: [undefined, Utils.getViewportHeight()]
 
   constructor: (options) ->
     super options
@@ -25,7 +26,7 @@ class PrefStatusItemView extends View
 
   _init: ->
     container = new ContainerSurface
-      size: [window.innerWidth, 400]
+      size: [Utils.getViewportWidth(), 400]
       properties:
         overflow: 'hidden'
     container.pipe @._eventOutput
@@ -37,7 +38,7 @@ class PrefStatusItemView extends View
     questionNode = new RenderNode
     @_question = new Surface
       classes: ['status__pref__question']
-      size: [window.innerWidth-40, 60]
+      size: [Utils.getViewportWidth()-40, 60]
     questionMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
@@ -81,7 +82,7 @@ class PrefStatusItemView extends View
     choiceNode = new RenderNode
     choice = new Surface
       classes: ['status__pref__choice']
-      size: [window.innerWidth-60, 60]
+      size: [Utils.getViewportWidth()-60, 60]
     choiceMod = new StateModifier
       align: [0, 0.02]
       origin: [0, 0]
@@ -103,8 +104,8 @@ class PrefStatusItemView extends View
     i = 0
     for id, choice of data.choices
       @_choices[i].setContent choice.choiceText
-      @_percentages[i].setSize [ (window.innerWidth-60) * (choice.count / @_total) + 3, 10 ]
-      @_question.setSize [window.innerWidth-40, 60 + Math.floor(data.question.length/25) * 10]
+      @_percentages[i].setSize [ (Utils.getViewportWidth()-60) * (choice.count / @_total) + 3, 10 ]
+      @_question.setSize [Utils.getViewportWidth()-40, 60 + Math.floor(data.question.length/25) * 10]
       if i is 3 then break
       i++
 

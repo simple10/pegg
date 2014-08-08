@@ -1,5 +1,6 @@
 Easing = require 'famous/transitions/Easing'
 Transform = require 'famous/core/Transform'
+Utils = require 'lib/Utils'
 
 module.exports =
   cards:
@@ -57,7 +58,7 @@ module.exports =
       }
     ]
   newComment:
-    size: [window.innerWidth - 50, 40]
+    size: [Utils.getViewportWidth() - 50, 40]
     origin: [0.5, 0]
     align: [0.5, 1]
     states: [
@@ -75,7 +76,7 @@ module.exports =
   status:
     origin: [0.5, 0]
     align: [0.5, 1]
-    size: [window.innerWidth, window.innerHeight]
+    size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
     states: [
 
       # start state 

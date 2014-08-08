@@ -6,6 +6,7 @@ Scrollview = require 'famous/views/Scrollview'
 ActivityItemView = require 'views/ActivityItemView'
 ActivityStore = require 'stores/ActivityStore'
 Constants = require 'constants/PeggConstants'
+Utils = require 'lib/Utils'
 
 class ActivityView extends View
 
@@ -21,7 +22,7 @@ class ActivityView extends View
   initSurfaces: ->
     @activities = []
     @activityScrollview = new Scrollview
-      size: [window.innerWidth, window.innerHeight]
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
     @activityScrollview.sequenceFrom @activities
     container = new ContainerSurface
       size: [undefined, undefined]

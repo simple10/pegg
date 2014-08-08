@@ -6,10 +6,11 @@ ImageSurface = require 'famous/surfaces/ImageSurface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
+Utils = require 'lib/Utils'
 
 class ProgressBarView extends View
   @DEFAULT_OPTIONS:
-    width: window.innerHeight/2-20
+    width: Utils.getViewportHeight()/2-20
     height: 15
     transition:
       duration: 400
@@ -27,7 +28,7 @@ class ProgressBarView extends View
   init: ->
     text = new Surface
       content: 'Progress'
-      size: [window.innerWidth, @options.height]
+      size: [Utils.getViewportWidth(), @options.height]
       classes: ['progressBar__title']
     textMod = new StateModifier
       align: [0.5, 0.03]

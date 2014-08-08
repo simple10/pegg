@@ -21,8 +21,8 @@ class ProfileView extends View
     profileContainerWidth: Utils.getViewportWidth()
     profileContainerHeight: Utils.getViewportHeight()
     profileContainerRatio: 2/5
-    width: window.innerWidth
-    height: window.innerHeight
+    width: Utils.getViewportWidth()
+    height: Utils.getViewportHeight()
     transition:
       duration: 500
       curve: Easing.outExpo

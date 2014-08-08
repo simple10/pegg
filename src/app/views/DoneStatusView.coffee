@@ -10,7 +10,7 @@ Timer = require 'famous/utilities/Timer'
 PlayActions = require 'actions/PlayActions'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 UserStore = require 'stores/UserStore'
-
+Utils = require 'lib/Utils'
 
 class DoneStatusView extends View
 
@@ -23,7 +23,7 @@ class DoneStatusView extends View
 
   init: ->
     container = new ContainerSurface
-      size: [window.innerWidth, window.innerHeight]
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
       properties:
         overflow: 'hidden'
 #    pic = new ImageSurface
@@ -38,7 +38,7 @@ class DoneStatusView extends View
 
     title = new Surface
       classes: ['status__done__title']
-      size: [window.innerWidth, 200]
+      size: [Utils.getViewportWidth(), 200]
     titleMod = new StateModifier
       align: [0.5, 0.28]
       origin: [0.5, 0]

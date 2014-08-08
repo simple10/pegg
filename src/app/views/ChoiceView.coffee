@@ -7,12 +7,13 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Flipper = require 'famous/views/Flipper'
 PlayStore = require 'stores/PlayStore'
+Utils = require 'lib/Utils'
 
 class ChoiceView extends View
   @DEFAULT_OPTIONS:
     width: null
     height: 30
-    innerWidth: window.innerWidth - window.innerWidth * .2
+    innerWidth: Utils.getViewportWidth() - Utils.getViewportWidth() * .2
     choiceText: ''
     color: ''
 
@@ -77,7 +78,7 @@ class ChoiceFrontView extends View
   @DEFAULT_OPTIONS:
     width: null
     height: 30
-    innerWidth: window.innerWidth - window.innerWidth * .2
+    innerWidth: Utils.getViewportWidth() - Utils.getViewportWidth() * .2
     choiceText: ''
     color: ''
 
@@ -114,7 +115,7 @@ class ChoiceBackView extends View
   @DEFAULT_OPTIONS:
     width: null
     height: 30
-    innerWidth: window.innerWidth - window.innerWidth * .2
+    innerWidth: Utils.getViewportWidth() - Utils.getViewportWidth() * .2
     choiceText: ''
     color: ''
 

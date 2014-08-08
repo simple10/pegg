@@ -19,11 +19,12 @@ ImagePickView = require 'views/ImagePickView'
 PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
 ChoicesView = require 'views/ChoicesView'
+Utils = require 'lib/Utils'
 
 class CardView extends View
   @DEFAULT_OPTIONS:
-    width: window.innerWidth - window.innerWidth * .1
-    height: window.innerHeight - window.innerHeight * .35
+    width: Utils.getViewportWidth() - Utils.getViewportWidth() * .1
+    height: Utils.getViewportHeight() - Utils.getViewportHeight() * .35
     depth: -5
     borderRadius: 10
     transition:
@@ -196,7 +197,7 @@ class CardView extends View
       @backImage.setSize [@options.width, @options.height]
     else
       @big = true
-      @backImage.setSize [window.innerWidth, window.innerHeight]
+      @backImage.setSize [Utils.getViewportWidth(), Utils.getViewportHeight()]
 
   toggleChoices: =>
     if @showChoices
