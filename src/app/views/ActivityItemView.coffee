@@ -64,7 +64,7 @@ class ActivityItemView extends View
     @add container
 
     container.on 'click', ((e) ->
-      ReviewActions.load @options.card.id, @options.peggee.id
+      ReviewActions.load @options.card.id, @options.peggee.id, 'activity'
       NavActions.selectReviewItem @options.card.id, @options.peggee.id
     ).bind @
 

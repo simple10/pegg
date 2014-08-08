@@ -9,6 +9,10 @@ class ReviewStore extends EventEmitter
   _card: null
   _comments: []
   _message: ''
+  _referrer: ''
+
+  _setReferrer: (path) ->
+    @_referrer = path
 
   _loadCard: (cardId, peggeeId) ->
     DB.getCard(cardId, peggeeId, (results) =>
@@ -33,6 +37,9 @@ class ReviewStore extends EventEmitter
   getMessage: ->
     @_message
 
+  getReferrer: ->
+    @_referrer
+
 review = new ReviewStore
 
 # Register callback with AppDispatcher to be notified of events
@@ -41,6 +48,7 @@ AppDispatcher.register (payload) ->
 
   switch action.actionType
     when Constants.actions.LOAD_CARD
+      review._setReferrer action.referrer
       review._loadCard action.card, action.peggee
       review._loadComments action.card, action.peggee
 

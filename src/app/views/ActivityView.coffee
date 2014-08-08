@@ -15,6 +15,9 @@ class ActivityView extends View
     @initListeners()
     @initSurfaces()
 
+  initListeners: ->
+    ActivityStore.on Constants.stores.ACTIVITY_CHANGE, @loadActivity
+
   initSurfaces: ->
     @activities = []
     @activityScrollview = new Scrollview
@@ -27,12 +30,8 @@ class ActivityView extends View
     container.add @activityScrollview
     @add container
 
-  initListeners: ->
-    ActivityStore.on Constants.stores.ACTIVITY_CHANGE, @loadActivity
-
   loadActivity:  =>
     @items = ActivityStore.getActivity()
-
     for item in @items
       itemView = new ActivityItemView item
       itemView.on 'scroll', =>

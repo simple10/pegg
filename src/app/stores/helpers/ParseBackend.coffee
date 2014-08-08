@@ -192,7 +192,6 @@ class ParseBackend
     catQuery = new Parse.Query Category
     catQuery.find
       success: (results) =>
-        debugger
         cb results
       error: (error) ->
         console.log "Error fetching categories: " + error.code + " " + error.message

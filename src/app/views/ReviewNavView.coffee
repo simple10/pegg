@@ -65,7 +65,7 @@ class ReviewNavView extends View
   initEvents: =>
     @leftArrow.on 'click', =>
       #console.log 'left arrow'
-      @_eventOutput.emit('click', 'prevCard')
+      @_eventOutput.emit('back')
 
   showNav: =>
     #console.log 'show nav'

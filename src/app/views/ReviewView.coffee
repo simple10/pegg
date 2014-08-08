@@ -62,7 +62,8 @@ class ReviewView extends View
     ## NAV ##
     @navView = new ReviewNavView
     @navView._eventOutput.on 'back', =>
-      NavActions.back()
+      referrer = ReviewStore.getReferrer()
+      NavActions.selectMenuItem referrer
     @add(@navView)
 
     ## COMMENTS ##
