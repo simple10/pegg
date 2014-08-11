@@ -10,8 +10,8 @@ env_config =
       appId: 'jOzfgxXTgD83QGnSyEcJgdCGEE4tNQz2bMEP4Zxe'
   production:
     parse:
-      jsKey: 'XrA5EweJyzPmhxQZY6DqE8qotDmAk13s5JKhkyql'
-      appId: 'sMSeqS1EP23z0vo3TgZKd38MBiP9qzrvnv0OHMk8'
+      jsKey: 'oBVGtJcA1YL8qAHtRHE1sm46edv3CdxSDCCBAyH3'
+      appId: 'jOzfgxXTgD83QGnSyEcJgdCGEE4tNQz2bMEP4Zxe'
 
 config =
   # Parse client credentials
