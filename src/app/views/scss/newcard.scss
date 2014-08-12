@@ -58,3 +58,31 @@
 .newcard__categories {
   background-color: $white;
 }
+
+.newcard__category {
+  &.selected {
+    background-color: $cloud-lightblue;
+  }
+
+  .category-name {
+    $h: 32px; // height of the text box
+    display: block;
+    position: absolute;
+    top: 50%;
+    margin-top: -$h / 2;
+    height: $h;
+    line-height: $h;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.newcard.confirmOrCancel {
+  background: $gray;
+  border-top: 1px solid darken($gray, 10%);
+}
+
+.newcard.confirmOrCancel__btn {
+  text-align: center;
+  color: $white;
+}

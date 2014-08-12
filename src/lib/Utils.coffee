@@ -38,11 +38,11 @@ Utils =
     ), state.delay
 
   getViewportWidth: () ->
-#    console.log 'getViewportWidth', document.documentElement.clientWidth, window.innerWidth
+    # console.log 'getViewportWidth', document.documentElement.clientWidth, window.innerWidth
     Math.max document.documentElement.clientWidth, window.innerWidth || 0
 
   getViewportHeight: () ->
-#    console.log 'getViewportHeight', document.documentElement.clientHeight, window.innerHeight
+    # console.log 'getViewportHeight', document.documentElement.clientHeight, window.innerHeight
     Math.max document.documentElement.clientHeight, window.innerHeight || 0
 
 module.exports = Utils
