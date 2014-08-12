@@ -17,11 +17,14 @@ Timer = require 'famous/utilities/Timer'
 NewCardStore = require 'stores/NewCardStore'
 UserStore = require 'stores/UserStore'
 CardActions = require 'actions/CardActions'
-InputView = require 'views/InputView'
 Utils = require 'lib/Utils'
 Scrollview = require 'famous/views/Scrollview'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Constants = require 'constants/PeggConstants'
+
+# Custom View
+InputView = require 'views/InputView'
+ConfirmCancelView = require 'views/ConfirmCancelView'
 
 # Layouts
 HeaderViewLayout = require 'views/layouts/mobile/HeaderViewLayout'
@@ -30,6 +33,10 @@ class NewCardView extends View
 
   constructor: ->
     super
+    
+    @_numOfselectedCategories = 0
+    @_selectedCategories = {}
+    
     @initSurfaces()
     @initListeners()
 
@@ -37,14 +44,49 @@ class NewCardView extends View
   initListeners: ->
     NewCardStore.on Constants.stores.CATEGORIES_CHANGE, @loadCategories
 
+    @on 'click:category', (data) =>
+      category = @_selectedCategories[data.id]
+     
+      # update the selected categories
+      if category?
+        # deselect the category
+        data.surface.removeClass('selected')
+        delete @_selectedCategories[data.id]
+        @_numOfselectedCategories--
+      else
+        # select the cateogory
+        data.surface.addClass('selected')
+        @_selectedCategories[data.id] = data.surface
+        @_numOfselectedCategories++
+
+      if @_numOfselectedCategories
+        @categoriesConfirm.show()
+      else
+        @categoriesConfirm.hide()
+
+    @categoriesConfirm.on 'click:done', () =>
+      # console.log 'done'
+      @hideCategories()
+
+    @categoriesConfirm.on 'click:cancel', () =>
+      # console.log 'cancel'
+      @_resetSelectedCategories()
+      @hideCategories()
+
   loadCategories: =>
     categories = NewCardStore.getCategories()
-    for category in categories
+    for category, key in categories
       categorySurface = new Surface
         size: @options.category.size
         classes: @options.category.classes
-        content: category.get 'name'
+        content: "<span class='category-name'>#{category.get 'name'}</span>"
       @categorySurfaces.push categorySurface
+      categorySurface.on('click', ((surface, category) ->
+        @_eventOutput.emit 'click:category', {
+          surface: surface
+          id: category.id
+        }).bind(@, categorySurface, category)
+      )
       categorySurface.pipe @categoryScrollview
 
   initSurfaces: ->
@@ -101,6 +143,11 @@ class NewCardView extends View
 
     @container.add @categoryScrollview
     @add(@categoryScrollviewMod).add @container
+    
+    @categoriesConfirm = new ConfirmCancelView
+      classes: ['newcard']
+
+    @add @categoriesConfirm
 
 
     ## STEP 1
@@ -136,8 +183,8 @@ class NewCardView extends View
     @addLinkContainer(3, 1,
       'images/deck_existing.png'
       'Place card in existing deck(s)'
-    , =>
-      Utils.animate @categoryScrollviewMod, @options.categories.states[0]
+    , () => 
+      @showCategories()
     )
     @addLinkContainer(3, 2,
       'images/deck_new2.png'
@@ -147,7 +194,7 @@ class NewCardView extends View
     )
     @addButton(3, 3, 'Finish', =>
       @hideStep 'step3', @step3Mods
-      #TODO: NewCardStore.addCategories
+      CardActions.addCategories Object.keys @_selectedCategories
       @step4()
     )
     ## STEP 4
@@ -193,6 +240,22 @@ class NewCardView extends View
     for mod in mods
       Utils.animate mod, @["options"]["#{step}_#{i}"].states[1]
       i++
+
+  showCategories: () ->
+    Utils.animate @categoryScrollviewMod, @options.categories.states[0]
+    if @_numOfselectedCategories
+      @categoriesConfirm.show()
+
+  hideCategories: () ->
+    Utils.animate @categoryScrollviewMod, @options.categories.states[1]
+
+  _resetSelectedCategories: () ->
+    for id, surface of @_selectedCategories
+      surface.removeClass('selected')
+
+    @_numOfselectedCategories = 0
+    @_selectedCategories = {}
+    
 
   addInputView: (step, num, placeholder)->
     inputView = new InputView

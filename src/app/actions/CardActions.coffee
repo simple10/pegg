@@ -17,4 +17,9 @@ CardActions =
     AppDispatcher.handleViewAction
       actionType: Constants.actions.LOAD_CATEGORIES
 
+  addCategories: (categories) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.ADD_CATEGORIES
+      categories: categories
+
 module.exports = CardActions

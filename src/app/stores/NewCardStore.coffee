@@ -63,6 +63,8 @@ AppDispatcher.register (payload) ->
       newCardStore._addAnswers action.answers
     when Constants.actions.LOAD_CATEGORIES
       newCardStore._loadCategories()
+    when Constants.actions.ADD_CATEGORIES
+      newCardStore._addCategories action.categories
 
 
 module.exports = newCardStore
