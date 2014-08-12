@@ -194,7 +194,7 @@ class NewCardView extends View
     )
     @addButton(3, 3, 'Finish', =>
       @hideStep 'step3', @step3Mods
-      #TODO: NewCardStore.addCategories
+      CardActions.addCategories Object.keys @_selectedCategories
       @step4()
     )
     ## STEP 4

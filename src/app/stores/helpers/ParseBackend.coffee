@@ -416,11 +416,13 @@ class ParseBackend
       newChoice4.save()
 
   saveCategories: (cardId, categories, cb) ->
-    for category in categories
-      newChoice4 = new Parse.Object 'Choice'
-      newChoice4.set 'categoryId', category.Id
-      newChoice4.set 'cardId', cardId
-      newChoice4.save()
+    for categoryId in categories
+      # card = new Parse.Object 'Card'
+      # card.set 'id', cardId
+      cardCat = new Parse.Object 'CardCategory'
+      cardCat.set 'categoryId', categoryId
+      cardCat.set 'cardId', cardId
+      cardCat.save()
 
 parse = new ParseBackend()
 

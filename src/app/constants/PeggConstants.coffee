@@ -21,6 +21,7 @@ module.exports =
     PLAY_CONTINUE: null
     ADD_QUESTION: null
     ADD_ANSWERS: null
+    ADD_CATEGORIES: null
     NEXT_CARD: null
     PREV_CARD: null
     NEXT_STAGE: null
