@@ -2,5 +2,19 @@
 @import "mixins";
 
 .moods__box {
- text-align: center;
+  text-align: center;
+  border: 1px solid $white;
+}
+
+
+.moods__box__image {
+  border: 1px solid $white;
+}
+
+
+.moods__box__text {
+  text-align: center;
+  color: $white;
+  font-size: 18px;
+  border: 1px solid $white;
 }
