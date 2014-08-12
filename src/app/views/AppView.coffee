@@ -120,8 +120,8 @@ class AppView extends View
       inOrigin: [1, 1]
       outOrigin: [0, 0]
       showOrigin: [0.5, 0.5]
-      inTransform: Transform.thenMove(Transform.rotateX(0), [0, viewportHeight, -300])
-      outTransform: Transform.thenMove(Transform.rotateZ(0), [0, -viewportHeight, -1000])
+      inTransform: Transform.translate 0, viewportHeight, -300
+      outTransform: Transform.translate 0, -viewportHeight, -1000
       inTransition: { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
 
