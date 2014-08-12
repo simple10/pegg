@@ -167,6 +167,21 @@ class ParseBackend
         console.log "Error: #{error.code}  #{error.message}"
         cb null
 
+  saveMood: (moodId, userId, cb) ->
+    # INSERT into Mood table a row with user's mood
+    mood = new Parse.Object 'Category'
+    mood.set 'id', moodId
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    newUserAcl = new Parse.ACL user
+    newUserAcl.setRoleReadAccess "#{userId}_Friends", true
+    newMood = new Parse.Object 'UserMood'
+    newMood.set 'mood', mood
+    newMood.set 'user', user
+    newMood.set 'ACL', newUserAcl
+    newMood.save()
+    cb 'saveMood done'
+
   getPrefCards: (num, user, cb) ->
     # Gets unanswered preferences: cards the user answers about himself
     cards  = {}

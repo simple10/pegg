@@ -18,10 +18,18 @@ class GameState extends EventHandler
     if !@_currentStage?
       @_currentStageIdx = 0
       @_currentStage = @_stages[@_currentStageIdx]
-    @_currentStage.loadCards()
-    if !@_currentStage._cardSet?
+
+    # if cards in Stage, load cards
+    if @_currentStage._play.size > 0
+      @loadCards()
+    # else load status
+    else
       @loadStatus()
+
     @_currentStage
+
+  loadCards: ->
+    @_currentStage.loadCards()
 
   loadStatus: ->
     @_currentStage.loadStatus()

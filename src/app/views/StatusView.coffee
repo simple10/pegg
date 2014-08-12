@@ -65,16 +65,19 @@ class StatusView extends View
         Utils.animate @peggStatusMod, @options.view.states[0] #show
         Utils.animate @prefStatusMod, @options.view.states[1]
         Utils.animate @doneStatusMod, @options.view.states[1]
+        Utils.animate @pickMoodMod, @options.view.states[1]
       when 'likeness_report'
         @prefStatus.load status
         Utils.animate @prefStatusMod, @options.view.states[0] #show
         Utils.animate @peggStatusMod, @options.view.states[1]
         Utils.animate @doneStatusMod, @options.view.states[1]
+        Utils.animate @pickMoodMod, @options.view.states[1]
       when 'peggs_done', 'prefs_done'
         @doneStatus.load status
         Utils.animate @doneStatusMod, @options.view.states[0] #show
         Utils.animate @prefStatusMod, @options.view.states[1]
         Utils.animate @peggStatusMod, @options.view.states[1]
+        Utils.animate @pickMoodMod, @options.view.states[1]
       when 'pick_mood'
         @pickMood.load status
         Utils.animate @pickMoodMod, @options.view.states[0] #show

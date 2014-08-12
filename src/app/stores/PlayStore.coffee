@@ -127,6 +127,12 @@ class PlayStore extends EventHandler
   _pass: (cardId) ->
     console.log "cardID: " + cardId
 
+  _mood: (moodId) ->
+    console.log "moodId: " + moodId
+    DB.saveMood(moodId, UserStore.getUser().id, (res) =>
+#      @emit Constants.stores.
+    )
+
   getCards: ->
     @_cards = @_game.getCards()
     @_cardIndex = []
@@ -194,5 +200,7 @@ AppDispatcher.register (payload) ->
       play._nextStage()
     when Constants.actions.CARD_RATE
       play._rate action.rating
+    when Constants.actions.PICK_MOOD
+      play._mood action.mood
 
 module.exports = play
