@@ -2,6 +2,7 @@
 require './scss/moods.scss'
 
 View = require 'famous/core/View'
+RenderNode = require 'famous/core/RenderNode'
 Surface = require 'famous/core/Surface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 StateModifier = require 'famous/modifiers/StateModifier'
@@ -20,29 +21,48 @@ class MoodsView extends View
     super
     @init()
 
-  load: (data) ->
-    @moods = data.moods
-
   init: ->
     @grid = new GridLayout
       dimensions: [2,2]
-      transition:
-        curve: 'easeInOut'
-        duration: 800
-      gutterSize: [10,10]
-    surfaces = []
-    @grid.sequenceFrom surfaces
-    for i in [0..3]
-      surfaces.push new ImageSurface
-        content: ''
-#        @moods[i].imageUrl
-        size: [Utils.getViewportWidth()/2 - 30, Utils.getViewportWidth()/2 - 40]
-        classes: ["#{@cssPrefix}__box"]
+#      transition:
+#        curve: 'easeInOut'
+#        duration: 800
+      gutterSize: [2,2]
+    @surfaces = []
+    @grid.sequenceFrom @surfaces
     gridMod = new StateModifier
-      size: [Utils.getViewportWidth() - 30, Utils.getViewportHeight() - 250]
       origin: [0.5, 0.5]
       align: [0.5, 0.5]
     @add(gridMod).add @grid
+
+
+  load: (data) ->
+    moods = data.moods
+    for i in [0..3]
+      @_addMood moods[i].get('iconUrl'), moods[i].get('name')
+
+  _addMood: (url, text) ->
+    moodNode = new RenderNode
+      size: [Utils.getViewportWidth()/2 - 80, Utils.getViewportWidth()/2 - 80]
+      classes: ["#{@cssPrefix}__box"]
+    moodImage = new ImageSurface
+      content: url
+      size: [Utils.getViewportWidth()/2 - 80, Utils.getViewportWidth()/2 - 80]
+      classes: ["#{@cssPrefix}__box__image"]
+    moodImageMod = new StateModifier
+      origin: [0.5, 0.5]
+      align: [0.5, 0.5]
+    moodNode.add(moodImageMod).add moodImage
+    moodText = new Surface
+      content: text
+      size: [Utils.getViewportWidth()/2 - 50, 50]
+      classes: ["#{@cssPrefix}__box__text"]
+    moodTextMod = new StateModifier
+      origin: [0.5, 0.5]
+      align: [0.5, 1]
+    moodNode.add(moodTextMod).add moodText
+    @surfaces.push moodNode
+
 
   rearrange: ->
     @grid.setOptions
