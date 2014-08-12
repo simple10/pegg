@@ -1,6 +1,16 @@
 config =
   game_flows:
     default: [
+      [      # stage 0
+        {
+          type: ''
+          size: 0
+        }
+        {
+          type: 'pick_mood'
+          # How are you feeling?
+        }
+      ]
       [      # stage 1
         {
           # type: 'pref'

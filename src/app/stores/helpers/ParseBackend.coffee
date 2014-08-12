@@ -330,6 +330,18 @@ class ParseBackend
         console.log "Error: " + error.code + " " + error.message
         cb null
 
+  getTodaysMoods: (cb) ->
+    catQuery = new Parse.Query Category
+    catQuery.equalTo 'type', 'mood'
+    catQuery.find
+      success: (results) =>
+        debugger
+        cb results
+      error: (error) ->
+        console.log "Error fetching categories: " + error.code + " " + error.message
+        cb null
+
+
   getPrefCount: (choiceId, cb) ->
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId

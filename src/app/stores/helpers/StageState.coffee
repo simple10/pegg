@@ -22,8 +22,10 @@ class StageState extends EventHandler
         @_fetchPrefs @_play.size
       when 'pegg'
         @_fetchPeggs @_play.size
+      when ''
+        @_cardSet = null
       else
-        raise "unexpected play type: #{@_play.type}"
+        console.log "Unexpected play type: #{@_play.type}"
 
   loadStatus: ->
     switch @_status.type
@@ -31,8 +33,10 @@ class StageState extends EventHandler
         @_fetchLikeness @_cardSet
       when 'friend_ranking'
         @_fetchRanking @_playerId
+      when 'pick_mood'
+        @_fetchMoods()
       else
-        raise "unexpected status type: #{@_status.type}"
+        console.log "Unexpected status type: #{@_status.type}"
 
 
   getChoices: (cardId) ->
@@ -105,6 +109,12 @@ class StageState extends EventHandler
         @_status['stats'] = results
         @emit Constants.stores.STATUS_CHANGE
       )
+
+  _fetchMoods: ->
+    DB.getTodaysMoods( (results) =>
+      @_status['moods'] = results
+      @emit Constants.stores.STATUS_CHANGE
+    )
 
   _fetchPrefsDone: ->
     @_status['type'] = 'prefs_done'

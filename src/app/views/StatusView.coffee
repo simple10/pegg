@@ -10,6 +10,7 @@ ContainerSurface = require 'famous/surfaces/ContainerSurface'
 PeggStatusView = require 'views/PeggStatusView'
 PrefStatusView = require 'views/PrefStatusView'
 DoneStatusView = require 'views/DoneStatusView'
+PickMoodView = require 'views/PickMoodView'
 Utils = require 'lib/Utils'
 
 class StatusView extends View
@@ -22,6 +23,14 @@ class StatusView extends View
 
     container = new ContainerSurface
       size: @options.view.size
+
+    ## MOOD STATUS ##
+    @pickMood = new PickMoodView
+      size: @options.view.size
+    @pickMoodMod = new StateModifier
+      align: @options.view.align
+      origin: @options.view.origin
+    container.add(@pickMoodMod).add @pickMood
 
     ## PREF STATUS ##
     @prefStatus = new PrefStatusView
@@ -64,6 +73,12 @@ class StatusView extends View
       when 'peggs_done', 'prefs_done'
         @doneStatus.load status
         Utils.animate @doneStatusMod, @options.view.states[0] #show
+        Utils.animate @prefStatusMod, @options.view.states[1]
+        Utils.animate @peggStatusMod, @options.view.states[1]
+      when 'pick_mood'
+        @pickMood.load status
+        Utils.animate @pickMoodMod, @options.view.states[0] #show
+        Utils.animate @doneStatusMod, @options.view.states[1]
         Utils.animate @prefStatusMod, @options.view.states[1]
         Utils.animate @peggStatusMod, @options.view.states[1]
 
