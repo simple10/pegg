@@ -37,7 +37,7 @@ Utils =
         mod.setOpacity state.opacity, state.transition, callback
     ), state.delay
 
-  getViewportHeight: () ->
+  getViewportWidth: () ->
     # console.log 'getViewportWidth', document.documentElement.clientWidth, window.innerWidth
     Math.max document.documentElement.clientWidth, window.innerWidth || 0
 
