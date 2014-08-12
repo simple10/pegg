@@ -40,12 +40,12 @@ class ReviewNavView extends View
 
     ## LEFT ARROW ##
     @leftArrow = new ImageSurface
-      size: @layout.leftArrow.size
-      content: '/images/left-arrow.png'
-      classes: @layout.leftArrow.classes
+      size: @layout.backArrow.size
+      content: '/images/GoBack_Arrow_on@2x.png'
+      classes: @layout.backArrow.classes
     @leftArrowMod = new StateModifier
-      align: @layout.leftArrow.align
-      origin: @layout.leftArrow.origin
+      align: @layout.backArrow.align
+      origin: @layout.backArrow.origin
 
     ## MESSAGE ##
     @message = new Surface

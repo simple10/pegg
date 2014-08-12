@@ -75,3 +75,21 @@ module.exports =
         transition: {duration: 500, curve: Easing.inQuad}
       }
     ]
+  backArrow:
+      origin: [0.5, 0.5]
+      align: [0.1, 0.08]
+      size: [46, 31]
+      states: [
+        # show
+        {
+          delay: 0
+          transform: Transform.translate null, 0, null
+          transition: {duration: 500, curve: Easing.inQuad}
+        }
+        # hide
+        {
+          delay: 0
+          transform: Transform.translate null, -200, null
+          transition: {duration: 500, curve: Easing.inQuad}
+        }
+      ]
