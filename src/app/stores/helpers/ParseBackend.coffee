@@ -335,7 +335,6 @@ class ParseBackend
     catQuery.equalTo 'type', 'mood'
     catQuery.find
       success: (results) =>
-        debugger
         cb results
       error: (error) ->
         console.log "Error fetching categories: " + error.code + " " + error.message
