@@ -1,0 +1,12 @@
+@import "settings";
+@import "mixins";
+
+.settings__logout__button {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 18px;
+  color: $white;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 100;
+}
