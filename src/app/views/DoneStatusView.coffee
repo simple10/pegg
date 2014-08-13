@@ -8,6 +8,7 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
 PlayActions = require 'actions/PlayActions'
+PlayStore = require 'stores/PlayStore'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 UserStore = require 'stores/UserStore'
 Utils = require 'lib/Utils'
@@ -35,10 +36,9 @@ class DoneStatusView extends View
 #      align: [0.5, 0.02]
 #      origin: [0.5, 0]
 #    container.add(picMod).add pic
-
     title = new Surface
       classes: ['status__done__title']
-      size: [Utils.getViewportWidth(), 200]
+      size: [Utils.getViewportWidth()-20, 200]
     titleMod = new StateModifier
       align: [0.5, 0.28]
       origin: [0.5, 0]
@@ -65,9 +65,8 @@ class DoneStatusView extends View
       PlayActions.nextStage()
 
   load: (data) ->
-    console.log data
-    if data.done.length > 0
-      title.setContent data.done
+#    if data.done.length > 0
+    title.setContent PlayStore.getMessage data.type
 
 
 
