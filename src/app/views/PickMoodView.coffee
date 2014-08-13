@@ -37,7 +37,7 @@ class MoodsView extends View
 
     title = new Surface
       size: [Utils.getViewportWidth(), 100]
-      content: 'How are you <br/> feeling?'
+      content: 'What are you <br/> feeling?'
       classes: ["#{@cssPrefix}__title"]
     titleMod = new Modifier
       origin: [0.5, 0]
@@ -59,14 +59,14 @@ class MoodsView extends View
       align: [0.5, 0.3]
     container.add(gridMod).add @grid
 
-    passMood = new Surface
-      content: "Not in the mood? <span class='#{@cssPrefix}__text--yellow'>Play random</span>"
-      size: [Utils.getViewportWidth() - 20, 30]
-      classes: ["#{@cssPrefix}__pass"]
-    passMoodMod = new Modifier
-      origin: [0, 1]
-      align: [0.05, 0.9]
-    container.add(passMoodMod).add passMood
+#    passMood = new Surface
+#      content: "Not in the mood? <span class='#{@cssPrefix}__text--yellow'>Play random</span>"
+#      size: [Utils.getViewportWidth() - 20, 30]
+#      classes: ["#{@cssPrefix}__pass"]
+#    passMoodMod = new Modifier
+#      origin: [0, 1]
+#      align: [0.05, 0.9]
+#    container.add(passMoodMod).add passMood
 
     @add container
 
