@@ -101,7 +101,7 @@ class PrefStatusView extends View
 
   load: (data) ->
 #    @_userName.setContent UserStore.getName 'first'
-    @_userName.setContent "What did everyone else choose?"
+    @_userName.setContent PlayStore.getMessage 'pref_status'
 #    @_userPic.setContent UserStore.getAvatar 'height=150&type=normal&width=150'
     @_userPic.setContent PlayStore.getMessage 'unicorn'
 
@@ -118,7 +118,8 @@ class PrefStatusView extends View
       @_itemViews.splice i + 2, 0, prefStatusItem
       i++
 
-    @itemsScrollView.goToPage(0)
+      @itemsScrollView.goToPage(0)
+
 
 #
 #
