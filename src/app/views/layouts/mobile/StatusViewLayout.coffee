@@ -17,7 +17,7 @@ module.exports =
       # hide
       {
         delay: 0
-        align: [0.5, 1]
-        origin: [0.5, 0]
+        align: [0.5, 0]
+        origin: [0.5, 1]
       }
     ]
