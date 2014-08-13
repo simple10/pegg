@@ -34,7 +34,7 @@ PeggBoxView = require 'views/PeggBoxView'
 PlayView = require 'views/PlayView'
 ProfileView = require 'views/ProfileView'
 ActivityView = require 'views/ActivityView'
-DecksView = require 'views/DecksView'
+SettingsView = require 'views/SettingsView'
 NewCardView = require 'views/NewCardView'
 StatusView = require 'views/StatusView'
 ReviewView = require 'views/ReviewView'
@@ -105,11 +105,10 @@ class AppView extends View
     # Pages correspond to pageID in constants/menu.coffee
     @pages.play = new PlayView PlayViewLayout
     @pages.create = new NewCardView NewCardViewLayout
-    @pages.decks = new DecksView
+    @pages.settings = new SettingsView
     @pages.activity = new ActivityView
     @pages.profile = new ProfileView
     @pages.review = new ReviewView
-    #@pages.moods = new MoodsView
     @togglePage()
 
   initViewManager: ->
