@@ -53,7 +53,7 @@ AppStateStore = require 'stores/AppStateStore'
 class AppView extends View
   @DEFAULT_OPTIONS:
     menu:
-      width: Utils.getViewportWidth() - 55
+      width: Utils.getViewportWidth() - 60
       transition:
         duration: 300
         curve: 'easeOut'

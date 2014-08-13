@@ -12,7 +12,7 @@ Utils = require 'lib/Utils'
 class BandMenuItemView extends View
   @DEFAULT_OPTIONS:
     pageID: null
-    width: Utils.getViewportWidth() - 55
+    width: Utils.getViewportWidth() - 60
     height: Utils.getViewportHeight() / 4
     angle: -0.2
     iconUrl: 'images/mark_tiny.png'
