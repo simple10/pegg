@@ -29,8 +29,11 @@ class NewCardStore extends EventEmitter
     DB.saveCategories @_cardId, @_categories
 
   _getUser: ->
-    user = UserStore.getUser() ? raise 'not logged in'
-    user.id
+    user = UserStore.getUser()
+    if user.id?
+      user.id
+    else
+      'not logged in'
 
   _loadCategories: ->
     DB.getCategories((results) =>
