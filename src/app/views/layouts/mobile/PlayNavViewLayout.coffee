@@ -21,24 +21,6 @@ module.exports =
         transition: {duration: 500, curve: Easing.inQuad}
       }
     ]
-  message:
-    size: [220, 80]
-    classes: ['card__message']
-    align: [0.5, -1]
-    origin: [0.5, 0.5]
-    states: [
-      {
-        delay: 0
-        align: [0.5, 0.3]
-        transform: Transform.translate null, null, 0
-        transition: {duration: 500, curve: Easing.inQuad}
-      }
-      {
-        delay: 15
-        align: [0.5, -0.5]
-        transition: {duration: 500, curve: Easing.inExpo}
-      }
-    ]
   leftArrow:
     origin: [0.5, 0.5]
     align: [0.1, 0.08]
@@ -75,6 +57,36 @@ module.exports =
         transition: {duration: 500, curve: Easing.inQuad}
       }
     ]
+  message:
+    size: [180, 50]
+    classes: ['card__message']
+    align: [0.6, -0.5]
+    origin: [0.5, 0.5]
+    states: [
+      {
+        delay: 0
+        align: [0.6, 0.05]
+        transform: Transform.translate null, null, 0
+        transition: {duration: 500, curve: Easing.inQuad}
+      }
+      {
+        delay: 15
+        align: [0.5, -0.5]
+        transition: {duration: 500, curve: Easing.inExpo}
+      }
+    ]
+  progressBarView:
+    size: [180, 50]
+    origin: [0.5, 0.5]
+    align: [0.6, 0.25]
+    title:
+      align: [0, 0.1]
+      origin: [0, 0]
+      size: [180, 10]
+    bar:
+      align: [0, 0.5]
+      origin: [0, 0]
+      size: [180, 15]
   rightArrow:
     origin: [0.5, 0.5]
     align: [0.9, 0.08]

@@ -9,6 +9,7 @@ Utils = require 'lib/Utils'
 Constants = require 'constants/PeggConstants'
 PlayStore = require 'stores/PlayStore'
 LayoutManager = require 'views/layouts/LayoutManager'
+ProgressBarView = require 'views/ProgressBarView'
 
 class PlayNavView extends View
 
@@ -27,8 +28,10 @@ class PlayNavView extends View
 
   initListeners: ->
     PlayStore.on Constants.stores.CARDS_CHANGE, @initViewState
-    PlayStore.on Constants.stores.CARD_CHANGE, @updateViewState
+#    PlayStore.on Constants.stores.CARD_CHANGE, @updateViewState
     PlayStore.on Constants.stores.MOOD_CHANGE, @updateMoodIcon
+    PlayStore.on Constants.stores.PREF_SAVED, @incrementProgressBar
+    PlayStore.on Constants.stores.CARD_WIN, @incrementProgressBar
 
   setOptions: (options) =>
     @_optionsManager.patch(options);
@@ -63,6 +66,12 @@ class PlayNavView extends View
       align: @layout.moodImage.align
       origin: @layout.moodImage.origin
 
+    ## PROGRESS BAR ##
+    @progressBar = new ProgressBarView @layout.progressBarView
+    @progressBarMod = new StateModifier
+      align: @layout.progressBarView.align
+      origin: @layout.progressBarView.origin
+
     ## RIGHT ARROW ##
     @rightArrow = new ImageSurface
       size: @layout.rightArrow.size
@@ -84,10 +93,12 @@ class PlayNavView extends View
 
     # Attach modifiers and surfaces to the view
     @node = @add @mainMod
-    @node.add(@leftArrowMod).add @leftArrow
-    @node.add(@rightArrowMod).add @rightArrow
+#    @node.add(@leftArrowMod).add @leftArrow
+#    @node.add(@rightArrowMod).add @rightArrow
     @node.add(@messageMod).add @message
     @node.add(@moodImageMod).add @moodImage
+    @node.add(@progressBarMod).add @progressBar
+
 
   initEvents: =>
     @leftArrow.on 'click', =>
@@ -99,21 +110,20 @@ class PlayNavView extends View
       @_eventOutput.emit('click', 'nextCard')
 
   initViewState: =>
+    @progressBar.reset PlayStore.getSetLength()
     @showNav()
-    @showRightArrow()
     @showMessage()
-    @hideLeftArrow()
+#    @showRightArrow()
+#    @hideLeftArrow()
 
-  updateViewState: (cardIndex) =>
-    #console.log cardIndex
-    if cardIndex is 0
-      @hideLeftArrow()
-      @showRightArrow()
-    else if cardIndex is 2
-      @showLeftArrow()
-    else
-      @showRightArrow()
-      @showLeftArrow()
+#  updateViewState: (cardIndex) =>
+#    #console.log cardIndex
+#    if cardIndex is 0
+#      @hideLeftArrow()
+#      @showRightArrow()
+#    else
+#      @showRightArrow()
+#      @showLeftArrow()
 
   updateMoodIcon: =>
     # change mood icon
@@ -130,23 +140,26 @@ class PlayNavView extends View
     #console.log @layout.wrapper.states[1]
     Utils.animate @mainMod, @layout.wrapper.states[1]
 
-  showLeftArrow: =>
-    Utils.animate @leftArrowMod, @layout.leftArrow.states[0]
-
-  hideLeftArrow: =>
-    Utils.animate @leftArrowMod, @layout.leftArrow.states[1]
-
-  showRightArrow: =>
-    Utils.animate @rightArrowMod, @layout.rightArrow.states[0]
-
-  hideRightArrow: =>
-    Utils.animate @rightArrowMod, @layout.rightArrow.states[1]
+#  showLeftArrow: =>
+#    Utils.animate @leftArrowMod, @layout.leftArrow.states[0]
+#
+#  hideLeftArrow: =>
+#    Utils.animate @leftArrowMod, @layout.leftArrow.states[1]
+#
+#  showRightArrow: =>
+#    Utils.animate @rightArrowMod, @layout.rightArrow.states[0]
+#
+#  hideRightArrow: =>
+#    Utils.animate @rightArrowMod, @layout.rightArrow.states[1]
 
   showMessage: =>
     Utils.animate @messageMod, @layout.message.states[0]
 
   hideMessage: =>
     Utils.animate @messageMod, @layout.message.states[1]
+
+  incrementProgressBar: =>
+    @progressBar.increment(1)
 
 module.exports = PlayNavView
 

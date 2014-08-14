@@ -265,10 +265,15 @@ class PlayView extends View
   nextCard: (triggerPageChange) =>
     if triggerPageChange
       if @cardScrollView.getCurrentIndex() is PlayStore.getSetLength() - 1
+        # tapped next button and at end of card set
         PlayActions.nextCard()
       else
+        # tapped next button and not at end of card set
+
         @cardScrollView.goToNextPage()
-    else PlayActions.nextCard()
+    else
+      # swiped left
+      PlayActions.nextCard()
 
   prevCard: (triggerPageChange) =>
     if triggerPageChange

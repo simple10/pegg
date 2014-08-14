@@ -7,14 +7,10 @@ StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
 Timer = require 'famous/utilities/Timer'
 Utils = require 'lib/Utils'
+ContainerSurface = require 'famous/surfaces/ContainerSurface'
+SequentialLayout = require 'famous/views/SequentialLayout'
 
 class ProgressBarView extends View
-  @DEFAULT_OPTIONS:
-    width: Utils.getViewportHeight()/2-20
-    height: 15
-    transition:
-      duration: 400
-      curve: 'easeOut'
 
   constructor: (options) ->
     super options
@@ -24,35 +20,40 @@ class ProgressBarView extends View
   reset: (steps) =>
     @steps = steps
     @last = 0
+    @activeBar.setSize [@last, @options.bar.size[1]]
 
   init: ->
+    container = new ContainerSurface
+      size: @options.size
     text = new Surface
       content: 'Progress'
-      size: [Utils.getViewportWidth(), @options.height]
+      size: @options.title.size
       classes: ['progressBar__title']
     textMod = new StateModifier
-      align: [0.5, 0.03]
-      origin: [0.5, 0]
+      align: @options.title.align
+      origin: @options.title.origin
     @activeBar = new ImageSurface
       content: 'images/progress_active.png'
-      size: [@last, @options.height]
       properties:
         zIndex: 5
+    @activeBarMod = new StateModifier
+      align: @options.bar.align
+      origin: @options.bar.origin
+    container.add(@activeBarMod).add @activeBar
     inactiveBar = new ImageSurface
       content: 'images/progress_inactive.png'
-      size: [@options.width, @options.height]
-    @activeBarMod = new StateModifier
+      size: @options.bar.size
     inactiveBarMod = new StateModifier
-    @add(inactiveBarMod).add inactiveBar
-    @add(@activeBarMod).add @activeBar
-    @add(textMod).add text
+      align: @options.bar.align
+      origin: @options.bar.origin
+    container.add(inactiveBarMod).add inactiveBar
+    container.add(textMod).add text
+    @add container
 
   increment: (x) =>
-    step = @options.width / @steps
+    step = @options.size[0] / @steps
     next = @last + step * x
-    @activeBar.setSize [next, @options.height]
+    @activeBar.setSize [next, @options.bar.size[1]]
     @last = next
-
-
 
 module.exports = ProgressBarView

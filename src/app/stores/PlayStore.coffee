@@ -148,7 +148,11 @@ class PlayStore extends EventHandler
     @_cards
 
   getSetLength: ->
-    @_cardIndex.length
+    @_cards = @_game.getCards()
+    i = 0
+    for own cardId of @_cards
+      i++
+    i
 
   getStatus: ->
     @_game.getStatus()
