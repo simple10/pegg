@@ -217,6 +217,7 @@ class PlayView extends View
     @cardScrollView.sequenceFrom @cardViews
     i = 0
     for own cardId, cardObj of PlayStore.getCards()
+      name = cardObj.firstName
       card = new CardView size: [@_viewportWidth, null]
       card.loadCard cardId, cardObj
       card.on 'comment', =>
@@ -229,6 +230,7 @@ class PlayView extends View
     @showCards()
     @navView.setOptions {
       'cardType': PlayStore.getCurrentCardsType()
+      'firstName': name
     }
 
   _pipeCardsToScrollView: () =>
@@ -326,7 +328,8 @@ class PlayView extends View
     @cardXAlign.set(cardX, cardsTransition)
     @cardYPos.set(cardY, cardsTransition)
     # slide the status left off the screen
-    Utils.animate @statusMod, @options.status.states[2], @moveStatusToStart
+    @status.hide()
+    #Utils.animate @statusMod, @options.status.states[2], @moveStatusToStart
 
   showStatus: =>
     @statusMod.setOpacity 0.999
@@ -335,7 +338,8 @@ class PlayView extends View
     # slide cards left off the screen
     @cardXAlign.set cardX, cardsTransition
     # slide status left onto the screen
-    Utils.animate @statusMod, @options.status.states[1], @moveCardsToStart
+    #Utils.animate @statusMod, @options.status.states[1],
+    @moveCardsToStart()
 
   moveCardsToStart: =>
     @cardScrollViewMod.opacityFrom 0.001

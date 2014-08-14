@@ -132,7 +132,7 @@ class UserStore extends EventEmitter
     if user?
       user.get('avatar_url') + "?#{params}"
     else
-      'not logged in'
+      'images/Unicorn_Cosmic1@2x.png'
 
   getLoggedIn: ->
     if @getUser()

@@ -3,7 +3,7 @@ require './scss/login.scss'
 View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
-InputSurface = require 'famous/surfaces/InputSurface'
+InputView = require 'views/InputView'
 StateModifier = require 'famous/modifiers/StateModifier'
 UserActions = require 'actions/UserActions'
 UserStore = require 'stores/UserStore'
@@ -52,12 +52,7 @@ class SignupView extends View
     @initSignUp()
 
     logoSurface.on 'click', =>
-      @letmeinCount++
-      if @letmeinCount is 4
-        @letmeinCount = 0
-        NavActions.selectMenuItem 'login'
-
-
+      NavActions.selectMenuItem 'login'
 
   initSignUp: ->
 #    signupText = new Surface
@@ -68,14 +63,15 @@ class SignupView extends View
 #      origin: @options.signupText.origin
 #      align: @options.signupText.align
 #    @add(signupTextMod).add signupText
-    @signupInput = new InputSurface
+    @signupInput = new InputView
       size: @options.signupInput.size
       placeholder: 'Enter your email'
       classes: @options.signupInput.classes
-      name: 'signup'
     @signupInputMod = new StateModifier
       origin: @options.signupInput.origin
       align: @options.signupInput.align
+    @add(@signupInputMod).add @signupInput
+
     signupButton = new Surface
       size: @options.signupButton.size
       content: 'I\'m sexy and I know it.'
@@ -85,7 +81,6 @@ class SignupView extends View
     signupButtonMod = new StateModifier
       origin: @options.signupButton.origin
       align:  @options.signupButton.align
-    @add(@signupInputMod).add @signupInput
     @add(signupButtonMod).add signupButton
 
     #Utils.animateAll signupTextMod, @options.signupText.states
@@ -105,24 +100,9 @@ class SignupView extends View
     @signupInput.setValue ""
     UserActions.subscribe email
 
-  onInputFocus: =>
-    @signupInput.focus()
-    ###@signupInput.setClasses ["signup__email__input--big"]
-    @signupInput.setSize [Utils.getViewportWidth(), Utils.getViewportHeight()/2 + 50]
-    @signupInputMod.setAlign [0.5, 0]
-    @signupInputMod.setOrigin [0.5, 1]###
-
-  onInputBlur: =>
-    @signupInput.blur()
-    ###@signupInput.setClasses ["signup__email__input"]
-    @signupInputMod.setTransform Transform.translate(0, @window.height/2 + 120, 0), @options.transition
-    @signupInput.setSize [@options.input.width, @options.input.height]
-    @signupInputMod.setAlign [0.5, 1]
-    @signupInputMod.setOrigin [0.5, 0]###
-
   showMessage: =>
     if UserStore.getSubscriptionStatus()
-      message = 'We agree! Welcome.'
+      message = 'Ooh, yeah! ttyl.'
       classes = ["#{@options.signupMessage.classes}--success"]
     else
       message = 'Nah, guess not. Fail.'

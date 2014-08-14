@@ -45,18 +45,19 @@ class NewCardView extends View
     NewCardStore.on Constants.stores.CATEGORIES_CHANGE, @loadCategories
 
     @on 'click:category', (data) =>
-      category = @_selectedCategories[data.id]
+      debugger
+      category = @_selectedCategories[data.name]
      
       # update the selected categories
       if category?
         # deselect the category
         data.surface.removeClass('selected')
-        delete @_selectedCategories[data.id]
+        delete @_selectedCategories[data.name]
         @_numOfselectedCategories--
       else
         # select the cateogory
         data.surface.addClass('selected')
-        @_selectedCategories[data.id] = data.surface
+        @_selectedCategories[data.name] = data.surface
         @_numOfselectedCategories++
 
       if @_numOfselectedCategories
@@ -85,6 +86,7 @@ class NewCardView extends View
         @_eventOutput.emit 'click:category', {
           surface: surface
           id: category.id
+          name: category.get 'name'
         }).bind(@, categorySurface, category)
       )
       categorySurface.pipe @categoryScrollview
@@ -194,6 +196,7 @@ class NewCardView extends View
     )
     @addButton(3, 3, 'Finish', =>
       @hideStep 'step3', @step3Mods
+      debugger
       CardActions.addCategories Object.keys @_selectedCategories
       @step4()
     )
