@@ -78,20 +78,14 @@ class ProfileView extends View
       direction: Utility.Direction.Y
       paginated: false
 
-    # @prefBoard = new PrefBoardView
-    #   width: Utils.getViewportWidth()
-    #   height: (Utils.getViewportHeight() - @options.headerHeight) * (1 - @options.profileContainerRatio)
-    #   gutter: 5
+    @permanentRows = [@profileHeader, @prefBoardHeaderNode]
+    @rows = [].concat(@permanentRows)
 
-    @rows = [];
-    @rows.push(@profileHeader)
-    @rows.push(@prefBoardHeaderNode)
-    # @rows.push(@prefBoard)
-
-    @scrollview.sequenceFrom(@rows)
+    # @scrollview.sequenceFrom(@rows)
     
     @mainNode = @add @mainMod
     @container.add @scrollview
+    @container.pipe @scrollview
     @mainNode.add @container
 
   _initPrefBoardHeader: () ->
@@ -148,10 +142,14 @@ class ProfileView extends View
 
   _loadImages: =>
     # @prefBoard.loadImages UserStore.getPrefImages()
+    # @rows = @rows.slice(0,2)
+
+    # remove all the images
+    @rows = [].concat(@permanentRows)
+    console.log '_loadImages', @rows
     
     data = UserStore.getPrefImages()
     cols = 3
-    console.log data
 
     ## Initialize Rows
     while data.length
@@ -164,5 +162,8 @@ class ProfileView extends View
 
       row.pipe @scrollview
       @rows.push row
+
+    console.log '_loadImages2', @rows
+    @scrollview.sequenceFrom(@rows)
 
 module.exports = ProfileView

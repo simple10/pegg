@@ -48,6 +48,7 @@ HeaderViewLayout = require 'views/layouts/mobile/HeaderViewLayout'
 #Actions
 NavActions = require 'actions/NavActions'
 AppStateStore = require 'stores/AppStateStore'
+UserActions = require 'actions/UserActions'
 
 
 class AppView extends View
@@ -132,6 +133,8 @@ class AppView extends View
 
   togglePage: =>
     pageID = AppStateStore.getCurrentPageID()
+    if pageID is 'profile'
+      UserActions.load() # load user pref images
     @showPage @getPage pageID
     #@footer.bounceTabs()
     #@footer.hideTabs()
