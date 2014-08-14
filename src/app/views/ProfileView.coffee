@@ -12,12 +12,19 @@ Easing = require 'famous/transitions/Easing'
 GenericSync = require 'famous/inputs/GenericSync'
 MouseSync = require 'famous/inputs/MouseSync'
 TouchSync = require 'famous/inputs/TouchSync'
+Transitionable = require 'famous/transitions/Transitionable'
+Modifier = require 'famous/core/Modifier'
+Scrollview = require 'famous/views/Scrollview'
+Utility = require 'famous/utilities/Utility'
+SequentialLayout = require 'famous/views/SequentialLayout'
 
 Constants = require 'constants/PeggConstants'
 UserStore = require 'stores/UserStore'
 AppStateStore = require 'stores/AppStateStore'
 
 Utils = require 'lib/Utils'
+ProfileHeaderView = require 'views/ProfileHeaderView'
+PrefBoardRowView = require 'views/PrefBoardRowView'
 PrefBoardView = require 'views/PrefBoardView'
 
 class ProfileView extends View
@@ -34,7 +41,6 @@ class ProfileView extends View
 
   constructor: (options) ->
     super options
-    
 
     # set profileContainerHeight based off headerHeight and ratio
     @.setOptions
@@ -42,108 +48,121 @@ class ProfileView extends View
 
     @init()
     @initListeners()
-    @initGestures()
 
   initListeners: ->
-    UserStore.on Constants.stores.LOGIN_CHANGE, @_loadUser
-    UserStore.on Constants.stores.PREF_IMAGES_CHANGE, @_loadImages
+    UserStore.on Constants.stores.LOGIN_CHANGE, @_loadUser.bind(@)
+    UserStore.on Constants.stores.PREF_IMAGES_CHANGE, @_loadImages.bind(@)
 
   init: ->
-    @initProfileHeader()
-
-    @prefBoardMod = new StateModifier
-      align: [0.5, 0.4]
-      origin: [0.5, 0]
-    @prefBoard = new PrefBoardView
-      width: Utils.getViewportWidth()
-      height: (Utils.getViewportHeight() - @options.headerHeight) * (1 - @options.profileContainerRatio)
-      gutter: 5
-
-    @add(@prefBoardMod).add @prefBoard
-
-  initProfileHeader: ->
-    @profileHeaderNode = new RenderNode
-
-    @picContainer = new ContainerSurface
-      size: [@options.profileContainerWidth, @options.profileContainerHeight]
-      classes: ['profilePic']
-      properties:
-        overflow: 'hidden'
-    @pic = new ImageSurface
-      size: [ @options.width, @options.width]
-      content: UserStore.getAvatar 'height=300&type=normal&width=300'
-      classes: ['profile__pic']
-    picMod = new StateModifier
-      align: [0.5, 0]
-      origin: [0.5, 0]
-      # transform: Transform.translate 0, 150, -1
-#    @pic.on 'click', ((picMod) =>
-#      picMod.setTransform Transform.translate(0, 200, -1),
-#        @options.transition
-#    ).bind @, picMod
-    @name = new Surface
-      size: [270, 35]
-      classes: ['profile__name__box']
-      content: "#{UserStore.getName("first")}'s <strong>profile</strong>"
-    nameMod = new StateModifier
-      align: [0.5, 0]
-      origin: [0.5, 1]
-    # logout = new Surface
-    #   size: [ 200 , 50 ]
-    #   content: 'Logout'
-    #   classes: ['profile__logout__button']
-    # logoutMod = new StateModifier
-    #   align: [0.5, 0.32]
-    #   origin: [0.5, 0]
-    # logout.on 'click', ->
-    #   UserStore.logout()
-
-    @picContainer.add @pic
-    @profileHeaderNode.add(picMod).add @picContainer
-    @profileHeaderNode.add(nameMod).add @name
-    @add @profileHeaderNode
-
-    # picMod.setAlign [0.5, -0.5], {duration: 300, easing: Easing.linear}
-    # logoutMod.setTransform Transform.translate(0, -200, 0), {duration: 800, easing: Easing.outBounce}
-    nameMod.setTransform Transform.translate(0, 160, 0), {duration: 500, easing: Easing.outCubic}
-
-    # @picContainer.add(@nameMod).add @name
-    # @add(picMod).add @picContainer
-    # @add(nameMod).add @name
-    # @add(logoutMod).add logout
-
-  initGestures: ->
-    @prefBoard.pipe @
-    @picContainer.pipe @
-    @pic.pipe @
-    @name.pipe @
-
-    GenericSync.register mouse: MouseSync
-    GenericSync.register touch: TouchSync
-
-    atTop = false
-    @sync = new GenericSync ['mouse', 'touch']
-
-    @_eventInput.pipe @sync
     
-    @sync.on 'start', (data) =>
-      console.log 'start'
+    @_initPrefBoardHeader()
 
-    @sync.on 'update', (data) =>
-      console.log 'update'
+    @mainMod = new Modifier
+      align: [0, 0],
+      origin: [0, 0]
 
-    @sync.on 'end', (data) =>
-      console.log  'end'
+    @profileHeader = new ProfileHeaderView
+      width: @options.profileContainerWidth
+      height: @options.profileContainerHeight
+      avatar: UserStore.getAvatar 'height=300&type=normal&width=300'
+      firstname: UserStore.getName 'first'
 
-  _prefBoardAtTop: () ->
-    false
+    @container = new ContainerSurface
+      size: [@options.width, @options.height - @options.headerHeight]
+      classes: ['profilepage']
+      properties: {
+        overflow: 'hidden'
+      }
 
+    @scrollview = new Scrollview
+      direction: Utility.Direction.Y
+      paginated: false
+
+    # @prefBoard = new PrefBoardView
+    #   width: Utils.getViewportWidth()
+    #   height: (Utils.getViewportHeight() - @options.headerHeight) * (1 - @options.profileContainerRatio)
+    #   gutter: 5
+
+    @rows = [];
+    @rows.push(@profileHeader)
+    @rows.push(@prefBoardHeaderNode)
+    # @rows.push(@prefBoard)
+
+    @scrollview.sequenceFrom(@rows)
+    
+    @mainNode = @add @mainMod
+    @container.add @scrollview
+    @mainNode.add @container
+
+  _initPrefBoardHeader: () ->
+    @prefBoardHeaderNode = new RenderNode
+    
+    @prefBoardHeaderButtons = []
+
+    mod = new StateModifier
+      size: [undefined, @options.headerHeight]
+
+    headerBacking = new Surface
+      size: [undefined, @options.headerHeight]
+      classes: ['peggBoardHeader', 'peggBoardHeader__bg']
+
+    @_addPrefBoardHeaderButton('one')
+    @_addPrefBoardHeaderButton('two')
+    @_addPrefBoardHeaderButton('three')
+
+    sequence = new SequentialLayout
+      direction: Utility.Direction.X
+
+    sequence.sequenceFrom @prefBoardHeaderButtons
+
+    @prefBoardHeaderNode = @prefBoardHeaderNode.add mod
+    @prefBoardHeaderNode.add headerBacking
+    @prefBoardHeaderNode.add sequence
+
+
+  _addPrefBoardHeaderButton: (content, clickCallback, numOfButtons) ->
+    content = content || ''
+    clickCallback = clickCallback || () ->
+      console.log @
+    numOfButtons = numOfButtons || 3
+
+    itemWidth = Utils.getViewportWidth() / numOfButtons
+    itemHeight = @options.headerHeight
+
+    surface = new Surface
+      content: content
+      size: [itemWidth, itemHeight]
+      classes: ['peggBoardHeader', 'peggBoardHeader__button']
+      properties: {
+        textAlign: 'center'
+        lineHeight: itemHeight + 'px'
+      }
+
+    surface.on 'click', clickCallback
+
+    @prefBoardHeaderButtons.push surface
 
   _loadUser: =>
-    @pic.setContent UserStore.getAvatar 'height=300&type=normal&width=300'
-    @name.setContent "#{UserStore.getName('first')}'s <strong>profile</strong>"
+    @profileHeader.setAvatar UserStore.getAvatar 'height=300&type=normal&width=300'
+    @name.setFirstname UserStore.getName('first')
 
   _loadImages: =>
-    @prefBoard.loadImages UserStore.getPrefImages()
+    # @prefBoard.loadImages UserStore.getPrefImages()
+    
+    data = UserStore.getPrefImages()
+    cols = 3
+    console.log data
+
+    ## Initialize Rows
+    while data.length
+      set = data.splice 0, cols
+      row = new PrefBoardRowView
+        width: @options.width - 5
+        columns: cols
+        gutter: 5
+        data: set
+
+      row.pipe @scrollview
+      @rows.push row
 
 module.exports = ProfileView

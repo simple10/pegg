@@ -1,3 +1,10 @@
+# DEPRECATED.... NO LONGER USED
+#
+# Main functionality from here has been moved to ProfileView
+#
+# Being kept around for reference and because there is a chance we will use
+# this in the future
+
 View = require 'famous/core/View'
 RenderNode = require 'famous/core/RenderNode'
 Surface = require 'famous/core/Surface'
@@ -18,6 +25,7 @@ class PrefBoardView extends View
     columns: 3
     gutter: 5
     headerHeight: 30
+    scrollviewMargin: Utils.getViewportHeight()
 
   constructor: (options) ->
     super options
@@ -33,6 +41,8 @@ class PrefBoardView extends View
     @initHeader()
 
     @containerMod = new StateModifier
+      align: [0,0]
+      origin: [0,0]
       transform: Transform.translate(0, @options.headerHeight, 0)
     @container = new ContainerSurface
       size: [@options.width, @options.height]
@@ -44,7 +54,7 @@ class PrefBoardView extends View
     @scrollview = new Scrollview
       direction: Utility.Direction.Y
       paginated: false
-      margin: 500
+      margin: @options.scrollviewMargin
 
     @container.add @scrollview
     @add(@containerMod).add @container
@@ -109,8 +119,6 @@ class PrefBoardView extends View
 
       # row.pipe @scrollview
       @rows.push row
-
-    @pipeToScrollview()
 
   pipeToParent: ->
     for row in @rows
