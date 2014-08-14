@@ -27,9 +27,6 @@ class PrefStatusView extends View
     @init()
 
   init: ->
-    container = new ContainerSurface
-      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
-
     @itemsScrollView = new Scrollview
       direction: Utility.Direction.Y
       paginated: false
@@ -38,6 +35,7 @@ class PrefStatusView extends View
     itemsScrollViewMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
+    @add(itemsScrollViewMod).add @itemsScrollView
 
     userPicNode = new RenderNode
     @_userPic = new ImageSurface
@@ -80,6 +78,8 @@ class PrefStatusView extends View
       origin: [0, 0]
     nextNode = new RenderNode
     nextNode.add(nextMod).add next
+    @_itemViews.push nextNode
+
     share = new ImageSurface
       content: 'images/share_big_text.png'
       size: [48, 95]
@@ -88,16 +88,10 @@ class PrefStatusView extends View
       origin: [0, 1]
     shareNode = new RenderNode
     shareNode.add(shareMod).add share
-
-    @_itemViews.push nextNode
     @_itemViews.push shareNode
 
-    container.add(itemsScrollViewMod).add @itemsScrollView
-
-    @add container
     next.on 'click', ->
       PlayActions.nextStage()
-
 
   load: (data) ->
 #    @_userName.setContent UserStore.getName 'first'

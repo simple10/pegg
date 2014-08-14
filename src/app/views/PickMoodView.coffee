@@ -24,8 +24,6 @@ class MoodsView extends View
     @init()
 
   init: ->
-    container = new ContainerSurface
-      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
 
     @day = new Surface
       size: [Utils.getViewportWidth(), 100]
@@ -33,7 +31,7 @@ class MoodsView extends View
     dayMod = new Modifier
       origin: [0.5, 0]
       align: [0.5, 0.05]
-    container.add(dayMod).add @day
+    @add(dayMod).add @day
 
     title = new Surface
       size: [Utils.getViewportWidth(), 100]
@@ -42,7 +40,7 @@ class MoodsView extends View
     titleMod = new Modifier
       origin: [0.5, 0]
       align: [0.5, 0.1]
-    container.add(titleMod).add title
+    @add(titleMod).add title
 
     @grid = new GridLayout
       cellSize: [Utils.getViewportWidth()/2 - 10, Utils.getViewportWidth()/2 - 10]
@@ -57,7 +55,7 @@ class MoodsView extends View
       size: [Utils.getViewportWidth(), Utils.getViewportWidth()]
       origin: [0.5, 0]
       align: [0.5, 0.3]
-    container.add(gridMod).add @grid
+    @add(gridMod).add @grid
 
 #    passMood = new Surface
 #      content: "Not in the mood? <span class='#{@cssPrefix}__text--yellow'>Play random</span>"
@@ -67,8 +65,6 @@ class MoodsView extends View
 #      origin: [0, 1]
 #      align: [0.05, 0.9]
 #    container.add(passMoodMod).add passMood
-
-    @add container
 
   load: (data) ->
     moods = data.moods

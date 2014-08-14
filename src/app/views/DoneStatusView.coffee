@@ -23,10 +23,6 @@ class DoneStatusView extends View
     @init()
 
   init: ->
-    container = new ContainerSurface
-      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
-      properties:
-        overflow: 'hidden'
 #    pic = new ImageSurface
 #      classes: ['status__done__pic']
 #      size: [150, 150]
@@ -35,14 +31,14 @@ class DoneStatusView extends View
 #    picMod = new StateModifier
 #      align: [0.5, 0.02]
 #      origin: [0.5, 0]
-#    container.add(picMod).add pic
+#    @add(picMod).add pic
     title = new Surface
       classes: ['status__done__title']
       size: [Utils.getViewportWidth()-20, 200]
     titleMod = new StateModifier
       align: [0.5, 0.28]
       origin: [0.5, 0]
-    container.add(titleMod).add title
+    @add(titleMod).add title
 
     next = new ImageSurface
       content: 'images/continue_big_text.png'
@@ -50,7 +46,7 @@ class DoneStatusView extends View
     nextMod = new StateModifier
       align: [0.6, 0.91]
       origin: [0, 1]
-    container.add(nextMod).add next
+    @add(nextMod).add next
 
     share = new ImageSurface
       content: 'images/share_big_text.png'
@@ -58,9 +54,8 @@ class DoneStatusView extends View
     shareMod = new StateModifier
       align: [0.2, 0.9]
       origin: [0, 1]
-    container.add(shareMod).add share
+    @add(shareMod).add share
 
-    @add container
     next.on 'click', ->
       PlayActions.nextStage()
 
