@@ -35,7 +35,7 @@ class AppStateStore extends EventEmitter
     #   auto load previous app state when user returns to app.
 
   _loadCard: (cardId, peggeeId) ->
-    console.log cardId, peggeeId
+#    console.log cardId, peggeeId
     @_currentPageID = 'review'
     Parse.history.navigate(@_currentPageID, true);
     @emit Constants.stores.MENU_CHANGE

@@ -167,12 +167,29 @@ class ParseBackend
         console.log "Error: #{error.code}  #{error.message}"
         cb null
 
-  getPrefCards: (num, user, cb) ->
+  saveMood: (moodId, userId, cb) ->
+    # INSERT into Mood table a row with user's mood
+    mood = new Parse.Object 'Category'
+    mood.set 'id', moodId
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    newUserAcl = new Parse.ACL user
+    newUserAcl.setRoleReadAccess "#{userId}_Friends", true
+    newMood = new Parse.Object 'UserMood'
+    newMood.set 'mood', mood
+    newMood.set 'user', user
+    newMood.set 'ACL', newUserAcl
+    newMood.save()
+    cb 'saveMood done'
+
+  getPrefCards: (num, mood, user, cb) ->
     # Gets unanswered preferences: cards the user answers about himself
     cards  = {}
     cardQuery = new Parse.Query Card
     cardQuery.limit num
     cardQuery.notContainedIn 'hasPreffed', [user.id]
+    if mood?
+      cardQuery.containedIn 'categories', [mood.text]
     #cardQuery.skip Math.floor(Math.random() * 180)
     cardQuery.find
       success: (results) =>
@@ -264,7 +281,9 @@ class ParseBackend
 
   getChoices: (cards, cardId, cb) ->
     choiceQuery = new Parse.Query Choice
-    choiceQuery.equalTo 'cardId', cardId
+    card = new Parse.Object 'Card'
+    card.set 'id',  cardId
+    choiceQuery.equalTo 'card', card
     choiceQuery.find
       success: (choices) =>
         cards[cardId].choices = []
@@ -332,7 +351,7 @@ class ParseBackend
 
   getTodaysMoods: (cb) ->
     catQuery = new Parse.Query Category
-    catQuery.equalTo 'type', 'mood'
+#    catQuery.equalTo 'type', 'mood'
     catQuery.find
       success: (results) =>
         cb results
@@ -423,17 +442,33 @@ class ParseBackend
     for answer in answers
       newChoice4 = new Parse.Object 'Choice'
       newChoice4.set 'text', answer
-      newChoice4.set 'cardId', cardId
+      card = new Parse.Object 'Card'
+      card.set 'id',  cardId
+      newChoice4.set 'card', card
       newChoice4.save()
 
   saveCategories: (cardId, categories, cb) ->
-    for categoryId in categories
-      # card = new Parse.Object 'Card'
-      # card.set 'id', cardId
-      cardCat = new Parse.Object 'CardCategory'
-      cardCat.set 'categoryId', categoryId
-      cardCat.set 'cardId', cardId
-      cardCat.save()
+      cardQuery = new Parse.Query 'Card'
+      cardQuery.equalTo 'objectId', cardId
+      cardQuery.first
+        success: (card) =>
+          for categoryName in categories
+            card.addUnique 'categories', categoryName
+            card.save()
+          cb('catgories saved.')
+        error: ->
+          cb('catgories save failed.')
+
+#      category = new Parse.Object 'Category'
+#      category.set 'id',  categoryId
+#      card = new Parse.Object 'Card'
+#      card.set 'id',  cardId
+#
+#      cardCat = new Parse.Object 'CardCategory'
+#      cardCat.set 'category', category
+#      cardCat.set 'card', card
+#      cardCat.save()
+#      cb('catgories saved.')
 
 parse = new ParseBackend()
 

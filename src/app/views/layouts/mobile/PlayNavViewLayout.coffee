@@ -57,6 +57,24 @@ module.exports =
         transition: {duration: 500, curve: Easing.inQuad}
       }
     ]
+  moodImage:
+    origin: [0.5, 0.5]
+    align: [0.22, 0.08]
+    size: [50, 50]
+    states: [
+      # show
+      {
+        delay: 0
+        transform: Transform.translate null, 0, null
+        transition: {duration: 500, curve: Easing.inQuad}
+      }
+      # hide
+      {
+        delay: 0
+        transform: Transform.translate null, -200, null
+        transition: {duration: 500, curve: Easing.inQuad}
+      }
+    ]
   rightArrow:
     origin: [0.5, 0.5]
     align: [0.9, 0.08]

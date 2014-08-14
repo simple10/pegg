@@ -25,6 +25,7 @@ module.exports =
     NEXT_CARD: null
     PREV_CARD: null
     NEXT_STAGE: null
+    PICK_MOOD: null
 
   stores: Utils.keyMirror
     # Generic
@@ -56,6 +57,7 @@ module.exports =
     PREF_IMAGES_CHANGE: null
     PROFILE_LOAD: null
     CATEGORIES_CHANGE: null
+    MOOD_CHANGE: null
 
 
 

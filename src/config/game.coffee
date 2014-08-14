@@ -13,15 +13,12 @@ config =
       ]
       [      # stage 1
         {
-          # type: 'pref'
           type: 'pref'
-          # type: 'pegg'
           size: 1
         }
         {
           type: 'likeness_report'
           # What did everyone else pick?
-          done: 'You\'ve pegged yourself plenty.<br/>Give it a rest for a day.'
         }
       ]
       [     # stage 2
@@ -32,7 +29,6 @@ config =
         {
           type: 'friend_ranking'
           # How do I compare to his friends?
-          done: 'You\'ve nobody left to pegg!<br/>Invite some friends...'
         }
       ]
       [      # stage 3
@@ -43,7 +39,6 @@ config =
         {
           type: 'likeness_report'
         # What did everyone else pick?
-          done: 'You\'ve pegged yourself plenty.<br/>Give it a rest for a day.'
         }
       ]
       [     # stage 4
@@ -54,7 +49,6 @@ config =
         {
           type: 'friend_ranking'
         # How do I compare to his friends?
-          done: 'You\'ve nobody left to pegg!<br/>Invite some friends...'
         }
       ]
     ]
@@ -74,11 +68,7 @@ config =
         'Dude!<br/>Way to not suck at this.'
       ]
       pref: [
-        'Time to learn about you!'
-        'Go on...<br/>Pegg yourself.'
-        'Dig deep and uncover your true self.'
-        'Know thyself, <br/>grasshopper.'
-        'Pegg yourself.'
+        'Pegg yourself!'
       ]
       pegg: [
         'Pegg your friend.'
@@ -92,6 +82,23 @@ config =
         'images/Unicorn_Glowing1@2x.png'
         'images/Unicorn_Cosmic1@2x.png'
         'images/Unicorn_Fire1@2x.png'
+      ]
+      pref_status: [
+        'How do you stack up?'
+        'Here\'s how you compare:'
+        'Good choices...'
+        'You\'re not the only one!'
+        'Hah, really? Great job...'
+      ]
+      prefs_done: [
+        'Impressive! You played all the cards in Pegg.'
+        'No more cards! Why don\'t you create one?'
+        'You\'ve pegged yourself plenty. Give it a rest for now.'
+        'That\'s it for now! Come back later for more.'
+        'All out of cards. :( Don\'t worry, we\'ll let you know when there are more.'
+      ]
+      peggs_done: [
+        'You\'ve nobody left to pegg! Invite some friends...'
       ]
       review: [
         ''

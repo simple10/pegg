@@ -12,6 +12,8 @@ PrefStatusView = require 'views/PrefStatusView'
 DoneStatusView = require 'views/DoneStatusView'
 PickMoodView = require 'views/PickMoodView'
 Utils = require 'lib/Utils'
+Lightbox = require 'famous/views/Lightbox'
+Easing = require 'famous/transitions/Easing'
 
 class StatusView extends View
 
@@ -20,67 +22,47 @@ class StatusView extends View
     @init()
 
   init: ->
-
-    container = new ContainerSurface
-      size: @options.view.size
-
     ## MOOD STATUS ##
-    @pickMood = new PickMoodView
-      size: @options.view.size
-    @pickMoodMod = new StateModifier
-      align: @options.view.align
-      origin: @options.view.origin
-    container.add(@pickMoodMod).add @pickMood
+    @pickMood = new PickMoodView @options.view
 
     ## PREF STATUS ##
-    @prefStatus = new PrefStatusView
-      size: @options.view.size
-    @prefStatusMod = new StateModifier
-      align: @options.view.align
-      origin: @options.view.origin
-    container.add(@prefStatusMod).add @prefStatus
+    @prefStatus = new PrefStatusView @options.view
 
     ## PEGG STATUS ##
-    @peggStatus = new PeggStatusView
-      size: @options.view.size
-    @peggStatusMod = new StateModifier
-      align: @options.view.align
-      origin: @options.view.origin
-    container.add(@peggStatusMod).add @peggStatus
+    @peggStatus = new PeggStatusView @options.view
 
     ## DONE STATUS ##
-    @doneStatus = new DoneStatusView
-      size: @options.view.size
-    @doneStatusMod = new StateModifier
-      align: @options.view.align
-      origin: @options.view.origin
-    container.add(@doneStatusMod).add @doneStatus
+    @doneStatus = new DoneStatusView @options.view
 
-    @add container
+    viewportWidth = Utils.getViewportWidth()
+    @lightbox = new Lightbox
+      inOpacity: 1
+      outOpacity: 0
+      inOrigin: [0, 0]
+      outOrigin: [1, 0]
+      showOrigin: [0.5, 0.5]
+      inTransform: Transform.translate viewportWidth, 0, -300
+      outTransform: Transform.translate -viewportWidth, 0, -1000
+      inTransition: { duration: 500, curve: Easing.outCubic }
+      outTransition: { duration: 350, curve: Easing.outCubic }
+    @add @lightbox
 
   load: (status) ->
     switch status.type
       when 'friend_ranking'
         @peggStatus.load status
-        Utils.animate @peggStatusMod, @options.view.states[0] #show
-        Utils.animate @prefStatusMod, @options.view.states[1]
-        Utils.animate @doneStatusMod, @options.view.states[1]
+        @lightbox.show @peggStatus
       when 'likeness_report'
         @prefStatus.load status
-        Utils.animate @prefStatusMod, @options.view.states[0] #show
-        Utils.animate @peggStatusMod, @options.view.states[1]
-        Utils.animate @doneStatusMod, @options.view.states[1]
+        @lightbox.show @prefStatus
       when 'peggs_done', 'prefs_done'
         @doneStatus.load status
-        Utils.animate @doneStatusMod, @options.view.states[0] #show
-        Utils.animate @prefStatusMod, @options.view.states[1]
-        Utils.animate @peggStatusMod, @options.view.states[1]
+        @lightbox.show @doneStatus
       when 'pick_mood'
         @pickMood.load status
-        Utils.animate @pickMoodMod, @options.view.states[0] #show
-        Utils.animate @doneStatusMod, @options.view.states[1]
-        Utils.animate @prefStatusMod, @options.view.states[1]
-        Utils.animate @peggStatusMod, @options.view.states[1]
+        @lightbox.show @pickMood
 
+  hide: ->
+    @lightbox.hide()
 
 module.exports = StatusView

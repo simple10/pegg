@@ -9,7 +9,7 @@ class GameState extends EventHandler
       stage.pipe @
       stage
 
-  loadNextStage: ->
+  loadNextStage: (mood) ->
     # Start with the first stage
     if @_currentStageIdx? then @_currentStageIdx++ else @_currentStageIdx = 0
     @_currentStage = @_stages[@_currentStageIdx]
@@ -18,8 +18,12 @@ class GameState extends EventHandler
     if !@_currentStage?
       @_currentStageIdx = 0
       @_currentStage = @_stages[@_currentStageIdx]
-    @_currentStage.loadCards()
-    if !@_currentStage._cardSet?
+
+    # if cards in Stage, load cards
+    if @_currentStage._play.size > 0
+      @_currentStage.loadCards mood
+    # else load status
+    else
       @loadStatus()
     @_currentStage
 

@@ -26,10 +26,6 @@ class PeggStatusView extends View
     @init()
 
   init: ->
-    container = new ContainerSurface
-      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
-      properties:
-        overflow: 'hidden'
     userPic = new ImageSurface
       classes: ['status__peggee__pic']
       size: [150, 150]
@@ -38,14 +34,14 @@ class PeggStatusView extends View
     userPicMod = new StateModifier
       align: [0.5, 0.02]
       origin: [0.5, 0]
-    container.add(userPicMod).add userPic
+    @add(userPicMod).add userPic
     userName = new Surface
       classes: ['status__peggee__name']
       size: [Utils.getViewportWidth(), 50]
     userNameMod = new StateModifier
       align: [0.5, 0.28]
       origin: [0.5, 0]
-    container.add(userNameMod).add userName
+    @add(userNameMod).add userName
 
     itemsScrollView = new Scrollview
       direction: Utility.Direction.Y
@@ -59,7 +55,7 @@ class PeggStatusView extends View
     while i < 4
       itemViews.push new PeggStatusItemView
       i++
-    container.add(itemsScrollViewMod).add itemsScrollView
+    @add(itemsScrollViewMod).add itemsScrollView
 
     next = new ImageSurface
       content: 'images/continue_big_text.png'
@@ -67,7 +63,7 @@ class PeggStatusView extends View
     nextMod = new StateModifier
       align: [0.6, 0.91]
       origin: [0, 1]
-    container.add(nextMod).add next
+    @add(nextMod).add next
 
     share = new ImageSurface
       content: 'images/share_big_text.png'
@@ -75,9 +71,8 @@ class PeggStatusView extends View
     shareMod = new StateModifier
       align: [0.2, 0.9]
       origin: [0, 1]
-    container.add(shareMod).add share
+    @add(shareMod).add share
 
-    @add container
     next.on 'click', ->
       PlayActions.nextStage()
 

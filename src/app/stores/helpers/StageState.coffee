@@ -16,10 +16,10 @@ class StageState extends EventHandler
     @_status = data[1]   # the status screen to display
 
 
-  loadCards: ->
+  loadCards: (mood) ->
     switch @_play.type
       when 'pref'
-        @_fetchPrefs @_play.size
+        @_fetchPrefs @_play.size, mood
       when 'pegg'
         @_fetchPeggs @_play.size
       when ''
@@ -48,10 +48,10 @@ class StageState extends EventHandler
   getStatus: ->
     @_status
 
-  _fetchPrefs: (num) ->
+  _fetchPrefs: (num, mood) ->
     # Gets unanswered preferences: cards the user answers about himself
     cardsLoaded = false
-    DB.getPrefCards( num, UserStore.getUser()
+    DB.getPrefCards( num, mood, UserStore.getUser()
       (cards) =>
         @_cardSet = cards
         for own id, card of cards
