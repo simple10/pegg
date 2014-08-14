@@ -101,6 +101,7 @@ gulp.task 'webpack-dev-server', (callback) ->
   .listen conf.port, '', (err) ->
     throw new gutil.PluginError('webpack-dev-server', err) if err
     url = "http://localhost:#{conf.port}"
+    # url = "http://0.0.0.0:#{conf.port}"
     if conf.open
       log 'Opening dev server URL in browser'
       open url
