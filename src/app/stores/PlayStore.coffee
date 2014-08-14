@@ -16,6 +16,7 @@ class PlayStore extends EventHandler
   _fail: 0
   _peggee: ''
   _cardId: ''
+  _userMood: null
 
   _loadGame: (flow, script) ->
     @_game = new GameState flow
@@ -24,7 +25,7 @@ class PlayStore extends EventHandler
     @_nextStage()
 
   _nextStage: ->
-    @_game.loadNextStage()
+    @_game.loadNextStage @_userMood
 
   _loadCard: (position) ->
     cardId = @_cardIndex[position]
@@ -127,10 +128,11 @@ class PlayStore extends EventHandler
   _pass: (cardId) ->
     console.log "cardID: " + cardId
 
-  _mood: (moodId) ->
-    console.log "moodId: " + moodId
-    DB.saveMood(moodId, UserStore.getUser().id, (res) =>
-#      @emit Constants.stores.
+  _mood: (text, id, url) ->
+    console.log "moodId: " + id
+    @_userMood = { text: text, id: id, url: url }
+    DB.saveMood(id, UserStore.getUser().id, (res) =>
+      @emit Constants.stores.MOOD_CHANGE
     )
 
   getCards: ->
@@ -163,12 +165,18 @@ class PlayStore extends EventHandler
   getCurrentCardIsAnswered: ->
     @_cards[@_cardId].answered
 
-  getCurrentCardsType: =>
+  getCurrentCardsType: ->
     type = 'pref'
     id = @_cardIndex[0]
     if @_cards[id].peggee
       type = 'pegg'
     type
+
+  getCurrentMood: ->
+    @_userMood
+
+  getCurrentPeggee: ->
+    @_peggee
 
 
 
@@ -201,6 +209,6 @@ AppDispatcher.register (payload) ->
     when Constants.actions.CARD_RATE
       play._rate action.rating
     when Constants.actions.PICK_MOOD
-      play._mood action.mood
+      play._mood action.moodText, action.moodId, action.moodUrl
 
 module.exports = play

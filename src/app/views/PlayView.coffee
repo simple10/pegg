@@ -217,6 +217,7 @@ class PlayView extends View
     @cardScrollView.sequenceFrom @cardViews
     i = 0
     for own cardId, cardObj of PlayStore.getCards()
+      name = cardObj.firstName
       card = new CardView size: [@_viewportWidth, null]
       card.loadCard cardId, cardObj
       card.on 'comment', =>
@@ -229,6 +230,7 @@ class PlayView extends View
     @showCards()
     @navView.setOptions {
       'cardType': PlayStore.getCurrentCardsType()
+      'firstName': name
     }
 
   _pipeCardsToScrollView: () =>

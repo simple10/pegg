@@ -23,19 +23,23 @@ class PlayNavView extends View
 
     @initSurfaces()
     @initEvents()
+    @initListeners()
 
+  initListeners: ->
     PlayStore.on Constants.stores.CARDS_CHANGE, @initViewState
     PlayStore.on Constants.stores.CARD_CHANGE, @updateViewState
+    PlayStore.on Constants.stores.MOOD_CHANGE, @updateMoodIcon
 
-  setOptions: (options) => 
+  setOptions: (options) =>
     @_optionsManager.patch(options);
-
     # update the card message
-    @message.setContent PlayStore.getMessage(@options.cardType)
+    if @options.cardType is 'pref'
+      @message.setContent PlayStore.getMessage @options.cardType
+    else
+      @message.setContent "Pegg #{@options.firstName}"
 
 
   initSurfaces: =>
-
     ## Main View Modifier ##
     @mainMod = new StateModifier
       size: @layout.wrapper.size
@@ -50,7 +54,14 @@ class PlayNavView extends View
     @leftArrowMod = new StateModifier
       align: @layout.leftArrow.align
       origin: @layout.leftArrow.origin
-    
+
+    ## MOOD IMAGE ##
+    @moodImage = new ImageSurface
+      size: @layout.moodImage.size
+      classes: @layout.moodImage.classes
+    @moodImageMod = new StateModifier
+      align: @layout.moodImage.align
+      origin: @layout.moodImage.origin
 
     ## RIGHT ARROW ##
     @rightArrow = new ImageSurface
@@ -76,6 +87,7 @@ class PlayNavView extends View
     @node.add(@leftArrowMod).add @leftArrow
     @node.add(@rightArrowMod).add @rightArrow
     @node.add(@messageMod).add @message
+    @node.add(@moodImageMod).add @moodImage
 
   initEvents: =>
     @leftArrow.on 'click', =>
@@ -102,6 +114,11 @@ class PlayNavView extends View
     else
       @showRightArrow()
       @showLeftArrow()
+
+  updateMoodIcon: =>
+    # change mood icon
+    mood = PlayStore.getCurrentMood()
+    @moodImage.setContent mood.url
 
   showNav: =>
     #console.log 'show nav'

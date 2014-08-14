@@ -57,6 +57,7 @@ module.exports =
     PREF_IMAGES_CHANGE: null
     PROFILE_LOAD: null
     CATEGORIES_CHANGE: null
+    MOOD_CHANGE: null
 
 
 

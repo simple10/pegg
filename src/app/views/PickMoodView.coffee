@@ -83,7 +83,10 @@ class MoodsView extends View
       @_addMood moods[random].id, moods[random].get('iconUrl'), moods[random].get('name')
 
     # load today's day message
-    @day.setContent 'Happy Tuesday!'
+    days = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    today = new Date()
+    day = today.getDay()
+    @day.setContent "Happy #{days[day]}!"
 
 
   _addMood: (id, url, text) ->
@@ -91,7 +94,7 @@ class MoodsView extends View
       size: [Utils.getViewportWidth()/2, Utils.getViewportWidth()/2]
       classes: ["#{@cssPrefix}__box"]
     moodContainer.on 'click', =>
-      PlayActions.mood id
+      PlayActions.mood text, id, url
       PlayActions.nextStage()
 
     moodImage = new ImageSurface

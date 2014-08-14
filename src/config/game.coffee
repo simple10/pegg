@@ -68,11 +68,7 @@ config =
         'Dude!<br/>Way to not suck at this.'
       ]
       pref: [
-        'Let\'s learn about you!'
-        'Go on...<br/>Pegg yourself.'
-        'Dig deep and uncover your true self.'
-        'Know thyself, <br/>grasshopper.'
-        'Pegg yourself.'
+        'Pegg yourself!'
       ]
       pegg: [
         'Pegg your friend.'

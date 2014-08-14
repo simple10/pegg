@@ -39,10 +39,12 @@ PlayActions =
       actionType: Constants.actions.CARD_PASS
       card: card
 
-  mood: (mood) ->
+  mood: (moodText, moodId, moodUrl) ->
     AppDispatcher.handleViewAction
       actionType: Constants.actions.PICK_MOOD
-      mood: mood
+      moodText: moodText
+      moodId: moodId
+      moodUrl: moodUrl
 
   nextStage: () ->
     AppDispatcher.handleViewAction
