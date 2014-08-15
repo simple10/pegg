@@ -375,10 +375,18 @@ class ParseBackend
 
   getPrefCounts: (cards, cb) ->
     cardObjs = []
-    for own id, card of cards
-      cardObj = new Parse.Object 'Card'
-      cardObj.set 'id', id
-      cardObjs.push cardObj
+
+    if !Array.isArray cards
+      for own id, card of cards
+        cardObj = new Parse.Object 'Card'
+        cardObj.set 'id', id
+        cardObjs.push cardObj
+    else
+      for card in cards
+        cardObj = new Parse.Object 'Card'
+        cardObj.set 'id', card.cardId
+        cardObjs.push cardObj
+
     prefCountsQuery = new Parse.Query PrefCounts
     prefCountsQuery.containedIn 'card', cardObjs
     prefCountsQuery.include 'card'
@@ -406,19 +414,34 @@ class ParseBackend
         console.log "Error: " + error.code + " " + error.message
         cb null
 
-  getPrefImages: (userId, cb) ->
+  getPrefImages: (userId, filter, cb) ->
     user = new Parse.Object 'User'
     user.set 'id',  userId
     prefImagesQuery = new Parse.Query Pref
     prefImagesQuery.equalTo 'user', user
+
+    # filter by recent if necessary
+    if filter is 'recent'
+      prefImagesQuery.addDescending 'updatedAt'
+
     prefImagesQuery.find
       success: (results) =>
         images = []
+
+        # prep the data for output
         for res in results
           plug = res.get 'plug'
           card = res.get 'card'
           if plug then images.push { cardId: card.id, imageUrl: plug, userId: userId }
-        cb images
+        
+        # filter by popular if necessary
+        if filter is 'popular'
+          @getPrefCounts images, (counts) =>
+            images.sort (a, b) ->
+              counts[b.cardId].total - counts[a.cardId].total
+            cb images
+        else
+          cb images
       error: (error) =>
         console.log "Error: " + error.code + " " + error.message
         cb null

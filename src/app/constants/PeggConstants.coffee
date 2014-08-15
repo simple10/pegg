@@ -26,6 +26,7 @@ module.exports =
     PREV_CARD: null
     NEXT_STAGE: null
     PICK_MOOD: null
+    FILTER_PREFS: null
 
   stores: Utils.keyMirror
     # Generic

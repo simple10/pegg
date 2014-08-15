@@ -21,6 +21,7 @@ SequentialLayout = require 'famous/views/SequentialLayout'
 Constants = require 'constants/PeggConstants'
 UserStore = require 'stores/UserStore'
 AppStateStore = require 'stores/AppStateStore'
+UserActions = require 'actions/UserActions'
 
 Utils = require 'lib/Utils'
 ProfileHeaderView = require 'views/ProfileHeaderView'
@@ -100,9 +101,12 @@ class ProfileView extends View
       size: [undefined, @options.headerHeight]
       classes: ['peggBoardHeader', 'peggBoardHeader__bg']
 
-    @_addPrefBoardHeaderButton('one')
-    @_addPrefBoardHeaderButton('two')
-    @_addPrefBoardHeaderButton('three')
+    @_addPrefBoardHeaderButton 'All', () ->
+      UserActions.filterPrefs 'all'
+    @_addPrefBoardHeaderButton 'Popular', () ->
+      UserActions.filterPrefs 'popular'
+    @_addPrefBoardHeaderButton 'Recent', () ->
+      UserActions.filterPrefs 'recent'
 
     sequence = new SequentialLayout
       direction: Utility.Direction.X
@@ -116,8 +120,7 @@ class ProfileView extends View
 
   _addPrefBoardHeaderButton: (content, clickCallback, numOfButtons) ->
     content = content || ''
-    clickCallback = clickCallback || () ->
-      console.log @
+    clickCallback = clickCallback || (->)
     numOfButtons = numOfButtons || 3
 
     itemWidth = Utils.getViewportWidth() / numOfButtons
@@ -141,12 +144,8 @@ class ProfileView extends View
     @name.setFirstname UserStore.getName('first')
 
   _loadImages: =>
-    # @prefBoard.loadImages UserStore.getPrefImages()
-    # @rows = @rows.slice(0,2)
-
     # remove all the images
     @rows = [].concat(@permanentRows)
-    console.log '_loadImages', @rows
     
     data = UserStore.getPrefImages()
     cols = 3
@@ -163,7 +162,6 @@ class ProfileView extends View
       row.pipe @scrollview
       @rows.push row
 
-    console.log '_loadImages2', @rows
     @scrollview.sequenceFrom(@rows)
 
 module.exports = ProfileView
