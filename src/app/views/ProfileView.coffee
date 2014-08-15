@@ -63,9 +63,11 @@ class ProfileView extends View
       origin: [0, 0]
 
     @profileHeader = new ProfileHeaderView
+      avatarWidth: 150
+      avatarHeight: 150
       width: @options.profileContainerWidth
       height: @options.profileContainerHeight
-      avatar: UserStore.getAvatar 'height=300&type=normal&width=300'
+      avatar: UserStore.getAvatar 'height=150&type=normal&width=150'
       firstname: UserStore.getName 'first'
 
     @container = new ContainerSurface
@@ -140,7 +142,7 @@ class ProfileView extends View
     @prefBoardHeaderButtons.push surface
 
   _loadUser: =>
-    @profileHeader.setAvatar UserStore.getAvatar 'height=300&type=normal&width=300'
+    @profileHeader.setAvatar UserStore.getAvatar 'height=150&type=normal&width=150'
     @name.setFirstname UserStore.getName('first')
 
   _loadImages: =>
