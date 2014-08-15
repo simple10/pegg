@@ -38,7 +38,7 @@ class PrefBoardRowView extends View
       offset = w * -1;
       mod = new StateModifier
         transform: Transform.translate(offset, 0, 0)
-        opacity: 0.1
+        opacity: 0.001
       mod._offset = offset
 
       image = new PrefBoardImageView

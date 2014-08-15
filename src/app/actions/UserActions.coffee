@@ -19,4 +19,9 @@ UserActions =
     AppDispatcher.handleViewAction
       actionType: Constants.actions.USER_LOAD
 
+  filterPrefs: (filter) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.FILTER_PREFS
+      filter: filter
+
 module.exports = UserActions

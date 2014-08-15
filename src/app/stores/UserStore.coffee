@@ -107,8 +107,9 @@ class UserStore extends EventEmitter
         console.log "Failed to create subscriber, with error code: #{error.description}"
         return
 
-  load: ->
-    DB.getPrefImages @getUser().id, (images) =>
+  load: (filter) ->
+    filter = filter || null
+    DB.getPrefImages @getUser().id, filter, (images) =>
       @_images = images
       @emit Constants.stores.PREF_IMAGES_CHANGE
 
@@ -168,6 +169,8 @@ AppDispatcher.register (payload) ->
       user.logout()
     when Constants.actions.USER_LOAD
       user.load()
+    when Constants.actions.FILTER_PREFS
+      user.load action.filter
     when Constants.actions.SUBSCRIBER_SUBMIT
       user.subscribe action.email
 

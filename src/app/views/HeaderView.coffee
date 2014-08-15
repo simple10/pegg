@@ -15,6 +15,7 @@ Constants = require 'constants/PeggConstants'
 NavActions = require 'actions/NavActions'
 Easing = require 'famous/transitions/Easing'
 Timer = require 'famous/utilities/Timer'
+StateModifier = require 'famous/modifiers/StateModifier'
 
 ###
 # Events:
@@ -38,7 +39,8 @@ class HeaderView extends View
     #@background.setClasses ["#{@cssPrefix}__background", "#{@cssPrefix}__background--#{page}"]
     #@title.setContent page
     #if page isnt "profile" then page else ""
-
+    @mainMod = new StateModifier
+      transform: Transform.translate(0,0,10)
     @background = new Surface
       classes: ["#{@cssPrefix}__background"]
     @logo = new ImageSurface
@@ -55,11 +57,13 @@ class HeaderView extends View
     picMod = new Modifier
       origin: [1, 0]
       align: [1, 0]
-    @add @background
-    @add new Modifier
+
+    node = @add @mainMod
+    node.add @background
+    node.add new Modifier
       origin: [0, 0]
     .add @logo
-    @add(picMod).add @pic
+    node.add(picMod).add @pic
 
   _update: =>
     @pic.setContent UserStore.getAvatar 'type=square'

@@ -1,9 +1,19 @@
+# DEPRECATED.... NO LONGER USED
+#
+# Main functionality from here has been moved to ProfileView
+#
+# Being kept around for reference and because there is a chance we will use
+# this in the future
+
 View = require 'famous/core/View'
+RenderNode = require 'famous/core/RenderNode'
 Surface = require 'famous/core/Surface'
 Scrollview = require 'famous/views/Scrollview'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Utility = require 'famous/utilities/Utility'
+Transform = require 'famous/core/Transform'
+SequentialLayout = require 'famous/views/SequentialLayout'
 
 Utils = require 'lib/Utils'
 PrefBoardRowView = require 'views/PrefBoardRowView'
@@ -14,6 +24,8 @@ class PrefBoardView extends View
     height: Utils.getViewportHeight()
     columns: 3
     gutter: 5
+    headerHeight: 30
+    scrollviewMargin: Utils.getViewportHeight()
 
   constructor: (options) ->
     super options
@@ -26,6 +38,12 @@ class PrefBoardView extends View
     @init()
 
   init: () ->
+    @initHeader()
+
+    @containerMod = new StateModifier
+      align: [0,0]
+      origin: [0,0]
+      transform: Transform.translate(0, @options.headerHeight, 0)
     @container = new ContainerSurface
       size: [@options.width, @options.height]
       classes: ['peggBoard']
@@ -33,17 +51,56 @@ class PrefBoardView extends View
         overflow: 'hidden'
       }
 
-    @scrollviewMod = new StateModifier
-      origin: [0.5, 0.5]
-      align: [0.5, 0.5]
     @scrollview = new Scrollview
       direction: Utility.Direction.Y
       paginated: false
-      margin: 500
+      margin: @options.scrollviewMargin
 
     @container.add @scrollview
-    @container.pipe @scrollview
-    @add(@container)
+    @add(@containerMod).add @container
+
+  initHeader: () ->
+    @buttons = []
+
+    headerBacking = new Surface
+      size: [undefined, @options.headerHeight]
+      classes: ['peggBoardHeader', 'peggBoardHeader__bg']
+
+    @_addHeaderButton('one')
+    @_addHeaderButton('two')
+    @_addHeaderButton('three')
+
+    sequence = new SequentialLayout
+      direction: Utility.Direction.X
+
+    sequence.sequenceFrom @buttons
+
+    @add headerBacking
+    @add sequence
+
+
+  _addHeaderButton: (content, clickCallback, numOfButtons) ->
+    content = content || ''
+    clickCallback = clickCallback || () ->
+      console.log @
+    numOfButtons = numOfButtons || 3
+
+    itemWidth = Utils.getViewportWidth() / numOfButtons
+    itemHeight = @options.headerHeight
+
+    surface = new Surface
+      content: content
+      size: [itemWidth, itemHeight]
+      classes: ['peggBoardHeader', 'peggBoardHeader__button']
+      properties: {
+        textAlign: 'center'
+        lineHeight: itemHeight + 'px'
+      }
+
+    surface.on 'click', clickCallback
+
+    @buttons.push surface
+
 
   loadImages: (data) ->
     # TODO will need to figure out some way of reusing current surfaces
@@ -60,9 +117,25 @@ class PrefBoardView extends View
         gutter: @options.gutter
         data: set
 
-      row.pipe @scrollview
+      # row.pipe @scrollview
       @rows.push row
 
+  pipeToParent: ->
+    for row in @rows
+      row.unpipe @scrollview
+      row.pipe @_eventOutput
+
+    @container.unpipe @scrollview
+    @container.pipe @_eventOutput
+    
+
+  pipeToScrollview: ->  
+    for row in @rows
+      row.unpipe @_eventOutput
+      row.pipe @scrollview
+
+    @container.unpipe @_eventOutput
+    @container.pipe @scrollview
 
 
 module.exports = PrefBoardView

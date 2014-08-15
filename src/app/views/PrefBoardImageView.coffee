@@ -40,6 +40,11 @@ class PrefBoardImageView extends View
     @imageMod = new StateModifier
       origin: [0, 0]
       align: [0, 0]
+      opacity: 0
+
+    # Need to wait until the surface is rendered before trying to attach the 'load' eventlistener
+    @image.on 'deploy', () =>
+      @image._element.addEventListener 'load', @_showImage.bind(@)
 
     ## Add to render tree
     @container.add(@imageMod).add(@image)
@@ -51,6 +56,13 @@ class PrefBoardImageView extends View
       ReviewActions.load @options.cardId, @options.userId, 'profile'
       NavActions.selectReviewItem @options.cardId, @options.userId
     ).bind @
+
+  _showImage: ->
+    transition = {
+      duration : 1000,
+      curve: 'easeInOut'
+    }
+    @imageMod.setOpacity 1, transition
 
   showFullSize: () ->
     # TODO - black out the background, show a larger version of the image, display a nav bar
