@@ -20,7 +20,6 @@
 
 .card__front__question {
   text-align: center;
-  padding: 10px;
   font-size: 25px;
   line-height: 35px;
 }
@@ -36,11 +35,7 @@
 .card__front__question--small {
   text-align: center;
   font-size: 16px;
-  padding: 0px 12px;
   line-height: 20px;
-  z-index: -10;
-  height: 60px !important;
-  text-overflow: ellipsis;
   overflow: hidden;
 }
 
