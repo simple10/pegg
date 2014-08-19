@@ -11,17 +11,15 @@ Utils = require 'lib/Utils'
 
 class ChoiceView extends View
   @DEFAULT_OPTIONS:
-    width: null
-    height: 30
-    innerWidth: Utils.getViewportWidth() - Utils.getViewportWidth() * .2
+    size: null
+    innerWidth: 0
     choiceText: ''
     color: ''
 
   constructor: () ->
     super
-    @_width = @options.width-6
     @state = new StateModifier
-      size: [@_width, @options.height]
+      size: @options.size
     @mainNode = @add @state
     @createFlipper()
     @mainNode.add(@flipper)
@@ -67,7 +65,7 @@ class ChoiceView extends View
       duration: 300
 
     @state.setOpacity(0.001, transition)
-    @state.setSize([@_width, 0], transition, () =>
+    @state.setSize([@options.size[0], 0], transition, () =>
       @state.setTransform Transform.translate(0,0,-10)
     )
 
@@ -75,20 +73,12 @@ class ChoiceView extends View
 ## Flipper Front View
 
 class ChoiceFrontView extends View
-  @DEFAULT_OPTIONS:
-    width: null
-    height: 30
-    innerWidth: Utils.getViewportWidth() - Utils.getViewportWidth() * .2
-    choiceText: ''
-    color: ''
-
   constructor: () ->
     super
-    @_width = @options.width-6
     @state = new StateModifier
-      size: [@_width, @options.height]
-      align: [0.5, 0.5]
-      origin: [0.5, 0.5]
+      size: @options.size
+      align: @options.align
+      origin: @options.origin
 
     @createBacking()
 
@@ -112,20 +102,13 @@ class ChoiceFrontView extends View
 ## Flipper Back View
 
 class ChoiceBackView extends View
-  @DEFAULT_OPTIONS:
-    width: null
-    height: 30
-    innerWidth: Utils.getViewportWidth() - Utils.getViewportWidth() * .2
-    choiceText: ''
-    color: ''
 
   constructor: () ->
     super
-    @_width = @options.width-6
     @state = new StateModifier
-      size: [@_width, @options.height]
-      align: [0.5, 0.5]
-      origin: [0.5, 0.5]
+      size: @options.size
+      align: @options.align
+      origin: @options.origin
 
     @createBacking()
 

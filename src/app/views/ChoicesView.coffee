@@ -13,12 +13,6 @@ Transform = require 'famous/core/Transform'
 Utils = require 'lib/Utils'
 
 class ChoicesView extends View
-  @DEFAULT_OPTIONS:
-    width: null
-    height: 30
-    padding: 40
-    containerHeight: 260
-    innerWidth: Utils.getViewportWidth() - Utils.getViewportWidth() * .2
 
   constructor: () ->
     super
@@ -27,13 +21,14 @@ class ChoicesView extends View
     choices = PlayStore.getChoices(cardId)
     @choices = []
     container = new ContainerSurface
-      size: [@options.width, @options.containerHeight]
+      size: @options.size
       properties:
         overflow: 'hidden'
       classes: ['card__options__box']
 
+
     @scrollView = new Scrollview
-      size: [ @options.width, @options.height ]
+      size: @options.size
     @scrollView.sequenceFrom @choices
     i=0
     for choice in choices
@@ -42,15 +37,14 @@ class ChoicesView extends View
 #        if choiceText.length > 30
 #          height = 50 + Math.floor(choiceText.length/30) * 8
 #        else
-        height = @options.containerHeight / 4
+#        height = @options.size[1] / 4
 #        if i % 2
 #          color = 'light'
 #        else
 #          color = 'dark'
         choiceView = new ChoiceView
-          width: @options.width
-          height: height
-          innerWidth: @options.innerWidth
+          size: @options.choice.size
+          innerWidth: @options.choice.innerWidth
           choiceText: choiceText
           #color: color
         choiceView.on 'click', ((i) ->
@@ -68,8 +62,6 @@ class ChoicesView extends View
     #  content: "<input type='text' name='newOption' placeholder='Type your own...'>"
     #  classes: ['card__front__input']
     #surfaces.push newChoice
-
-
 
     container.add @scrollView
     @add container

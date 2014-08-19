@@ -9,6 +9,7 @@ mobile = {
   SignupViewLayout: require 'views/layouts/mobile/SignupViewLayout'
   StatusViewLayout: require 'views/layouts/mobile/StatusViewLayout'
   ReviewViewLayout: require 'views/layouts/mobile/ReviewViewLayout'
+  CardViewLayout: require 'views/layouts/mobile/CardViewLayout'
 }
 
 desktop = {}
