@@ -25,13 +25,13 @@ class ProgressBarView extends View
   init: ->
     container = new ContainerSurface
       size: @options.size
-    text = new Surface
-      content: 'Progress'
-      size: @options.title.size
-      classes: ['progressBar__title']
-    textMod = new StateModifier
-      align: @options.title.align
-      origin: @options.title.origin
+#    text = new Surface
+#      content: 'Progress'
+#      size: @options.title.size
+#      classes: ['progressBar__title']
+#    textMod = new StateModifier
+#      align: @options.title.align
+#      origin: @options.title.origin
     @activeBar = new ImageSurface
       content: 'images/progress_active.png'
       properties:
@@ -47,7 +47,7 @@ class ProgressBarView extends View
       align: @options.bar.align
       origin: @options.bar.origin
     container.add(inactiveBarMod).add inactiveBar
-    container.add(textMod).add text
+#    container.add(textMod).add text
     @add container
 
   increment: (x) =>
