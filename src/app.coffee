@@ -13,6 +13,10 @@ Timer = require 'famous/utilities/Timer'
 Transform = require 'famous/core/Transform'
 Easing = require 'famous/transitions/Easing'
 
+FastClick = require 'fastclick/lib/fastclick'
+#FastClick = require 'famous/inputs/fastclick'
+#FastClick.attach document.body
+
 # Facebook
 Facebook = require 'Facebook'
 
@@ -45,6 +49,9 @@ Routes = require 'routes/AppRoutes'
 GameFlow = require('config/game').game_flows.default
 GameScript = require('config/game').scripts.cosmic_unicorn
 
+
+#FastClick.attach(document.body)
+
 # Create the main context
 mainContext = Engine.createContext()
 
@@ -60,8 +67,8 @@ appView = new AppView
 loginView = new LoginView LoginViewLayout
 signupView = new SignupView SignupViewLayout
 lightbox = new Lightbox
-  inOpacity: 1
-  outOpacity: 0
+#  inOpacity: 1
+#  outOpacity: 0
   inOrigin: [1, -1]
   outOrigin: [0, -1]
   showOrigin: [0.5, 0.5]
@@ -91,6 +98,6 @@ pickView = ->
 AppStateStore.on Constants.stores.LOGIN_CHANGE, pickView
 UserStore.on Constants.stores.LOGIN_CHANGE, pickView
 
-#mainContext.add new FpsMeter
+mainContext.add new FpsMeter
 
 
