@@ -45,4 +45,7 @@ Utils =
     # console.log 'getViewportHeight', document.documentElement.clientHeight, window.innerHeight
     Math.max document.documentElement.clientHeight, window.innerHeight || 0
 
+  getContentWidth: () ->
+    @getViewportWidth() - 40
+
 module.exports = Utils
