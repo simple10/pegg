@@ -33,8 +33,8 @@ class PlayView extends View
 
     viewportWidth = Utils.getViewportWidth()
     @lightbox = new Lightbox
-      inOpacity: 1
-      outOpacity: 0
+#      inOpacity: 1
+#      outOpacity: 0
       inOrigin: [0, 0]
       outOrigin: [1, 0]
       showOrigin: [0.5, 0.5]
