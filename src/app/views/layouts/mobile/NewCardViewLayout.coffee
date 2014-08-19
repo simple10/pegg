@@ -220,7 +220,7 @@ module.exports =
       }
   ]
   step3_1: # link container
-    size: [ [Utils.getViewportWidth()-30, 55], [59, 55], [Utils.getViewportWidth() - 59, 55] ]
+    size: [ [Utils.getViewportWidth()-30, 55], [59, 55], [Utils.getViewportWidth() - 100, 55] ]
     align: [0.5, 1]
     origin: [0.5, 0]
     classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}

@@ -45,7 +45,6 @@ class NewCardView extends View
     NewCardStore.on Constants.stores.CATEGORIES_CHANGE, @loadCategories
 
     @on 'click:category', (data) =>
-      debugger
       category = @_selectedCategories[data.name]
      
       # update the selected categories
