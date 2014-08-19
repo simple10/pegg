@@ -115,8 +115,8 @@ class AppView extends View
   initViewManager: ->
     viewportHeight = Utils.getViewportHeight()
     @lightbox = new Lightbox
-      inOpacity: 1
-      outOpacity: 0
+#      inOpacity: 1
+#      outOpacity: 0
       inOrigin: [1, 1]
       outOrigin: [0, 0]
       showOrigin: [0.5, 0.5]
