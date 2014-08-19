@@ -4,6 +4,7 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 
 DB = require 'stores/helpers/ParseBackend'
+NavActions = require 'actions/NavActions'
 
 class UserStore extends EventEmitter
   _subscribed: false
@@ -76,8 +77,8 @@ class UserStore extends EventEmitter
             error: ->
               debugger
             success: =>
-              Parse.history.navigate('play')
-              @emit Constants.stores.LOGIN_CHANGE
+              @emit Constants.stores.CHANGE
+              NavActions.login()
               @importFriends()
         )
         unless user.existed()

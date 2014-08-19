@@ -6,6 +6,7 @@ Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Utils = require 'lib/Utils'
 UserStore = require 'stores/UserStore'
+NavActions = require 'actions/NavActions'
 
 class SettingsView extends View
   cssPrefix: 'settings'
@@ -24,6 +25,7 @@ class SettingsView extends View
       origin: [0.5, 0]
     logout.on 'click', ->
       UserStore.logout()
+      NavActions.logout()
 
     @add(logoutMod).add logout
 

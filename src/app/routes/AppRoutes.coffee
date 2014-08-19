@@ -8,14 +8,20 @@ AppRouter = Parse.Router.extend(
     "login": "login"
     "play": "play"
     "card/:card/:peggee": "card"
+    "activity/:card/:peggee": "activity"
 
   login: ->
 #    NavActions.loadPage "login"
 
   card: (card, peggee) ->
     if card? and peggee?
-      NavActions.loadCard card, peggee
-      ReviewActions.load card, peggee, 'link'
+      NavActions.loadLink card, peggee
+      ReviewActions.load card, peggee, 'card'
+
+  activity: (card, peggee) ->
+    if card? and peggee?
+      NavActions.loadLink card, peggee
+      ReviewActions.load card, peggee, 'activity'
 
   decks: ->
     #NavActions.selectMenuItem "decks"

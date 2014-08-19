@@ -28,7 +28,7 @@ class HeaderView extends View
 
   constructor: ->
     super
-    UserStore.on Constants.stores.LOGIN_CHANGE, @_update
+    UserStore.on Constants.stores.CHANGE, @_update
     #AppStateStore.on Constants.stores.CHANGE, @_build
     @_build()
     @initEvents()

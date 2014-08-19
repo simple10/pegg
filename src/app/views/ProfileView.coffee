@@ -51,7 +51,7 @@ class ProfileView extends View
     @initListeners()
 
   initListeners: ->
-    UserStore.on Constants.stores.LOGIN_CHANGE, @_loadUser.bind(@)
+    UserStore.on Constants.stores.CHANGE, @_loadUser.bind(@)
     UserStore.on Constants.stores.PREF_IMAGES_CHANGE, @_loadImages.bind(@)
 
   init: ->
@@ -67,8 +67,8 @@ class ProfileView extends View
       avatarHeight: 150
       width: @options.profileContainerWidth
       height: @options.profileContainerHeight
-      avatar: UserStore.getAvatar 'height=150&type=normal&width=150'
-      firstname: UserStore.getName 'first'
+#      avatar: UserStore.getAvatar 'height=150&type=normal&width=150'
+#      firstname: UserStore.getName 'first'
 
     @container = new ContainerSurface
       size: [@options.width, @options.height - @options.headerHeight]
@@ -143,7 +143,7 @@ class ProfileView extends View
 
   _loadUser: =>
     @profileHeader.setAvatar UserStore.getAvatar 'height=150&type=normal&width=150'
-    @name.setFirstname UserStore.getName('first')
+    @profileHeader.setFirstname UserStore.getName 'first'
 
   _loadImages: =>
     # remove all the images

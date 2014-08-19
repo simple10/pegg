@@ -22,6 +22,7 @@ Utils = require 'lib/Utils'
 
 # Stores
 AppStateStore = require 'stores/AppStateStore'
+UserStore = require 'stores/UserStore'
 
 # Menu
 Menu = require 'constants/menu'
@@ -38,7 +39,7 @@ SettingsView = require 'views/SettingsView'
 NewCardView = require 'views/NewCardView'
 StatusView = require 'views/StatusView'
 ReviewView = require 'views/ReviewView'
-#MoodsView = require 'views/MoodsView'
+LoginView = require 'views/LoginView'
 
 # Layouts
 PlayViewLayout = require 'views/layouts/mobile/PlayViewLayout'
@@ -71,7 +72,7 @@ class AppView extends View
     @initLayout()
     @initPages()
     @initListeners()
-    NavActions.selectMenuItem AppStateStore.getCurrentPageID()
+    #NavActions.selectMenuItem
 
   initListeners: ->
     AppStateStore.on Constants.stores.MENU_CHANGE, @togglePage
@@ -104,12 +105,13 @@ class AppView extends View
 
   initPages: ->
     # Pages correspond to pageID in constants/menu.coffee
-    @pages.play = new PlayView PlayViewLayout
+    @pages.play = new PlayView
     @pages.create = new NewCardView NewCardViewLayout
     @pages.settings = new SettingsView
     @pages.activity = new ActivityView
     @pages.profile = new ProfileView
-    @pages.review = new ReviewView
+    @pages.card = new ReviewView
+    @pages.login = new LoginView
     @togglePage()
 
   initViewManager: ->
@@ -133,11 +135,14 @@ class AppView extends View
 
   togglePage: =>
     pageID = AppStateStore.getCurrentPageID()
-    if pageID is 'profile'
-      UserActions.load() # load user pref images
-    @showPage @getPage pageID
-    #@footer.bounceTabs()
-    #@footer.hideTabs()
+    if !UserStore.getLoggedIn() and pageID isnt 'card'
+      @showPage @getPage 'login'
+    else
+      if pageID is 'profile'
+        UserActions.load() # load user pref images
+      @showPage @getPage pageID
+      #@footer.bounceTabs()
+      #@footer.hideTabs()
     @closeMenu()
 
   toggleMenu: =>

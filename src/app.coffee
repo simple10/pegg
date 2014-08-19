@@ -50,7 +50,7 @@ GameFlow = require('config/game').game_flows.default
 GameScript = require('config/game').scripts.cosmic_unicorn
 
 
-FastClick.attach(document.body)
+#FastClick.attach(document.body)
 
 # Create the main context
 mainContext = Engine.createContext()
@@ -64,7 +64,7 @@ Engine.setFPSCap 60
 mainContext.setPerspective 2000
 
 appView = new AppView
-loginView = new LoginView LoginViewLayout
+loginView = new LoginView
 signupView = new SignupView SignupViewLayout
 lightbox = new Lightbox
 #  inOpacity: 1
@@ -89,6 +89,8 @@ pickView = ->
     PlayActions.load GameFlow, GameScript
     ActivityActions.load 1
     CardActions.loadCategories()
+  else if  AppStateStore.getCurrentPageID() is 'card'
+    lightbox.show appView
   else if AppStateStore.getCurrentPageID() is 'login'
     lightbox.show loginView
   else

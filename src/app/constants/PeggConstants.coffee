@@ -28,6 +28,8 @@ module.exports =
     NEXT_STAGE: null
     PICK_MOOD: null
     FILTER_PREFS: null
+    LOGOUT: null
+    LOGIN: null
 
   stores: Utils.keyMirror
     # Generic

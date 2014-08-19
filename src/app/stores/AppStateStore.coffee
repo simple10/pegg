@@ -22,30 +22,37 @@ Parse = require 'Parse'
 class AppStateStore extends EventEmitter
   _currentPageID: 'play'
 
+  # TODO: stash currentPageID in Parse or localStorage and
+  #   auto load previous app state when user returns to app.
+
   _loadPage: (pageID) ->
     @_currentPageID = pageID
-    Parse.history.navigate(pageID, true);
+    Parse.history.navigate pageID, true
     if pageID is 'login' or pageID is 'signup'
       @emit Constants.stores.LOGIN_CHANGE
-    else if pageID is 'profile'
-      @emit Constants.stores.MENU_CHANGE
     else
       @emit Constants.stores.MENU_CHANGE
-    # TODO: stash currentPageID in Parse or localStorage and
-    #   auto load previous app state when user returns to app.
 
   _loadCard: (cardId, peggeeId) ->
 #    console.log cardId, peggeeId
-    @_currentPageID = 'review'
-    Parse.history.navigate(@_currentPageID, true);
+    @_currentPageID = 'activity'
+    Parse.history.navigate "#{@_currentPageID}/#{cardId}/#{peggeeId}", true
     @emit Constants.stores.MENU_CHANGE
 
   _loadLink: (cardId, peggeeId) ->
-    @_currentPageID = 'review'
+    @_currentPageID = 'card'
     console.log cardId, peggeeId
 #    @emit Constants.stores.MENU_CHANGE
 
-#    @emit Constants.
+  _logout: ->
+    @_currentPageID = '/'
+    Parse.history.navigate @_currentPageID, true
+
+  _login: ->
+    @_currentPageID = 'play'
+    Parse.history.navigate @_currentPageID, true
+    @emit Constants.stores.MENU_CHANGE
+    @emit Constants.stores.LOGIN_CHANGE
 
   getCurrentPageID: ->
     @_currentPageID
@@ -64,6 +71,10 @@ AppDispatcher.register (payload) ->
       appstate._loadLink action.cardId, action.peggeeId
     when Constants.actions.CARD_SELECT
       appstate._loadCard action.cardId, action.peggeeId
+    when Constants.actions.LOGOUT
+      appstate._logout()
+    when Constants.actions.LOGIN
+      appstate._login()
 
 
 module.exports = appstate

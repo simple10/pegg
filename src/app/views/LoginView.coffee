@@ -6,23 +6,27 @@ ImageSurface = require 'famous/surfaces/ImageSurface'
 StateModifier = require 'famous/modifiers/StateModifier'
 UserActions = require 'actions/UserActions'
 Utils = require 'lib/Utils'
+LayoutManager = require 'views/layouts/LayoutManager'
 
 
 class LoginView extends View
 
   constructor: (options) ->
     super options
+    @layoutManager = new LayoutManager()
+    @layout = @layoutManager.getViewLayout 'LoginView'
+
     @initSplash()
     @initLogin()
 
   initSplash: ->
     logo = new ImageSurface
-      size: @options.logo.size
-      classes: @options.logo.classes
+      size: @layout.logo.size
+      classes: @layout.logo.classes
       content: "images/cosmic-unicorn-head-circle.svg"
     logoMod = new StateModifier
-      align: @options.logo.align
-      origin: @options.logo.origin
+      align: @layout.logo.align
+      origin: @layout.logo.origin
 #    mark = new ImageSurface
 #      size: @options.mark.size
 #      classes: @options.mark.classes
@@ -31,45 +35,45 @@ class LoginView extends View
 #      align: @options.mark.align
 #      origin: @options.mark.origin
     text = new Surface
-      size: @options.text.size
-      classes: @options.text.classes
+      size: @layout.text.size
+      classes: @layout.text.classes
       content: "LOGIN"
     textMod = new StateModifier
-      align: @options.text.align
-      origin: @options.text.origin
+      align: @layout.text.align
+      origin: @layout.text.origin
 
     @add(logoMod).add logo
     @add(textMod).add text
 
-    Utils.animateAll logoMod, @options.logo.states
-    Utils.animateAll textMod, @options.text.states
+    Utils.animateAll logoMod, @layout.logo.states
+    Utils.animateAll textMod, @layout.text.states
 
   initLogin: ->
     fbButton = new Surface
-      size: @options.fbButton.size
+      size: @layout.fbButton.size
       content: 'Login with Facebook'
-      classes: @options.fbButton.classes
+      classes: @layout.fbButton.classes
       properties:
-        lineHeight: "#{@options.fbButton.size[1]}px"
+        lineHeight: "#{@layout.fbButton.size[1]}px"
     fbButtonMod = new StateModifier
-      align: @options.fbButton.align
-      origin: @options.fbButton.origin
+      align: @layout.fbButton.align
+      origin: @layout.fbButton.origin
     fbButton.on "click", ->
       UserActions.login()
     gpButton = new Surface
-      size: @options.gpButton.size
+      size: @layout.gpButton.size
       content: 'Login with Google'
-      classes: @options.gpButton.classes
+      classes: @layout.gpButton.classes
       properties:
-        lineHeight: "#{@options.gpButton.size[1]}px"
+        lineHeight: "#{@layout.gpButton.size[1]}px"
     gpButtonMod = new StateModifier
-      align: @options.gpButton.align
-      origin: @options.gpButton.origin
+      align: @layout.gpButton.align
+      origin: @layout.gpButton.origin
     @add(fbButtonMod).add fbButton
     @add(gpButtonMod).add gpButton
 
-    Utils.animateAll fbButtonMod, @options.fbButton.states
-    Utils.animateAll gpButtonMod, @options.gpButton.states
+    Utils.animateAll fbButtonMod, @layout.fbButton.states
+    Utils.animateAll gpButtonMod, @layout.gpButton.states
 
 
 
@@ -93,8 +97,8 @@ class LoginView extends View
 # Causes inexplicable flutter near end of animation:
 #    Transform.multiply(
 #      Transform.scale(.8, .8, 0)
-#      Transform.translate(@options.logoWidth/4, -30, 20)
+#      Transform.translate(@layout.logoWidth/4, -30, 20)
 #      Transform.identity
-#    ), @options.transition
+#    ), @layout.transition
 
 module.exports = LoginView
