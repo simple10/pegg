@@ -35,7 +35,7 @@ class MoodsView extends View
 
     title = new Surface
       size: [Utils.getViewportWidth(), 100]
-      content: 'What are you <br/> feeling?'
+      content: 'How are you <br/> feeling?'
       classes: ["#{@cssPrefix}__title"]
     titleMod = new Modifier
       origin: [0.5, 0]
