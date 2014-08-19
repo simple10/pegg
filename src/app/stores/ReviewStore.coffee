@@ -15,6 +15,7 @@ class ReviewStore extends EventEmitter
     @_referrer = path
 
   _loadCard: (cardId, peggeeId) ->
+    debugger
     DB.getCard(cardId, peggeeId, (results) =>
       if results
         @_card = results

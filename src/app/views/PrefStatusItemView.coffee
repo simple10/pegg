@@ -32,18 +32,29 @@ class PrefStatusItemView extends View
     container.pipe @._eventOutput
 
     sequentialLayout = new SequentialLayout
+      align: [0.5, 0.5]
+      origin: [0.5, 0.5]
     sequentialLayout.sequenceFrom @_sequence
 
     # QUESTION
     questionNode = new RenderNode
+    cardSurface = new ImageSurface
+      size: [Utils.getContentWidth(), 400]
+      content: 'images/Card.svg'
+      classes: ['status__pref__card']
+    cardSurfaceMod = new StateModifier
+      align: [0, 0]
+      origin: [0, 0]
+      transform: Transform.translate 30, 0, @options.depth/2
     @_question = new Surface
       classes: ['status__pref__question']
-      size: [Utils.getViewportWidth()-40, 60]
+      size: [Utils.getContentWidth()-20, 60]
     questionMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
       transform: Transform.translate 30, null, null
     questionNode.add(questionMod).add @_question
+    questionNode.add(cardSurfaceMod).add cardSurface
     @_sequence.push questionNode
 
     # CHOICES

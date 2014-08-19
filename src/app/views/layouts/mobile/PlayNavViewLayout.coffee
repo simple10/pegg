@@ -84,7 +84,7 @@ module.exports =
       origin: [0, 0]
       size: [180, 10]
     bar:
-      align: [0, 0.5]
+      align: [0, 0.1]
       origin: [0, 0]
       size: [180, 15]
   rightArrow:

@@ -1,9 +1,11 @@
 @import "settings";
 
-
+.status__pref__card {
+  z-index: -10;
+}
 .status__peggee__name, .status__preffer__name {
-  text-align: center;
   color: $white;
+  text-align: center;
   font-size: 25px;
 }
 
@@ -21,16 +23,14 @@
 }
 
 .status__pegger__points {
-  color: $white;
   text-align: left;
 }
 
 .status__pref__choice {
-  color: $white;
+
 }
 
 .status__pref__question {
-  color: $white;
   font-size: 20px;
 }
 
@@ -55,8 +55,8 @@
 }
 
 .status__done__title {
-  text-align: center;
   color: $white;
+  text-align: center;
   font-size: 25px;
 }
 

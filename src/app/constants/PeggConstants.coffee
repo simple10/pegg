@@ -2,6 +2,7 @@ Utils = require 'Utils'
 
 module.exports =
   actions: Utils.keyMirror
+    LOAD_LINK: null
     MENU_SELECT: null
     CARD_SELECT: null
     LOAD_ACTIVITY: null

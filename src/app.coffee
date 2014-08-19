@@ -50,7 +50,7 @@ GameFlow = require('config/game').game_flows.default
 GameScript = require('config/game').scripts.cosmic_unicorn
 
 
-#FastClick.attach(document.body)
+FastClick.attach(document.body)
 
 # Create the main context
 mainContext = Engine.createContext()

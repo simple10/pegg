@@ -22,7 +22,7 @@ Parse = require 'Parse'
 class AppStateStore extends EventEmitter
   _currentPageID: 'play'
 
-  _changePage: (pageID) ->
+  _loadPage: (pageID) ->
     @_currentPageID = pageID
     Parse.history.navigate(pageID, true);
     if pageID is 'login' or pageID is 'signup'
@@ -40,6 +40,13 @@ class AppStateStore extends EventEmitter
     Parse.history.navigate(@_currentPageID, true);
     @emit Constants.stores.MENU_CHANGE
 
+  _loadLink: (cardId, peggeeId) ->
+    @_currentPageID = 'review'
+    console.log cardId, peggeeId
+#    @emit Constants.stores.MENU_CHANGE
+
+#    @emit Constants.
+
   getCurrentPageID: ->
     @_currentPageID
 
@@ -52,7 +59,9 @@ AppDispatcher.register (payload) ->
   # Pay attention to events relevant to AppStateStore
   switch action.actionType
     when Constants.actions.MENU_SELECT
-      appstate._changePage action.pageId
+      appstate._loadPage action.pageId
+    when Constants.actions.LOAD_LINK
+      appstate._loadLink action.cardId, action.peggeeId
     when Constants.actions.CARD_SELECT
       appstate._loadCard action.cardId, action.peggeeId
 

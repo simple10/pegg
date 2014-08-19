@@ -25,6 +25,7 @@ CommentsView = require 'views/CommentsView'
 InputView = require 'views/InputView'
 PlayNavView = require 'views/PlayNavView'
 
+
 class PlayCardsView extends View
 
   constructor: (options) ->
@@ -202,7 +203,7 @@ class PlayCardsView extends View
     i = 0
     for own cardId, cardObj of PlayStore.getCards()
       name = cardObj.firstName
-      card = new CardView size: [@_viewportWidth, null]
+      card = new CardView
       card.loadCard cardId, cardObj
       card.on 'comment', =>
         @collapseComments()
