@@ -39,13 +39,15 @@ class PrefStatusItemView extends View
     # QUESTION
     questionNode = new RenderNode
     cardSurface = new ImageSurface
-      size: [Utils.getContentWidth(), 400]
+      size: [Utils.getContentWidth(), 380]
       content: 'images/Card.svg'
       classes: ['status__pref__card']
     cardSurfaceMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
-      transform: Transform.translate 30, 0, @options.depth/2
+      transform: Transform.translate 15, -10, null
+    questionNode.add(cardSurfaceMod).add cardSurface
+
     @_question = new Surface
       classes: ['status__pref__question']
       size: [Utils.getContentWidth()-20, 60]
@@ -54,7 +56,7 @@ class PrefStatusItemView extends View
       origin: [0, 0]
       transform: Transform.translate 30, null, null
     questionNode.add(questionMod).add @_question
-    questionNode.add(cardSurfaceMod).add cardSurface
+
     @_sequence.push questionNode
 
     # CHOICES

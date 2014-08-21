@@ -46,6 +46,7 @@ class ChoicesView extends View
           size: @options.choice.size
           innerWidth: @options.choice.innerWidth
           choiceText: choiceText
+          height: @options.choice.height
           #color: color
         choiceView.on 'click', ((i) ->
           @_eventOutput.emit 'choice', i

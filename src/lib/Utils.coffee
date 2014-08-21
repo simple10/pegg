@@ -46,6 +46,6 @@ Utils =
     Math.max document.documentElement.clientHeight, window.innerHeight || 0
 
   getContentWidth: () ->
-    @getViewportWidth() - 40
+    @getViewportWidth() - 20
 
 module.exports = Utils

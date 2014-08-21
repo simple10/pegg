@@ -108,6 +108,7 @@ class CardView extends View
       properties:
         borderRadius: "#{@layout.answerImage.borderRadius}px"
         maxHeight: "#{@layout.answerImage.maxHeight}px"
+#        maxWidth: "#{@layout.answerImage.maxWidth}px"
     @backImage.on 'click', =>
       #TODO Expand image when
 #      @toggleZoom()
