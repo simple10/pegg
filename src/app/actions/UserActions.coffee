@@ -24,4 +24,9 @@ UserActions =
       actionType: Constants.actions.FILTER_PREFS
       filter: filter
 
+  auth: (code) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.USER_AUTH
+      code: code
+
 module.exports = UserActions

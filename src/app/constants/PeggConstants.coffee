@@ -30,6 +30,7 @@ module.exports =
     FILTER_PREFS: null
     LOGOUT: null
     LOGIN: null
+    AUTH: null
 
   stores: Utils.keyMirror
     # Generic

@@ -48,4 +48,31 @@ Utils =
   getContentWidth: () ->
     @getViewportWidth() - 20
 
+  getAjax: (endpoint, params, cb) ->
+    #http://stackoverflow.com/questions/8567114/how-to-make-an-ajax-call-without-jquery
+    url = "#{endpoint}?#{params}"
+    req = new XMLHttpRequest()
+
+    req.addEventListener 'readystatechange', ->
+     if req.readyState is 4                        # ReadyState Complete
+       successResultCodes = [200, 304]
+       if req.status in successResultCodes
+#         data = eval '(' + req.responseText + ')'
+         cb req.responseText
+       else
+         cb 'Error loading data...'
+
+    req.open 'GET', url, false
+    req.send()
+
+  parseQueryString: (queryString, name) ->
+    #https://gist.github.com/greystate/1274961
+    variables = queryString.split '&'
+    pairs = ([key, value] = pair.split '=' for pair in variables)
+    if name?
+      for [key, value] in pairs
+        return value if key is name
+    else
+      return pairs
+
 module.exports = Utils

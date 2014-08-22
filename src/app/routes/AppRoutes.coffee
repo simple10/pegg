@@ -1,6 +1,7 @@
 Parse = require 'Parse'
 NavActions = require 'actions/NavActions'
 ReviewActions = require 'actions/ReviewActions'
+UserActions = require 'actions/UserActions'
 
 #define router class
 AppRouter = Parse.Router.extend(
@@ -9,6 +10,7 @@ AppRouter = Parse.Router.extend(
     "play": "play"
     "card/:card/:peggee": "card"
     "activity/:card/:peggee": "activity"
+    ":code": "auth"
 
   login: ->
 #    NavActions.loadPage "login"
@@ -25,6 +27,9 @@ AppRouter = Parse.Router.extend(
 
   decks: ->
     #NavActions.selectMenuItem "decks"
+
+  auth: (code) ->
+    UserActions.auth code
 )
 
 appRoutes = new AppRouter()
