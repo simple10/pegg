@@ -5,6 +5,8 @@ body {
   font-family: 'Montserrat', sans-serif;
   /*background-color: $darkblue;*/
   background-image: url('images/Background@2x.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
 button {
@@ -17,4 +19,28 @@ button {
   padding: 10px;
   border: 10px solid white;
   text-align: center;
+}
+
+
+.iframe {
+  border: 2px solid #000;
+  top: 140px;
+  position: absolute;
+  width: 320px;
+  height: 568px;
+  display: table;
+  margin: 0 auto;
+  margin-left: 28px;
+}
+
+.device {
+  display: table;
+  margin: 0 auto;
+  width: 380px;
+  height: 780px;
+  background-image: url('images/device-iphone.svg');
+  background-size: 550px 780px;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-top: 40px;
 }
