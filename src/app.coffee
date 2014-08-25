@@ -49,6 +49,8 @@ Routes = require 'routes/AppRoutes'
 GameFlow = require('config/game').game_flows.default
 GameScript = require('config/game').scripts.cosmic_unicorn
 
+Utils = require 'lib/Utils'
+
 
 #FastClick.attach(document.body)
 
@@ -59,47 +61,56 @@ mainContext = Engine.createContext()
 Engine.setFPSCap 60
 
 
-# Set perspective for 3D effects
-# Lower values make effects more pronounced and extreme
-mainContext.setPerspective 2000
+if Utils.getViewportWidth() > 400
+  iframeDiv = document.createElement 'div'
+  iframeDiv.className = 'device'
+  iframe = document.createElement 'iframe'
+  iframe.src = '/index.html'
+  iframe.className = 'iframe'
+  iframeDiv.appendChild iframe
+  document.body.appendChild iframeDiv
+else
+  # Set perspective for 3D effects
+  # Lower values make effects more pronounced and extreme
+  mainContext.setPerspective 2000
 
-appView = new AppView
-loginView = new LoginView
-signupView = new SignupView SignupViewLayout
-lightbox = new Lightbox
-#  inOpacity: 1
-#  outOpacity: 0
-  inOrigin: [1, -1]
-  outOrigin: [0, -1]
-  showOrigin: [0.5, 0.5]
-  inTransform: Transform.thenMove(Transform.rotateX(0), [0, -window.innerHeight, 0])
-  outTransform: Transform.thenMove(Transform.rotateZ(0), [0, window.innerHeight, 0])
-  inTransition: { duration: 500, curve: Easing.outCubic }
-  outTransition: { duration: 350, curve: Easing.outCubic }
-mainContext.add lightbox
+  appView = new AppView
+  loginView = new LoginView
+  signupView = new SignupView SignupViewLayout
+  lightbox = new Lightbox
+  #  inOpacity: 1
+  #  outOpacity: 0
+    inOrigin: [1, -1]
+    outOrigin: [0, -1]
+    showOrigin: [0.5, 0.5]
+    inTransform: Transform.thenMove(Transform.rotateX(0), [0, -window.innerHeight, 0])
+    outTransform: Transform.thenMove(Transform.rotateZ(0), [0, window.innerHeight, 0])
+    inTransition: { duration: 500, curve: Easing.outCubic }
+    outTransition: { duration: 350, curve: Easing.outCubic }
+  mainContext.add lightbox
 
-#Wait a couple cycles for Famo.us to boot up, smoother animations
-Timer.after (->
-  pickView()
-), 20
+  #Wait a couple cycles for Famo.us to boot up, smoother animations
+  Timer.after (->
+    pickView()
+  ), 20
 
-pickView = ->
-  if UserStore.getLoggedIn()
-    lightbox.show appView
-    PlayActions.load GameFlow, GameScript
-    ActivityActions.load 1
-    CardActions.loadCategories()
-  else if  AppStateStore.getCurrentPageID() is 'card'
-    lightbox.show appView
-  else if AppStateStore.getCurrentPageID() is 'login'
-    lightbox.show loginView
-  else
-    lightbox.show signupView
-  return
+  pickView = ->
+    if UserStore.getLoggedIn()
+      lightbox.show appView
+      PlayActions.load GameFlow, GameScript
+      ActivityActions.load 1
+      CardActions.loadCategories()
+    else if  AppStateStore.getCurrentPageID() is 'card'
+      lightbox.show appView
+    else if AppStateStore.getCurrentPageID() is 'login'
+      lightbox.show loginView
+    else
+      lightbox.show signupView
+    return
 
-AppStateStore.on Constants.stores.LOGIN_CHANGE, pickView
-UserStore.on Constants.stores.LOGIN_CHANGE, pickView
+  AppStateStore.on Constants.stores.LOGIN_CHANGE, pickView
+  UserStore.on Constants.stores.LOGIN_CHANGE, pickView
 
-mainContext.add new FpsMeter
+  mainContext.add new FpsMeter
 
 
