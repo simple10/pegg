@@ -39,7 +39,7 @@ class PeggStatusView extends View
       classes: ['status__peggee__name']
       size: [Utils.getViewportWidth(), 50]
     userNameMod = new StateModifier
-      align: [0.5, 0.28]
+      align: [0.5, 0.32]
       origin: [0.5, 0]
     @add(userNameMod).add userName
 
