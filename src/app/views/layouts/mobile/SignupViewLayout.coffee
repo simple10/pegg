@@ -60,7 +60,7 @@ module.exports =
     origin: [0, 0.5]
     states: [
       {
-        delay: 60
+        delay: 40
         align: [0.5, 0.75]
         origin: [0.5, 0.5]
         transform: Transform.translate null, null, 1
@@ -75,7 +75,7 @@ module.exports =
     origin: [0, 0.5]
     states: [
       {
-        delay: 80
+        delay: 60
         align: [0.5, 0.85]
         origin: [0.5, 0.5]
         transform: Transform.translate null, null, 1
