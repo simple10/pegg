@@ -66,7 +66,7 @@ module.exports =
     origin: [0, 0]
     states: [
       {
-        delay: 60
+        delay: 150
         align: [0, 0.5]
         transform: Transform.translate null, null, 1
         transition: {duration: 600, curve: Easing.inOutBack}
@@ -79,7 +79,7 @@ module.exports =
     origin: [0, 0]
     states: [
       {
-        delay: 80
+        delay: 170
         align: [0, 0.75]
         transform: Transform.translate null, null, 1
         transition: {duration: 600, curve: Easing.inOutBack}
