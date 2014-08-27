@@ -54,22 +54,23 @@ Utils = require 'lib/Utils'
 
 #FastClick.attach(document.body)
 
-# Create the main context
-mainContext = Engine.createContext()
 
 # Chrome maxes out at 60 FPS
 Engine.setFPSCap 60
 
 
 if Utils.getViewportWidth() > 400
-  iframeDiv = document.createElement 'div'
-  iframeDiv.className = 'device'
+  div = document.createElement 'div'
+  div.className = 'device'
   iframe = document.createElement 'iframe'
   iframe.src = '/index.html'
   iframe.className = 'iframe'
-  iframeDiv.appendChild iframe
-  document.body.appendChild iframeDiv
+  div.appendChild iframe
+  document.body.appendChild div
 else
+  # Create the main context
+  mainContext = Engine.createContext()
+
   # Set perspective for 3D effects
   # Lower values make effects more pronounced and extreme
   mainContext.setPerspective 2000
