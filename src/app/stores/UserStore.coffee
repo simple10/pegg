@@ -13,19 +13,10 @@ class UserStore extends EventEmitter
 
   login: ->
     # http://stackoverflow.com/questions/16843116/facebook-oauth-unsupported-in-chrome-on-ios
-    # http://stackoverflow.com/questions/11197668/fb-login-broken-flow-for-ios-webapp
-#    isMobile = false
-#    try
-#      isMobile = (window.location.href is top.location.href and window.location.href.indexOf("/mobile/") isnt -1)
-#    unless isMobile
-#      @_loginParse null
-#    else
     clientId = '1410524409215955'
     redirectUri = 'http://192.168.1.7:8080/'
     permissionUrl = "https://m.facebook.com/dialog/oauth?client_id=#{clientId}&redirect_uri=#{redirectUri}&scope=email,public_profile&response_type=token"
     window.location = permissionUrl
-
-  #    if navigator.userAgent.match('CriOS')
 
 
   auth: (res) ->
@@ -136,6 +127,15 @@ class UserStore extends EventEmitter
 
 user = new UserStore
 
+
+# http://stackoverflow.com/questions/11197668/fb-login-broken-flow-for-ios-webapp
+#    isMobile = false
+#    try
+#      isMobile = (window.location.href is top.location.href and window.location.href.indexOf("/mobile/") isnt -1)
+#    unless isMobile
+#      @_loginParse null
+#    else
+#    if navigator.userAgent.match('CriOS')
 
 # Register callback with AppDispatcher to be notified of events
 AppDispatcher.register (payload) ->
