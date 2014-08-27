@@ -74,6 +74,7 @@ class PlayCardsView extends View
       else if data is 'nextCard'
         @nextCard(true)  
     @add(@navView)
+    @navView.hideRightArrow()
 
     ## COMMENTS ##
     @comments = new CommentsView
@@ -251,6 +252,7 @@ class PlayCardsView extends View
     else
       # swiped left
       PlayActions.nextCard()
+    @navView.hideRightArrow()
 
   prevCard: (triggerPageChange) =>
     if triggerPageChange
@@ -263,6 +265,7 @@ class PlayCardsView extends View
 
   cardPref: =>
     Utils.animate @commentsMod, @options.comments.states[1]
+    @navView.showRightArrow()
 
   cardFail: =>
     #@message.setClasses ['card__message__fail']
@@ -270,6 +273,7 @@ class PlayCardsView extends View
 
   cardWin: =>
     @showComments()
+    @navView.showRightArrow()
 
   showComments: =>
     Utils.animate @commentsMod, @options.comments.states[1]
