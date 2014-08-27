@@ -104,7 +104,7 @@ module.exports = {
       align: [0.5, 0.5]
       origin: [0.5, 0.5]
       innerWidth: width - width * .2
-#      height: 260
+      height: 60
   answerPic:
     borderRadius: 10
     size: [width - width * .1, height - height * .25]

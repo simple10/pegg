@@ -192,8 +192,8 @@ class PlayCardsView extends View
       else if isMovingX
         if onEdgeEnd then @nextCard()
       # reset axis movement flags
-      isMovingY = false;
-      isMovingX = false;
+      isMovingY = false
+      isMovingX = false
     ).bind(@)
 
   loadCards: =>

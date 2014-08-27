@@ -14,7 +14,7 @@ class UserStore extends EventEmitter
   login: ->
     # http://stackoverflow.com/questions/16843116/facebook-oauth-unsupported-in-chrome-on-ios
     clientId = '1410524409215955'
-    redirectUri = 'http://192.168.1.7:8080/'
+    redirectUri = 'http://localhost:8080/'
     permissionUrl = "https://m.facebook.com/dialog/oauth?client_id=#{clientId}&redirect_uri=#{redirectUri}&scope=email,public_profile&response_type=token"
     window.location = permissionUrl
 

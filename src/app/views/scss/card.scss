@@ -22,6 +22,7 @@
   text-align: center;
   font-size: 25px;
   line-height: 35px;
+  z-index: 1;
 }
 
 .card__front__question--medium {
@@ -29,6 +30,7 @@
   padding: 10px;
   font-size: 24px;
   line-height: 30px;
+  z-index: 1;
 }
 
 
@@ -48,7 +50,6 @@
   display: table;
   overflow: hidden;
   margin: 0 auto;
-  border-bottom: 1px solid #ccc;
 }
 .card__front__option .outerContainer .innerContainer {
   display: table-cell;
