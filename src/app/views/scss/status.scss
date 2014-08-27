@@ -28,7 +28,7 @@
 }
 
 .status__pref__choice {
-
+  color: $white;
 }
 
 .status__pref__question {
@@ -70,4 +70,5 @@
  .status__pref__question__child {
    display: table-cell;
    vertical-align: bottom;
+   color: $white;
  }​
