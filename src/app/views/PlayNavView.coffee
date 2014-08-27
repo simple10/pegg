@@ -94,7 +94,7 @@ class PlayNavView extends View
     # Attach modifiers and surfaces to the view
     @node = @add @mainMod
 #    @node.add(@leftArrowMod).add @leftArrow
-#    @node.add(@rightArrowMod).add @rightArrow
+    @node.add(@rightArrowMod).add @rightArrow
     @node.add(@messageMod).add @message
     @node.add(@moodImageMod).add @moodImage
     @node.add(@progressBarMod).add @progressBar
@@ -113,16 +113,16 @@ class PlayNavView extends View
     @progressBar.reset PlayStore.getSetLength()
     @showNav()
     @showMessage()
-#    @showRightArrow()
+    @showRightArrow()
 #    @hideLeftArrow()
 
-#  updateViewState: (cardIndex) =>
-#    #console.log cardIndex
-#    if cardIndex is 0
+  updateViewState: (cardIndex) =>
+    #console.log cardIndex
+    if cardIndex is 0
 #      @hideLeftArrow()
-#      @showRightArrow()
-#    else
-#      @showRightArrow()
+      @showRightArrow()
+    else
+      @showRightArrow()
 #      @showLeftArrow()
 
   updateMoodIcon: =>
@@ -146,11 +146,11 @@ class PlayNavView extends View
 #  hideLeftArrow: =>
 #    Utils.animate @leftArrowMod, @layout.leftArrow.states[1]
 #
-#  showRightArrow: =>
-#    Utils.animate @rightArrowMod, @layout.rightArrow.states[0]
-#
-#  hideRightArrow: =>
-#    Utils.animate @rightArrowMod, @layout.rightArrow.states[1]
+  showRightArrow: =>
+    Utils.animate @rightArrowMod, @layout.rightArrow.states[0]
+
+  hideRightArrow: =>
+    Utils.animate @rightArrowMod, @layout.rightArrow.states[1]
 
   showMessage: =>
     Utils.animate @messageMod, @layout.message.states[0]
