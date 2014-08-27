@@ -37,22 +37,22 @@ class PrefStatusView extends View
       origin: [0, 0]
     @add(itemsScrollViewMod).add @itemsScrollView
 
-    userPicNode = new RenderNode
-    @_userPic = new ImageSurface
-      classes: ['status__preffer__pic']
-      size: [150, 150]
-      properties:
-        borderRadius: '200px'
-    userPicMod = new StateModifier
-      align: [0.5, 0.05]
-      origin: [0.5, 0]
-    userPicNode.add(userPicMod).add @_userPic
-    @_itemViews.push userPicNode
+#    userPicNode = new RenderNode
+#    @_userPic = new ImageSurface
+#      classes: ['status__preffer__pic']
+#      size: [150, 150]
+#      properties:
+#        borderRadius: '200px'
+#    userPicMod = new StateModifier
+#      align: [0.5, 0.05]
+#      origin: [0.5, 0]
+#    userPicNode.add(userPicMod).add @_userPic
+#    @_itemViews.push userPicNode
 
     userNameNode = new RenderNode
     @_userName = new Surface
       classes: ['status__preffer__name']
-      size: [Utils.getViewportWidth() - 60, 175]
+      size: [Utils.getViewportWidth() - 60, 120]
     userNameMod = new StateModifier
       align: [0.5, 0.1]
       origin: [0.5, 0]
@@ -75,7 +75,7 @@ class PrefStatusView extends View
       size: [60, 120]
     nextMod = new StateModifier
       align: [0.6, 0]
-      origin: [0, 0]
+      origin: [0, 1]
     nextNode = new RenderNode
     nextNode.add(nextMod).add next
     @_itemViews.push nextNode
@@ -97,7 +97,7 @@ class PrefStatusView extends View
 #    @_userName.setContent UserStore.getName 'first'
     @_userName.setContent PlayStore.getMessage 'pref_status'
 #    @_userPic.setContent UserStore.getAvatar 'height=150&type=normal&width=150'
-    @_userPic.setContent PlayStore.getMessage 'unicorn'
+#    @_userPic.setContent PlayStore.getMessage 'unicorn'
 
     # Remove all the PrefStatusItemViews
     while @_itemViews.length > 4

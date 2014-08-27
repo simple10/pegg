@@ -38,15 +38,15 @@ class PrefStatusItemView extends View
 
     # QUESTION
     questionNode = new RenderNode
-    cardSurface = new ImageSurface
-      size: [Utils.getContentWidth(), 380]
-      content: 'images/Card.svg'
-      classes: ['status__pref__card']
-    cardSurfaceMod = new StateModifier
-      align: [0, 0]
-      origin: [0, 0]
-      transform: Transform.translate 15, -10, null
-    questionNode.add(cardSurfaceMod).add cardSurface
+#    cardSurface = new ImageSurface
+#      size: [Utils.getContentWidth(), 380]
+#      content: 'images/Card.svg'
+#      classes: ['status__pref__card']
+#    cardSurfaceMod = new StateModifier
+#      align: [0, 0]
+#      origin: [0, 0]
+#      transform: Transform.translate 15, -10, null
+#    questionNode.add(cardSurfaceMod).add cardSurface
 
     @_question = new Surface
       classes: ['status__pref__question']
@@ -82,7 +82,7 @@ class PrefStatusItemView extends View
     percentageNode = new RenderNode
     percentage = new Surface
       classes: classes
-      size: [3, 10]
+      size: [3, 40]
     percentageMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
@@ -117,7 +117,7 @@ class PrefStatusItemView extends View
     i = 0
     for id, choice of data.choices
       @_choices[i].setContent choice.choiceText
-      @_percentages[i].setSize [ (Utils.getViewportWidth()-60) * (choice.count / @_total) + 3, 10 ]
+      @_percentages[i].setSize [ (Utils.getViewportWidth()-60) * (choice.count / @_total) + 3, 40 ]
       @_question.setSize [Utils.getViewportWidth()-40, 60 + Math.floor(data.question.length/25) * 10]
       if i is 3 then break
       i++
