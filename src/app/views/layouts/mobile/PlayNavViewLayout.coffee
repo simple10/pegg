@@ -41,7 +41,7 @@ module.exports =
     ]
   moodImage:
     origin: [0.5, 0.5]
-    align: [0.22, 0.08]
+    align: [0.2, 0.03]
     size: [50, 50]
     states: [
       # show
@@ -76,9 +76,9 @@ module.exports =
       }
     ]
   progressBarView:
-    size: [180, 50]
+    size: [160, 55]
     origin: [0.5, 0.5]
-    align: [0.6, 0.25]
+    align: [0.57, 0.29]
     title:
       align: [0, 0.1]
       origin: [0, 0]
@@ -86,7 +86,7 @@ module.exports =
     bar:
       align: [0, 0.1]
       origin: [0, 0]
-      size: [180, 15]
+      size: [160, 15]
   rightArrow:
     origin: [0.5, 0.5]
     align: [0.9, 0.08]
