@@ -51,7 +51,7 @@ class PrefStatusView extends View
 
     @titleNode = new RenderNode
     @_title = new Surface
-      classes: ['status__preffer__name']
+      classes: ['status__pref__title']
       size: [Utils.getViewportWidth() - 60, 200]
     titleMod = new StateModifier
       align: [0.5, 0.1]
