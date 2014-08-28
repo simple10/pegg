@@ -16,20 +16,23 @@ class ChoicesView extends View
 
   constructor: () ->
     super
-
-  load: (cardId) ->
-    choices = PlayStore.getChoices(cardId)
     @choices = []
     container = new ContainerSurface
       size: @options.size
-      properties:
-        overflow: 'hidden'
+#      properties:
+#        overflow: 'hidden'
       classes: ['card__options__box']
-
-
     @scrollView = new Scrollview
       size: @options.size
     @scrollView.sequenceFrom @choices
+    container.add @scrollView
+    @add container
+#    container.pipe @scrollView
+
+  load: (cardId) ->
+    choices = PlayStore.getChoices(cardId)
+    @choices.length = 0
+
     i=0
     for choice in choices
       choiceText = choice.text
@@ -45,7 +48,6 @@ class ChoicesView extends View
         @options.choice.choiceText = choiceText
         choiceView = new ChoiceView @options.choice
         choiceView.on 'click', ((i) ->
-          debugger
           @_eventOutput.emit 'choice', i
         ).bind @, i
         choiceView.on 'choice:doneShowingStatus', ((i) ->
@@ -61,8 +63,7 @@ class ChoicesView extends View
     #  classes: ['card__front__input']
     #surfaces.push newChoice
 
-    container.add @scrollView
-    @add container
+
 
   showChoices: () ->
     for choiceView in @choices
