@@ -19,7 +19,7 @@ Utils = require 'lib/Utils'
 
 class PrefStatusView extends View
   _itemViews: []
-  _userName: ''
+  _title: ''
   _userPic: ''
 
   constructor: (options) ->
@@ -49,15 +49,15 @@ class PrefStatusView extends View
 #    userPicNode.add(userPicMod).add @_userPic
 #    @_itemViews.push userPicNode
 
-    userNameNode = new RenderNode
-    @_userName = new Surface
+    @titleNode = new RenderNode
+    @_title = new Surface
       classes: ['status__preffer__name']
-      size: [Utils.getViewportWidth() - 60, 120]
-    userNameMod = new StateModifier
+      size: [Utils.getViewportWidth() - 60, 200]
+    titleMod = new StateModifier
       align: [0.5, 0.1]
       origin: [0.5, 0]
-    userNameNode.add(userNameMod).add @_userName
-    @_itemViews.push userNameNode
+    @titleNode.add(titleMod).add @_title
+    @_title.pipe @itemsScrollView
 
 
     # On load() PrefStatusItemView will be added here in the @_itemViews array
@@ -75,10 +75,10 @@ class PrefStatusView extends View
       size: [60, 120]
     nextMod = new StateModifier
       align: [0.6, 0]
-      origin: [0, 1]
-    nextNode = new RenderNode
-    nextNode.add(nextMod).add next
-    @_itemViews.push nextNode
+      origin: [0, 0]
+    @nextNode = new RenderNode
+    @nextNode.add(nextMod).add next
+    next.pipe @itemsScrollView
 
     share = new ImageSurface
       content: 'images/share_big_text.png'
@@ -86,34 +86,40 @@ class PrefStatusView extends View
     shareMod = new StateModifier
       align: [0.2, 0]
       origin: [0, 1]
-    shareNode = new RenderNode
-    shareNode.add(shareMod).add share
-    @_itemViews.push shareNode
+    @shareNode = new RenderNode
+    @shareNode.add(shareMod).add share
+    share.pipe @itemsScrollView
 
     next.on 'click', ->
       PlayActions.nextStage()
 
+    @load()
+
   load: (data) ->
-#    @_userName.setContent UserStore.getName 'first'
-    @_userName.setContent PlayStore.getMessage 'pref_status'
+#    @_title.setContent UserStore.getName 'first'
+    @_title.setContent PlayStore.getMessage 'pref_status' if data?
 #    @_userPic.setContent UserStore.getAvatar 'height=150&type=normal&width=150'
 #    @_userPic.setContent PlayStore.getMessage 'unicorn'
 
-    # Remove all the PrefStatusItemViews
-    while @_itemViews.length > 4
-      @_itemViews.splice 2, 1
+    # Remove all the items and repopulate
+    @_itemViews.length = 0
 
-    # Add back a PrefStatusItemViews for every stat
-    i = 0
-    for own id, stat of data.stats
+    # Add the title
+    @_itemViews.push @titleNode
+
+    # Add a PrefStatusItemViews for every stat
+    for own id, stat of data?.stats
       prefStatusItem = new PrefStatusItemView
       prefStatusItem.load stat
       prefStatusItem.pipe @itemsScrollView
-      @_itemViews.splice i + 2, 0, prefStatusItem
-      i++
+      @_itemViews.push prefStatusItem
 
-      @itemsScrollView.goToPage(0)
+    # Add the buttons
+    @_itemViews.push @nextNode
+    @_itemViews.push @shareNode
 
+    # Reset scroll view to top
+    @itemsScrollView.goToPage(0)
 
 #
 #

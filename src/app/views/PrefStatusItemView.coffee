@@ -26,9 +26,9 @@ class PrefStatusItemView extends View
 
   _init: ->
     container = new ContainerSurface
-      size: [Utils.getViewportWidth(), 400]
-      properties:
-        overflow: 'hidden'
+      size: [Utils.getViewportWidth(), undefined]
+      # properties:
+      #   overflow: 'hidden'
     container.pipe @._eventOutput
 
     sequentialLayout = new SequentialLayout
@@ -50,7 +50,7 @@ class PrefStatusItemView extends View
 
     @_question = new Surface
       classes: ['status__pref__question']
-      size: [Utils.getContentWidth()-20, 60]
+      # size: [Utils.getContentWidth()-20, 140]
     questionMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]

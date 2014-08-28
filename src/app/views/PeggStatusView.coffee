@@ -37,7 +37,7 @@ class PeggStatusView extends View
     @add(userPicMod).add userPic
     userName = new Surface
       classes: ['status__peggee__name']
-      size: [Utils.getViewportWidth(), 50]
+      size: [Utils.getViewportWidth(), 110]
     userNameMod = new StateModifier
       align: [0.5, 0.32]
       origin: [0.5, 0]
@@ -61,17 +61,19 @@ class PeggStatusView extends View
       content: 'images/continue_big_text.png'
       size: [60, 120]
     nextMod = new StateModifier
-      align: [0.6, 0.91]
-      origin: [0, 1]
+      align: [0.6, 0]
+      origin: [0, 0]
     @add(nextMod).add next
+    next.pipe itemsScrollView
 
     share = new ImageSurface
       content: 'images/share_big_text.png'
       size: [48, 95]
     shareMod = new StateModifier
-      align: [0.2, 0.9]
-      origin: [0, 1]
+      align: [0.2, 0]
+      origin: [0, 0]
     @add(shareMod).add share
+    share.pipe itemsScrollView
 
     next.on 'click', ->
       PlayActions.nextStage()
