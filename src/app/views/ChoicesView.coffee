@@ -42,13 +42,10 @@ class ChoicesView extends View
 #          color = 'light'
 #        else
 #          color = 'dark'
-        choiceView = new ChoiceView
-          size: @options.choice.size
-          innerWidth: @options.choice.innerWidth
-          choiceText: choiceText
-          height: @options.choice.height
-          #color: color
+        @options.choice.choiceText = choiceText
+        choiceView = new ChoiceView @options.choice
         choiceView.on 'click', ((i) ->
+          debugger
           @_eventOutput.emit 'choice', i
         ).bind @, i
         choiceView.on 'choice:doneShowingStatus', ((i) ->
