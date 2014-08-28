@@ -113,16 +113,16 @@ class PlayNavView extends View
     @progressBar.reset PlayStore.getSetLength()
     @showNav()
     @showMessage()
-    @showRightArrow()
+#    @hideRightArrow()
 #    @hideLeftArrow()
 
-  updateViewState: (cardIndex) =>
-    #console.log cardIndex
-    if cardIndex is 0
+#  updateViewState: (cardIndex) =>
+#    #console.log cardIndex
+#    if cardIndex is 0
 #      @hideLeftArrow()
-      @showRightArrow()
-    else
-      @showRightArrow()
+#      @showRightArrow()
+#    else
+#      @showRightArrow()
 #      @showLeftArrow()
 
   updateMoodIcon: =>
