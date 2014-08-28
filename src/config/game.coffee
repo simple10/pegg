@@ -1,6 +1,7 @@
 config =
   game_flows:
     default: [
+
       [      # stage 0
         {
           type: ''
@@ -9,6 +10,16 @@ config =
         {
           type: 'pick_mood'
           # How are you feeling?
+        }
+      ]
+      [     # stage 2
+        {
+          type: 'pegg'
+          size: 1
+        }
+        {
+          type: 'friend_ranking'
+        # How do I compare to his friends?
         }
       ]
       [      # stage 1

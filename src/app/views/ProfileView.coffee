@@ -56,7 +56,7 @@ class ProfileView extends View
 
   init: ->
     
-    @_initPrefBoardHeader()
+    @_initFilterBar()
 
     @mainMod = new Modifier
       align: [0, 0],
@@ -91,7 +91,7 @@ class ProfileView extends View
     @container.pipe @scrollview
     @mainNode.add @container
 
-  _initPrefBoardHeader: () ->
+  _initFilterBar: () ->
     @prefBoardHeaderNode = new RenderNode
     
     @prefBoardHeaderButtons = []
@@ -103,11 +103,11 @@ class ProfileView extends View
       size: [undefined, @options.headerHeight]
       classes: ['peggBoardHeader', 'peggBoardHeader__bg']
 
-    @_addPrefBoardHeaderButton 'All', () ->
+    @_addFilterBarButton 'All', () ->
       UserActions.filterPrefs 'all'
-    @_addPrefBoardHeaderButton 'Popular', () ->
+    @_addFilterBarButton 'Popular', () ->
       UserActions.filterPrefs 'popular'
-    @_addPrefBoardHeaderButton 'Recent', () ->
+    @_addFilterBarButton 'Recent', () ->
       UserActions.filterPrefs 'recent'
 
     sequence = new SequentialLayout
@@ -120,7 +120,7 @@ class ProfileView extends View
     @prefBoardHeaderNode.add sequence
 
 
-  _addPrefBoardHeaderButton: (content, clickCallback, numOfButtons) ->
+  _addFilterBarButton: (content, clickCallback, numOfButtons) ->
     content = content || ''
     clickCallback = clickCallback || (->)
     numOfButtons = numOfButtons || 3
@@ -149,18 +149,12 @@ class ProfileView extends View
     # remove all the images
     @rows = [].concat(@permanentRows)
     
-    data = UserStore.getPrefImages()
-    cols = 3
+    data = UserStore.getProfileActivity()
 
     ## Initialize Rows
     while data.length
-      set = data.splice 0, cols
       row = new PrefBoardRowView
-        width: @options.width - 5
-        columns: cols
-        gutter: 5
         data: set
-
       row.pipe @scrollview
       @rows.push row
 
