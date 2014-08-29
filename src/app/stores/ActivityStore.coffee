@@ -10,8 +10,8 @@ class ActivityStore extends EventEmitter
   _activity: []
 
   _fetchActivities: (page) ->
-
-    DB.getActivity(page, (results) =>
+    userId = UserStore.getUser().id
+    DB.getActivity(userId, page, (results) =>
       if results
         @_activity = results
         @emit Constants.stores.ACTIVITY_CHANGE

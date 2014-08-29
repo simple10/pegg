@@ -303,14 +303,17 @@ class ParseBackend
         console.log "Error fetching choices: " + error.code + " " + error.message
         cb null
 
-  getActivity: (page, cb) ->
+  getActivity: (userId, page, cb) ->
     activities = []
     # TODO: implement pagination
+    user = new Parse.Object 'User'
+    user.set 'id', userId
     peggQuery = new Parse.Query Pegg
     peggQuery.include 'card'
     peggQuery.include 'guess'
     peggQuery.include 'peggee'
     peggQuery.include 'user'
+    peggQuery.notEqualTo 'user', user
     peggQuery.find
       success: (results) =>
         for activity in results
