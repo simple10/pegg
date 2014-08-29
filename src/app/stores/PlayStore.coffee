@@ -42,7 +42,7 @@ class PlayStore extends EventHandler
 
   _nextCard: ->
     if @_cardPosition is @_cardIndex.length - 1
-      @_game.loadStatus()
+      @_game.finishStage()
       @_cardPosition = 0
     else
       @_cardPosition++
@@ -135,6 +135,11 @@ class PlayStore extends EventHandler
       @emit Constants.stores.MOOD_CHANGE
     )
 
+  _badgesViewed: ->
+    # mark the current badges as viewed
+    # load status screen
+    @_game.loadStatus()
+
   getCards: ->
     @_cards = @_game.getCards()
     @_cardIndex = []
@@ -153,6 +158,9 @@ class PlayStore extends EventHandler
     for own cardId of @_cards
       i++
     i
+
+  getBadges: ->
+    @_game.getBadges()
 
   getStatus: ->
     @_game.getStatus()
@@ -214,5 +222,7 @@ AppDispatcher.register (payload) ->
       play._rate action.rating
     when Constants.actions.PICK_MOOD
       play._mood action.moodText, action.moodId, action.moodUrl
+    when Constants.actions.BADGES_VIEWED
+      play._badgesViewed()
 
 module.exports = play

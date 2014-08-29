@@ -15,7 +15,7 @@ Utils = require 'lib/Utils'
 Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 
-class StatusView extends View
+class PlayStatusView extends View
 
   constructor: (options) ->
     super options
@@ -65,4 +65,4 @@ class StatusView extends View
   hide: ->
     @lightbox.hide()
 
-module.exports = StatusView
+module.exports = PlayStatusView

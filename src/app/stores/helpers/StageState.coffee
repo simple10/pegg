@@ -5,15 +5,14 @@ DB = require 'stores/helpers/ParseBackend'
 
 
 class StageState extends EventHandler
-  _cardSet = {}
-  _status = null
-  _play = null
-  _playerId = ""
 
   constructor: (data) ->
     super
+    @_cardSet = {}
+    @_playerId = ""
     @_play = data[0]   # the cards to play
     @_status = data[1]   # the status screen to display
+    @_badges = []
 
 
   loadCards: (mood) ->
@@ -38,12 +37,17 @@ class StageState extends EventHandler
       else
         console.log "Unexpected status type: #{@_status.type}"
 
+  loadBadges: ->
+    @_fetchNewBadges()
 
   getChoices: (cardId) ->
     @_cardSet[cardId].choices
 
   getCardSet: ->
     @_cardSet
+
+  getBadges: ->
+    @_badges
 
   getStatus: ->
     @_status
@@ -92,6 +96,16 @@ class StageState extends EventHandler
       (points) =>
         @_status['stats'] = points
         @emit Constants.stores.STATUS_CHANGE
+      )
+
+  _fetchNewBadges: (userId) ->
+    DB.getNewBadges(userId,
+      (badges) =>
+        if badges?
+          @_badges = badges
+          @emit Constants.stores.BADGE_CHANGE
+        else
+          @loadStatus()
       )
 
   _fetchLikeness: (cards) ->

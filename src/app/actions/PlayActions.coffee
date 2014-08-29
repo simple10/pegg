@@ -63,4 +63,8 @@ PlayActions =
       actionType: Constants.actions.CARD_COMMENT
       comment: comment
 
+  badgesViewed: () ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.actions.BADGES_VIEWED
+
 module.exports = PlayActions
