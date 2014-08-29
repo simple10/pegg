@@ -303,14 +303,17 @@ class ParseBackend
         console.log "Error fetching choices: " + error.code + " " + error.message
         cb null
 
-  getActivity: (page, cb) ->
+  getActivity: (userId, page, cb) ->
     activities = []
     # TODO: implement pagination
+    user = new Parse.Object 'User'
+    user.set 'id', userId
     peggQuery = new Parse.Query Pegg
     peggQuery.include 'card'
     peggQuery.include 'guess'
     peggQuery.include 'peggee'
     peggQuery.include 'user'
+    peggQuery.notEqualTo 'user', user
     peggQuery.find
       success: (results) =>
         for activity in results
@@ -444,6 +447,37 @@ class ParseBackend
         else
           cb images
       error: (error) =>
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
+  getProfileActivity: (userId, filter, cb) ->
+    activities = []
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    prefQuery = new Parse.Query Pref
+    prefQuery.include 'card'
+    prefQuery.include 'answer'
+    prefQuery.equalTo 'user', user
+
+    # filter by recent if necessary
+    if filter is 'recent'
+      prefQuery.addDescending 'updatedAt'
+
+    prefQuery.find
+      success: (results) =>
+        for activity in results
+          card = activity.get 'card'
+          activities.push {
+            cardId: card.id
+            userId: userId
+            question: card.get 'question'
+            answer: activity.get('answer').get 'text'
+            plug: activity.get 'plug'
+            hasPegged: activity.get 'hasPegged'
+          }
+        if results.length
+          cb activities
+      error: (error) ->
         console.log "Error: " + error.code + " " + error.message
         cb null
 

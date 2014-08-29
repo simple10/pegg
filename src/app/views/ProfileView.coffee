@@ -25,8 +25,8 @@ UserActions = require 'actions/UserActions'
 
 Utils = require 'lib/Utils'
 ProfileHeaderView = require 'views/ProfileHeaderView'
-PrefBoardRowView = require 'views/PrefBoardRowView'
-PrefBoardView = require 'views/PrefBoardView'
+ProfileActivityItemView = require 'views/ProfileActivityItemView'
+
 
 class ProfileView extends View
   @DEFAULT_OPTIONS:
@@ -51,12 +51,12 @@ class ProfileView extends View
     @initListeners()
 
   initListeners: ->
-    UserStore.on Constants.stores.CHANGE, @_loadUser.bind(@)
-    UserStore.on Constants.stores.PREF_IMAGES_CHANGE, @_loadImages.bind(@)
+    UserStore.on Constants.stores.CHANGE, @_loadUser
+    UserStore.on Constants.stores.PROFILE_ACTIVITY_CHANGE, @_loadActivity
 
   init: ->
     
-    @_initPrefBoardHeader()
+    @_initFilterBar()
 
     @mainMod = new Modifier
       align: [0, 0],
@@ -91,7 +91,7 @@ class ProfileView extends View
     @container.pipe @scrollview
     @mainNode.add @container
 
-  _initPrefBoardHeader: () ->
+  _initFilterBar: () ->
     @prefBoardHeaderNode = new RenderNode
     
     @prefBoardHeaderButtons = []
@@ -103,12 +103,12 @@ class ProfileView extends View
       size: [undefined, @options.headerHeight]
       classes: ['peggBoardHeader', 'peggBoardHeader__bg']
 
-    @_addPrefBoardHeaderButton 'All', () ->
-      UserActions.filterPrefs 'all'
-    @_addPrefBoardHeaderButton 'Popular', () ->
-      UserActions.filterPrefs 'popular'
-    @_addPrefBoardHeaderButton 'Recent', () ->
+    @_addFilterBarButton 'Recent', () ->
       UserActions.filterPrefs 'recent'
+    @_addFilterBarButton 'Popular', () ->
+      UserActions.filterPrefs 'popular'
+    @_addFilterBarButton 'Search', () ->
+      UserActions.filterPrefs 'search'
 
     sequence = new SequentialLayout
       direction: Utility.Direction.X
@@ -120,7 +120,7 @@ class ProfileView extends View
     @prefBoardHeaderNode.add sequence
 
 
-  _addPrefBoardHeaderButton: (content, clickCallback, numOfButtons) ->
+  _addFilterBarButton: (content, clickCallback, numOfButtons) ->
     content = content || ''
     clickCallback = clickCallback || (->)
     numOfButtons = numOfButtons || 3
@@ -145,24 +145,18 @@ class ProfileView extends View
     @profileHeader.setAvatar UserStore.getAvatar 'height=150&type=normal&width=150'
     @profileHeader.setFirstname UserStore.getName 'first'
 
-  _loadImages: =>
+  _loadActivity: =>
     # remove all the images
     @rows = [].concat(@permanentRows)
     
-    data = UserStore.getPrefImages()
-    cols = 3
-
-    ## Initialize Rows
-    while data.length
-      set = data.splice 0, cols
-      row = new PrefBoardRowView
-        width: @options.width - 5
-        columns: cols
-        gutter: 5
-        data: set
-
-      row.pipe @scrollview
-      @rows.push row
+    data = UserStore.getProfileActivity()
+    if data?
+      ## Initialize Rows
+      for item in data
+        row = new ProfileActivityItemView
+          data: item
+        row.pipe @scrollview
+        @rows.push row
 
     @scrollview.sequenceFrom(@rows)
 

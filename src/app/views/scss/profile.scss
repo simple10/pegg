@@ -30,4 +30,37 @@
   background-color: white;
 }
 
-.peggBoardHeader__button {}
+.peggBoardHeader__button {
+  z-index: 1;
+}
+
+.profile__activity__item {
+  color: $white;
+  border-bottom: 1px solid $cloud-lightblue;
+  font-size: 16px;
+  vertical-align: center;
+  padding: 20px;
+}
+
+.profile__activity__item .numPeggers {
+  color: $rainbow-green;
+
+}
+
+.profile__activity__item .outerContainer {
+  display: table;
+  overflow: hidden;
+}
+.profile__activity__item .outerContainer .innerContainer {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+  margin: 0 auto;
+  text-align: left;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.profile__activity__item__pic {
+  border-radius: 25px;
+}

@@ -40,13 +40,21 @@ class HeaderView extends View
     #@title.setContent page
     #if page isnt "profile" then page else ""
     @mainMod = new StateModifier
-      transform: Transform.translate(0,0,10)
+      transform: Transform.translate 0, 0, 10
     @background = new Surface
       classes: ["#{@cssPrefix}__background"]
-    @logo = new ImageSurface
-      size: [150, 50]
+    @menuIcon = new ImageSurface
+      size: [30, 50]
       classes: ["#{@cssPrefix}__logo"]
-      content: 'images/pegg_logo-small.png'
+      content: 'images/hamburger.svg'
+    menuIconMod = new Modifier
+      transform: Transform.translate 8, 0, 0
+    @logo = new ImageSurface
+      size: [100, 30]
+      classes: ["#{@cssPrefix}__logo"]
+      content: 'images/pegg.svg'
+    logoMod = new StateModifier
+      transform: Transform.translate 22, 14, 0
     @pic = new ImageSurface
       size: [@options.height, @options.height]
       classes: ["#{@cssPrefix}__profilePic"]
@@ -57,13 +65,23 @@ class HeaderView extends View
     picMod = new Modifier
       origin: [1, 0]
       align: [1, 0]
+      transform: Transform.translate -8, 0, 0
+    @me = new Surface
+      classes: ["#{@cssPrefix}__text"]
+      content: 'Me'
+      size: [50, 50]
+    meMod = new Modifier
+      origin: [1, 0]
+      align: [1, 0]
+      transform: Transform.translate -28, 16, 11
 
     node = @add @mainMod
     node.add @background
-    node.add new Modifier
-      origin: [0, 0]
-    .add @logo
+    node.add(menuIconMod).add @menuIcon
+    node.add(logoMod).add @logo
     node.add(picMod).add @pic
+    node.add(meMod).add @me
+
 
   _update: =>
     @pic.setContent UserStore.getAvatar 'type=square'
@@ -72,7 +90,11 @@ class HeaderView extends View
   initEvents: ->
     @logo.on 'click', =>
       @_eventOutput.emit 'toggleMenu'
+    @menuIcon.on 'click', =>
+      @_eventOutput.emit 'toggleMenu'
     @pic.on 'click', ->
+      NavActions.selectMenuItem 'profile'
+    @me.on 'click', ->
       NavActions.selectMenuItem 'profile'
 
 

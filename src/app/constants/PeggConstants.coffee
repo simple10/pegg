@@ -63,7 +63,4 @@ module.exports =
     PROFILE_LOAD: null
     CATEGORIES_CHANGE: null
     MOOD_CHANGE: null
-
-
-
-
+    PROFILE_ACTIVITY_CHANGE: null
