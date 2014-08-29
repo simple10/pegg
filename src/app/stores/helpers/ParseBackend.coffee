@@ -447,6 +447,37 @@ class ParseBackend
         console.log "Error: " + error.code + " " + error.message
         cb null
 
+  getProfileActivity: (userId, filter, cb) ->
+    activities = []
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    prefQuery = new Parse.Query Pref
+    prefQuery.include 'card'
+    prefQuery.include 'answer'
+    prefQuery.equalTo 'user', user
+
+    # filter by recent if necessary
+    if filter is 'recent'
+      prefQuery.addDescending 'updatedAt'
+
+    prefQuery.find
+      success: (results) =>
+        for activity in results
+          card = activity.get 'card'
+          activities.push {
+            cardId: card.id
+            userId: userId
+            question: card.get 'question'
+            answer: activity.get('answer').get 'text'
+            plug: activity.get 'plug'
+            hasPegged: activity.get 'hasPegged'
+          }
+        if results.length
+          cb activities
+      error: (error) ->
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
   saveQuestion: (authorId, question, cb) ->
     user = new Parse.Object 'User'
     user.set 'id',  authorId

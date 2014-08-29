@@ -80,9 +80,15 @@ class UserStore extends EventEmitter
 
   load: (filter) ->
     filter = filter || null
-    DB.getPrefImages @getUser().id, filter, (images) =>
-      @_images = images
-      @emit Constants.stores.PREF_IMAGES_CHANGE
+#    DB.getPrefImages @getUser().id, filter, (images) =>
+#      @_images = images
+#      @emit Constants.stores.PREF_IMAGES_CHANGE
+
+    DB.getProfileActivity @getUser().id, filter, (activity) =>
+      @_activity = activity
+      @emit Constants.stores.PROFILE_ACTIVITY_CHANGE
+
+    @emit Constants.stores.CHANGE
 
   logout: ->
     FB.logout()
@@ -114,6 +120,9 @@ class UserStore extends EventEmitter
 
   getPrefImages: ->
     @_images
+
+  getProfileActivity: ->
+    @_activity
 
   getSubscriptionStatus: ->
     return @_subscribed
