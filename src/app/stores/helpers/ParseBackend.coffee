@@ -330,6 +330,12 @@ class ParseBackend
         console.log "Error: " + error.code + " " + error.message
         cb null
 
+  getNewBadges: (peggeeId, cb) ->
+    cb [
+      { title: "badge 1 title", pic: "badge 1 pic" }
+      { title: "badge 2 title", pic: "badge 2 pic" }
+    ]
+
   getTopScores: (peggeeId, cb) ->
     scores = []
     pointsQuery = new Parse.Query Points

@@ -27,6 +27,12 @@ class GameState extends EventHandler
       @loadStatus()
     @_currentStage
 
+  finishStage: ->
+    @loadBadges()
+
+  loadBadges: ->
+    @_currentStage.loadBadges()
+
   loadStatus: ->
     @_currentStage.loadStatus()
 
@@ -35,6 +41,9 @@ class GameState extends EventHandler
 
   getChoices: (cardId) ->
     @_currentStage.getChoices(cardId)
+
+  getBadges: ->
+    @_currentStage.getBadges()
 
   getStatus: ->
     @_currentStage.getStatus()

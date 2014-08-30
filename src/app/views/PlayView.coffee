@@ -4,8 +4,9 @@ Transform = require 'famous/core/Transform'
 Constants = require 'constants/PeggConstants'
 PlayStore = require 'stores/PlayStore'
 PlayCardsView = require 'views/PlayCardsView'
-Utils = require 'lib/Utils'
 PlayStatusView = require 'views/PlayStatusView'
+PlayBadgesView = require 'views/PlayBadgesView'
+Utils = require 'lib/Utils'
 Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
 LayoutManager = require 'views/layouts/LayoutManager'
@@ -20,6 +21,7 @@ class PlayView extends View
   initListeners: ->
     PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
     PlayStore.on Constants.stores.STATUS_CHANGE, @loadStatus
+    PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadges
 
   initViews: ->
     @layoutManager = new LayoutManager()
@@ -27,6 +29,9 @@ class PlayView extends View
 
     ## CARDS VIEW ##
     @cardsView = new PlayCardsView @layout
+
+    ## BADGES VIEW ##
+    @badgesView = new PlayBadgesView
 
     ## STATUS VIEW ##
     @statusView = new PlayStatusView
@@ -44,6 +49,9 @@ class PlayView extends View
       outTransition: { duration: 350, curve: Easing.outCubic }
     @add @lightbox
 
+  loadBadges: =>
+    @badgesView.load PlayStore.getBadges()
+    @lightbox.show @badgesView
 
   loadStatus: =>
     @statusView.load PlayStore.getStatus()

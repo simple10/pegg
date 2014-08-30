@@ -37,7 +37,6 @@ ProfileView = require 'views/ProfileView'
 ActivityView = require 'views/ActivityView'
 SettingsView = require 'views/SettingsView'
 NewCardView = require 'views/NewCardView'
-StatusView = require 'views/StatusView'
 ReviewView = require 'views/ReviewView'
 LoginView = require 'views/LoginView'
 
