@@ -62,8 +62,8 @@ class CardView extends View
     else
       @front.on 'click', @toggleChoices
       @back.on 'click', =>
-        #@_eventOutput.emit 'comment', @
-        @flip()
+        @_eventOutput.emit 'comment', @
+        #@flip()
 
   initQuestion: ->
     @frontProfilePic = new ImageSurface
