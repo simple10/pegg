@@ -74,7 +74,7 @@ class PlayStore extends EventHandler
         #if res?
       )
       @_fail = 0
-      @emit Constants.stores.CARD_WIN
+      @emit Constants.stores.CARD_WIN, points
     else
       @_fail++
       @emit Constants.stores.CARD_FAIL

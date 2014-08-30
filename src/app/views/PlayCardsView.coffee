@@ -9,12 +9,11 @@ Scrollview = require 'famous/views/Scrollview'
 Utility = require 'famous/utilities/Utility'
 Surface = require 'famous/core/Surface'
 Transform = require 'famous/core/Transform'
-Transitionable = require 'famous/transitions/Transitionable'
 GenericSync = require 'famous/inputs/GenericSync'
 MouseSync = require 'famous/inputs/MouseSync'
 TouchSync = require 'famous/inputs/TouchSync'
 Timer = require 'famous/utilities/Timer'
-
+Transitionable = require 'famous/transitions/Transitionable'
 Utils = require 'lib/Utils'
 Constants = require 'constants/PeggConstants'
 PlayStore = require 'stores/PlayStore'
@@ -24,13 +23,17 @@ CardView = require 'views/CardView'
 CommentsView = require 'views/CommentsView'
 InputView = require 'views/InputView'
 PlayNavView = require 'views/PlayNavView'
+LayoutManager = require 'views/layouts/LayoutManager'
 
 
 class PlayCardsView extends View
 
   constructor: (options) ->
     super options
-    
+
+    @layoutManager = new LayoutManager()
+    @layout = @layoutManager.getViewLayout 'PlayView'
+
     @_viewportHeight = Utils.getViewportHeight();
     @_viewportWidth = Utils.getViewportWidth();
 
@@ -45,7 +48,8 @@ class PlayCardsView extends View
   initListeners: ->
     PlayStore.on Constants.stores.PREF_SAVED, @cardPref
     PlayStore.on Constants.stores.CARD_FAIL, @cardFail
-    PlayStore.on Constants.stores.CARD_WIN, @cardWin
+    PlayStore.on Constants.stores.CARD_WIN, (points) =>
+      @cardWin points
     PlayStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
     PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
     PlayStore.on Constants.stores.CHOICES_CHANGE, (cardId) =>
@@ -63,7 +67,7 @@ class PlayCardsView extends View
         xAlign = @cardXAlign.get()
         yAlign = @_translateToAlign @cardYPos.get()
         [xAlign, yAlign]
-      origin: @options.cards.origin
+      origin: @layout.cards.origin
     @add(@cardScrollViewMod).add @cardScrollView
 
     ## NAV ##
@@ -79,26 +83,35 @@ class PlayCardsView extends View
     ## COMMENTS ##
     @comments = new CommentsView
     @commentsMod = new StateModifier
-      align: @options.comments.align
-      origin: @options.comments.origin
+      align: @layout.comments.align
+      origin: @layout.comments.origin
       transform: Transform.translate null, null, -3
     @add(@commentsMod).add @comments
-    
-    @comments.on 'open', =>
-      @expandComments()
-
     @newComment = new InputView
-      size: @options.newComment.size
+      size: @layout.newComment.size
       placeholder: "Enter a comment..."
-      align: @options.newComment.states[1].align
-      origin: @options.newComment.origin
+      align: @layout.newComment.states[1].align
+      origin: @layout.newComment.origin
     @newCommentMod = new StateModifier
-      align: @options.newComment.align
-      origin: @options.newComment.origin
+      align: @layout.newComment.align
+      origin: @layout.newComment.origin
     @add(@newCommentMod).add @newComment
     @newComment.on 'submit', (comment) =>
       @newComment.setValue ''
       @saveComment comment
+    @comments.on 'open', =>
+      @expandComments()
+
+    ## POINTS ##
+    @points = new Surface
+      size: @layout.points.size
+      classes: @layout.points.classes
+    @pointsMod = new Modifier
+      align: @layout.points.align
+      origin: @layout.points.origin
+      transform: @layout.points.transform
+    @add(@pointsMod).add @points
+
 
   initGestures: ->
     GenericSync.register mouse: MouseSync
@@ -166,7 +179,7 @@ class PlayCardsView extends View
           currentPosition = @cardYPos.get()
           # calculate the max Y offset to prevent the user from being able
           # to drag the card past this point
-          max = @options.cards.states[1].align[1] * Utils.getViewportHeight()
+          max = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
           pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
           @cardYPos.set(-pos)
     ).bind(@)
@@ -264,42 +277,48 @@ class PlayCardsView extends View
     PlayActions.comment(comment)
 
   cardPref: =>
-    Utils.animate @commentsMod, @options.comments.states[1]
+    Utils.animate @commentsMod, @layout.comments.states[1]
     @navView.showRightArrow()
 
   cardFail: =>
     #@message.setClasses ['card__message__fail']
     #@message.setContent PlayStore.getMessage('fail')
 
-  cardWin: =>
+  cardWin: (points) =>
+    @showPoints points
     @showComments()
     @navView.showRightArrow()
 
+  showPoints: (points) =>
+    console.log "points: #{points}"
+    @points.setContent "+#{points}"
+    Utils.animateAll @pointsMod, @layout.points.states
+
   showComments: =>
-    Utils.animate @commentsMod, @options.comments.states[1]
+    Utils.animate @commentsMod, @layout.comments.states[1]
 
   hideComments: =>
-    Utils.animate @commentsMod, @options.comments.states[0]
-    @newComment.setAlign @options.newComment.states[0].align
+    Utils.animate @commentsMod, @layout.comments.states[0]
+    @newComment.setAlign @layout.newComment.states[0].align
 
   collapseComments: =>
     @navView.showNav()
     # slide the cards down to their starting position
-    @cardYPos.set(0, @options.cards.states[0].transition)
+    @cardYPos.set(0, @layout.cards.states[0].transition)
     # slide the comments down to their starting position
-    Utils.animate @commentsMod, @options.comments.states[1]
+    Utils.animate @commentsMod, @layout.comments.states[1]
     @._commentsIsExpanded = false;
-    @newComment.setAlign @options.newComment.states[0].align
+    @newComment.setAlign @layout.newComment.states[0].align
 
   expandComments: =>
     @navView.hideNav()
-    maxCardYPos = @options.cards.states[1].align[1] * Utils.getViewportHeight()
+    maxCardYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
     # move the cards up
-    @cardYPos.set(maxCardYPos, @options.cards.states[1].transition)
+    @cardYPos.set(maxCardYPos, @layout.cards.states[1].transition)
     # slide the comments up
-    Utils.animate @commentsMod, @options.comments.states[2]
+    Utils.animate @commentsMod, @layout.comments.states[2]
     @._commentsIsExpanded = true;
-    @newComment.setAlign @options.newComment.states[1].align
+    @newComment.setAlign @layout.newComment.states[1].align
 
 
 module.exports = PlayCardsView
