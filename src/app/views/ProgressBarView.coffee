@@ -21,6 +21,7 @@ class ProgressBarView extends View
     @steps = steps
     @last = 0
     @activeBar.setSize [@last, @options.bar.size[1]]
+    @percentage.setContent '0%'
 
   init: ->
     container = new ContainerSurface
@@ -48,12 +49,24 @@ class ProgressBarView extends View
       origin: @options.bar.origin
     container.add(inactiveBarMod).add inactiveBar
 #    container.add(textMod).add text
+
+    @percentage = new Surface
+      size: @options.percentage.size
+      classes:  @options.percentage.classes
+    percentageMod = new StateModifier
+      align:  @options.percentage.align
+      origin:  @options.percentage.origin
+      transform:  @options.percentage.transform
+    @add(percentageMod).add @percentage
+
     @add container
 
   increment: (x) =>
-    step = @options.size[0] / @steps
+    size = @options.size[0]
+    step = size / @steps
     next = @last + step * x
     @activeBar.setSize [next, @options.bar.size[1]]
+    @percentage.setContent "#{Math.floor(next/size*100)}%"
     @last = next
 
 module.exports = ProgressBarView

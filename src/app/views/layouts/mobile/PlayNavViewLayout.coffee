@@ -87,6 +87,12 @@ module.exports =
       align: [0, 0.1]
       origin: [0, 0]
       size: [160, 15]
+    percentage:
+      align: [0, 0]
+      origin: [0, 0]
+      size: [25, 15]
+      classes: ['progressBar__percentage']
+      transform: Transform.translate 170, 0, 0
   rightArrow:
     origin: [0.5, 0.5]
     align: [0.9, 0.08]
