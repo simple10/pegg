@@ -9,7 +9,7 @@ PlayBadgesView = require 'views/PlayBadgesView'
 Utils = require 'lib/Utils'
 Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
-LayoutManager = require 'views/layouts/LayoutManager'
+
 
 class PlayView extends View
 
@@ -24,11 +24,9 @@ class PlayView extends View
     PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadges
 
   initViews: ->
-    @layoutManager = new LayoutManager()
-    @layout = @layoutManager.getViewLayout 'PlayView'
 
     ## CARDS VIEW ##
-    @cardsView = new PlayCardsView @layout
+    @cardsView = new PlayCardsView
 
     ## BADGES VIEW ##
     @badgesView = new PlayBadgesView
