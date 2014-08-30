@@ -238,7 +238,6 @@ Parse.Cloud.afterSave 'Points', (request) ->
   badgesQuery = new Parse.Query 'Badges'
   badgesQuery.find
     success: (badges) ->
-
       pointsQuery = new Parse.Query 'Points'
       pointsQuery.equalTo 'pegger', user
       pointsQuery.find
@@ -247,25 +246,29 @@ Parse.Cloud.afterSave 'Points', (request) ->
           for pointRow in points
             totalPoints += pointRow.get 'points'
           console.log 'totalPoints: ' + totalPoints
-          for badgeRow in badges
-            console.log "badgeID: #{badgeRow.id}"
-            badgeCriteria = badgeRow.get 'criteria'
-            if totalPoints >= badgeCriteria.points
-              userBadgesQuery = new Parse.Query 'UserBadges'
-              userBadgesQuery.equalTo 'user', user
-              userBadgesQuery.equalTo 'badge', badgeRow
-              userBadgesQuery.first
-                success: (userBadges) =>
+          userBadgesQuery = new Parse.Query 'UserBadges'
+          userBadgesQuery.equalTo 'user', user
+          userBadgesQuery.find
+            success: (userBadges) ->
+              userBadgesIDs = _.map userBadges, (userBadge) ->
+                userBadge.get('badge').id
+              for badgeRow in badges
+                badgeCriteria = badgeRow.get 'criteria'
+                if totalPoints >= badgeCriteria.points
                   console.log 'user: ' + user
-                  console.log 'userBadges: ' + userBadges
-                  if !userBadges?
+                  console.log "badgeID: #{badgeRow.id}"
+                  console.log 'userBadgesIDs: ' + userBadgesIDs
+                  unless badgeRow.id in userBadgesIDs
+                    newUserBadgeAcl = new Parse.ACL user
+                    newUserBadgeAcl.setPublicReadAccess true
                     newUserBadge = new Parse.Object 'UserBadges'
                     newUserBadge.set 'badge', badgeRow
                     newUserBadge.set 'user', user
                     newUserBadge.set 'hasViewed', false
+                    newUserBadge.set 'ACL', newUserBadgeAcl
                     newUserBadge.save()
-                error: ->
-                  console.log 'get UserBadges failed'
+            error: ->
+              console.log 'get UserBadges failed'
         error: ->
           console.log 'get Points failed'
     error: ->

@@ -1,5 +1,6 @@
 (function() {
-  var importer, _;
+  var importer, _,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   _ = require("underscore");
 
@@ -275,46 +276,51 @@
         pointsQuery.equalTo('pegger', user);
         return pointsQuery.find({
           success: function(points) {
-            var badgeCriteria, badgeRow, pointRow, totalPoints, userBadgesQuery, _i, _j, _len, _len1, _results;
+            var pointRow, totalPoints, userBadgesQuery, _i, _len;
             totalPoints = 0;
             for (_i = 0, _len = points.length; _i < _len; _i++) {
               pointRow = points[_i];
               totalPoints += pointRow.get('points');
             }
             console.log('totalPoints: ' + totalPoints);
-            _results = [];
-            for (_j = 0, _len1 = badges.length; _j < _len1; _j++) {
-              badgeRow = badges[_j];
-              console.log("badgeID: " + badgeRow.id);
-              badgeCriteria = badgeRow.get('criteria');
-              if (totalPoints >= badgeCriteria.points) {
-                userBadgesQuery = new Parse.Query('UserBadges');
-                userBadgesQuery.equalTo('user', user);
-                userBadgesQuery.equalTo('badge', badgeRow);
-                _results.push(userBadgesQuery.first({
-                  success: (function(_this) {
-                    return function(userBadges) {
-                      var newUserBadge;
-                      console.log('user: ' + user);
-                      console.log('userBadges: ' + userBadges);
-                      if (userBadges == null) {
-                        newUserBadge = new Parse.Object('UserBadges');
-                        newUserBadge.set('badge', badgeRow);
-                        newUserBadge.set('user', user);
-                        newUserBadge.set('hasViewed', false);
-                        return newUserBadge.save();
-                      }
-                    };
-                  })(this),
-                  error: function() {
-                    return console.log('get UserBadges failed');
+            userBadgesQuery = new Parse.Query('UserBadges');
+            userBadgesQuery.equalTo('user', user);
+            return userBadgesQuery.find({
+              success: function(userBadges) {
+                var badgeCriteria, badgeRow, newUserBadge, newUserBadgeAcl, userBadgesIDs, _j, _len1, _ref, _results;
+                userBadgesIDs = _.map(userBadges, function(userBadge) {
+                  return userBadge.get('badge').id;
+                });
+                _results = [];
+                for (_j = 0, _len1 = badges.length; _j < _len1; _j++) {
+                  badgeRow = badges[_j];
+                  badgeCriteria = badgeRow.get('criteria');
+                  if (totalPoints >= badgeCriteria.points) {
+                    console.log('user: ' + user);
+                    console.log("badgeID: " + badgeRow.id);
+                    console.log('userBadgesIDs: ' + userBadgesIDs);
+                    if (_ref = badgeRow.id, __indexOf.call(userBadgesIDs, _ref) < 0) {
+                      newUserBadgeAcl = new Parse.ACL(user);
+                      newUserBadgeAcl.setPublicReadAccess(true);
+                      newUserBadge = new Parse.Object('UserBadges');
+                      newUserBadge.set('badge', badgeRow);
+                      newUserBadge.set('user', user);
+                      newUserBadge.set('hasViewed', false);
+                      newUserBadge.set('ACL', newUserBadgeAcl);
+                      _results.push(newUserBadge.save());
+                    } else {
+                      _results.push(void 0);
+                    }
+                  } else {
+                    _results.push(void 0);
                   }
-                }));
-              } else {
-                _results.push(void 0);
+                }
+                return _results;
+              },
+              error: function() {
+                return console.log('get UserBadges failed');
               }
-            }
-            return _results;
+            });
           },
           error: function() {
             return console.log('get Points failed');
