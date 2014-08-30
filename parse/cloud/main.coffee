@@ -228,3 +228,46 @@ Parse.Cloud.afterSave 'Pref', (request) ->
       console.log "hasPreffed saved: #{card}"
     error: ->
       console.log 'hasPreffed failed'
+
+Parse.Cloud.afterSave 'Points', (request) ->
+  Parse.Cloud.useMasterKey()
+  userId = Parse.User.current().id
+  user = new Parse.Object 'User'
+  user.set 'id', userId
+
+  badgesQuery = new Parse.Query 'Badges'
+  badgesQuery.find
+    success: (badges) ->
+
+      pointsQuery = new Parse.Query 'Points'
+      pointsQuery.equalTo 'pegger', user
+      pointsQuery.find
+        success: (points) ->
+          totalPoints = 0
+          for pointRow in points
+            totalPoints += pointRow.get 'points'
+          console.log 'totalPoints: ' + totalPoints
+          for badgeRow in badges
+            console.log "badgeID: #{badgeRow.id}"
+            badgeCriteria = badgeRow.get 'criteria'
+            if totalPoints >= badgeCriteria.points
+              userBadgesQuery = new Parse.Query 'UserBadges'
+              userBadgesQuery.equalTo 'user', user
+              userBadgesQuery.equalTo 'badge', badgeRow
+              userBadgesQuery.first
+                success: (userBadges) =>
+                  console.log 'user: ' + user
+                  console.log 'userBadges: ' + userBadges
+                  if !userBadges?
+                    newUserBadge = new Parse.Object 'UserBadges'
+                    newUserBadge.set 'badge', badgeRow
+                    newUserBadge.set 'user', user
+                    newUserBadge.set 'hasViewed', false
+                    newUserBadge.save()
+                error: ->
+                  console.log 'get UserBadges failed'
+        error: ->
+          console.log 'get Points failed'
+    error: ->
+      console.log 'get Badges failed'
+

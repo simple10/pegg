@@ -261,4 +261,70 @@
     });
   });
 
+  Parse.Cloud.afterSave('Points', function(request) {
+    var badgesQuery, user, userId;
+    Parse.Cloud.useMasterKey();
+    userId = Parse.User.current().id;
+    user = new Parse.Object('User');
+    user.set('id', userId);
+    badgesQuery = new Parse.Query('Badges');
+    return badgesQuery.find({
+      success: function(badges) {
+        var pointsQuery;
+        pointsQuery = new Parse.Query('Points');
+        pointsQuery.equalTo('pegger', user);
+        return pointsQuery.find({
+          success: function(points) {
+            var badgeCriteria, badgeRow, pointRow, totalPoints, userBadgesQuery, _i, _j, _len, _len1, _results;
+            totalPoints = 0;
+            for (_i = 0, _len = points.length; _i < _len; _i++) {
+              pointRow = points[_i];
+              totalPoints += pointRow.get('points');
+            }
+            console.log('totalPoints: ' + totalPoints);
+            _results = [];
+            for (_j = 0, _len1 = badges.length; _j < _len1; _j++) {
+              badgeRow = badges[_j];
+              console.log("badgeID: " + badgeRow.id);
+              badgeCriteria = badgeRow.get('criteria');
+              if (totalPoints >= badgeCriteria.points) {
+                userBadgesQuery = new Parse.Query('UserBadges');
+                userBadgesQuery.equalTo('user', user);
+                userBadgesQuery.equalTo('badge', badgeRow);
+                _results.push(userBadgesQuery.first({
+                  success: (function(_this) {
+                    return function(userBadges) {
+                      var newUserBadge;
+                      console.log('user: ' + user);
+                      console.log('userBadges: ' + userBadges);
+                      if (userBadges == null) {
+                        newUserBadge = new Parse.Object('UserBadges');
+                        newUserBadge.set('badge', badgeRow);
+                        newUserBadge.set('user', user);
+                        newUserBadge.set('hasViewed', false);
+                        return newUserBadge.save();
+                      }
+                    };
+                  })(this),
+                  error: function() {
+                    return console.log('get UserBadges failed');
+                  }
+                }));
+              } else {
+                _results.push(void 0);
+              }
+            }
+            return _results;
+          },
+          error: function() {
+            return console.log('get Points failed');
+          }
+        });
+      },
+      error: function() {
+        return console.log('get Badges failed');
+      }
+    });
+  });
+
 }).call(this);
