@@ -11,8 +11,9 @@ watch = require 'gulp-watch'
 coffee = require 'gulp-coffee'
 plumber = require 'gulp-plumber'
 gzip = require 'gulp-gzip' if enableGzip
-mocha = require 'gulp-mocha'
-karma = require 'gulp-karma'
+# mocha = require 'gulp-mocha'
+jest = require 'gulp-jest'
+# karma = require 'gulp-karma'
 webpack = require 'webpack'
 WebpackDevServer = require 'webpack-dev-server'
 webpackConfig = Object.create require('./webpack.config.coffee')
@@ -61,13 +62,13 @@ conf =
     '**/*.js'
     '**/*.html'
   ]
-  mochaOpts: [
-    # http://visionmedia.github.io/mocha/#mocha.opts
-    ui: 'bdd'
-    # http://visionmedia.github.io/mocha/#reporters
-    reporter: 'nyan'
-    compilers: 'coffee:coffee-script/register'
-  ]
+  # mochaOpts: [
+  #   # http://visionmedia.github.io/mocha/#mocha.opts
+  #   ui: 'bdd'
+  #   # http://visionmedia.github.io/mocha/#reporters
+  #   reporter: 'nyan'
+  #   compilers: 'coffee:coffee-script/register'
+  # ]
 
   # CLI options
   open: gutil.env.open
@@ -155,36 +156,59 @@ gulp.task "cloud", ->
 ############################################################
 # Test
 ############################################################
-gulp.task 'test', ['karma']
-gulp.task 'karma', ->
-  action = if gutil.env.once then 'run' else 'watch'
-  gulp.src conf.testSrc
-  .pipe karma
-    configFile: conf.karma.configFile
-    action: action
-  .on 'error', (err) ->
-    throw new gutil.PluginError('karma', err)
-  return
+
+# gulp.task 'test', ->
+#   # gulp.src('src/spec').pipe jest(
+#   gulp.src('__tests__').pipe jest(
+#     # scriptPreprocessor: './helpers/preprocessor.js'
+#     scriptPreprocessor: '../src/spec/helpers/preprocessor.js'
+#     unmockedModulePathPatterns: ['node_modules/react']
+#     testDirectoryName: '__tests__'
+#     testPathIgnorePatterns: [
+#       'node_modules'
+#       # 'spec/support'
+#     ]
+#     moduleFileExtensions: [
+#       'js'
+#       'coffee'
+#       'litcoffee'
+#       'coffee.md'
+#       'json'
+#       'react'
+#     ]
+#   )
 
 
-gulp.task 'mocha', ->
-  mocha_opts =
-    ui: 'bdd'
-    reporter: 'dot'
-    compilers: 'coffee:coffee-script/register'
-  grepFile = (file) ->
-    /.*\/test\/.*\.coffee/.test file.path
-  gulp.src [conf.src, conf.testSrc], read: false
-  .pipe watch emit: "all", (files) ->
-    files
-    .pipe grep(grepFile)
-    .pipe debug
-      verbose: true
-      title: 'DEBUG'
-    .pipe mocha(mocha_opts)
-    .on 'error', (err) ->
-      log colors.red err.stack  unless /tests? failed/.test(err.stack)
-    null
+# gulp.task 'test', ['karma']
+# gulp.task 'karma', ->
+#   action = if gutil.env.once then 'run' else 'watch'
+#   gulp.src conf.testSrc
+#   .pipe karma
+#     configFile: conf.karma.configFile
+#     action: action
+#   .on 'error', (err) ->
+#     throw new gutil.PluginError('karma', err)
+#   return
+
+
+# gulp.task 'mocha', ->
+#   mocha_opts =
+#     ui: 'bdd'
+#     reporter: 'dot'
+#     compilers: 'coffee:coffee-script/register'
+#   grepFile = (file) ->
+#     /.*\/test\/.*\.coffee/.test file.path
+#   gulp.src [conf.src, conf.testSrc], read: false
+#   .pipe watch emit: "all", (files) ->
+#     files
+#     .pipe grep(grepFile)
+#     .pipe debug
+#       verbose: true
+#       title: 'DEBUG'
+#     .pipe mocha(mocha_opts)
+#     .on 'error', (err) ->
+#       log colors.red err.stack  unless /tests? failed/.test(err.stack)
+#     null
 
 # path = require 'path'
 # express = require 'express'
