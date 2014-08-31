@@ -8,6 +8,10 @@ AppRouter = Parse.Router.extend(
   routes:
     "login": "login"
     "play": "play"
+    "activity": "activity"
+    "create": "create"
+    "settings": "settings"
+    "profile": "profile"
     "card/:card/:peggee": "card"
     "activity/:card/:peggee": "activity"
     ":code": "auth"
