@@ -40,6 +40,7 @@ class CardView extends View
   initCard: ->
     @state = new StateModifier
       origin: @layout.card.origin
+      align: @layout.card.align
     @mainNode = @add @state
     ## Front Card
     @front = new ImageSurface
@@ -81,8 +82,9 @@ class CardView extends View
       size: @layout.question.big.size
       classes: @layout.question.big.classes
     @frontQuestionMod = new StateModifier
-      origin: @layout.question.big.origin
-      align: @layout.question.big.align
+#      origin: @layout.question.big.origin
+#      align: @layout.question.big.align
+      transform: @layout.question.big.transform
     @mainNode.add(@frontQuestionMod).add @frontQuestion
 
     if @options.type is 'review'
@@ -127,6 +129,7 @@ class CardView extends View
       addImageButton = new ImageSurface
         size: @layout.addImage.size
         content: @layout.addImage.content
+        classes: @layout.addImage.classes
       @addImageModifier = new StateModifier
         transform: @layout.addImage.show
       imagePickView = new ImagePickView()
