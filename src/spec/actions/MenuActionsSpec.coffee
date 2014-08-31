@@ -8,7 +8,7 @@ spy = helper.spy
 describe 'NavActions', ->
 
   describe '#selectMenuItem', ->
-    it 'dispatches MENU_SELECT', ->
+    xit 'dispatches MENU_SELECT', ->
       pageID = 'testPage'
       handleViewAction = spy()
       AppDispatcher.handleViewAction = handleViewAction
