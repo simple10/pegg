@@ -19,6 +19,8 @@ config =
 
   facebook:
     appId: '1410524409215955'
+    redirectUrl: 'http://192.168.1.3:8080'
+    expirationDays: 30
 
   aviary:
     apiKey: 'cdef40f2d4f076a2'

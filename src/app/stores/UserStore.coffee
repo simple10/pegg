@@ -3,6 +3,7 @@ Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 Utils = require 'lib/Utils'
+Config = require('Config').public
 
 DB = require 'stores/helpers/ParseBackend'
 NavActions = require 'actions/NavActions'
@@ -13,8 +14,8 @@ class UserStore extends EventEmitter
 
   login: ->
     # http://stackoverflow.com/questions/16843116/facebook-oauth-unsupported-in-chrome-on-ios
-    clientId = '1410524409215955'
-    redirectUri = 'http://localhost:8080/'
+    clientId = Config.facebook.appId
+    redirectUri = Config.facebook.redirectUrl
     permissionUrl = "https://m.facebook.com/dialog/oauth?client_id=#{clientId}&redirect_uri=#{redirectUri}&scope=email,public_profile&response_type=token"
     window.location = permissionUrl
 
@@ -23,10 +24,13 @@ class UserStore extends EventEmitter
     console.log res
     access_token = Utils.parseQueryString res, 'access_token'
     params = "access_token=#{access_token}"
+    future = new Date().addDays Config.facebook.expirationDays
+    expirationDate = future.toISOString();
+
     Utils.getAjax("https://graph.facebook.com/me", params, (res) =>
       userData = JSON.parse res
       authData =
-        expiration_date: "2014-08-30T15:05:00.000Z"
+        expiration_date: expirationDate
         id: userData.id
         access_token: access_token
       @_loginParse authData
