@@ -76,3 +76,9 @@ Utils =
       return pairs
 
 module.exports = Utils
+
+
+Date::addDays = (days) ->
+  dat = new Date(@valueOf())
+  dat.setDate dat.getDate() + days
+  dat
