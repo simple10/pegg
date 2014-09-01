@@ -17,76 +17,118 @@ RenderNode = require 'famous/core/RenderNode'
 SequentialLayout = require 'famous/views/SequentialLayout'
 
 class PlayBadgesView extends View
+  @DEFAULT_OPTIONS:
+    width: Utils.getViewportWidth()
+    height: Utils.getViewportHeight() - 50
+    origin: [0, 1]
+    align: [0, 1]
 
   constructor: (options) ->
     super options
     @_sequence = []
-    @title = ''
-    @pic = ''
+    @scrollview = null
     @init()
 
   init: ->
-    sequentialLayout = new SequentialLayout
-      align: [0.5, 0.5]
-      origin: [0.5, 0.5]
-    sequentialLayout.sequenceFrom @_sequence
+    @scrollview = new Scrollview
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight() - 50]
+      align: [0, 1]
+      origin: [0, 1]
 
-    picNode = new RenderNode
-    @pic = new ImageSurface
-      classes: ['status__pegg__pic']
-      size: [150, 150]
-      properties:
-        borderRadius: '200px'
-    picMod = new StateModifier
-      align: [0.5, 0.01]
-      origin: [0.5, 0]
-    picNode.add(picMod).add @pic
-    @_sequence.push picNode
+    @scrollview.sequenceFrom(@_sequence)
 
-    titleNode = new RenderNode
+    container = new ContainerSurface
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight() - 50]
+      align: [0, 1]
+      origin: [0, 1]
+    container.add @scrollview
+    container.pipe @scrollview
+    @add container
+
+    @titleNode = new RenderNode
     @title = new Surface
       classes: ['status__pegg__title']
       size: [Utils.getViewportWidth(), 120]
       properties:
-        marginTop: '20px'
+        marginTop: '100px'
+        marginBottom: '40px'
     titleMod = new StateModifier
       align: [0.5, 0]
       origin: [0.5, 0]
-    titleNode.add(@title).add titleMod
-    @_sequence.push titleNode
+    @titleNode.add(@title).add titleMod
+    @title.pipe @scrollview
 
-    nextNode = new RenderNode
+    @nextNode = new RenderNode
     next = new ImageSurface
       content: 'images/continue_big_text.png'
       size: [60, 120]
     nextMod = new StateModifier
       align: [0.6, 0]
-      origin: [0, 0]
-    nextNode.add(nextMod).add next
-    @_sequence.push nextNode
+      origin: [0, 1]
+    next.pipe @scrollview
+    @nextNode.add(nextMod).add next
 
-    shareNode = new RenderNode
+    @shareNode = new RenderNode
     share = new ImageSurface
       content: 'images/share_big_text.png'
       size: [48, 95]
     shareMod = new StateModifier
       align: [0.2, 0]
-      origin: [0, 1]
-    shareNode.add(shareMod).add share
-    @_sequence.push shareNode
+      origin: [0, 0]
+    share.pipe @scrollview
+    @shareNode.add(shareMod).add share
 
     next.on 'click', ->
       PlayActions.badgesViewed()
 
-    @add sequentialLayout
+    @add @scrollview
 
     @load()
 
-  load: (data) ->
-    console.log 'PlayBadgesView.load.data: ', data
-    @title.setContent "Awesome Badge of Awesome"
-    @pic.setContent UserStore.getAvatar 'height=150&type=normal&width=150'
+  load: (badges) ->
+    return unless badges?
+    @_sequence.length = 0
 
+    someNewBadges = "a new badge"
+    if badges.length > 1 
+      someNewBadges = "new badges"
+    @title.setContent "Congratulations! You've earned " + someNewBadges + "!"
+    @_sequence.push @titleNode
+
+    for badge in (badges or [])
+      console.log 'badge.name: ', badge.name
+      console.log 'badge.image: ', badge.image
+
+      picNode = new RenderNode
+      pic = new ImageSurface
+        classes: ['status__pegg__pic']
+        size: [150, 150]
+        properties:
+          borderRadius: '200px'
+      picMod = new StateModifier
+        align: [0.5, 0]
+        origin: [0.5, 0]
+      picNode.add(picMod).add pic
+      pic.pipe @scrollview
+      pic.setContent badge.image
+      @_sequence.push picNode
+
+      nameNode = new RenderNode
+      name = new Surface
+        classes: ['status__pegg__title']
+        size: [Utils.getViewportWidth(), 120]
+        properties:
+          marginTop: '20px'
+      nameMod = new StateModifier
+        align: [0.5, 0]
+        origin: [0.5, 0]
+      nameNode.add(name).add nameMod
+      name.pipe @scrollview
+      name.setContent badge.name
+      @_sequence.push nameNode
+
+    @_sequence.push @shareNode
+    @_sequence.push @nextNode
 
 
 module.exports = PlayBadgesView

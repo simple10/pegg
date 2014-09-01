@@ -330,11 +330,33 @@ class ParseBackend
         console.log "Error: " + error.code + " " + error.message
         cb null
 
-  getNewBadges: (peggeeId, cb) ->
-    cb [
-      { title: "badge 1 title", pic: "badge 1 pic" }
-      { title: "badge 2 title", pic: "badge 2 pic" }
-    ]
+  getNewBadges: (userId, cb) ->
+    user = new Parse.Object 'User'
+    user.set 'id', userId
+    userBadgesQuery = new Parse.Query 'UserBadges'
+    userBadgesQuery.equalTo 'user', user
+    userBadgesQuery.find
+      success: (userBadges) ->
+        userBadgesIDs = []
+        for userBadge in userBadges
+          userBadgesIDs.push userBadge.get('badge').id
+        badgesQuery = new Parse.Query 'Badges'
+        badgesQuery.containedIn 'objectId', userBadgesIDs
+        badgesQuery.find
+          success: (results) =>
+            badges = []
+            for badge in results
+              badges.push {
+                name: badge.get 'name'
+                image: badge.get 'image'
+              }
+            if badges.length
+              cb badges
+            else
+              cb null
+          error: (error) ->
+            console.log "Error: " + error.code + " " + error.message
+            cb null
 
   getTopScores: (peggeeId, cb) ->
     scores = []

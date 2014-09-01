@@ -38,7 +38,7 @@ class StageState extends EventHandler
         console.log "Unexpected status type: #{@_status.type}"
 
   loadBadges: ->
-    @_fetchNewBadges()
+    @_fetchNewBadges(UserStore.getUser().id)
 
   getChoices: (cardId) ->
     @_cardSet[cardId].choices
