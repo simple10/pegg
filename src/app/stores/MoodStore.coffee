@@ -9,11 +9,11 @@ Mood = Parse.Object.extend 'Mood'
 class MoodStore extends EventEmitter
   _moods: null
 
-  _getMoodQuery: ->
-    new Parse.Query Mood
+#  _getMoodQuery: ->
+#    new Parse.Query Mood
 
   fetch: ->
-    query = @_getMoodQuery()
+    query = new Parse.Query Mood
     query.equalTo 'live', true
     query.find
       success: (results) =>

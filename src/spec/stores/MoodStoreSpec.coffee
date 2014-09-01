@@ -1,4 +1,5 @@
-MoodStore = require 'stores/MoodStore'
+rewire = require 'rewire'
+MoodStore = rewire 'stores/MoodStore'
 Constants = require 'constants/PeggConstants'
 Parse = require 'Parse'
 helper = require '../helpers/Common'
@@ -7,17 +8,21 @@ spy = helper.spy
 
 
 # Mock Parse.Query 'Mood'
-Mood = Parse.Object.extend 'Mood'
-MoodQuery = new Parse.Query Mood
-MoodQuery.find = (options) ->
+#Mood = Parse.Object.extend 'Mood'
+#MoodQuery = new Parse.Query Mood
+#MoodQuery.find = (options) ->
+#  options.success 'dummy'
+
+Parse.find = (options) ->
   options.success 'dummy'
 
+MoodStore.__set__ 'Parse', Parse
 
 describe 'MoodStore', ->
   beforeEach ->
     @moodStore = MoodStore
-    @moodStore._getMoodQuery = ->
-      MoodQuery
+#    @moodStore._getMoodQuery = ->
+#      MoodQuery
 
   it 'exists', ->
     expect(@moodStore).to.exist
