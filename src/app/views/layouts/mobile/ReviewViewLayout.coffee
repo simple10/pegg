@@ -32,13 +32,13 @@ module.exports =
       }
       {
         delay: 0
-        align: [0.5, 0.93]
+        align: [0.5, 0.92]
         # align: [0.5, 0.25]
         transition: {duration: 500, curve: Easing.outQuad}
       }
       {
         delay: 0
-        align: [0.5, 0.25]
+        align: [0.5, 0.35]
         # align: [0.5, 0.35]
         transition: {duration: 500, curve: Easing.outQuad}
       }
