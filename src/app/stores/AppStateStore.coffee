@@ -35,7 +35,7 @@ class AppStateStore extends EventEmitter
 
   _loadCard: (cardId, peggeeId) ->
 #    console.log cardId, peggeeId
-    @_currentPageID = 'activity'
+    @_currentPageID = 'card'
     Parse.history.navigate "#{@_currentPageID}/#{cardId}/#{peggeeId}", true
     @emit Constants.stores.MENU_CHANGE
 

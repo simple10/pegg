@@ -66,8 +66,8 @@ class ProfileActivityItemView extends View
     @add container
 
     container.on 'click', ((e) ->
-      ReviewActions.load @options.data.cardId, @options.data.userId, 'profile'
       NavActions.selectReviewItem @options.data.cardId, @options.data.userId
+      ReviewActions.load @options.data.cardId, @options.data.userId, 'profile'
     ).bind @
 
 module.exports = ProfileActivityItemView
