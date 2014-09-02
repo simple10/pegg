@@ -15,6 +15,7 @@ class ReviewStore extends EventEmitter
     @_referrer = path
 
   _loadCard: (cardId, peggeeId) ->
+    @_peggee = peggeeId
     DB.getCard(cardId, peggeeId, (results) =>
       if results
         @_card = results
@@ -25,6 +26,19 @@ class ReviewStore extends EventEmitter
     DB.getComments(cardId, peggeeId, (res) =>
       if res?
         @_comments = res
+        @emit Constants.stores.COMMENTS_CHANGE
+    )
+
+  _comment: (comment) ->
+    console.log "review comment: #{comment}  peggee: #{@_peggee}  user: #{UserStore.getUser().id}  card: #{@_card.id}"
+    DB.saveComment(
+      comment
+      @_card.id
+      @_peggee
+      UserStore.getUser().id
+      UserStore.getAvatar 'type=square'
+      (res) =>
+        @_comments.unshift res
         @emit Constants.stores.COMMENTS_CHANGE
     )
 
@@ -51,5 +65,8 @@ AppDispatcher.register (payload) ->
       review._setReferrer action.referrer
       review._loadCard action.card, action.peggee
       review._loadComments action.card, action.peggee
+    when Constants.actions.REVIEW_COMMENT
+      review._comment action.comment
+
 
 module.exports = review
