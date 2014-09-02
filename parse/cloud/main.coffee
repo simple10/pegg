@@ -223,10 +223,11 @@ Parse.Cloud.afterSave 'Pref', (request) ->
   cardQuery.equalTo 'objectId', cardId
   cardQuery.first
     success: (card) ->
+      cardAcl = card.get 'ACL'
+      if cardAcl isnt undefined
+        cardAcl.setRoleReadAccess "#{userId}_Friends", true
+        card.setACL cardAcl
       card.addUnique 'hasPreffed', userId
-      cardAcl = card.getACL()
-      cardAcl.setRoleReadAccess "#{userId}_Friends", true
-      card.setACL cardAcl
       card.save()
       console.log "hasPreffed saved: #{card}"
     error: ->
