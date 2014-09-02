@@ -1,4 +1,3 @@
-
 use css property (webkitBackVisibility) to show back of surface so you can see the back when flipping a surface
 intersecting surfaces: in chrome and firefox, doesn't look good. won't until browser fixes. fix: don't intersect surfaces
 surface ordering: browsers paint in the order that DOM elements are listed (if no z-index, translation in z space)
@@ -37,3 +36,8 @@ Doesn't work:
 
 
 Scale doesn't work well. Don't use it.
+
+Don't mix static and instance class variables:
+class ProfileView extends View
+    _someVariable = ''  #private class variable
+    @anotherVariable = '' #instance class variable
