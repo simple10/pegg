@@ -252,7 +252,11 @@
     cardQuery.equalTo('objectId', cardId);
     return cardQuery.first({
       success: function(card) {
+        var cardAcl;
         card.addUnique('hasPreffed', userId);
+        cardAcl = card.getACL();
+        cardAcl.setRoleReadAccess("" + userId + "_Friends", true);
+        card.setACL(cardAcl);
         card.save();
         return console.log("hasPreffed saved: " + card);
       },

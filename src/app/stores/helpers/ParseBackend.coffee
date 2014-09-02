@@ -75,32 +75,23 @@ class ParseBackend
 
   savePref: (cardId, choiceId, plugUrl, userId, cb) ->
     # INSERT into Pref table a row with user's choice
-    cardQuery = new Parse.Query Card
-    cardQuery.equalTo 'objectId', cardId
-    cardQuery.first
-      success: (results) =>
-        card = results
-        cardAcl = card.get 'ACL'
-        cardAcl.setRoleReadAccess "#{userId}_Friends", true
-        card.save()
-        preffer = new Parse.Object 'User'
-        preffer.set 'id',  userId
-        newPrefAcl = new Parse.ACL preffer
-        newPrefAcl.setRoleReadAccess "#{userId}_Friends", true
-        newPrefAcl.setPublicReadAccess true
-        answer = new Parse.Object 'Choice'
-        answer.set 'id', choiceId
-        newPref = new Parse.Object 'Pref'
-        newPref.set 'answer', answer
-        newPref.set 'card', card
-        newPref.set 'plug', plugUrl
-        newPref.set 'user', preffer
-        newPref.set 'ACL', newPrefAcl
-        newPref.save()
-        cb 'savePref done'
-      error: (error) ->
-        console.log "Error saving pref: " + error.code + " " + error.message
-        cb null
+    card = new Parse.Object 'Card'
+    card.set 'id', cardId
+    preffer = new Parse.Object 'User'
+    preffer.set 'id',  userId
+    newPrefAcl = new Parse.ACL preffer
+    newPrefAcl.setRoleReadAccess "#{userId}_Friends", true
+    newPrefAcl.setPublicReadAccess true
+    answer = new Parse.Object 'Choice'
+    answer.set 'id', choiceId
+    newPref = new Parse.Object 'Pref'
+    newPref.set 'answer', answer
+    newPref.set 'card', card
+    newPref.set 'plug', plugUrl
+    newPref.set 'user', preffer
+    newPref.set 'ACL', newPrefAcl
+    newPref.save()
+    cb 'savePref done'
 
   savePlug: (cardId, imageUrl, peggeeId, cb) ->
     # UPDATE Pref table with user's new image
