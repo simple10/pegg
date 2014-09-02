@@ -4,8 +4,8 @@ Utils = require 'lib/Utils'
 
 module.exports =
   card:
-    align: [0.5, 0.5]
-    origin: [0.5, 0.5]
+    align: [0.5, 0]
+    origin: [0.5, 0]
     states: [
       # showing state
       {
@@ -32,7 +32,7 @@ module.exports =
       }
       {
         delay: 0
-        align: [0.5, 0.9]
+        align: [0.5, 0.93]
         # align: [0.5, 0.25]
         transition: {duration: 500, curve: Easing.outQuad}
       }

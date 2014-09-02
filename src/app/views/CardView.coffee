@@ -40,7 +40,7 @@ class CardView extends View
   initCard: ->
     @state = new StateModifier
       origin: @layout.card.origin
-      align: @layout.card.align
+#      align: @layout.card.align
     @mainNode = @add @state
     ## Front Card
     @front = new ImageSurface
@@ -73,8 +73,8 @@ class CardView extends View
       properties:
         borderRadius: "#{@layout.profilePic.size[0]}px"
     @frontProfilePicMod = new StateModifier
-#      origin: @layout.profilePic.big.origin
-#      align: @layout.profilePic.big.align
+      origin: @layout.profilePic.big.origin
+      align: @layout.profilePic.big.align
       transform: @layout.profilePic.big.transform
     @mainNode.add(@frontProfilePicMod).add @frontProfilePic
 
@@ -82,8 +82,8 @@ class CardView extends View
       size: @layout.question.big.size
       classes: @layout.question.big.classes
     @frontQuestionMod = new StateModifier
-#      origin: @layout.question.big.origin
-#      align: @layout.question.big.align
+      origin: @layout.question.big.origin
+      align: @layout.question.big.align
       transform: @layout.question.big.transform
     @mainNode.add(@frontQuestionMod).add @frontQuestion
 
