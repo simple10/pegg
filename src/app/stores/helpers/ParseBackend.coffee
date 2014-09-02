@@ -97,7 +97,7 @@ class ParseBackend
         newPref.set 'user', preffer
         newPref.set 'ACL', newPrefAcl
         newPref.save()
-    cb 'savePref done'
+        cb 'savePref done'
       error: (error) ->
         console.log "Error saving pref: " + error.code + " " + error.message
         cb null
