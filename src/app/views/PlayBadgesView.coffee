@@ -50,7 +50,7 @@ class PlayBadgesView extends View
       classes: ['status__pegg__title']
       size: [Utils.getViewportWidth(), 120]
       properties:
-        marginTop: '100px'
+        marginTop: '50px'
         marginBottom: '40px'
     titleMod = new StateModifier
       align: [0.5, 0]
@@ -80,8 +80,6 @@ class PlayBadgesView extends View
 
     next.on 'click', ->
       PlayActions.badgesViewed()
-
-    @add @scrollview
 
     @load()
 

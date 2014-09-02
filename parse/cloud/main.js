@@ -253,10 +253,12 @@
     return cardQuery.first({
       success: function(card) {
         var cardAcl;
+        cardAcl = card.get('ACL');
+        if (cardAcl !== void 0) {
+          cardAcl.setRoleReadAccess("" + userId + "_Friends", true);
+          card.setACL(cardAcl);
+        }
         card.addUnique('hasPreffed', userId);
-        cardAcl = card.getACL();
-        cardAcl.setRoleReadAccess("" + userId + "_Friends", true);
-        card.setACL(cardAcl);
         card.save();
         return console.log("hasPreffed saved: " + card);
       },
