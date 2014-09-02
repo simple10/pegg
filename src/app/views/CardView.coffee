@@ -141,6 +141,9 @@ class CardView extends View
         )
       @mainNode.add imagePickView
       @mainNode.add(@addImageModifier).add addImageButton
+    else
+      @backImage.on 'click', @flip
+      @backText.on 'click', @flip
 
   # Doesn't respond to gestures, just makes sure that the events
   # get to the right place
