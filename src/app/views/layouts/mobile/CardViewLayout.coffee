@@ -15,7 +15,7 @@ module.exports = {
       transition: {duration: 500, curve: Easing.outQuad}
     small:
       delay: 0
-      size: [width - 120, 50]
+      size: [width - 120, 75]
       classes: ['card__front__question--small']
       transform: Transform.translate 30, 100, 2.5
 #      origin: [0, 0]
