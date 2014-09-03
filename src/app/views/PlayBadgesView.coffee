@@ -78,13 +78,14 @@ class PlayBadgesView extends View
     share.pipe @scrollview
     @shareNode.add(shareMod).add share
 
-    next.on 'click', ->
-      PlayActions.badgesViewed()
+    next.on 'click', =>
+      PlayActions.badgesViewed(@badges)
 
     @load()
 
   load: (badges) ->
     return unless badges?
+    @badges = badges
     @_sequence.length = 0
 
     someNewBadges = "a new badge"
@@ -94,9 +95,6 @@ class PlayBadgesView extends View
     @_sequence.push @titleNode
 
     for badge in (badges or [])
-      console.log 'badge.name: ', badge.name
-      console.log 'badge.image: ', badge.image
-
       picNode = new RenderNode
       pic = new ImageSurface
         classes: ['status__pegg__pic']
@@ -108,7 +106,7 @@ class PlayBadgesView extends View
         origin: [0.5, 0]
       picNode.add(picMod).add pic
       pic.pipe @scrollview
-      pic.setContent badge.image
+      pic.setContent badge.get 'image'
       @_sequence.push picNode
 
       nameNode = new RenderNode
@@ -122,11 +120,12 @@ class PlayBadgesView extends View
         origin: [0.5, 0]
       nameNode.add(name).add nameMod
       name.pipe @scrollview
-      name.setContent badge.name
+      name.setContent badge.get 'name'
       @_sequence.push nameNode
 
     @_sequence.push @shareNode
     @_sequence.push @nextNode
+    @scrollview.goToPage(0)
 
 
 module.exports = PlayBadgesView

@@ -135,10 +135,13 @@ class PlayStore extends EventHandler
       @emit Constants.stores.MOOD_CHANGE
     )
 
-  _badgesViewed: ->
+  _badgesViewed: (badges) ->
     # mark the current badges as viewed
-    # load status screen
-    @_game.loadStatus()
+    userId = UserStore.getUser().id
+    DB.saveBadgeView(badges, userId, =>
+      # then load status screen
+      @_game.loadStatus()
+    )
 
   getCards: ->
     @_cards = @_game.getCards()
@@ -223,6 +226,6 @@ AppDispatcher.register (payload) ->
     when Constants.actions.PICK_MOOD
       play._mood action.moodText, action.moodId, action.moodUrl
     when Constants.actions.BADGES_VIEWED
-      play._badgesViewed()
+      play._badgesViewed(action.badges)
 
 module.exports = play

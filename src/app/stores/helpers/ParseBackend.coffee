@@ -335,6 +335,7 @@ class ParseBackend
     user.set 'id', userId
     userBadgesQuery = new Parse.Query 'UserBadges'
     userBadgesQuery.equalTo 'user', user
+    userBadgesQuery.equalTo 'hasViewed', false
     userBadgesQuery.find
       success: (userBadges) ->
         userBadgesIDs = []
@@ -343,13 +344,7 @@ class ParseBackend
         badgesQuery = new Parse.Query 'Badges'
         badgesQuery.containedIn 'objectId', userBadgesIDs
         badgesQuery.find
-          success: (results) =>
-            badges = []
-            for badge in results
-              badges.push {
-                name: badge.get 'name'
-                image: badge.get 'image'
-              }
+          success: (badges) =>
             if badges.length
               cb badges
             else
@@ -555,6 +550,23 @@ class ParseBackend
 #      cardCat.set 'card', card
 #      cardCat.save()
 #      cb('catgories saved.')
+
+  saveBadgeView: (badges, userId, cb) ->
+    user = new Parse.Object 'User'
+    user.set 'id', userId
+    userBadgesQuery = new Parse.Query 'UserBadges'
+    userBadgesQuery.equalTo 'user', user
+    userBadgesQuery.containedIn 'badge', badges
+    debugger
+    userBadgesQuery.find
+      success: (userBadges) ->
+        debugger
+        for userBadge in userBadges
+          userBadge.set 'hasViewed', true
+          userBadge.save()
+        cb("#{userBadges.length} user badges saved.")
+      error: ->
+        cb('saving badges failed.')
 
 parse = new ParseBackend()
 
