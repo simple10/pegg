@@ -5,7 +5,7 @@ UserStore = require 'stores/UserStore'
 DB = require 'stores/helpers/ParseBackend'
 
 
-class ReviewStore extends EventEmitter
+class SingleCardStore extends EventEmitter
   _card: null
   _comments: []
   _message: ''
@@ -54,7 +54,7 @@ class ReviewStore extends EventEmitter
   getReferrer: ->
     @_referrer
 
-review = new ReviewStore
+review = new SingleCardStore
 
 # Register callback with AppDispatcher to be notified of events
 AppDispatcher.register (payload) ->

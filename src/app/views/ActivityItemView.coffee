@@ -7,8 +7,8 @@ StateModifier = require 'famous/modifiers/StateModifier'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 NavActions = require 'actions/NavActions'
-ReviewActions = require 'actions/ReviewActions'
-Utils = require 'lib/Utils';
+SingleCardActions = require 'actions/SingleCardActions'
+Utils = require 'lib/Utils'
 
 class ActivityItemView extends View
   @DEFAULT_OPTIONS:
@@ -65,8 +65,8 @@ class ActivityItemView extends View
     @add container
 
     container.on 'click', ((e) ->
-      NavActions.selectReviewItem @options.card.id, @options.peggee.id
-      ReviewActions.load @options.card.id, @options.peggee.id, 'activity'
+      NavActions.selectSingleCardItem @options.card.id, @options.peggee.id
+      SingleCardActions.load @options.card.id, @options.peggee.id, 'activity'
     ).bind @
 
 module.exports = ActivityItemView

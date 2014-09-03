@@ -5,7 +5,7 @@ ContainerSurface = require 'famous/surfaces/ContainerSurface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 Transform = require 'famous/core/Transform'
 NavActions = require 'actions/NavActions'
-ReviewActions = require 'actions/ReviewActions'
+SingleCardActions = require 'actions/SingleCardActions'
 
 Utils = require 'lib/Utils'
 
@@ -53,8 +53,8 @@ class PrefBoardImageView extends View
   initListeners: () ->
     @image.pipe @_eventOutput
     @image.on 'click', ((e) ->
-      ReviewActions.load @options.cardId, @options.userId, 'profile'
-      NavActions.selectReviewItem @options.cardId, @options.userId
+      SingleCardActions.load @options.cardId, @options.userId, 'profile'
+      NavActions.selectSingleCardItem @options.cardId, @options.userId
     ).bind @
 
   _showImage: ->

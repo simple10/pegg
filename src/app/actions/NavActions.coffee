@@ -17,7 +17,7 @@ NavActions =
       cardId: cardId
       peggeeId: peggeeId
 
-  selectReviewItem: (cardId, peggeeId) ->
+  selectSingleCardItem: (cardId, peggeeId) ->
     AppDispatcher.handleViewAction
       actionType: Constants.CARD_SELECT
       cardId: cardId

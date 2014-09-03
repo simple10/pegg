@@ -7,8 +7,8 @@ StateModifier = require 'famous/modifiers/StateModifier'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 NavActions = require 'actions/NavActions'
-ReviewActions = require 'actions/ReviewActions'
-Utils = require 'lib/Utils';
+SingleCardActions = require 'actions/SingleCardActions'
+Utils = require 'lib/Utils'
 
 class ProfileActivityItemView extends View
   @DEFAULT_OPTIONS:
@@ -66,8 +66,8 @@ class ProfileActivityItemView extends View
     @add container
 
     container.on 'click', ((e) ->
-      NavActions.selectReviewItem @options.data.cardId, @options.data.userId
-      ReviewActions.load @options.data.cardId, @options.data.userId, 'profile'
+      NavActions.selectSingleCardItem @options.data.cardId, @options.data.userId
+      SingleCardActions.load @options.data.cardId, @options.data.userId, 'profile'
     ).bind @
 
 module.exports = ProfileActivityItemView

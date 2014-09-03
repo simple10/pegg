@@ -1,7 +1,7 @@
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require('constants/PeggConstants').actions
 
-ReviewActions =
+SingleCardActions =
   load: (cardId, peggeeId, referrer) ->
     AppDispatcher.handleViewAction
       actionType: Constants.LOAD_CARD
@@ -14,4 +14,4 @@ ReviewActions =
       actionType: Constants.REVIEW_COMMENT
       comment: comment
 
-module.exports = ReviewActions
+module.exports = SingleCardActions

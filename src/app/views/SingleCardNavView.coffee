@@ -7,10 +7,10 @@ RenderNode = require 'famous/core/RenderNode'
 
 Utils = require 'lib/Utils'
 Constants = require 'constants/PeggConstants'
-ReviewStore = require 'stores/ReviewStore'
+SingleCardStore = require 'stores/SingleCardStore'
 LayoutManager = require 'views/layouts/LayoutManager'
 
-class ReviewNavView extends View
+class SingleCardNavView extends View
   @DEFAULT_OPTIONS:
     cardType: 'review'
   
@@ -24,10 +24,10 @@ class ReviewNavView extends View
     @initEvents()
 
   setOptions: (options) => 
-    @_optionsManager.patch(options);
+    @_optionsManager.patch(options)
 
     # update the card message
-    @message.setContent ReviewStore.getMessage()
+    @message.setContent SingleCardStore.getMessage()
 
 
   initSurfaces: =>
@@ -89,6 +89,6 @@ class ReviewNavView extends View
   hideMessage: =>
     Utils.animate @messageMod, @layout.message.states[1]
 
-module.exports = ReviewNavView
+module.exports = SingleCardNavView
 
 

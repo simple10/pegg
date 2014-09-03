@@ -1,6 +1,6 @@
 Parse = require 'Parse'
 NavActions = require 'actions/NavActions'
-ReviewActions = require 'actions/ReviewActions'
+SingleCardActions = require 'actions/SingleCardActions'
 UserActions = require 'actions/UserActions'
 
 #define router class
@@ -22,12 +22,12 @@ AppRouter = Parse.Router.extend(
   card: (card, peggee) ->
     if card? and peggee?
       NavActions.loadLink card, peggee
-      ReviewActions.load card, peggee, 'card'
+      SingleCardActions.load card, peggee, 'card'
 
   activity: (card, peggee) ->
     if card? and peggee?
       NavActions.loadLink card, peggee
-      ReviewActions.load card, peggee, 'activity'
+      SingleCardActions.load card, peggee, 'activity'
 
   decks: ->
     #NavActions.selectMenuItem "decks"

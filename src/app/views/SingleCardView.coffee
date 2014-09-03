@@ -16,24 +16,24 @@ Timer = require 'famous/utilities/Timer'
 
 Utils = require 'lib/Utils'
 Constants = require 'constants/PeggConstants'
-ReviewActions = require 'actions/ReviewActions'
+SingleCardActions = require 'actions/SingleCardActions'
 NavActions = require 'actions/NavActions'
-ReviewStore = require 'stores/ReviewStore'
+SingleCardStore = require 'stores/SingleCardStore'
 CardView = require 'views/CardView'
 CommentsView = require 'views/CommentsView'
 InputView = require 'views/InputView'
-ReviewNavView = require 'views/ReviewNavView'
+SingleCardNavView = require 'views/SingleCardNavView'
 
 LayoutManager = require 'views/layouts/LayoutManager'
 StatusViewLayout = require 'views/layouts/mobile/StatusViewLayout'
 
-class ReviewView extends View
+class SingleCardView extends View
 
   constructor: (options) ->
     super options
 
     @layoutManager = new LayoutManager()
-    @layout = @layoutManager.getViewLayout 'ReviewView'
+    @layout = @layoutManager.getViewLayout 'SingleCardView'
 
     # create transitionable with initial value of 0
     @cardYPos = new Transitionable(0)
@@ -43,8 +43,8 @@ class ReviewView extends View
     @initGestures()
 
   initListeners: ->
-    ReviewStore.on Constants.stores.CARD_CHANGE, @loadCard
-    ReviewStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
+    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadCard
+    SingleCardStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
 
   initViews: ->
 
@@ -59,9 +59,9 @@ class ReviewView extends View
     @add(@cardViewMod).add @cardView
 
     ## NAV ##
-    @navView = new ReviewNavView
+    @navView = new SingleCardNavView
     @navView._eventOutput.on 'back', =>
-      referrer = ReviewStore.getReferrer()
+      referrer = SingleCardStore.getReferrer()
       NavActions.selectMenuItem referrer
     @add(@navView)
 
@@ -142,11 +142,11 @@ class ReviewView extends View
           else 
             @expandComments()
       # reset axis movement flags
-      isMovingY = false;
+      isMovingY = false
     ).bind(@)
 
   loadCard: =>
-    card = ReviewStore.getCard()
+    card = SingleCardStore.getCard()
     @cardView.loadCard card.id, card
     @cardView.on 'comment', =>
       @collapseComments()
@@ -154,22 +154,22 @@ class ReviewView extends View
 
     @navView.setOptions {
       'cardType': 'review'
-      'message': ReviewStore.getMessage()
+      'message': SingleCardStore.getMessage()
     }
 
 
   loadComments: =>
-    @comments.load ReviewStore.getComments()
+    @comments.load SingleCardStore.getComments()
 
   saveComment: (comment) ->
-    ReviewActions.comment(comment)
+    SingleCardActions.comment(comment)
 
   collapseComments: =>
     # slide the cards down to their starting position
     @cardYPos.set(0, @layout.card.states[0].transition)
     # slide the comments down to their starting position
     Utils.animate @commentsMod, @layout.comments.states[1]
-    @._commentsIsExpanded = false;
+    @._commentsIsExpanded = false
     @newComment.setAlign @layout.newComment.states[0].align
 
   expandComments: =>
@@ -178,7 +178,7 @@ class ReviewView extends View
     @cardYPos.set(maxCardYPos, @layout.card.states[1].transition)
     # slide the comments up
     Utils.animate @commentsMod, @layout.comments.states[2]
-    @._commentsIsExpanded = true;
+    @._commentsIsExpanded = true
     @newComment.setAlign @layout.newComment.states[1].align
 
-module.exports = ReviewView
+module.exports = SingleCardView
