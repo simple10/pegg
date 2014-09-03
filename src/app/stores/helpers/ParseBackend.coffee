@@ -529,16 +529,16 @@ class ParseBackend
       newChoice4.save()
 
   saveCategories: (cardId, categories, cb) ->
-      cardQuery = new Parse.Query 'Card'
-      cardQuery.equalTo 'objectId', cardId
-      cardQuery.first
-        success: (card) =>
-          for categoryName in categories
-            card.addUnique 'categories', categoryName
-            card.save()
-          cb('catgories saved.')
-        error: ->
-          cb('catgories save failed.')
+    cardQuery = new Parse.Query 'Card'
+    cardQuery.equalTo 'objectId', cardId
+    cardQuery.first
+      success: (card) =>
+        for categoryName in categories
+          card.addUnique 'categories', categoryName
+          card.save()
+        cb('catgories saved.')
+      error: ->
+        cb('catgories save failed.')
 
 #      category = new Parse.Object 'Category'
 #      category.set 'id',  categoryId
