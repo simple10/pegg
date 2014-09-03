@@ -48,10 +48,9 @@ class PlayBadgesView extends View
     @titleNode = new RenderNode
     @title = new Surface
       classes: ['status__pegg__title']
-      size: [Utils.getViewportWidth(), 120]
       properties:
         marginTop: '50px'
-        marginBottom: '40px'
+      size: [Utils.getViewportWidth(), 160]
     titleMod = new StateModifier
       align: [0.5, 0]
       origin: [0.5, 0]
