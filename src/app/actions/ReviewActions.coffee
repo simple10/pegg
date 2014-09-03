@@ -11,7 +11,7 @@ ReviewActions =
 
   comment: (comment) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.CARD_COMMENT
+      actionType: Constants.REVIEW_COMMENT
       comment: comment
 
 module.exports = ReviewActions

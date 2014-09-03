@@ -32,6 +32,7 @@ module.exports =
     USER_LOAD: null
     USER_LOGIN: null
     USER_LOGOUT: null
+    REVIEW_COMMENT: null
 
   stores: Utils.keyMirror
     # Generic
