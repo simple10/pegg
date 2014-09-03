@@ -557,10 +557,8 @@ class ParseBackend
     userBadgesQuery = new Parse.Query 'UserBadges'
     userBadgesQuery.equalTo 'user', user
     userBadgesQuery.containedIn 'badge', badges
-    debugger
     userBadgesQuery.find
       success: (userBadges) ->
-        debugger
         for userBadge in userBadges
           userBadge.set 'hasViewed', true
           userBadge.save()
