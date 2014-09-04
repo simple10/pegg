@@ -34,8 +34,8 @@ class PlayCardsView extends View
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'PlayView'
 
-    @_viewportHeight = Utils.getViewportHeight();
-    @_viewportWidth = Utils.getViewportWidth();
+    @_viewportHeight = Utils.getViewportHeight()
+    @_viewportWidth = Utils.getViewportWidth()
 
     # create transitionable with initial value of 0
     @cardYPos = new Transitionable(0)
@@ -125,14 +125,17 @@ class PlayCardsView extends View
 
     @_eventInput.on 'choices:showing', (card) =>
       choicesShowing = true
+      @collapseComments() if @_commentsIsExpanded
       @_unpipeCardsToScrollView()
 
     @_eventInput.on 'choices:hidden', (card) =>
       choicesShowing = false
+      @collapseComments() if @_commentsIsExpanded
       @_pipeCardsToScrollView()
 
     @_eventInput.on 'card:flipped', (card) =>
       choicesShowing = false
+      @collapseComments() if @_commentsIsExpanded
       @_pipeCardsToScrollView()
 
     @_eventInput.pipe @sync
@@ -307,7 +310,7 @@ class PlayCardsView extends View
     @cardYPos.set(0, @layout.cards.states[0].transition)
     # slide the comments down to their starting position
     Utils.animate @commentsMod, @layout.comments.states[1]
-    @._commentsIsExpanded = false;
+    @._commentsIsExpanded = false
     @newComment.setAlign @layout.newComment.states[0].align
 
   expandComments: =>
@@ -317,7 +320,7 @@ class PlayCardsView extends View
     @cardYPos.set(maxCardYPos, @layout.cards.states[1].transition)
     # slide the comments up
     Utils.animate @commentsMod, @layout.comments.states[2]
-    @._commentsIsExpanded = true;
+    @._commentsIsExpanded = true
     @newComment.setAlign @layout.newComment.states[1].align
 
 

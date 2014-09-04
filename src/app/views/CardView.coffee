@@ -162,6 +162,7 @@ class CardView extends View
       @layout.question.classes = ["#{@layout.question.big.classes}--medium"]
     @frontQuestion.setContent @card.question
     @frontProfilePic.setContent "#{@card.pic}/?height=200&type=normal&width=200"
+    @flip() if @currentSide is 1
     if @options.type is 'review'
       @loadAnswer @card.plug, @card.answer.get 'text'
 

@@ -99,6 +99,10 @@ class SingleCardView extends View
     minDelta = 100
 
     @sync = new GenericSync ['mouse', 'touch']
+
+    @_eventInput.on 'card:flipped', (card) =>
+      @collapseComments() if @_commentsIsExpanded
+
     @_eventInput.pipe @sync
 
     isMovingY = false
@@ -146,6 +150,7 @@ class SingleCardView extends View
     ).bind(@)
 
   loadCard: =>
+    @collapseComments() if @._commentsIsExpanded
     card = SingleCardStore.getCard()
     @cardView.loadCard card.id, card
     @cardView.on 'comment', =>
@@ -156,7 +161,6 @@ class SingleCardView extends View
       'cardType': 'review'
       'message': SingleCardStore.getMessage()
     }
-
 
   loadComments: =>
     @comments.load SingleCardStore.getComments()
