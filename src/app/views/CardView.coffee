@@ -57,15 +57,6 @@ class CardView extends View
       transform: @layout.card.back.transform
     @mainNode.add(backMod).add @back
 
-    if @options.type is 'review'
-      @front.on 'click', @flip
-      @back.on 'click', @flip
-    else
-      @front.on 'click', @toggleChoices
-      @back.on 'click', =>
-        @_eventOutput.emit 'comment', @
-        #@flip()
-
   initQuestion: ->
     @frontProfilePic = new ImageSurface
       size: @layout.profilePic.size
@@ -86,13 +77,6 @@ class CardView extends View
       align: @layout.question.big.align
       transform: @layout.question.big.transform
     @mainNode.add(@frontQuestionMod).add @frontQuestion
-
-    if @options.type is 'review'
-      @frontProfilePic.on 'click', @flip
-      @frontQuestion.on 'click', @flip
-    else
-      @frontProfilePic.on 'click', @toggleChoices
-      @frontQuestion.on 'click', @toggleChoices
 
   initChoices: ->
     @showChoices = true
@@ -125,25 +109,21 @@ class CardView extends View
       transform: @layout.answerText.transform
     @mainNode.add(@backTextModifier).add @backText
 
-    if @options.type isnt 'review'
-      addImageButton = new ImageSurface
-        size: @layout.addImage.size
-        content: @layout.addImage.content
-        classes: @layout.addImage.classes
-      @addImageModifier = new StateModifier
-        transform: @layout.addImage.show
-      imagePickView = new ImagePickView()
-      addImageButton.on 'click', =>
-        imagePickView.pick( (results) =>
-          console.log JSON.stringify(results)
-          @backImage.setContent results[0].url
-          PlayActions.plug @id, results[0].url
-        )
-      @mainNode.add imagePickView
-      @mainNode.add(@addImageModifier).add addImageButton
-    else
-      @backImage.on 'click', @flip
-      @backText.on 'click', @flip
+    addImageButton = new ImageSurface
+      size: @layout.addImage.size
+      content: @layout.addImage.content
+      classes: @layout.addImage.classes
+    @addImageModifier = new StateModifier
+      transform: @layout.addImage.show
+    imagePickView = new ImagePickView()
+    addImageButton.on 'click', =>
+      imagePickView.pick( (results) =>
+        console.log JSON.stringify(results)
+        @backImage.setContent results[0].url
+        PlayActions.plug @id, results[0].url
+      )
+    @mainNode.add imagePickView
+    @mainNode.add(@addImageModifier).add addImageButton
 
   # Doesn't respond to gestures, just makes sure that the events
   # get to the right place
@@ -155,16 +135,33 @@ class CardView extends View
     @backImage.pipe @_eventOutput
     @backText.pipe @_eventOutput
 
-  loadCard: (id, card) ->
+  loadCard: (id, card, type) ->
     @card = card
     @id = id
+
+    if type is 'review'
+      @front.on 'click', @flip
+      @back.on 'click', @flip
+      @frontProfilePic.on 'click', @flip
+      @frontQuestion.on 'click', @flip
+      @backImage.on 'click', @flip
+      @backText.on 'click', @flip
+      @addImageModifier.setTransform @layout.addImage.hide
+      @loadAnswer @card.plug, @card.answer.get 'text'
+    else
+      @front.on 'click', @toggleChoices
+      @back.on 'click', =>
+        @_eventOutput.emit 'comment', @
+        #@flip()
+      @frontProfilePic.on 'click', @toggleChoices
+      @frontQuestion.on 'click', @toggleChoices
+      @addImageModifier.setTransform @layout.addImage.show
+
     if @card.question.length > 90
       @layout.question.classes = ["#{@layout.question.big.classes}--medium"]
     @frontQuestion.setContent @card.question
     @frontProfilePic.setContent "#{@card.pic}/?height=200&type=normal&width=200"
     @flip() if @currentSide is 1
-    if @options.type is 'review'
-      @loadAnswer @card.plug, @card.answer.get 'text'
 
   loadChoices: (cardId) ->
     @choicesView.load cardId

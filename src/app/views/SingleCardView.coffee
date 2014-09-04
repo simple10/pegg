@@ -50,7 +50,6 @@ class SingleCardView extends View
 
     ## CARD ##
     @cardView = new CardView
-      type: 'review'
     @cardViewMod = new Modifier
       align: =>
         yAlign = @cardYPos.get() / Utils.getViewportHeight()
@@ -152,7 +151,7 @@ class SingleCardView extends View
   loadCard: =>
     @collapseComments() if @._commentsIsExpanded
     card = SingleCardStore.getCard()
-    @cardView.loadCard card.id, card
+    @cardView.loadCard card.id, card, 'review'
     @cardView.on 'comment', =>
       @collapseComments()
     @cardView.pipe @
