@@ -103,9 +103,9 @@ class ParseBackend
     prefQuery.equalTo 'user', peggee
     prefQuery.equalTo 'card', card
     prefQuery.first
-      success: (results) =>
-        results.set 'plug', imageUrl
-        results.save()
+      success: (result) =>
+        result.set 'plug', imageUrl
+        result.save()
         cb "Plug saved: #{imageUrl}"
       error: (error) ->
         console.log "Error: #{error.code}  #{error.message}"
@@ -145,13 +145,13 @@ class ParseBackend
     pointsQuery.equalTo 'pegger', pegger
     pointsQuery.equalTo 'peggee', peggee
     pointsQuery.first
-      success: (results) =>
-        if results?
-          points = results.get('points') + points
-          cardsPlayed = results.get('cardsPlayed') + 1
-          results.set 'cardsPlayed', cardsPlayed
-          results.set 'points', points
-          results.save()
+      success: (result) =>
+        if result?
+          points = result.get('points') + points
+          cardsPlayed = result.get('cardsPlayed') + 1
+          result.set 'cardsPlayed', cardsPlayed
+          result.set 'points', points
+          result.save()
         else
           newPointsAcl = new Parse.ACL pegger
           #newPointsAcl.setRoleReadAccess "#{peggeeId}_Friends", true
@@ -260,9 +260,9 @@ class ParseBackend
     prefQuery.include 'answer'
     prefQuery.equalTo 'user', peggee
     prefQuery.equalTo 'card', card
-    prefQuery.find
-      success: (results) =>
-        for pref in results
+    prefQuery.first
+      success: (pref) =>
+        if pref?
           card = pref.get 'card'
           peggee = pref.get 'user'
           cardObj = {
@@ -275,7 +275,9 @@ class ParseBackend
             answer: pref.get 'answer'
             plug: pref.get 'plug'
           }
-        cb cardObj
+          cb cardObj
+        else
+          cb null
       error: (error) ->
         console.log "Error fetching card: " + error.code + " " + error.message
         cb null
