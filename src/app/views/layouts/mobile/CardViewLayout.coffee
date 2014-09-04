@@ -46,14 +46,14 @@ module.exports = {
   card:
     origin: [0.5, 0]
     align: [0.5, 0]
-    size: [width - 20, height - 110]
+    size: [width - 20, height - 180]
     transition: {duration: 500, curve: Easing.outQuad}
     front:
-      transform: Transform.translate 0, 55, null
+      transform: Transform.translate 0, 78, null
 #      hide: Transform.translate 0,0, -1000
     back:
       transform: Transform.multiply(
-        Transform.translate(0, 55, 2.5)
+        Transform.translate(0, 78, 2.5)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
