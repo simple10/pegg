@@ -60,6 +60,7 @@ class StageState extends EventHandler
         @_cardSet = cards
         for own id, card of cards
           cardsLoaded = true
+          # FIXME periodically this will return before the view is ready, causing an error. Should be made syncronous.
           @_fetchChoices id
         if cardsLoaded
           @_playerId =  UserStore.getUser().id
