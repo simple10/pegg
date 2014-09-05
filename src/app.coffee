@@ -51,9 +51,12 @@ GameScript = require('config/game').scripts.cosmic_unicorn
 
 Utils = require 'lib/Utils'
 
-
 #FastClick.attach(document.body)
-
+Transitionable = require 'famous/transitions/Transitionable'
+SpringTransition = require 'famous/transitions/SpringTransition'
+#WallTransition = require 'famous/transitions/WallTransition'
+#SnapTransition = require 'famous/transitions/SnapTransition'
+Transitionable.registerMethod 'spring', SpringTransition
 
 # Chrome maxes out at 60 FPS
 Engine.setFPSCap 60
