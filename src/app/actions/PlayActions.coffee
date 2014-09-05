@@ -1,23 +1,23 @@
 AppDispatcher = require 'dispatchers/AppDispatcher'
-Constants = require('constants/PeggConstants')
+Constants = require('constants/PeggConstants').actions
 
 PlayActions =
   load: (flow, script) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.LOAD_GAME
+      actionType: Constants.LOAD_GAME
       flow: flow
       script: script
 
   pref: (card, choice, plug) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.PREF_SUBMIT
+      actionType: Constants.PREF_SUBMIT
       card: card
       choice: choice
       plug: plug
 
   pegg: (peggee, card, choice, answer) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.PEGG_SUBMIT
+      actionType: Constants.PEGG_SUBMIT
       peggee: peggee
       card: card
       choice: choice
@@ -25,47 +25,47 @@ PlayActions =
 
   plug: (card, url) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.PLUG_IMAGE
+      actionType: Constants.PLUG_IMAGE
       card: card
       url: url
 
   rate: (rating) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.CARD_RATE
+      actionType: Constants.CARD_RATE
       rating: rating
 
   pass: (card) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.CARD_PASS
+      actionType: Constants.CARD_PASS
       card: card
 
   mood: (moodText, moodId, moodUrl) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.PICK_MOOD
+      actionType: Constants.PICK_MOOD
       moodText: moodText
       moodId: moodId
       moodUrl: moodUrl
 
   nextStage: () ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.NEXT_STAGE
+      actionType: Constants.NEXT_STAGE
 
   nextCard: () ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.NEXT_CARD
+      actionType: Constants.NEXT_CARD
 
   prevCard: () ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.PREV_CARD
+      actionType: Constants.PREV_CARD
 
   comment: (comment) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.CARD_COMMENT
+      actionType: Constants.CARD_COMMENT
       comment: comment
 
   badgesViewed: (badges) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.actions.BADGES_VIEWED
+      actionType: Constants.BADGES_VIEWED
       badges: badges
 
 module.exports = PlayActions

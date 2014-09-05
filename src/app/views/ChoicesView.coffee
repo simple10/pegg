@@ -29,8 +29,7 @@ class ChoicesView extends View
     @add container
 #    container.pipe @scrollView
 
-  load: (cardId) ->
-    choices = PlayStore.getChoices(cardId)
+  load: (choices) ->
     @choices.length = 0
 
     i=0

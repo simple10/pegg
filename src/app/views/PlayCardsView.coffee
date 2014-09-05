@@ -52,8 +52,8 @@ class PlayCardsView extends View
       @cardWin points
     PlayStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
     PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
-    PlayStore.on Constants.stores.CHOICES_CHANGE, (cardId) =>
-      @loadChoices cardId
+    PlayStore.on Constants.stores.CHOICES_CHANGE, (payload) =>
+      @loadChoices payload.cardId, payload.choices
 
   initViews: ->
 
@@ -221,9 +221,15 @@ class PlayCardsView extends View
     for own cardId, cardObj of PlayStore.getCards()
       name = cardObj.firstName
       card = new CardView
-      card.loadCard cardId, cardObj
+      card.loadCard cardId, cardObj, 'play'
       card.on 'comment', =>
         @collapseComments()
+      card.on 'pref', (payload) =>
+        PlayActions.pref payload.peggee, payload.id, payload.choiceId, payload.answerId
+      card.on 'pegg', (payload) =>
+        PlayActions.pegg payload.id, payload.choiceId, payload.image
+      card.on 'plug', (payload) =>
+        PlayActions.plug payload.id, payload.url
       card.pipe @
       @cardViews.push card
       @index[cardId] = i++
@@ -251,8 +257,8 @@ class PlayCardsView extends View
     else
       delta / @_viewportWidth
 
-  loadChoices: (cardId) =>
-    @cardViews[@index[cardId]].loadChoices cardId
+  loadChoices: (cardId, choices) =>
+    @cardViews[@index[cardId]].loadChoices choices
 
   loadComments: =>
     @comments.load PlayStore.getComments()

@@ -14,9 +14,7 @@ MouseSync = require 'famous/inputs/MouseSync'
 TouchSync = require 'famous/inputs/TouchSync'
 
 _ = require('Parse')._
-PlayActions = require 'actions/PlayActions'
 ImagePickView = require 'views/ImagePickView'
-PlayStore = require 'stores/PlayStore'
 Constants = require 'constants/PeggConstants'
 ChoicesView = require 'views/ChoicesView'
 Utils = require 'lib/Utils'
@@ -120,7 +118,9 @@ class CardView extends View
       imagePickView.pick( (results) =>
         console.log JSON.stringify(results)
         @backImage.setContent results[0].url
-        PlayActions.plug @id, results[0].url
+        @_eventOutput.emit 'plug',
+          id: @id
+          url: results[0].url
       )
     @mainNode.add imagePickView
     @mainNode.add(@addImageModifier).add addImageButton
@@ -163,8 +163,8 @@ class CardView extends View
     @frontProfilePic.setContent "#{@card.pic}/?height=200&type=normal&width=200"
     @flip() if @currentSide is 1
 
-  loadChoices: (cardId) ->
-    @choicesView.load cardId
+  loadChoices: (choices) ->
+    @choicesView.load choices
     @choicesView.on 'choice', ((i) ->
       @pickAnswer i
     ).bind @
@@ -194,14 +194,21 @@ class CardView extends View
   pickAnswer: (i) =>
     choice = @card.choices[i]
     if @card.peggee?
-      PlayActions.pegg @card.peggee, @id, choice.id, @card.answer.id
+      @_eventOutput.emit 'pegg',
+        peggee: @card.peggee
+        id: @id
+        choiceId: choice.id
+        answerId: @card.answer.id
       if @card.answer.id is choice.id
         @choiceWin choice, i
       else
         @choiceFail choice, i
       @addImageModifier.setTransform @layout.addImage.hide
     else
-      PlayActions.pref @id, choice.id, choice.image
+      @_eventOutput.emit 'pref',
+        id: @id
+        choiceId: choice.id
+        image: choice.image
       @loadAnswer choice.image, choice.text
       @flip choice
 

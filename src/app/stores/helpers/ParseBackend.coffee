@@ -183,12 +183,12 @@ class ParseBackend
     newMood.save()
     cb 'saveMood done'
 
-  getPrefCards: (num, mood, user, cb) ->
+  getUnpreffedCards: (num, mood, userId, cb) ->
     # Gets unanswered preferences: cards the user answers about himself
     cards  = {}
     cardQuery = new Parse.Query Card
     cardQuery.limit num
-    cardQuery.notContainedIn 'hasPreffed', [user.id]
+    cardQuery.notContainedIn 'hasPreffed', [userId]
     if mood?
       cardQuery.containedIn 'categories', [mood.text]
     #cardQuery.skip Math.floor(Math.random() * 180)
@@ -196,14 +196,31 @@ class ParseBackend
       success: (results) =>
         for card in results
           cards[card.id] = {
-            firstName: user.get 'first_name'
-            pic: user.get 'avatar_url'
+            id: card.id
             question: card.get 'question'
             choices: []
           }
         cb cards
       error: (error) ->
         console.log "Error fetching cards: " + error.code + " " + error.message
+        cb null
+
+  getCard: (cardId, cb) ->
+    cardQuery = new Parse.Query Card
+    cardQuery.equalTo 'objectId', cardId
+    cardQuery.first
+      success: (card) =>
+        if card?
+          cardObj = {
+            id: card.id
+            question: card.get 'question'
+            choices: []
+          }
+          cb cardObj
+        else
+          cb null
+      error: (error) ->
+        console.log "Error fetching card: " + error.code + " " + error.message
         cb null
 
   getCategories: (cb) ->
@@ -249,7 +266,7 @@ class ParseBackend
         cb null
 
 
-  getCard: (cardId, peggeeId, cb) ->
+  getPrefCard: (cardId, peggeeId, cb) ->
     peggee = new Parse.Object 'User'
     peggee.set 'id',  peggeeId
     card = new Parse.Object 'Card'
@@ -270,6 +287,7 @@ class ParseBackend
             peggee: peggee.id
             firstName: peggee.get 'first_name'
             pic: peggee.get 'avatar_url'
+            hasPegged: pref.get 'hasPegged'
             question: card.get 'question'
             choices: []
             answer: pref.get 'answer'
@@ -282,25 +300,17 @@ class ParseBackend
         console.log "Error fetching card: " + error.code + " " + error.message
         cb null
 
-  getChoices: (cards, cardId, cb) ->
+  getChoices: (cardId, cb) ->
     choiceQuery = new Parse.Query Choice
     card = new Parse.Object 'Card'
     card.set 'id',  cardId
     choiceQuery.equalTo 'card', card
     choiceQuery.find
       success: (choices) =>
-        cards[cardId].choices = []
-        for choice in choices
-          text = choice.get 'text'
-          image = choice.get 'image'
-          # only add choices that are not blank
-          if text isnt ''
-            # image isnt '' and
-            cards[cardId].choices.push
-              id: choice.id
-              text: text
-              image: image
-        cb cards
+        if choices?.length > 0
+          cb choices
+        else
+          cb null
       error: (error) ->
         console.log "Error fetching choices: " + error.code + " " + error.message
         cb null

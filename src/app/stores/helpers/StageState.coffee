@@ -55,11 +55,14 @@ class StageState extends EventHandler
   _fetchPrefs: (num, mood) ->
     # Gets unanswered preferences: cards the user answers about himself
     cardsLoaded = false
-    DB.getPrefCards( num, mood, UserStore.getUser()
+    user = UserStore.getUser()
+    DB.getUnpreffedCards( num, mood, user.id
       (cards) =>
         @_cardSet = cards
         for own id, card of cards
           cardsLoaded = true
+          card.firstName = user.get 'first_name'
+          card.pic = user.get 'avatar_url'
           # FIXME periodically this will return before the view is ready, causing an error. Should be made syncronous.
           @_fetchChoices id
         if cardsLoaded
@@ -86,10 +89,21 @@ class StageState extends EventHandler
     )
 
   _fetchChoices: (cardId) ->
-    DB.getChoices( @_cardSet, cardId
-      (cards) =>
-        @_cardSet = cards
-        @emit Constants.stores.CHOICES_CHANGE, cardId
+    DB.getChoices(cardId
+      (choices) =>
+        for choice in choices
+          text = choice.get 'text'
+          image = choice.get 'image'
+          # only add choices that are not blank
+          if text isnt ''
+            # image isnt '' and
+            @_cardSet[cardId].choices.push
+              id: choice.id
+              text: text
+              image: image
+        @emit Constants.stores.CHOICES_CHANGE,
+          cardId: cardId
+          choices: @_cardSet[cardId].choices
     )
 
   _fetchRanking: (userId) ->

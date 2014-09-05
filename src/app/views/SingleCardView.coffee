@@ -45,6 +45,8 @@ class SingleCardView extends View
   initListeners: ->
     SingleCardStore.on Constants.stores.CARD_CHANGE, @loadCard
     SingleCardStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
+    SingleCardStore.on Constants.stores.CHOICES_CHANGE, (payload) =>
+      @loadChoices payload.choices
 
   initViews: ->
 
@@ -151,15 +153,24 @@ class SingleCardView extends View
   loadCard: =>
     @collapseComments() if @._commentsIsExpanded
     card = SingleCardStore.getCard()
-    @cardView.loadCard card.id, card, 'review'
+    @cardView.loadCard card.id, card, card.type
     @cardView.on 'comment', =>
       @collapseComments()
+    @cardView.on 'pref', (payload) =>
+      SingleCardActions.pref payload.peggee, payload.id, payload.choiceId, payload.answerId
+    @cardView.on 'pegg', (payload) =>
+      SingleCardActions.pegg payload.id, payload.choiceId, payload.image
+    @cardView.on 'plug', (payload) =>
+      SingleCardActions.plug payload.id, payload.url
     @cardView.pipe @
 
     @navView.setOptions {
       'cardType': 'review'
       'message': SingleCardStore.getMessage()
     }
+
+  loadChoices: (choices) =>
+    @cardView.loadChoices choices
 
   loadComments: =>
     @comments.load SingleCardStore.getComments()
