@@ -224,10 +224,10 @@ class PlayCardsView extends View
       card.loadCard cardId, cardObj, 'play'
       card.on 'comment', =>
         @collapseComments()
-      card.on 'pref', (payload) =>
-        PlayActions.pref payload.peggee, payload.id, payload.choiceId, payload.answerId
       card.on 'pegg', (payload) =>
-        PlayActions.pegg payload.id, payload.choiceId, payload.image
+        PlayActions.pegg payload.peggee, payload.id, payload.choiceId, payload.answerId
+      card.on 'pref', (payload) =>
+        PlayActions.pref payload.id, payload.choiceId, payload.image
       card.on 'plug', (payload) =>
         PlayActions.plug payload.id, payload.url
       card.pipe @

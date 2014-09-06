@@ -10,6 +10,7 @@ class SingleCardStore extends EventEmitter
   _card: null
   _comments: []
   _message: ''
+  _fail: 0
   _referrer: ''
 
   _setReferrer: (path) ->
@@ -104,6 +105,7 @@ class SingleCardStore extends EventEmitter
       # TODO: catch save fail
       #if res?
     )
+
     # Save points
     if choiceId is answerId
       points = 10 - 3 * @_fail
@@ -113,6 +115,7 @@ class SingleCardStore extends EventEmitter
       )
       @_fail = 0
       @emit Constants.stores.CARD_WIN, points
+
     else
       @_fail++
       @emit Constants.stores.CARD_FAIL

@@ -59,3 +59,42 @@ module.exports =
         transition: {duration: 500, curve: Easing.outQuad}
       }
     ]
+  points:
+    origin: [0.5, 0.5]
+    align: [0.5, 1.5]
+#    transform: Transform.translate Utils.getViewportWidth()/2, Utils.getViewportHeight(), 0
+    transform: Transform.scale 0, 0, 0
+    size: [80, 80]
+    classes: ['play__points']
+    states: [
+      {
+        delay: 80
+        transform: Transform.scale 1, 1, 1
+        transition: {duration: 400, curve: Easing.outQuad}
+      }
+      {
+        delay: 80
+        align: [0.5, 0.5]
+        transition: {duration: 400, curve: Easing.outQuad}
+      }
+      {
+        delay: 100
+        transform: Transform.scale 2, 2, 2
+        transition: {duration: 400, curve: Easing.outQuad}
+      }# showing state
+      {
+        delay: 120
+        transform: Transform.scale 1, 1, 1
+        transition: {duration: 400, curve: Easing.outQuad}
+      }
+      {
+        delay: 150
+        transform: Transform.scale 0, 0, 0
+        transition: {duration: 200, curve: Easing.outQuad}
+      }
+      {
+        delay: 150
+        align: [0.5, 1.5]
+        transition: {duration: 500, curve: Easing.outQuad}
+      }
+    ]
