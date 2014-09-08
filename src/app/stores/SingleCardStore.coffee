@@ -12,38 +12,129 @@ class SingleCardStore extends EventEmitter
   _message: ''
   _fail: 0
   _referrer: ''
+  _peggeeId: null
 
   _setReferrer: (path) ->
     @_referrer = path
 
   _fetchCard: (cardId, peggeeId) ->
-    # do different things depending on:
-    #   - whether there's a peggee
+    @_loggedIn = UserStore.getLoggedIn()
+    @_userId = UserStore.getUser().id if @_loggedIn
+
+    # logged in user is peggee if no peggee specified
+    if @_loggedIn and not peggeeId?
+      @_peggeeId = @_userId
+    else
+      @_peggeeId = peggeeId
+
+    DB.getCard(cardId, (card) =>
+      @_card = card
+
+      # determine whether the peggee has preffed the card
+      @_hasPreffed = false
+      if @_card? and @_card.hasPreffed? and @_loggedIn
+        @_hasPreffed = _.contains(@_card.hasPreffed, @_peggeeId)
+
+      if @_hasPreffed
+        @_fetchPrefCard()
+      else
+        @_setCardState()
+    )
+
+  _fetchPrefCard: () =>
+    console.log "_fetchPrefCard :: card: ", @_card
+    console.log "_fetchPrefCard :: peggeeId: ", @_peggeeId
+    DB.getPrefCard(@_card.id, @_peggeeId, (prefCard) =>
+      @_card = prefCard
+
+      # determine whether the logged in user has pegged the peggee's card
+      @_hasPegged = false
+      if @_card? and @_card.hasPegged? and @_loggedIn
+        @_hasPegged = _.contains(@_card.hasPegged, @_userId)
+
+      @_setCardState()
+    )
+
+  _setCardState: () =>
+    # display different card states depending on:
     #   - whether user is logged in
+    #   - whether the card is public
     #   - whether user has preffed the card
     #   - whether user has pegged peggee
-    #   - whether the card is public
+    #   - whether there's a peggee
 
-    loggedIn = UserStore.getLoggedIn()
+    debugger
 
-    if peggeeId?
-      @_peggee = peggeeId
-      DB.getPrefCard(cardId, peggeeId, (card) =>
-        if card?
-          @_card = card
-          hasPegged = if loggedIn then _.contains(card.hasPegged, UserStore.getUser().id) else false
-          @_card.type = if hasPegged then 'review' else 'play'
-          @_fetchChoices()
-          @emit Constants.stores.CARD_CHANGE
-      )
+    # scenario 1:
+    #   You're logged in and you go to a card. You’ve preffed the card. You see your answer.
+    if @_loggedIn and @_card? and @_peggeeId is @_userId and @_hasPreffed
+      @_doReview()
+
+    # scenario 2:
+    #   You’re logged in and you go to a card you can see. You have not preffed the card. You pref the card.
+    else if @_loggedIn and @_card? and @_peggeeId is @_userId and not @_hasPreffed
+      @_doPref()
+
+    # scenario 3:
+    #   You’re logged in and you go to your friend's card. You've pegged them. You see their answer.
+    else if @_loggedIn and @_card? and @_hasPegged
+      @_doReview()
+
+    # scenario 4:
+    #   You’re logged in and you go to your friend's card. You haven’t pegged them. You pegg them first, then see their answer.
+    else if @_loggedIn and @_card? and not @_hasPegged
+      @_doPegg()
+
+    # scenario 5:
+    #   You’re logged in and you go to a non-friend’s card. The card is not public. You see "Sorry, this card isn't available. You're
+    #   probably not friends with the card's owner, and they have not shared it publicly."
+    else if @_loggedIn and @_peggeeId? and not @_card?
+      @_doDeny()
+
+    # scenario 6:
+    #   You’re not logged in, and you go to a peggee’s card. The card is public. You can pegg the card and see the answer image. Clicking
+    #   “continue playing” button or leaving a comment asks you to login, then you proceed.
+    else if not @_loggedIn and @_card? and @_peggeeId?
+      @_doPegg()
+
+    # scenario 7:
+    #   You’re not logged in, and you go to a peggee’s card. The card is not public. You can’t see the card. You must log in. Go to
+    #   scenario 3.
+    else if not @_loggedIn and @_peggeeId? and not @_card?
+      @_doRequireLogin()
+
+    # scenario 8:
+    #   You’re not logged in, and you go to a public card with no peggeeId. You pref the card. Card flips and shows answer image. XXX
+    #   actions like share with friends, save your answer, continue playing. User logs in, does that.
+    else if not @_loggedIn and @_card? and not @_peggeeId?
+      @_doPref()
+
     else
-      DB.getCard(cardId, (card) =>
-        if card?
-          @_card = card
-          hasPreffed = if loggedIn then _.contains(card.hasPreffed, UserStore.getUser().id) else false
-          @_card.type = if hasPreffed then 'review' else 'play'
-          @emit Constants.stores.CARD_CHANGE
-      )
+      #XXX default ???
+
+  _doPegg: () ->
+    console.log "SingleCardStore :: _doPegg called"
+    @_card.type = 'play'
+    @_fetchChoices()
+    @emit Constants.stores.CARD_CHANGE
+
+  _doPref: () ->
+    console.log "SingleCardStore :: _doPref called"
+    @_card.type = 'play'
+    @_card.pic = UserStore.getAvatar()
+    @_fetchChoices()
+    @emit Constants.stores.CARD_CHANGE
+
+  _doReview: () ->
+    console.log "SingleCardStore :: _doReview called"
+    @_card.type = 'review'
+    @emit Constants.stores.CARD_CHANGE
+
+  _doDeny: () ->
+    console.log "SingleCardStore :: _doDeny called"
+
+  _doRequireLogin: () ->
+    console.log "SingleCardStore :: _doRequireLogin called"
 
   _fetchChoices: () ->
     DB.getChoices(@_card.id
@@ -71,11 +162,11 @@ class SingleCardStore extends EventEmitter
     )
 
   _comment: (comment) ->
-    console.log "review comment: #{comment}  peggee: #{@_peggee}  user: #{UserStore.getUser().id}  card: #{@_card.id}"
+    console.log "review comment: #{comment}  peggee: #{@_peggeeId}  user: #{UserStore.getUser().id}  card: #{@_card.id}"
     DB.saveComment(
       comment
       @_card.id
-      @_peggee
+      @_peggeeId
       UserStore.getUser().id
       UserStore.getAvatar 'type=square'
       (res) =>
@@ -161,7 +252,7 @@ AppDispatcher.register (payload) ->
     when Constants.actions.SINGLE_CARD_LOAD
       singleCard._setReferrer action.referrer
       singleCard._fetchCard action.card, action.peggee
-      singleCard._fetchComments action.card, action.peggee
+      singleCard._fetchComments action.card, action.peggee if action.peggee?
     when Constants.actions.SINGLE_CARD_COMMENT
       singleCard._comment action.comment
     when Constants.actions.SINGLE_CARD_PLUG

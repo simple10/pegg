@@ -135,7 +135,15 @@ class CardView extends View
     @backImage.pipe @_eventOutput
     @backText.pipe @_eventOutput
 
+  clearCard: () ->
+    @frontProfilePic.setContent ""
+    @frontQuestion.setContent ""
+    @backImage.setContent ""
+    @backText.setContent ""
+    @choicesView.clearChoices()
+
   loadCard: (id, card, type) ->
+    @clearCard()
     @card = card
     @id = id
 

@@ -111,8 +111,10 @@ class UserStore extends EventEmitter
 
   getAvatar: (params)->
     user = @getUser()
-    if user?
+    if user? and params?
       user.get('avatar_url') + "?#{params}"
+    else if user?
+      user.get('avatar_url')
     else
       'images/Unicorn_Cosmic1@2x.png'
 

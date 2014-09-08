@@ -205,24 +205,6 @@ class ParseBackend
         console.log "Error fetching cards: " + error.code + " " + error.message
         cb null
 
-  getCard: (cardId, cb) ->
-    cardQuery = new Parse.Query Card
-    cardQuery.equalTo 'objectId', cardId
-    cardQuery.first
-      success: (card) =>
-        if card?
-          cardObj = {
-            id: card.id
-            question: card.get 'question'
-            choices: []
-          }
-          cb cardObj
-        else
-          cb null
-      error: (error) ->
-        console.log "Error fetching card: " + error.code + " " + error.message
-        cb null
-
   getCategories: (cb) ->
     catQuery = new Parse.Query Category
     catQuery.find
@@ -265,6 +247,24 @@ class ParseBackend
         console.log "Error fetching cards: " + error.code + " " + error.message
         cb null
 
+  getCard: (cardId, cb) ->
+    cardQuery = new Parse.Query Card
+    cardQuery.equalTo 'objectId', cardId
+    cardQuery.first
+      success: (card) =>
+        if card?
+          cardObj = {
+            id: card.id
+            question: card.get 'question'
+            hasPreffed: card.get 'hasPreffed'
+            choices: []
+          }
+          cb cardObj
+        else
+          cb null
+      error: (error) ->
+        console.log "Error fetching card: " + error.code + " " + error.message
+        cb null
 
   getPrefCard: (cardId, peggeeId, cb) ->
     peggee = new Parse.Object 'User'

@@ -30,7 +30,7 @@ class ChoicesView extends View
 #    container.pipe @scrollView
 
   load: (choices) ->
-    @choices.length = 0
+    @clearChoices()
 
     i=0
     for choice in choices
@@ -62,7 +62,8 @@ class ChoicesView extends View
     #  classes: ['card__front__input']
     #surfaces.push newChoice
 
-
+  clearChoices: () ->
+    @choices.length = 0
 
   showChoices: () ->
     for choiceView in @choices

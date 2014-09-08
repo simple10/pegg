@@ -12,6 +12,7 @@ AppRouter = Parse.Router.extend(
     "create": "create"
     "settings": "settings"
     "profile": "profile"
+    "card/:card": "card"
     "card/:card/:peggee": "card"
     "activity/:card/:peggee": "activity"
     ":code": "auth"
@@ -20,7 +21,7 @@ AppRouter = Parse.Router.extend(
 #    NavActions.loadPage "login"
 
   card: (card, peggee) ->
-    if card? and peggee?
+    if card?
       NavActions.loadLink card, peggee
       SingleCardActions.load card, peggee, 'card'
 
