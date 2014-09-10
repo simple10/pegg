@@ -19,7 +19,6 @@ class ParseBackend
       message = "#{prefCard.firstName} pegged #{himHerSelf}: #{prefCard.question}"
       @saveActivity message, prefCard.pic, userId, cardId
 
-
   savePeggActivity: (cardId, userId, peggeeId, tries) ->
     @getPrefCard cardId, peggeeId, (prefCard) =>
       @getUser userId, (user) =>
@@ -27,13 +26,17 @@ class ParseBackend
         message = "#{user.firstName} pegged #{prefCard.firstName} in #{tries} #{trys}: #{prefCard.question}"
         @saveActivity message, user.pic, userId, cardId
 
-
   saveActivity: (message, pic, userId, cardId) ->
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    newActivityAcl = new Parse.ACL user
+    newActivityAcl.setRoleReadAccess "#{userId}_Friends", true
     activity = new Parse.Object 'Activity'
     activity.set 'user', (new Parse.Object 'User').set 'id', userId
     activity.set 'card', (new Parse.Object 'Card').set 'id', cardId
     activity.set 'message', message
     activity.set 'pic', pic
+    activity.set 'ACL', newActivityAcl
     activity.save()
 
   saveComment: (comment, cardId, peggeeId, userId, userImg, cb) ->
@@ -366,24 +369,50 @@ class ParseBackend
     # TODO: implement pagination
     user = new Parse.Object 'User'
     user.set 'id', userId
-    peggQuery = new Parse.Query Pegg
-    peggQuery.include 'card'
-    peggQuery.include 'guess'
-    peggQuery.include 'peggee'
-    peggQuery.include 'user'
-    peggQuery.notEqualTo 'user', user
-    peggQuery.find
+    activityQuery = new Parse.Query Activity
+    activityQuery.include 'card'
+    activityQuery.include 'user'
+    activityQuery.descending 'createdAt'
+    # activityQuery.notEqualTo 'user', user
+    activityQuery.find
       success: (results) =>
         for activity in results
           activities.push {
-            pegger: activity.get 'user'
-            peggee: activity.get 'peggee'
-            card: activity.get 'card'
-            guess: activity.get 'guess'
+            userId: activity.get('user').id
+            cardId: activity.get('card').id
+            message: activity.get 'message'
+            pic: activity.get 'pic'
           }
         if results.length
           #console.log @_activity
           cb activities
+      error: (error) ->
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
+  getPeggsByUser: (userId, page, cb) ->
+    peggs = []
+    # todo: implement pagination
+    user = new parse.object 'user'
+    user.set 'id', userid
+    peggquery = new parse.query pegg
+    peggquery.include 'card'
+    peggquery.include 'guess'
+    peggquery.include 'peggee'
+    peggquery.include 'user'
+    peggquery.notequalto 'user', user
+    peggquery.find
+      success: (results) =>
+        for pegg in results
+          peggs.push {
+            pegger: pegg.get 'user'
+            peggee: pegg.get 'peggee'
+            card: pegg.get 'card'
+            guess: pegg.get 'guess'
+          }
+        if results.length
+          #console.log @_activity
+          cb peggs
       error: (error) ->
         console.log "Error: " + error.code + " " + error.message
         cb null
