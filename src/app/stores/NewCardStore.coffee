@@ -26,7 +26,10 @@ class NewCardStore extends EventEmitter
   _addCategories: (categories) ->
     @_categories = []
     @_categories.push categories...
-    DB.saveCategories @_cardId, @_categories
+    DB.saveCategories @_cardId, @_categories, () =>
+      user = UserStore.getUser()
+      pic = UserStore.getAvatar()
+      DB.saveNewCardActivity(@_cardId, @_question, user, pic)
 
   _getUser: ->
     user = UserStore.getUser()

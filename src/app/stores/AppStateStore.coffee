@@ -15,6 +15,7 @@
 EventEmitter = require 'famous/core/EventEmitter'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
+ActivityActions = require 'actions/ActivityActions'
 
 Parse = require 'Parse'
 
@@ -30,6 +31,9 @@ class AppStateStore extends EventEmitter
     Parse.history.navigate pageID, true
     if pageID is 'login' or pageID is 'signup'
       @emit Constants.stores.LOGIN_CHANGE
+    else if pageID is 'activity'
+      ActivityActions.load 0
+      @emit Constants.stores.MENU_CHANGE
     else
       @emit Constants.stores.MENU_CHANGE
 

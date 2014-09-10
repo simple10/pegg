@@ -125,6 +125,13 @@ class PlayStore extends EventHandler
       UserStore.getAvatar 'type=square'
       (res) =>
         @_comments.unshift res
+        DB.saveCommentActivity(
+          comment
+          @_cardId
+          @_peggee
+          UserStore.getUser()
+          UserStore.getAvatar 'type=square'
+        )
         @emit Constants.stores.COMMENTS_CHANGE
     )
 

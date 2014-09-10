@@ -61,8 +61,8 @@ class ActivityItemView extends View
 
     if @options.cardId?
       container.on 'click', ((e) ->
-        NavActions.selectSingleCardItem @options.cardId, @options.userId
-        SingleCardActions.load @options.cardId, @options.userId, 'activity'
+        NavActions.selectSingleCardItem @options.cardId, @options.peggeeId
+        SingleCardActions.load @options.cardId, @options.peggeeId, 'activity'
       ).bind @
 
 module.exports = ActivityItemView

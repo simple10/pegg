@@ -19,32 +19,39 @@ class ParseBackend
       message = "#{mood.firstName} is feeling #{mood.name}"
       @saveActivity message, mood.pic, userId
 
-  saveCommentActivity: (cardId, userId) ->
-  saveCardCreationActivity: (cardId, userId) ->
+  saveCommentActivity: (comment, cardId, peggeeId, user, pic) ->
+    message = "#{user.get 'first_name'} commented: #{comment}"
+    @saveActivity message, pic, user.id, cardId, peggeeId
+
+  saveNewCardActivity: (cardId, question, user, pic) ->
+    message = "#{user.get 'first_name'} created card: #{question}"
+    @saveActivity message, pic, user.id, cardId
 
   savePrefActivity: (cardId, userId) ->
     @getPrefCard cardId, userId, (prefCard) =>
       himHerSelf = if prefCard.gender is 'male' then 'himself' else 'herself'
       message = "#{prefCard.firstName} pegged #{himHerSelf}: #{prefCard.question}"
-      @saveActivity message, prefCard.pic, userId, cardId
+      @saveActivity message, prefCard.pic, userId, cardId, userId
 
   savePeggActivity: (cardId, userId, peggeeId, tries) ->
     @getPrefCard cardId, peggeeId, (prefCard) =>
       @getUser userId, (user) =>
         trys = if tries is 1 then 'try' else 'tries'
         message = "#{user.firstName} pegged #{prefCard.firstName} in #{tries} #{trys}: #{prefCard.question}"
-        @saveActivity message, user.pic, userId, cardId
+        @saveActivity message, user.pic, userId, cardId, peggeeId
 
-  saveActivity: (message, pic, userId, cardId) ->
+  saveActivity: (message, pic, userId, cardId, peggeeId) ->
+    console.log "saveActivity: ", message, pic, userId, cardId, peggeeId
     user = new Parse.Object 'User'
     user.set 'id',  userId
     newActivityAcl = new Parse.ACL user
     newActivityAcl.setRoleReadAccess "#{userId}_Friends", true
     activity = new Parse.Object 'Activity'
-    activity.set 'user', (new Parse.Object 'User').set 'id', userId
-    activity.set 'card', (new Parse.Object 'Card').set 'id', cardId if cardId?
     activity.set 'message', message
     activity.set 'pic', pic
+    activity.set 'user', (new Parse.Object 'User').set 'id', userId
+    activity.set 'peggee', (new Parse.Object 'User').set 'id', peggeeId if peggeeId?
+    activity.set 'card', (new Parse.Object 'Card').set 'id', cardId if cardId?
     activity.set 'ACL', newActivityAcl
     activity.save()
 
@@ -407,16 +414,18 @@ class ParseBackend
     activityQuery = new Parse.Query Activity
     activityQuery.include 'card'
     activityQuery.include 'user'
+    activityQuery.include 'peggee'
     activityQuery.descending 'createdAt'
     # activityQuery.notEqualTo 'user', user
     activityQuery.find
       success: (results) =>
         for activity in results
           activities.push {
-            userId: activity.get('user').id
-            cardId: activity.get('card')?.id
             message: activity.get 'message'
             pic: activity.get 'pic'
+            userId: activity.get('user').id
+            cardId: activity.get('card')?.id
+            peggeeId: activity.get('peggee')?.id
           }
         if results.length
           #console.log @_activity
