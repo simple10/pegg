@@ -10,8 +10,17 @@ Points = Parse.Object.extend 'Points'
 PrefCounts = Parse.Object.extend 'PrefCounts'
 Activity = Parse.Object.extend 'Activity'
 User = Parse.Object.extend 'User'
+UserMood = Parse.Object.extend 'UserMood'
 
 class ParseBackend
+
+  saveMoodActivity: (moodId, userId) ->
+    @getUserMood moodId, userId, (mood) =>
+      message = "#{mood.firstName} is feeling #{mood.name}"
+      @saveActivity message, mood.pic, userId
+
+  saveCommentActivity: (cardId, userId) ->
+  saveCardCreationActivity: (cardId, userId) ->
 
   savePrefActivity: (cardId, userId) ->
     @getPrefCard cardId, userId, (prefCard) =>
@@ -33,7 +42,7 @@ class ParseBackend
     newActivityAcl.setRoleReadAccess "#{userId}_Friends", true
     activity = new Parse.Object 'Activity'
     activity.set 'user', (new Parse.Object 'User').set 'id', userId
-    activity.set 'card', (new Parse.Object 'Card').set 'id', cardId
+    activity.set 'card', (new Parse.Object 'Card').set 'id', cardId if cardId?
     activity.set 'message', message
     activity.set 'pic', pic
     activity.set 'ACL', newActivityAcl
@@ -63,12 +72,12 @@ class ParseBackend
     query = new Parse.Query User
     query.equalTo 'objectId', userId
     query.first
-      success: (results) =>
+      success: (result) =>
         user = {
-          firstName: results.get 'first_name'
-          lastName: results.get 'last_name'
-          gender: results.get 'gender'
-          pic: results.get 'avatar_url'
+          firstName: result.get 'first_name'
+          lastName: result.get 'last_name'
+          gender: result.get 'gender'
+          pic: result.get 'avatar_url'
         }
         cb user
       error: (error) ->
@@ -364,6 +373,32 @@ class ParseBackend
         console.log "Error fetching choices: " + error.code + " " + error.message
         cb null
 
+  getUserMood: (moodId, userId, cb) ->
+    mood = new Parse.Object 'Category'
+    mood.set 'id', moodId
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    userMoodQuery = new Parse.Query UserMood
+    userMoodQuery.include 'user'
+    userMoodQuery.include 'mood'
+    userMoodQuery.equalTo 'mood', mood
+    userMoodQuery.equalTo 'user', user
+    userMoodQuery.first
+      success: (result) =>
+        if result?
+          user = result.get 'user'
+          mood = result.get 'mood'
+          cb {
+            firstName: user.get 'first_name'
+            name: mood.get 'name'
+            pic: mood.get 'iconUrl'
+          }
+        else
+          cb null
+      error: (error) =>
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
   getActivity: (userId, page, cb) ->
     activities = []
     # TODO: implement pagination
@@ -379,7 +414,7 @@ class ParseBackend
         for activity in results
           activities.push {
             userId: activity.get('user').id
-            cardId: activity.get('card').id
+            cardId: activity.get('card')?.id
             message: activity.get 'message'
             pic: activity.get 'pic'
           }

@@ -59,9 +59,10 @@ class ActivityItemView extends View
     container.add(picSurfaceMod).add picSurface
     @add container
 
-    container.on 'click', ((e) ->
-      NavActions.selectSingleCardItem @options.cardId, @options.userId
-      SingleCardActions.load @options.cardId, @options.userId, 'activity'
-    ).bind @
+    if @options.cardId?
+      container.on 'click', ((e) ->
+        NavActions.selectSingleCardItem @options.cardId, @options.userId
+        SingleCardActions.load @options.cardId, @options.userId, 'activity'
+      ).bind @
 
 module.exports = ActivityItemView

@@ -134,8 +134,10 @@ class PlayStore extends EventHandler
   _mood: (text, id, url) ->
     console.log "moodId: " + id
     @_userMood = { text: text, id: id, url: url }
-    DB.saveMood(id, UserStore.getUser().id, (res) =>
+    userId = UserStore.getUser().id
+    DB.saveMood(id, userId, (res) =>
       @emit Constants.stores.MOOD_CHANGE
+      DB.saveMoodActivity(id, userId)
     )
 
   _badgesViewed: (badges) ->

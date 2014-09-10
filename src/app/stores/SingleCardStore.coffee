@@ -63,8 +63,6 @@ class SingleCardStore extends EventEmitter
     #   - whether user has pegged peggee
     #   - whether there's a peggee
 
-    debugger
-
     # scenario 1:
     #   You're logged in and you go to a card. You’ve preffed the card. You see your answer.
     if @_loggedIn and @_card? and @_peggeeId is @_userId and @_hasPreffed
