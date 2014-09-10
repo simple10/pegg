@@ -16,6 +16,7 @@ EventEmitter = require 'famous/core/EventEmitter'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 ActivityActions = require 'actions/ActivityActions'
+UserActions = require 'actions/UserActions'
 
 Parse = require 'Parse'
 
@@ -33,6 +34,9 @@ class AppStateStore extends EventEmitter
       @emit Constants.stores.LOGIN_CHANGE
     else if pageID is 'activity'
       ActivityActions.load 0
+      @emit Constants.stores.MENU_CHANGE
+    else if pageID is 'profile'
+      UserActions.load() # load user pref images
       @emit Constants.stores.MENU_CHANGE
     else
       @emit Constants.stores.MENU_CHANGE
