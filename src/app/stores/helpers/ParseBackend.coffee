@@ -8,9 +8,33 @@ Pref = Parse.Object.extend 'Pref'
 Pegg = Parse.Object.extend 'Pegg'
 Points = Parse.Object.extend 'Points'
 PrefCounts = Parse.Object.extend 'PrefCounts'
-
+Activity = Parse.Object.extend 'Activity'
+User = Parse.Object.extend 'User'
 
 class ParseBackend
+
+  savePrefActivity: (cardId, userId) ->
+    @getPrefCard cardId, userId, (prefCard) =>
+      himHerSelf = if prefCard.gender is 'male' then 'himself' else 'herself'
+      message = "#{prefCard.firstName} pegged #{himHerSelf}: #{prefCard.question}"
+      @saveActivity message, prefCard.pic, userId, cardId
+
+
+  savePeggActivity: (cardId, userId, peggeeId, tries) ->
+    @getPrefCard cardId, peggeeId, (prefCard) =>
+      @getUser userId, (user) =>
+        trys = if tries is 1 then 'try' else 'tries'
+        message = "#{user.firstName} pegged #{prefCard.firstName} in #{tries} #{trys}: #{prefCard.question}"
+        @saveActivity message, user.pic, userId, cardId
+
+
+  saveActivity: (message, pic, userId, cardId) ->
+    activity = new Parse.Object 'Activity'
+    activity.set 'user', (new Parse.Object 'User').set 'id', userId
+    activity.set 'card', (new Parse.Object 'Card').set 'id', cardId
+    activity.set 'message', message
+    activity.set 'pic', pic
+    activity.save()
 
   saveComment: (comment, cardId, peggeeId, userId, userImg, cb) ->
     card = new Parse.Object 'Card'
@@ -31,6 +55,22 @@ class ParseBackend
     newComment.set 'ACL', newCommentAcl
     newComment.save()
     cb newComment
+
+  getUser: (userId, cb) ->
+    query = new Parse.Query User
+    query.equalTo 'objectId', userId
+    query.first
+      success: (results) =>
+        user = {
+          firstName: results.get 'first_name'
+          lastName: results.get 'last_name'
+          gender: results.get 'gender'
+          pic: results.get 'avatar_url'
+        }
+        cb user
+      error: (error) ->
+        console.log "Error: #{error.code}  #{error.message}"
+        cb null
 
   getComments: (cardId, peggeeId, cb) ->
     query = new Parse.Query Comment
@@ -90,8 +130,13 @@ class ParseBackend
     newPref.set 'plug', plugUrl
     newPref.set 'user', preffer
     newPref.set 'ACL', newPrefAcl
-    newPref.save()
-    cb 'savePref done'
+    newPref.save
+      success: (result) ->
+        cb "Pref saved: #{result}"
+      error: (error) ->
+        console.log "Error: #{error.code}  #{error.message}"
+        cb null
+
 
   savePlug: (cardId, imageUrl, peggeeId, cb) ->
     # UPDATE Pref table with user's new image
@@ -287,6 +332,7 @@ class ParseBackend
             peggee: peggee.id
             firstName: peggee.get 'first_name'
             pic: peggee.get 'avatar_url'
+            gender: peggee.get 'gender'
             hasPegged: pref.get 'hasPegged'
             question: card.get 'question'
             choices: []

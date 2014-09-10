@@ -65,6 +65,7 @@ class PlayStore extends EventHandler
     DB.savePegg(peggeeId, cardId, choiceId, answerId, userId, (res)->
       # TODO: catch save fail
       #if res?
+
     )
     # Save points
     if choiceId is answerId
@@ -73,6 +74,7 @@ class PlayStore extends EventHandler
         # TODO: catch save fail
         #if res?
       )
+      DB.savePeggActivity cardId, userId, peggeeId, @_fail + 1
       @_fail = 0
       @emit Constants.stores.CARD_WIN, points
     else
@@ -90,6 +92,7 @@ class PlayStore extends EventHandler
       # TODO: catch save fail
       if res?
         console.log res
+        DB.savePrefActivity cardId, userId
     )
 
     DB.savePrefCount(cardId, choiceId, (res)=>
