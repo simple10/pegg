@@ -183,16 +183,16 @@ class NewCardView extends View
     @addNum(3, 0)
     @addLinkContainer(3, 1,
       'images/deck_existing.png'
-      'Place card in existing deck(s)'
+      'Choose deck(s) for this card'
     , () => 
       @showCategories()
     )
-    @addLinkContainer(3, 2,
-      'images/deck_new2.png'
-      'Create a new deck'
-    , =>
-      alert "new deck"
-    )
+    # @addLinkContainer(3, 2,
+    #   'images/deck_new2.png'
+    #   'Create a new deck'
+    # , =>
+    #   alert "new deck"
+    # )
     @addButton(3, 3, 'Finish', =>
       @hideStep 'step3', @step3Mods
       debugger
