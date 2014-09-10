@@ -11,17 +11,12 @@ NavActions =
       actionType: Constants.MENU_SELECT
       pageId: pageId
 
-  loadLink: (cardId, peggeeId) ->
-    AppDispatcher.handleViewAction
-      actionType: Constants.LOAD_LINK
-      cardId: cardId
-      peggeeId: peggeeId
-
-  selectSingleCardItem: (cardId, peggeeId) ->
+  selectSingleCardItem: (cardId, peggeeId, referrer) ->
     AppDispatcher.handleViewAction
       actionType: Constants.CARD_SELECT
       cardId: cardId
       peggeeId: peggeeId
+      referrer: referrer
 
   logout: () ->
     AppDispatcher.handleViewAction

@@ -50,7 +50,7 @@ class SingleCardNavView extends View
     ## MESSAGE ##
     @message = new Surface
       size: @layout.message.size
-      content: 'Generic message'
+      content: ''
       classes: @layout.message.classes
     @messageMod = new StateModifier
       align: @layout.message.align

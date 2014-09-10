@@ -14,7 +14,6 @@ AppRouter = Parse.Router.extend(
     "profile": "profile"
     "card/:card": "card"
     "card/:card/:peggee": "card"
-    "activity/:card/:peggee": "activity"
     ":code": "auth"
 
   login: ->
@@ -22,16 +21,22 @@ AppRouter = Parse.Router.extend(
 
   card: (card, peggee) ->
     if card?
-      NavActions.loadLink card, peggee
-      SingleCardActions.load card, peggee, 'card'
+      NavActions.selectSingleCardItem card, peggee
 
-  activity: (card, peggee) ->
-    if card? and peggee?
-      NavActions.loadLink card, peggee
-      SingleCardActions.load card, peggee, 'activity'
+  activity: () ->
+    NavActions.selectMenuItem 'activity'
 
-  decks: ->
-    #NavActions.selectMenuItem "decks"
+  profile: () ->
+    NavActions.selectMenuItem 'profile'
+
+  settings: () ->
+    NavActions.selectMenuItem 'settings'
+
+  create: () ->
+    NavActions.selectMenuItem 'create'
+
+  play: () ->
+    NavActions.selectMenuItem 'play'
 
   auth: (code) ->
     UserActions.auth code

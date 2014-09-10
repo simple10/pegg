@@ -135,6 +135,7 @@ class SingleCardStore extends EventEmitter
     console.log "SingleCardStore :: _doRequireLogin called"
 
   _fetchChoices: () ->
+    @_card.choices.length = 0
     DB.getChoices(@_card.id
       (choices) =>
         for choice in choices
