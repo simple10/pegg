@@ -21,6 +21,7 @@ Utils = require 'lib/Utils'
 Scrollview = require 'famous/views/Scrollview'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Constants = require 'constants/PeggConstants'
+NavActions = require 'actions/NavActions'
 
 # Custom View
 InputView = require 'views/InputView'
@@ -158,7 +159,7 @@ class NewCardView extends View
       question =  @step1Inputs[0].getValue()
       if question.length > 5
         CardActions.addQuestion question
-        @hideStep 'step1', @step1Mods
+        @hideStep 'step1', @step1Mods, @step1Inputs
         @step2()
       else
         alert 'Please enter a question.'
@@ -174,7 +175,7 @@ class NewCardView extends View
         if answer.length > 0 then answers.push answer
       if answers.length >= 2
         CardActions.addAnswers answers
-        @hideStep 'step2', @step2Mods
+        @hideStep 'step2', @step2Mods, @step2Inputs
         @step3()
       else
         alert 'Please enter at least 2 answer options.'
@@ -195,20 +196,21 @@ class NewCardView extends View
     # )
     @addButton(3, 3, 'Finish', =>
       @hideStep 'step3', @step3Mods
-      debugger
       CardActions.addCategories Object.keys @_selectedCategories
       @step4()
     )
     ## STEP 4
     @addSurface(4, 0, 'CREATED!')
     @addButton(4, 1,'Play this card', =>
+      cardId = NewCardStore.getCard().id
       @hideStep 'step4', @step4Mods
+      NewCardStore.newCard()
       @step1()
-      #TODO: play card
+      NavActions.selectSingleCardItem cardId, UserStore.getUser().id, 'create'
     )
     @addButton(4, 2, 'Create another card', =>
       @hideStep 'step4', @step4Mods
-      #TODO: reset all fields to empty
+      NewCardStore.newCard()
       @step1()
     )
     @step1()
@@ -232,16 +234,15 @@ class NewCardView extends View
     ), 30
 
   showStep: (step, mods) ->
-    i = 0
-    for mod in mods
+    for mod, i in mods
       Utils.animate mod, @["options"]["#{step}_#{i}"].states[0]
-      i++
 
-  hideStep: (step, mods) ->
-    i = 0
-    for mod in mods
+  hideStep: (step, mods, inputs) ->
+    inputs or= []
+    for mod, i in mods
       Utils.animate mod, @["options"]["#{step}_#{i}"].states[1]
-      i++
+    for input in inputs
+      input.clear()
 
   showCategories: () ->
     Utils.animate @categoryScrollviewMod, @options.categories.states[0]

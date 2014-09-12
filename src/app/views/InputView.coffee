@@ -60,5 +60,7 @@ class InputView extends View
   setValue: (value) =>
     @textInput.setValue value
 
+  clear: () =>
+    @textInput.setValue ""
 
 module.exports = InputView
