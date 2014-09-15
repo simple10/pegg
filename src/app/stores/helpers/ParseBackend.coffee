@@ -140,7 +140,7 @@ class ParseBackend
     preffer.set 'id',  userId
     newPrefAcl = new Parse.ACL preffer
     newPrefAcl.setRoleReadAccess "#{userId}_Friends", true
-    newPrefAcl.setPublicReadAccess true
+    # newPrefAcl.setPublicReadAccess true
     answer = new Parse.Object 'Choice'
     answer.set 'id', choiceId
     newPref = new Parse.Object 'Pref'
