@@ -7,7 +7,6 @@ StateModifier = require 'famous/modifiers/StateModifier'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 NavActions = require 'actions/NavActions'
-SingleCardActions = require 'actions/SingleCardActions'
 Utils = require 'lib/Utils'
 
 class ProfileActivityItemView extends View
@@ -43,7 +42,7 @@ class ProfileActivityItemView extends View
                     <span class='numPeggers'>Peggs #{numPegged}</span>
                 </div>
                </div>
-          ​​​​​​​​​​​​​​​​​​​​​​"
+              "
 
     textSurface = new Surface
       size: [Utils.getViewportWidth() - 100, undefined]
@@ -66,8 +65,7 @@ class ProfileActivityItemView extends View
     @add container
 
     container.on 'click', ((e) ->
-      NavActions.selectSingleCardItem @options.data.cardId, @options.data.userId
-      SingleCardActions.load @options.data.cardId, @options.data.userId, 'profile'
+      NavActions.selectSingleCardItem @options.data.cardId, @options.data.userId, 'profile'
     ).bind @
 
 module.exports = ProfileActivityItemView

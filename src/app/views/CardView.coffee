@@ -136,11 +136,26 @@ class CardView extends View
     @backText.pipe @_eventOutput
 
   clearCard: () ->
-    @frontProfilePic.setContent ""
-    @frontQuestion.setContent ""
+    # clear content
     @backImage.setContent ""
     @backText.setContent ""
     @choicesView.clearChoices()
+    @frontProfilePic.setContent ""
+    @frontQuestion.setContent ""
+
+    # clear event listeners
+    @back.removeListener 'click', @flip
+    @backImage.removeListener 'click', @flip
+    @backText.removeListener 'click', @flip
+    @front.removeListener 'click', @flip
+    @front.removeListener 'click', @toggleChoices
+    @frontProfilePic.removeListener 'click', @flip
+    @frontProfilePic.removeListener 'click', @toggleChoices
+    @frontQuestion.removeListener 'click', @flip
+    @frontQuestion.removeListener 'click', @toggleChoices
+
+    # reset card elements positioning
+    @toggleChoices() if not @showChoices
 
   loadCard: (id, card, type) ->
     @clearCard()

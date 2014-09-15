@@ -53,8 +53,7 @@ class PrefBoardImageView extends View
   initListeners: () ->
     @image.pipe @_eventOutput
     @image.on 'click', ((e) ->
-      SingleCardActions.load @options.cardId, @options.userId, 'profile'
-      NavActions.selectSingleCardItem @options.cardId, @options.userId
+      NavActions.selectSingleCardItem @options.cardId, @options.userId, 'profile'
     ).bind @
 
   _showImage: ->

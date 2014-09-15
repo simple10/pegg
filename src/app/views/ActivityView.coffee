@@ -32,6 +32,7 @@ class ActivityView extends View
     @add container
 
   loadActivity:  =>
+    @activities.length = 0
     @items = ActivityStore.getActivity()
     for item in @items
       itemView = new ActivityItemView item

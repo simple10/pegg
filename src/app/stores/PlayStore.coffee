@@ -65,6 +65,7 @@ class PlayStore extends EventHandler
     DB.savePegg(peggeeId, cardId, choiceId, answerId, userId, (res)->
       # TODO: catch save fail
       #if res?
+
     )
     # Save points
     if choiceId is answerId
@@ -73,6 +74,7 @@ class PlayStore extends EventHandler
         # TODO: catch save fail
         #if res?
       )
+      DB.savePeggActivity cardId, userId, peggeeId, @_fail + 1
       @_fail = 0
       @emit Constants.stores.CARD_WIN, points
     else
@@ -90,6 +92,7 @@ class PlayStore extends EventHandler
       # TODO: catch save fail
       if res?
         console.log res
+        DB.savePrefActivity cardId, userId
     )
 
     DB.savePrefCount(cardId, choiceId, (res)=>
@@ -122,6 +125,13 @@ class PlayStore extends EventHandler
       UserStore.getAvatar 'type=square'
       (res) =>
         @_comments.unshift res
+        DB.saveCommentActivity(
+          comment
+          @_cardId
+          @_peggee
+          UserStore.getUser()
+          UserStore.getAvatar 'type=square'
+        )
         @emit Constants.stores.COMMENTS_CHANGE
     )
 
@@ -131,8 +141,10 @@ class PlayStore extends EventHandler
   _mood: (text, id, url) ->
     console.log "moodId: " + id
     @_userMood = { text: text, id: id, url: url }
-    DB.saveMood(id, UserStore.getUser().id, (res) =>
+    userId = UserStore.getUser().id
+    DB.saveMood(id, userId, (res) =>
       @emit Constants.stores.MOOD_CHANGE
+      DB.saveMoodActivity(id, userId)
     )
 
   _badgesViewed: (badges) ->

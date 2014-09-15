@@ -137,8 +137,6 @@ class AppView extends View
     if !UserStore.getLoggedIn() and pageID isnt 'card'
       @showPage @getPage 'login'
     else
-      if pageID is 'profile'
-        UserActions.load() # load user pref images
       @showPage @getPage pageID
       #@footer.bounceTabs()
       #@footer.hideTabs()

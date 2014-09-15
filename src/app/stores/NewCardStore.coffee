@@ -6,6 +6,7 @@ DB = require 'stores/helpers/ParseBackend'
 
 
 class NewCardStore extends EventEmitter
+  _cardId: null
   _author: null
   _question: null
   _answers: []
@@ -26,7 +27,17 @@ class NewCardStore extends EventEmitter
   _addCategories: (categories) ->
     @_categories = []
     @_categories.push categories...
-    DB.saveCategories @_cardId, @_categories
+    DB.saveCategories @_cardId, @_categories, (message) =>
+      user = UserStore.getUser()
+      pic = UserStore.getAvatar()
+      DB.saveNewCardActivity(@_cardId, @_question, user, pic)
+
+  newCard: ->
+    @_cardId = null
+    @_author = null
+    @_question = null
+    @_answers = []
+    @_categories = []
 
   _getUser: ->
     user = UserStore.getUser()
@@ -43,10 +54,11 @@ class NewCardStore extends EventEmitter
 
   getCard: ->
     {
-    author: @_author
-    question: @_question
-    answers: @_answers
-    categories: @_categories
+      id: @_cardId
+      author: @_author
+      question: @_question
+      answers: @_answers
+      categories: @_categories
     }
 
   getCategories: ->

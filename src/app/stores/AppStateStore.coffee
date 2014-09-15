@@ -15,6 +15,9 @@
 EventEmitter = require 'famous/core/EventEmitter'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
+ActivityActions = require 'actions/ActivityActions'
+UserActions = require 'actions/UserActions'
+SingleCardActions = require 'actions/SingleCardActions'
 
 Parse = require 'Parse'
 
@@ -30,19 +33,24 @@ class AppStateStore extends EventEmitter
     Parse.history.navigate pageID, true
     if pageID is 'login' or pageID is 'signup'
       @emit Constants.stores.LOGIN_CHANGE
+    else if pageID is 'activity'
+      ActivityActions.load 0
+      @emit Constants.stores.MENU_CHANGE
+    else if pageID is 'profile'
+      UserActions.load() # load user pref images
+      @emit Constants.stores.MENU_CHANGE
     else
       @emit Constants.stores.MENU_CHANGE
 
-  _loadCard: (cardId, peggeeId) ->
+  _loadCard: (cardId, peggeeId, referrer) ->
 #    console.log cardId, peggeeId
+    # Parse.history.navigate "#{@_currentPageID}/#{cardId}#{peggeeUrlSegment}", true
     @_currentPageID = 'card'
-    Parse.history.navigate "#{@_currentPageID}/#{cardId}/#{peggeeId}", true
-    @emit Constants.stores.MENU_CHANGE
-
-  _loadLink: (cardId, peggeeId) ->
-    @_currentPageID = 'card'
-    console.log cardId, peggeeId
-#    @emit Constants.stores.MENU_CHANGE
+    peggeeUrlSegment = if peggeeId? then "/#{peggeeId}" else ""
+    console.log "#{@_currentPageID}/#{cardId}#{peggeeUrlSegment}"
+    SingleCardActions.load cardId, peggeeId, referrer
+    if referrer?
+      @emit Constants.stores.MENU_CHANGE
 
   _logout: ->
     @_currentPageID = '/'
@@ -67,10 +75,8 @@ AppDispatcher.register (payload) ->
   switch action.actionType
     when Constants.actions.MENU_SELECT
       appstate._loadPage action.pageId
-    when Constants.actions.LOAD_LINK
-      appstate._loadLink action.cardId, action.peggeeId
     when Constants.actions.CARD_SELECT
-      appstate._loadCard action.cardId, action.peggeeId
+      appstate._loadCard action.cardId, action.peggeeId, action.referrer
     when Constants.actions.LOGOUT
       appstate._logout()
     when Constants.actions.LOGIN

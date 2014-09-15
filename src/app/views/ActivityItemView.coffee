@@ -32,15 +32,10 @@ class ActivityItemView extends View
       classes: ['peggbox__item']
     container.pipe @._eventOutput
 
-    peggeeName = @options.peggee.get 'first_name'
-    peggerName = @options.pegger.get 'first_name'
-    peggerPic = @options.pegger.get 'avatar_url'
-    guess = @options.guess.get 'text'
     message = "
           <div class='peggbox__item__text__child'>
-            <span class='pegger'>#{peggerName}</span> pegged #{peggeeName} with #{guess.truncate 15}
-          </div>
-      ​​​​​​​​​​​​​​​​​​​​​​"
+            #{@options.message.truncate 55}
+          </div>"
 
     textSurface = new Surface
       size: [Utils.getViewportWidth() - 80, @options.height]
@@ -57,16 +52,16 @@ class ActivityItemView extends View
     picSurface = new ImageSurface
       size: [50, 50]
       classes: ['peggbox__item__pic']
-      content: peggerPic
+      content: @options.pic
     picSurfaceMod = new StateModifier
       origin: [0, 0.5]
       align: [0.05, 0.5]
     container.add(picSurfaceMod).add picSurface
     @add container
 
-    container.on 'click', ((e) ->
-      NavActions.selectSingleCardItem @options.card.id, @options.peggee.id
-      SingleCardActions.load @options.card.id, @options.peggee.id, 'activity'
-    ).bind @
+    if @options.cardId?
+      container.on 'click', ((e) ->
+        NavActions.selectSingleCardItem @options.cardId, @options.peggeeId, 'activity'
+      ).bind @
 
 module.exports = ActivityItemView

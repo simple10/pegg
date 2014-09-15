@@ -63,8 +63,6 @@ class SingleCardStore extends EventEmitter
     #   - whether user has pegged peggee
     #   - whether there's a peggee
 
-    debugger
-
     # scenario 1:
     #   You're logged in and you go to a card. You’ve preffed the card. You see your answer.
     if @_loggedIn and @_card? and @_peggeeId is @_userId and @_hasPreffed
@@ -137,6 +135,7 @@ class SingleCardStore extends EventEmitter
     console.log "SingleCardStore :: _doRequireLogin called"
 
   _fetchChoices: () ->
+    @_card.choices.length = 0
     DB.getChoices(@_card.id
       (choices) =>
         for choice in choices

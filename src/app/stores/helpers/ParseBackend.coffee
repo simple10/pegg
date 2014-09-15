@@ -8,9 +8,52 @@ Pref = Parse.Object.extend 'Pref'
 Pegg = Parse.Object.extend 'Pegg'
 Points = Parse.Object.extend 'Points'
 PrefCounts = Parse.Object.extend 'PrefCounts'
-
+Activity = Parse.Object.extend 'Activity'
+User = Parse.Object.extend 'User'
+UserMood = Parse.Object.extend 'UserMood'
 
 class ParseBackend
+
+  saveMoodActivity: (moodId, userId) ->
+    @getUserMood moodId, userId, (mood) =>
+      message = "#{mood.firstName} is feeling #{mood.name}"
+      @saveActivity message, mood.pic, userId
+
+  saveCommentActivity: (comment, cardId, peggeeId, user, pic) ->
+    message = "#{user.get 'first_name'} commented: #{comment}"
+    @saveActivity message, pic, user.id, cardId, peggeeId
+
+  saveNewCardActivity: (cardId, question, user, pic) ->
+    message = "#{user.get 'first_name'} created card: #{question}"
+    @saveActivity message, pic, user.id, cardId
+
+  savePrefActivity: (cardId, userId) ->
+    @getPrefCard cardId, userId, (prefCard) =>
+      himHerSelf = if prefCard.gender is 'male' then 'himself' else 'herself'
+      message = "#{prefCard.firstName} pegged #{himHerSelf}: #{prefCard.question}"
+      @saveActivity message, prefCard.pic, userId, cardId, userId
+
+  savePeggActivity: (cardId, userId, peggeeId, tries) ->
+    @getPrefCard cardId, peggeeId, (prefCard) =>
+      @getUser userId, (user) =>
+        trys = if tries is 1 then 'try' else 'tries'
+        message = "#{user.firstName} pegged #{prefCard.firstName} in #{tries} #{trys}: #{prefCard.question}"
+        @saveActivity message, user.pic, userId, cardId, peggeeId
+
+  saveActivity: (message, pic, userId, cardId, peggeeId) ->
+    console.log "saveActivity: ", message, pic, userId, cardId, peggeeId
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    newActivityAcl = new Parse.ACL user
+    newActivityAcl.setRoleReadAccess "#{userId}_Friends", true
+    activity = new Parse.Object 'Activity'
+    activity.set 'message', message
+    activity.set 'pic', pic
+    activity.set 'user', (new Parse.Object 'User').set 'id', userId
+    activity.set 'peggee', (new Parse.Object 'User').set 'id', peggeeId if peggeeId?
+    activity.set 'card', (new Parse.Object 'Card').set 'id', cardId if cardId?
+    activity.set 'ACL', newActivityAcl
+    activity.save()
 
   saveComment: (comment, cardId, peggeeId, userId, userImg, cb) ->
     card = new Parse.Object 'Card'
@@ -31,6 +74,22 @@ class ParseBackend
     newComment.set 'ACL', newCommentAcl
     newComment.save()
     cb newComment
+
+  getUser: (userId, cb) ->
+    query = new Parse.Query User
+    query.equalTo 'objectId', userId
+    query.first
+      success: (result) =>
+        user = {
+          firstName: result.get 'first_name'
+          lastName: result.get 'last_name'
+          gender: result.get 'gender'
+          pic: result.get 'avatar_url'
+        }
+        cb user
+      error: (error) ->
+        console.log "Error: #{error.code}  #{error.message}"
+        cb null
 
   getComments: (cardId, peggeeId, cb) ->
     query = new Parse.Query Comment
@@ -90,8 +149,13 @@ class ParseBackend
     newPref.set 'plug', plugUrl
     newPref.set 'user', preffer
     newPref.set 'ACL', newPrefAcl
-    newPref.save()
-    cb 'savePref done'
+    newPref.save
+      success: (result) ->
+        cb "Pref saved: #{result}"
+      error: (error) ->
+        console.log "Error: #{error.code}  #{error.message}"
+        cb null
+
 
   savePlug: (cardId, imageUrl, peggeeId, cb) ->
     # UPDATE Pref table with user's new image
@@ -287,6 +351,7 @@ class ParseBackend
             peggee: peggee.id
             firstName: peggee.get 'first_name'
             pic: peggee.get 'avatar_url'
+            gender: peggee.get 'gender'
             hasPegged: pref.get 'hasPegged'
             question: card.get 'question'
             choices: []
@@ -315,29 +380,83 @@ class ParseBackend
         console.log "Error fetching choices: " + error.code + " " + error.message
         cb null
 
+  getUserMood: (moodId, userId, cb) ->
+    mood = new Parse.Object 'Category'
+    mood.set 'id', moodId
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    userMoodQuery = new Parse.Query UserMood
+    userMoodQuery.include 'user'
+    userMoodQuery.include 'mood'
+    userMoodQuery.equalTo 'mood', mood
+    userMoodQuery.equalTo 'user', user
+    userMoodQuery.first
+      success: (result) =>
+        if result?
+          user = result.get 'user'
+          mood = result.get 'mood'
+          cb {
+            firstName: user.get 'first_name'
+            name: mood.get 'name'
+            pic: mood.get 'iconUrl'
+          }
+        else
+          cb null
+      error: (error) =>
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
   getActivity: (userId, page, cb) ->
     activities = []
     # TODO: implement pagination
     user = new Parse.Object 'User'
     user.set 'id', userId
-    peggQuery = new Parse.Query Pegg
-    peggQuery.include 'card'
-    peggQuery.include 'guess'
-    peggQuery.include 'peggee'
-    peggQuery.include 'user'
-    peggQuery.notEqualTo 'user', user
-    peggQuery.find
+    activityQuery = new Parse.Query Activity
+    activityQuery.include 'card'
+    activityQuery.include 'user'
+    activityQuery.include 'peggee'
+    activityQuery.descending 'createdAt'
+    # activityQuery.notEqualTo 'user', user
+    activityQuery.find
       success: (results) =>
         for activity in results
           activities.push {
-            pegger: activity.get 'user'
-            peggee: activity.get 'peggee'
-            card: activity.get 'card'
-            guess: activity.get 'guess'
+            message: activity.get 'message'
+            pic: activity.get 'pic'
+            userId: activity.get('user').id
+            cardId: activity.get('card')?.id
+            peggeeId: activity.get('peggee')?.id
           }
         if results.length
           #console.log @_activity
           cb activities
+      error: (error) ->
+        console.log "Error: " + error.code + " " + error.message
+        cb null
+
+  getPeggsByUser: (userId, page, cb) ->
+    peggs = []
+    # todo: implement pagination
+    user = new parse.object 'user'
+    user.set 'id', userid
+    peggquery = new parse.query pegg
+    peggquery.include 'card'
+    peggquery.include 'guess'
+    peggquery.include 'peggee'
+    peggquery.include 'user'
+    peggquery.notequalto 'user', user
+    peggquery.find
+      success: (results) =>
+        for pegg in results
+          peggs.push {
+            pegger: pegg.get 'user'
+            peggee: pegg.get 'peggee'
+            card: pegg.get 'card'
+            guess: pegg.get 'guess'
+          }
+        if results.length
+          #console.log @_activity
+          cb peggs
       error: (error) ->
         console.log "Error: " + error.code + " " + error.message
         cb null
