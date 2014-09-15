@@ -37,6 +37,7 @@ class NewCardView extends View
     
     @_numOfselectedCategories = 0
     @_selectedCategories = {}
+    @_selectedCategoriesSurface = null
     
     @initSurfaces()
     @initListeners()
@@ -66,13 +67,13 @@ class NewCardView extends View
         @categoriesConfirm.hide()
 
     @categoriesConfirm.on 'click:done', () =>
-      # console.log 'done'
       @hideCategories()
+      @_setCategoryText()
 
-    @categoriesConfirm.on 'click:cancel', () =>
-      # console.log 'cancel'
-      @_resetSelectedCategories()
-      @hideCategories()
+    # @categoriesConfirm.on 'click:cancel', () =>
+    #   @_resetSelectedCategories()
+    #   @hideCategories()
+    #   @_setCategoryText()
 
   loadCategories: =>
     categories = NewCardStore.getCategories()
@@ -184,20 +185,26 @@ class NewCardView extends View
     @addNum(3, 0)
     @addLinkContainer(3, 1,
       'images/deck_existing.png'
-      'Choose deck(s) for this card'
+      'Choose mood(s) for this card'
     , () => 
       @showCategories()
     )
-    # @addLinkContainer(3, 2,
+    @_selectedCategoriesSurface = @addSurface(3, 2, '')
+    @_resetSelectedCategories()
+    # @addLinkContainer(3, 3,
     #   'images/deck_new2.png'
     #   'Create a new deck'
     # , =>
     #   alert "new deck"
     # )
     @addButton(3, 3, 'Finish', =>
-      @hideStep 'step3', @step3Mods
-      CardActions.addCategories Object.keys @_selectedCategories
-      @step4()
+      if Object.keys(@_selectedCategories).length > 0
+        @hideStep 'step3', @step3Mods
+        CardActions.addCategories Object.keys @_selectedCategories
+        @_resetSelectedCategories()
+        @step4()
+      else
+        alert 'Please select a mood.'
     )
     ## STEP 4
     @addSurface(4, 0, 'CREATED!')
@@ -258,7 +265,11 @@ class NewCardView extends View
 
     @_numOfselectedCategories = 0
     @_selectedCategories = {}
-    
+    @_selectedCategoriesSurface.setContent '(no moods selected)'
+
+  _setCategoryText: () ->
+    categories = Object.keys @_selectedCategories
+    @_selectedCategoriesSurface.setContent categories.join(', ')
 
   addInputView: (step, num, placeholder)->
     inputView = new InputView
@@ -284,6 +295,7 @@ class NewCardView extends View
       origin: @options["step#{step}_#{num}"].origin
     @["step#{step}Mods"].push surfaceMod
     @add(surfaceMod).add surface
+    surface
 
   addNum: (step, num)->
     numSurface = new Surface

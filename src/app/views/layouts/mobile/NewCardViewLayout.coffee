@@ -238,15 +238,15 @@ module.exports =
         transition: {duration: 500, curve: Easing.inCubic}
       }
     ]
-  step3_2: # link container
-    size: [ [Utils.getViewportWidth()-30, 55], [70, 55], [Utils.getViewportWidth() - 90, 55] ]
+  step3_2: # surface
+    size: [Utils.getViewportWidth() - 50, 40]
     align: [0.5, 1]
     origin: [0.5, 0]
-    classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
+    classes: ['newcard__step3__deckText', 'newcard__center']
     states: [
       {
         delay: 10
-        align: [0.5, 0.6]
+        align: [0.5, 0.57]
         transform: Transform.rotateZ(0)
         transition: {duration: 1000, curve: Easing.outCubic}
       }
@@ -257,6 +257,25 @@ module.exports =
         transition: {duration: 500, curve: Easing.inCubic}
       }
     ]
+  # step3_3: # link container
+  #   size: [ [Utils.getViewportWidth()-30, 55], [70, 55], [Utils.getViewportWidth() - 90, 55] ]
+  #   align: [0.5, 1]
+  #   origin: [0.5, 0]
+  #   classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
+  #   states: [
+  #     {
+  #       delay: 10
+  #       align: [0.5, 0.9]
+  #       transform: Transform.rotateZ(0)
+  #       transition: {duration: 1000, curve: Easing.outCubic}
+  #     }
+  #     {
+  #       delay: 10
+  #       align: [0.5, 1.5]
+  #       transform: Transform.rotateZ(1)
+  #       transition: {duration: 500, curve: Easing.inCubic}
+  #     }
+  #   ]
   step3_3: # button
     size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button']
@@ -265,7 +284,7 @@ module.exports =
     states: [
       {
         delay: 10
-        align: [0.5, 0.75]
+        align: [0.5, 0.9]
         transform: Transform.rotateZ(0)
         transition: {duration: 1000, curve: Easing.outCubic}
       }

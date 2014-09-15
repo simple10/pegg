@@ -2,6 +2,7 @@ View = require 'famous/core/View'
 Surface = require 'famous/core/Surface'
 StateModifier = require 'famous/modifiers/StateModifier'
 Transform = require 'famous/core/Transform'
+Utils = require 'lib/Utils'
 
 class ConfirmCancelView extends View
   @DEFAULT_OPTIONS:
@@ -12,7 +13,7 @@ class ConfirmCancelView extends View
     doneCallback: (->)
     cancelCallback: (->)
     size: [undefined, 50]
-    btnSize: [80, 30]
+    btnSize: [Utils.getViewportWidth(), 30]
     classes: []
 
   constructor: ->
@@ -41,33 +42,33 @@ class ConfirmCancelView extends View
       classes: @options.classes.concat(['confirmOrCancel'])
 
     # init buttons
-    @cancelBtn = new Surface
-      classes: @options.classes.concat(['confirmOrCancel__btn', 'btn', 'cancel-btn'])
-      content: 'Cancel'
-      properties:
-        textAlign: 'center'
-        lineHeight: @options.btnSize[1] + 'px'
+    # @cancelBtn = new Surface
+    #   classes: @options.classes.concat(['confirmOrCancel__btn', 'btn', 'cancel-btn'])
+    #   content: 'Cancel'
+    #   properties:
+    #     textAlign: 'center'
+    #     lineHeight: @options.btnSize[1] + 'px'
     @doneBtn = new Surface
       classes: @options.classes.concat(['confirmOrCancel__btn', 'btn', 'done-btn'])
       content: 'Done'
       properties:
         textAlign: 'center'
         lineHeight: @options.btnSize[1] + 'px'
-    @cancelBtnMod = new StateModifier
-      size: @options.btnSize
-      origin: [0.5, 0.5]
-      align: [0.5, 0.5]
-      transform: Transform.translate(-55, 0, 1)
+    # @cancelBtnMod = new StateModifier
+    #   size: @options.btnSize
+    #   origin: [0.5, 0.5]
+    #   align: [0.5, 0.5]
+    #   transform: Transform.translate(-55, 0, 1)
     @doneBtnMod = new StateModifier
       size: @options.btnSize
       origin: [0.5, 0.5]
       align: [0.5, 0.5]
-      transform: Transform.translate(55, 0, 1)
+      # transform: Transform.translate(55, 0, 1)
 
     # add everything to the render node
     node = @add @mainMod
     node.add @backing
-    node.add(@cancelBtnMod).add @cancelBtn
+    # node.add(@cancelBtnMod).add @cancelBtn
     node.add(@doneBtnMod).add @doneBtn
 
   initListeners: ->
@@ -75,9 +76,9 @@ class ConfirmCancelView extends View
       @_eventOutput.emit 'click:done'
       @hide()
 
-    @cancelBtn.on 'click', () =>
-      @_eventOutput.emit 'click:cancel'
-      @hide()
+    # @cancelBtn.on 'click', () =>
+    #   @_eventOutput.emit 'click:cancel'
+    #   @hide()
 
   show: (cb) ->
     cb = cb || (->)
