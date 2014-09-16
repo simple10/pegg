@@ -95,7 +95,7 @@ module.exports = {
     )
     hide: Transform.translate 0, -500, -1000
   choices:
-    size: [width - width * .1, 260]
+    size: [width - width * .1, height - 300]
     hide: Transform.translate 0, 180, -10
     show: Transform.translate 0, 180, 4
     choice:
