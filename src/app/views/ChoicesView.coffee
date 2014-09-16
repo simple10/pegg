@@ -19,8 +19,8 @@ class ChoicesView extends View
     @choices = []
     container = new ContainerSurface
       size: @options.size
-#      properties:
-#        overflow: 'hidden'
+      properties:
+        overflow: 'hidden'
       classes: ['card__options__box']
     @scrollView = new Scrollview
       size: @options.size
