@@ -13,8 +13,8 @@ Timer = require 'famous/utilities/Timer'
 Transform = require 'famous/core/Transform'
 Easing = require 'famous/transitions/Easing'
 
-FastClick = require 'fastclick/lib/fastclick'
-#FastClick = require 'famous/inputs/fastclick'
+#FastClick = require 'fastclick/lib/fastclick'
+FastClick = require 'famous/inputs/fastclick'
 #FastClick.attach document.body
 
 # Facebook
@@ -51,7 +51,6 @@ GameScript = require('config/game').scripts.cosmic_unicorn
 
 Utils = require 'lib/Utils'
 
-#FastClick.attach(document.body)
 Transitionable = require 'famous/transitions/Transitionable'
 SpringTransition = require 'famous/transitions/SpringTransition'
 #WallTransition = require 'famous/transitions/WallTransition'
