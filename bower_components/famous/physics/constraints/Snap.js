@@ -29,8 +29,6 @@ define(function(require, exports, module) {
      *
      */
     function Snap(options) {
-        Constraint.call(this);
-
         this.options = Object.create(this.constructor.DEFAULT_OPTIONS);
         if (options) this.setOptions(options);
 
@@ -39,19 +37,25 @@ define(function(require, exports, module) {
         this.vDiff  = new Vector();
         this.impulse1 = new Vector();
         this.impulse2 = new Vector();
+
+        Constraint.call(this);
     }
 
     Snap.prototype = Object.create(Constraint.prototype);
     Snap.prototype.constructor = Snap;
 
     Snap.DEFAULT_OPTIONS = {
-        period : 300,
+        period        : 300,
         dampingRatio : 0.1,
         length : 0,
         anchor : undefined
     };
 
     /** const */ var pi = Math.PI;
+
+    function _calcEnergy(impulse, disp, dt) {
+        return Math.abs(impulse.dot(disp)/dt);
+    }
 
     /**
      * Basic options setter
@@ -68,30 +72,37 @@ define(function(require, exports, module) {
         if (options.length !== undefined) this.options.length = options.length;
         if (options.dampingRatio !== undefined) this.options.dampingRatio = options.dampingRatio;
         if (options.period !== undefined) this.options.period = options.period;
-        Constraint.prototype.setOptions.call(this, options);
+    };
+
+    /**
+     * Set the anchor position
+     *
+     * @method setOptions
+     * @param {Array} v TODO
+     */
+
+    Snap.prototype.setAnchor = function setAnchor(v) {
+        if (this.options.anchor !== undefined) this.options.anchor = new Vector();
+        this.options.anchor.set(v);
     };
 
     /**
      * Calculates energy of spring
      *
      * @method getEnergy
-     * @param targets {Body} target physics body
-     * @param source {Body} source physics body
+     * @param {Object} target TODO
+     * @param {Object} source TODO
      * @return energy {Number}
      */
-    Snap.prototype.getEnergy = function getEnergy(targets, source) {
+    Snap.prototype.getEnergy = function getEnergy(target, source) {
         var options     = this.options;
         var restLength  = options.length;
         var anchor      = options.anchor || source.position;
         var strength    = Math.pow(2 * pi / options.period, 2);
 
-        var energy = 0.0;
-        for (var i = 0; i < targets.length; i++){
-            var target = targets[i];
-            var dist = anchor.sub(target.position).norm() - restLength;
-            energy += 0.5 * strength * dist * dist;
-        }
-        return energy;
+        var dist = anchor.sub(target.position).norm() - restLength;
+
+        return 0.5 * strength * dist * dist;
     };
 
     /**
@@ -103,7 +114,7 @@ define(function(require, exports, module) {
      * @param dt {Number}           Delta time
      */
     Snap.prototype.applyConstraint = function applyConstraint(targets, source, dt) {
-        var options      = this.options;
+        var options         = this.options;
         var pDiff        = this.pDiff;
         var vDiff        = this.vDiff;
         var impulse1     = this.impulse1;
@@ -129,7 +140,7 @@ define(function(require, exports, module) {
                 var w2 = source.inverseMass;
                 var v2 = source.velocity;
                 vDiff.set(v1.sub(v2));
-                effMass = 1 / (w1 + w2);
+                effMass = 1/(w1 + w2);
             }
             else {
                 vDiff.set(v1);
@@ -168,6 +179,8 @@ define(function(require, exports, module) {
                 impulse1.mult(-1).put(impulse2);
                 source.applyImpulse(impulse2);
             }
+
+            this.setEnergy(_calcEnergy(impulse1, pDiff, dt));
         }
     };
 

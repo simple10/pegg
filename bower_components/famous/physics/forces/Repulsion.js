@@ -7,6 +7,7 @@
  * @copyright Famous Industries, Inc. 2014
  */
 
+//TODO: test options manager
 define(function(require, exports, module) {
     var Force = require('./Force');
     var Vector = require('famous/math/Vector');
@@ -77,7 +78,7 @@ define(function(require, exports, module) {
 
         /**
          * An inverse squared distance decay function
-         * @attribute GRAVITY
+         * @attribute INVERSE
          * @type Function
          * @param {Number} r distance from the source body
          * @param {Number} cutoff a distance shift to avoid singularities

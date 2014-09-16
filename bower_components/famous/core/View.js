@@ -11,7 +11,6 @@ define(function(require, exports, module) {
     var EventHandler = require('./EventHandler');
     var OptionsManager = require('./OptionsManager');
     var RenderNode = require('./RenderNode');
-    var Utility = require('famous/utilities/Utility');
 
     /**
      * Useful for quickly creating elements within applications
@@ -33,7 +32,7 @@ define(function(require, exports, module) {
         EventHandler.setInputHandler(this, this._eventInput);
         EventHandler.setOutputHandler(this, this._eventOutput);
 
-        this.options = Utility.clone(this.constructor.DEFAULT_OPTIONS || View.DEFAULT_OPTIONS);
+        this.options = Object.create(this.constructor.DEFAULT_OPTIONS || View.DEFAULT_OPTIONS);
         this._optionsManager = new OptionsManager(this.options);
 
         if (options) this.setOptions(options);

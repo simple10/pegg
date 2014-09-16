@@ -36,18 +36,16 @@ define(function(require, exports, module) {
 
         this.container.add(this.scrollview);
 
-        this._eventOutput = new EventHandler();
-        EventHandler.setOutputHandler(this, this._eventOutput);
-
-        this.container.pipe(this._eventOutput);
-        this.scrollview.pipe(this._eventOutput);
+        EventHandler.setInputHandler(this, this.scrollview);
+        EventHandler.setOutputHandler(this, this.scrollview);
+        this.scrollview.subscribe(this.container);
     }
 
     ScrollContainer.DEFAULT_OPTIONS = {
         container: {
             properties: {overflow : 'hidden'}
         },
-        scrollview: {}
+        scrollview: {direction: Utility.Direction.X}
     };
 
     /**
@@ -78,7 +76,7 @@ define(function(require, exports, module) {
      * @return {number} Render spec for this component
      */
     ScrollContainer.prototype.render = function render() {
-        return this.container.render();
+        return this.container.render.apply(this.container, arguments);
     };
 
     module.exports = ScrollContainer;

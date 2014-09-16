@@ -161,7 +161,6 @@ define(function(require, exports, module) {
         var parentSize = context.size;
         var parentTransform = context.transform;
         var parentOrigin = context.origin;
-        var parentOpacity = context.opacity;
 
         var ratios = this._ratios.get();
         var direction = this.options.direction;
@@ -194,7 +193,6 @@ define(function(require, exports, module) {
         return {
             transform: parentTransform,
             size: parentSize,
-            opacity: parentOpacity,
             target: result
         };
     };

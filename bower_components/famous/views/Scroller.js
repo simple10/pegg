@@ -61,11 +61,9 @@ define(function(require, exports, module) {
         groupScroll: false
     };
 
-    var EDGE_TOLERANCE = 0; //slop for detecting passing the edge
-
     function _sizeForDir(size) {
         if (!size) size = this._contextSize;
-        var dimension = this.options.direction;
+        var dimension = (this.options.direction === Utility.Direction.X) ? 0 : 1;
         return (size[dimension] === undefined) ? this._contextSize[dimension] : size[dimension];
     }
 
@@ -77,7 +75,7 @@ define(function(require, exports, module) {
     }
 
     function _getClipSize() {
-        if (this.options.clipSize !== undefined) return this.options.clipSize;
+        if (this.options.clipSize) return this.options.clipSize;
         else return _sizeForDir.call(this, this._contextSize);
     }
 
@@ -88,10 +86,13 @@ define(function(require, exports, module) {
      */
     Scroller.prototype.setOptions = function setOptions(options) {
         this._optionsManager.setOptions(options);
-        if (this.options.groupScroll)
-            this.group.pipe(this._eventOutput);
-        else
-            this.group.unpipe(this._eventOutput);
+
+        if (this.options.groupScroll) {
+          this.group.pipe(this._eventOutput);
+        }
+        else {
+          this.group.unpipe(this._eventOutput);
+        }
     };
 
     /**
@@ -243,6 +244,8 @@ define(function(require, exports, module) {
         var position = this._position;
         var result = [];
 
+        this._onEdge = 0;
+
         var offset = -this._positionOffset;
         var clipSize = _getClipSize.call(this);
         var currNode = this._node;
@@ -252,40 +255,32 @@ define(function(require, exports, module) {
         }
 
         var sizeNode = this._node;
-        var nodesSize = _sizeForDir.call(this, sizeNode.getSize()) || 0;
+        var nodesSize = _sizeForDir.call(this, sizeNode.getSize());
         if (offset < clipSize) {
             while (sizeNode && nodesSize < clipSize) {
                 sizeNode = sizeNode.getPrevious();
-                if (sizeNode) nodesSize += _sizeForDir.call(this, sizeNode.getSize()) || 0;
+                if (sizeNode) nodesSize += _sizeForDir.call(this, sizeNode.getSize());
             }
             sizeNode = this._node;
             while (sizeNode && nodesSize < clipSize) {
                 sizeNode = sizeNode.getNext();
-                if (sizeNode) nodesSize += _sizeForDir.call(this, sizeNode.getSize()) || 0;
+                if (sizeNode) nodesSize += _sizeForDir.call(this, sizeNode.getSize());
             }
         }
 
-        if (!currNode && offset - position < clipSize - EDGE_TOLERANCE) {
-            if (this._onEdge !== 1){
-                this._onEdge = 1;
-                this._eventOutput.emit('onEdge', {
-                    position: offset - clipSize
-                });
-            }
+        var edgeSize = (nodesSize !== undefined && nodesSize < clipSize) ? nodesSize : clipSize;
+
+        if (!currNode && offset - position <= edgeSize) {
+            this._onEdge = 1;
+            this._eventOutput.emit('edgeHit', {
+                position: offset - edgeSize
+            });
         }
-        else if (!this._node.getPrevious() && position < -EDGE_TOLERANCE) {
-            if (this._onEdge !== -1) {
-                this._onEdge = -1;
-                this._eventOutput.emit('onEdge', {
-                    position: 0
-                });
-            }
-        }
-        else {
-            if (this._onEdge !== 0){
-                this._onEdge = 0;
-                this._eventOutput.emit('offEdge');
-            }
+        else if (!this._node.getPrevious() && position <= 0) {
+            this._onEdge = -1;
+            this._eventOutput.emit('edgeHit', {
+                position: 0
+            });
         }
 
         // backwards
@@ -293,19 +288,19 @@ define(function(require, exports, module) {
         offset = -this._positionOffset;
         if (currNode) {
             size = currNode.getSize ? currNode.getSize() : this._contextSize;
-            offset -= _sizeForDir.call(this, size) || 0;
+            offset -= _sizeForDir.call(this, size);
         }
 
-        while (currNode && ((offset - position) > -(clipSize + this.options.margin))) {
+        while (currNode && ((offset - position) > -(_getClipSize.call(this) + this.options.margin))) {
             _output.call(this, currNode, offset, result);
             currNode = currNode.getPrevious ? currNode.getPrevious() : null;
             if (currNode) {
                 size = currNode.getSize ? currNode.getSize() : this._contextSize;
-                offset -= _sizeForDir.call(this, size) || 0;
+                offset -= _sizeForDir.call(this, size);
             }
         }
 
-//        _normalizeState.call(this);
+        _normalizeState.call(this);
         return result;
     }
 
