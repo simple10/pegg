@@ -34,6 +34,8 @@ module.exports =
   category:
     size: [window.innerWidth, 100]
     classes: ['newcard__category']
+  categoriesConfirm:
+    size: [undefined, 50]
   step1_0: # number
     size: [30, 30]
     classes: ['newcard__number']

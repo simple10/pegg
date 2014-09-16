@@ -84,9 +84,11 @@
 .newcard.confirmOrCancel {
   background: $gray;
   border-top: 1px solid darken($gray, 10%);
+  z-index: 10;
 }
 
 .newcard.confirmOrCancel__btn {
   text-align: center;
   color: $white;
+  z-index: 11;
 }

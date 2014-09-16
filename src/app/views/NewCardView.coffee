@@ -34,11 +34,11 @@ class NewCardView extends View
 
   constructor: ->
     super
-    
+
     @_numOfselectedCategories = 0
     @_selectedCategories = {}
     @_selectedCategoriesSurface = null
-    
+
     @initSurfaces()
     @initListeners()
 
@@ -48,7 +48,7 @@ class NewCardView extends View
 
     @on 'click:category', (data) =>
       category = @_selectedCategories[data.name]
-     
+
       # update the selected categories
       if category?
         # deselect the category
@@ -91,6 +91,12 @@ class NewCardView extends View
         }).bind(@, categorySurface, category)
       )
       categorySurface.pipe @categoryScrollview
+    # append a blank at the end that the confirm view can cover
+    spacer = new Surface
+      size: @options.categoriesConfirm.size
+      classes: @options.category.classes
+    spacer.pipe @categoryScrollview
+    @categorySurfaces.push spacer
 
   initSurfaces: ->
     @step1Mods = []
@@ -101,6 +107,7 @@ class NewCardView extends View
     @step3Mods = []
 
     headerHeight = HeaderViewLayout.size[1]
+
 #    @back = new ImageSurface
 #      size: [50, 50]
 #      content: '/images/back.png'
@@ -128,7 +135,6 @@ class NewCardView extends View
       align: @options.newCardTitle.align
     @add(newCardMod).add @newCardTitle
 
-
     @container = new ContainerSurface
       size: [Utils.getViewportWidth(), Utils.getViewportHeight() - headerHeight]
       classes: ['categoriesContainer']
@@ -146,10 +152,10 @@ class NewCardView extends View
 
     @container.add @categoryScrollview
     @add(@categoryScrollviewMod).add @container
-    
+
     @categoriesConfirm = new ConfirmCancelView
       classes: ['newcard']
-
+      size: @options.categoriesConfirm.size
     @add @categoriesConfirm
 
 
@@ -201,7 +207,6 @@ class NewCardView extends View
       if Object.keys(@_selectedCategories).length > 0
         @hideStep 'step3', @step3Mods
         CardActions.addCategories Object.keys @_selectedCategories
-        @_resetSelectedCategories()
         @step4()
       else
         alert 'Please select a mood.'
@@ -223,6 +228,7 @@ class NewCardView extends View
     @step1()
 
   step1: ->
+    @_resetSelectedCategories()
     @showStep 'step1', @step1Mods
 
   step2: ->
