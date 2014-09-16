@@ -15,7 +15,7 @@ config =
       [     # stage 2
         {
           type: 'pegg'
-          size: 1
+          size: 2
         }
         {
           type: 'friend_ranking'
