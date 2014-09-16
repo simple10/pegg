@@ -14,8 +14,8 @@ module.exports =
       }
       {
         delay: 30
-        align: [0.5, 0.1]
-        origin: [0.5, 0.1]
+        align: [0.5, 0]
+        origin: [0.5, 0]
 #        scale: [1,1,0]
         transition: {duration: 800, curve: Easing.outExpo}
       }
