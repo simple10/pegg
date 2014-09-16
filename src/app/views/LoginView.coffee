@@ -23,7 +23,7 @@ class LoginView extends View
     logo = new ImageSurface
       size: @layout.logo.size
       classes: @layout.logo.classes
-      content: "images/cosmic-unicorn-head-circle.svg"
+      content: "images/cosmic-unicorn-noback.svg"
     logoMod = new StateModifier
       align: @layout.logo.align
       origin: @layout.logo.origin
