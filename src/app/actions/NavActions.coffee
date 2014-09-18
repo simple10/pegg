@@ -2,9 +2,10 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require('constants/PeggConstants').actions
 
 NavActions =
-  login: () ->
+  login: (referrer) ->
     AppDispatcher.handleViewAction
       actionType: Constants.LOGIN
+      referrer: referrer
 
   selectMenuItem: (pageId) ->
     AppDispatcher.handleViewAction

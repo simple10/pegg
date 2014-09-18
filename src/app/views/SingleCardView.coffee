@@ -49,6 +49,7 @@ class SingleCardView extends View
       @loadChoices payload.choices
     SingleCardStore.on Constants.stores.CARD_WIN, (points) =>
       @cardWin points
+    SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
 
   initViews: ->
 
@@ -166,6 +167,7 @@ class SingleCardView extends View
   loadCard: =>
     @collapseComments() if @._commentsIsExpanded
     card = SingleCardStore.getCard()
+
     @cardView.loadCard card.id, card, card.type
     @cardView.on 'comment', =>
       @collapseComments()
@@ -181,6 +183,9 @@ class SingleCardView extends View
       'cardType': 'review'
       'message': SingleCardStore.getMessage()
     }
+
+  requireLogin: =>
+    alert 'Please log in to view this card'
 
   loadChoices: (choices) =>
     @cardView.loadChoices choices

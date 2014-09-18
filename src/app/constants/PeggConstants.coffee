@@ -66,6 +66,7 @@ module.exports =
     PREF_SAVED: null
     PROFILE_ACTIVITY_CHANGE: null
     PROFILE_LOAD: null
+    REQUIRE_LOGIN: null
     STATUS_CHANGE: null
     SUBSCRIBE_FAIL: null
     SUBSCRIBE_PASS: null

@@ -3,6 +3,7 @@ Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 Utils = require 'lib/Utils'
+Cookies = require 'lib/Cookies'
 Config = require('Config').public
 
 DB = require 'stores/helpers/ParseBackend'
@@ -13,6 +14,7 @@ class UserStore extends EventEmitter
   _images: []
 
   login: ->
+    Cookies.setItem "pegg_auth_lastpage", window.location.hash, 60*60, "/"
     # http://stackoverflow.com/questions/16843116/facebook-oauth-unsupported-in-chrome-on-ios
     clientId = Config.facebook.appId
     redirectUri = Config.facebook.redirectUrl
@@ -21,11 +23,10 @@ class UserStore extends EventEmitter
 
 
   auth: (res) ->
-    console.log res
     access_token = Utils.parseQueryString res, 'access_token'
     params = "access_token=#{access_token}"
     future = new Date().addDays Config.facebook.expirationDays
-    expirationDate = future.toISOString();
+    expirationDate = future.toISOString()
 
     Utils.getAjax("https://graph.facebook.com/me", params, (res) =>
       userData = JSON.parse res
@@ -51,8 +52,9 @@ class UserStore extends EventEmitter
             error: ->
               debugger
             success: =>
+              referrer = Cookies.getItem "pegg_auth_lastpage"
               @emit Constants.stores.CHANGE
-              NavActions.login()
+              NavActions.login referrer
               @importFriends()
         )
         unless user.existed()

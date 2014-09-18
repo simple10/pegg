@@ -56,8 +56,8 @@ class AppStateStore extends EventEmitter
     @_currentPageID = '/'
     Parse.history.navigate @_currentPageID, true
 
-  _login: ->
-    @_currentPageID = 'play'
+  _login: (referrer) ->
+    @_currentPageID = referrer or 'play'
     Parse.history.navigate @_currentPageID, true
     @emit Constants.stores.MENU_CHANGE
     @emit Constants.stores.LOGIN_CHANGE
@@ -80,7 +80,7 @@ AppDispatcher.register (payload) ->
     when Constants.actions.LOGOUT
       appstate._logout()
     when Constants.actions.LOGIN
-      appstate._login()
+      appstate._login action.referrer
 
 
 module.exports = appstate
