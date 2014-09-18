@@ -80,16 +80,29 @@ class PrefStatusItemView extends View
       when 3
         classes = ['status__pref__percentage--blue']
     percentageNode = new RenderNode
-    percentage = new Surface
+    percentageBar = new Surface
       classes: classes
       size: [3, 40]
-    percentageMod = new StateModifier
+    percentageText = new Surface
+      classes: ['status__pref__percentage']
+      size: [null, 40]
+      content: '???%'
+    percentageBarMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
       transform: Transform.translate 30, null, null
-    percentageNode.add(percentageMod).add percentage
+    percentageTextMod = new StateModifier
+      align: [0, 0]
+      origin: [0, 0]
+      transform: Transform.translate 30, null, null
+    percentageNode.add(percentageBarMod).add percentageBar
+    percentageNode.add(percentageTextMod).add percentageText
     @_sequence.push percentageNode
-    @_percentages.push percentage
+    @_percentages.push
+      bar: percentageBar
+      barMod: percentageBarMod
+      text: percentageText
+      textMod: percentageTextMod
 
     # CHOICE TEXT
     choiceNode = new RenderNode
@@ -117,7 +130,12 @@ class PrefStatusItemView extends View
     i = 0
     for id, choice of data.choices
       @_choices[i].setContent choice.choiceText
-      @_percentages[i].setSize [ (Utils.getViewportWidth()-60) * (choice.count / @_total) + 3, 40 ]
+      fraction = choice.count / @_total
+      width = (Utils.getViewportWidth()-60) * fraction + 3
+      @_percentages[i].bar.setSize [ width, 40 ]
+      @_percentages[i].text.setContent "#{Math.round fraction * 100}%"
+      if fraction < 0.25
+        @_percentages[i].textMod.setTransform Transform.translate width + 30, null, null
       @_question.setSize [Utils.getViewportWidth()-40, 60 + Math.floor(data.question.length/25) * 10]
       if i is 3 then break
       i++
