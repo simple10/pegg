@@ -32,7 +32,7 @@ class SingleCardStore extends EventEmitter
 
       # determine whether the peggee has preffed the card
       @_hasPreffed = false
-      if @_card? and @_card.hasPreffed? and @_loggedIn
+      if @_card? and @_card.hasPreffed?
         @_hasPreffed = _.contains(@_card.hasPreffed, @_peggeeId)
 
       if @_hasPreffed
