@@ -157,7 +157,7 @@ class ParseBackend
         cb null
 
 
-  savePlug: (cardId, imageUrl, peggeeId, cb) ->
+  savePlug: (cardId, full, thumb, peggeeId, cb) ->
     # UPDATE Pref table with user's new image
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -168,9 +168,10 @@ class ParseBackend
     prefQuery.equalTo 'card', card
     prefQuery.first
       success: (result) =>
-        result.set 'plug', imageUrl
+        result.set 'plug', full
+        result.set 'plugThumb', thumb
         result.save()
-        cb "Plug saved: #{imageUrl}"
+        cb "Plug saved: #{full}"
       error: (error) ->
         console.log "Error: #{error.code}  #{error.message}"
         cb null

@@ -229,7 +229,7 @@ class PlayCardsView extends View
       card.on 'pref', (payload) =>
         PlayActions.pref payload.id, payload.choiceId, payload.image
       card.on 'plug', (payload) =>
-        PlayActions.plug payload.id, payload.url
+        PlayActions.plug payload.id, payload.full, payload.thumb
       card.pipe @
       @cardViews.push card
       @index[cardId] = i++

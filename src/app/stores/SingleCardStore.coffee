@@ -173,11 +173,11 @@ class SingleCardStore extends EventEmitter
         @emit Constants.stores.COMMENTS_CHANGE
     )
 
-  _plug: (cardId, url) ->
+  _plug: (cardId, full, thumb) ->
     console.log "save Plug: card: " + cardId + " image: " + url
     userId = UserStore.getUser().id
 
-    DB.savePlug(cardId, url, userId, (res)=>
+    DB.savePlug(cardId, full, thumb, userId, (res)=>
       # TODO: catch save fail
       #if res?
       @emit Constants.stores.PLUG_SAVED
@@ -255,7 +255,7 @@ AppDispatcher.register (payload) ->
     when Constants.actions.SINGLE_CARD_COMMENT
       singleCard._comment action.comment
     when Constants.actions.SINGLE_CARD_PLUG
-      singleCard._plug action.card, action.url
+      singleCard._plug action.card, action.full, action.thumb
     when Constants.actions.SINGLE_CARD_PEGG
       singleCard._pegg action.peggee, action.card, action.choice, action.answer
     when Constants.actions.SINGLE_CARD_PREF

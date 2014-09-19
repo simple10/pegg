@@ -23,11 +23,12 @@ PlayActions =
       choice: choice
       answer: answer
 
-  plug: (card, url) ->
+  plug: (card, full, thumb) ->
     AppDispatcher.handleViewAction
       actionType: Constants.PLUG_IMAGE
       card: card
-      url: url
+      full: full
+      thumb: thumb
 
   rate: (rating) ->
     AppDispatcher.handleViewAction

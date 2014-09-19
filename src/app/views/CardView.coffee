@@ -117,10 +117,11 @@ class CardView extends View
     addImageButton.on 'click', =>
       imagePickView.pick( (results) =>
         console.log JSON.stringify(results)
-        @backImage.setContent results[0].url
+        @backImage.setContent results.fullS3
         @_eventOutput.emit 'plug',
           id: @id
-          url: results[0].url
+          full: results.key
+          thumb: results.thumb.key
       )
     @mainNode.add imagePickView
     @mainNode.add(@addImageModifier).add addImageButton

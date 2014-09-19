@@ -101,11 +101,11 @@ class PlayStore extends EventHandler
       @emit Constants.stores.PREF_SAVED
     )
 
-  _plug: (cardId, url) ->
-    console.log "save Plug: card: " + cardId + " image: " + url
+  _plug: (cardId, full, thumb) ->
+    console.log "save Plug: card: " + cardId + " image: " + full
     userId = UserStore.getUser().id
 
-    DB.savePlug(cardId, url, userId, (res)=>
+    DB.savePlug(cardId, full, thumb, userId, (res)=>
       # TODO: catch save fail
       #if res?
       @emit Constants.stores.PLUG_SAVED
@@ -222,7 +222,7 @@ AppDispatcher.register (payload) ->
     when Constants.actions.PREF_SUBMIT
       play._pref action.card, action.choice, action.plug
     when Constants.actions.PLUG_IMAGE
-      play._plug action.card, action.url
+      play._plug action.card, action.full, action.thumb
     when Constants.actions.NEXT_CARD
       play._nextCard()
     when Constants.actions.PREV_CARD

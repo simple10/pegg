@@ -174,7 +174,7 @@ class SingleCardView extends View
     @cardView.on 'pref', (payload) =>
       SingleCardActions.pref payload.id, payload.choiceId, payload.image
     @cardView.on 'plug', (payload) =>
-      SingleCardActions.plug payload.id, payload.url
+      SingleCardActions.plug payload.id, payload.full, payload.thumb
     @cardView.pipe @
 
     @navView.setOptions {

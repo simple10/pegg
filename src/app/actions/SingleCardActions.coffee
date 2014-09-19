@@ -14,11 +14,12 @@ SingleCardActions =
       actionType: Constants.SINGLE_CARD_COMMENT
       comment: comment
 
-  plug: (card, url) ->
+  plug: (card, full, thumb) ->
     AppDispatcher.handleViewAction
       actionType: Constants.SINGLE_CARD_PLUG
       card: card
-      url: url
+      full: full
+      thumb: thumb
 
   pref: (card, choice, plug) ->
     AppDispatcher.handleViewAction
