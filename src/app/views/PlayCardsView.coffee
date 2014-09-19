@@ -64,7 +64,7 @@ class PlayCardsView extends View
       margin: 300
     @cardScrollViewMod = new Modifier
       align: =>
-        xAlign = @cardXAlign.get()
+        xAlign = 0.5
         yAlign = @_translateToAlign @cardYPos.get()
         [xAlign, yAlign]
       origin: @layout.cards.origin

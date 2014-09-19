@@ -30,7 +30,7 @@ class AppStateStore extends EventEmitter
 
   _loadPage: (pageID) ->
     @_currentPageID = pageID
-    Parse.history.navigate pageID, true
+#    Parse.history.navigate pageID, true
     if pageID is 'login' or pageID is 'signup'
       @emit Constants.stores.LOGIN_CHANGE
     else if pageID is 'activity'

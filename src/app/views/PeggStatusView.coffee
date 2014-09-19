@@ -37,11 +37,12 @@ class PeggStatusView extends View
       margin: 300
     @itemsScrollView.sequenceFrom itemViews
     itemsScrollViewMod = new StateModifier
-      align: [0, 0]
-      origin: [0, 0]
     @container.add(itemsScrollViewMod).add @itemsScrollView
     @container.pipe @itemsScrollView
-    @add @container
+    containerMod = new StateModifier
+      align: [0.5, 0.5]
+      origin: [0.5, 0.5]
+    @add(containerMod).add @container
 
     @picNode = new RenderNode
     pic = new ImageSurface

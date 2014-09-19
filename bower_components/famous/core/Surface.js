@@ -8,12 +8,7 @@
  */
 
 define(function(require, exports, module) {
-    var Entity = require('./Entity');
-    var EventHandler = require('./EventHandler');
-    var Transform = require('./Transform');
-
-    var devicePixelRatio = window.devicePixelRatio || 1;
-    var usePrefix = document.createElement('div').style.webkitTransform !== undefined;
+    var ElementOutput = require('./ElementOutput');
 
     /**
      * A base class for viewable content and event
@@ -26,124 +21,63 @@ define(function(require, exports, module) {
      *
      * @param {Object} [options] default option overrides
      * @param {Array.Number} [options.size] [width, height] in pixels
-     * @param {Array.string} [options.classes] CSS classes to set on inner content
+     * @param {Array.string} [options.classes] CSS classes to set on target div
      * @param {Array} [options.properties] string dictionary of HTML attributes to set on target div
      * @param {string} [options.content] inner (HTML) content of surface
      */
     function Surface(options) {
+        ElementOutput.call(this);
+
         this.options = {};
 
         this.properties = {};
+        this.attributes = {};
         this.content = '';
         this.classList = [];
         this.size = null;
 
         this._classesDirty = true;
         this._stylesDirty = true;
+        this._attributesDirty = true;
         this._sizeDirty = true;
         this._contentDirty = true;
+        this._trueSizeCheck = true;
 
         this._dirtyClasses = [];
 
-        this._matrix = null;
-        this._opacity = 1;
-        this._origin = null;
-        this._size = null;
-
-        /** @ignore */
-        this.eventForwarder = function eventForwarder(event) {
-            this.emit(event.type, event);
-        }.bind(this);
-        this.eventHandler = new EventHandler();
-        this.eventHandler.bindThis(this);
-
-        this.id = Entity.register(this);
-
         if (options) this.setOptions(options);
 
-        this._currTarget = null;
+        this._currentTarget = null;
     }
+    Surface.prototype = Object.create(ElementOutput.prototype);
+    Surface.prototype.constructor = Surface;
     Surface.prototype.elementType = 'div';
     Surface.prototype.elementClass = 'famous-surface';
 
     /**
-     * Bind a callback function to an event type handled by this object.
+     * Set HTML attributes on this Surface. Note that this will cause
+     *    dirtying and thus re-rendering, even if values do not change.
      *
-     * @method "on"
-     *
-     * @param {string} type event type key (for example, 'click')
-     * @param {function(string, Object)} fn handler callback
-     * @return {EventHandler} this
+     * @method setAttributes
+    * @param {Object} attributes property dictionary of "key" => "value"
      */
-    Surface.prototype.on = function on(type, fn) {
-        if (this._currTarget) this._currTarget.addEventListener(type, this.eventForwarder);
-        this.eventHandler.on(type, fn);
+    Surface.prototype.setAttributes = function setAttributes(attributes) {
+        for (var n in attributes) {
+            if (n === 'style') throw new Error('Cannot set styles via "setAttributes" as it will break Famo.us.  Use "setProperties" instead.');
+            this.attributes[n] = attributes[n];
+        }
+        this._attributesDirty = true;
     };
 
     /**
-     * Unbind an event by type and handler.
-     *   This undoes the work of "on"
+     * Get HTML attributes on this Surface.
      *
-     * @method removeListener
-     * @param {string} type event type key (for example, 'click')
-     * @param {function(string, Object)} fn handler
+     * @method getAttributes
+     *
+     * @return {Object} Dictionary of this Surface's attributes.
      */
-    Surface.prototype.removeListener = function removeListener(type, fn) {
-        this.eventHandler.removeListener(type, fn);
-    };
-
-    /**
-     * Trigger an event, sending to all downstream handlers
-     *   listening for provided 'type' key.
-     *
-     * @method emit
-     *
-     * @param {string} type event type key (for example, 'click')
-     * @param {Object} [event] event data
-     * @return {EventHandler} this
-     */
-    Surface.prototype.emit = function emit(type, event) {
-        if (event && !event.origin) event.origin = this;
-        var handled = this.eventHandler.emit(type, event);
-        if (handled && event && event.stopPropagation) event.stopPropagation();
-        return handled;
-    };
-
-    /**
-     * Add event handler object to set of downstream handlers.
-     *
-     * @method pipe
-     *
-     * @param {EventHandler} target event handler target object
-     * @return {EventHandler} passed event handler
-     */
-    Surface.prototype.pipe = function pipe(target) {
-        return this.eventHandler.pipe(target);
-    };
-
-    /**
-     * Remove handler object from set of downstream handlers.
-     *   Undoes work of "pipe"
-     *
-     * @method unpipe
-     *
-     * @param {EventHandler} target target handler object
-     * @return {EventHandler} provided target
-     */
-    Surface.prototype.unpipe = function unpipe(target) {
-        return this.eventHandler.unpipe(target);
-    };
-
-    /**
-     * Return spec for this surface. Note that for a base surface, this is
-     *    simply an id.
-     *
-     * @method render
-     * @private
-     * @return {Object} render spec for this surface (spec id)
-     */
-    Surface.prototype.render = function render() {
-        return this.id;
+    Surface.prototype.getAttributes = function getAttributes() {
+        return this.attributes;
     };
 
     /**
@@ -151,6 +85,7 @@ define(function(require, exports, module) {
      *    dirtying and thus re-rendering, even if values do not change.
      *
      * @method setProperties
+     * @chainable
      * @param {Object} properties property dictionary of "key" => "value"
      */
     Surface.prototype.setProperties = function setProperties(properties) {
@@ -158,6 +93,7 @@ define(function(require, exports, module) {
             this.properties[n] = properties[n];
         }
         this._stylesDirty = true;
+        return this;
     };
 
     /**
@@ -177,6 +113,7 @@ define(function(require, exports, module) {
      *   corresponding rendered <div>.
      *
      * @method addClass
+     * @chainable
      * @param {string} className name of class to add
      */
     Surface.prototype.addClass = function addClass(className) {
@@ -184,6 +121,7 @@ define(function(require, exports, module) {
             this.classList.push(className);
             this._classesDirty = true;
         }
+        return this;
     };
 
     /**
@@ -192,6 +130,7 @@ define(function(require, exports, module) {
      *   corresponding rendered <div>.
      *
      * @method removeClass
+     * @chainable
      * @param {string} className name of class to remove
      */
     Surface.prototype.removeClass = function removeClass(className) {
@@ -200,11 +139,31 @@ define(function(require, exports, module) {
             this._dirtyClasses.push(this.classList.splice(i, 1)[0]);
             this._classesDirty = true;
         }
+        return this;
+    };
+
+    /**
+     * Toggle CSS-style class from the list of classes on this Surface.
+     *   Note this will map directly to the HTML property of the actual
+     *   corresponding rendered <div>.
+     *
+     * @method toggleClass
+     * @param {string} className name of class to toggle
+     */
+    Surface.prototype.toggleClass = function toggleClass(className) {
+        var i = this.classList.indexOf(className);
+        if (i >= 0) {
+            this.removeClass(className);
+        } else {
+            this.addClass(className);
+        }
+        return this;
     };
 
     /**
      * Reset class list to provided dictionary.
      * @method setClasses
+     * @chainable
      * @param {Array.string} classList
      */
     Surface.prototype.setClasses = function setClasses(classList) {
@@ -216,6 +175,7 @@ define(function(require, exports, module) {
         for (i = 0; i < removal.length; i++) this.removeClass(removal[i]);
         // duplicates are already checked by addClass()
         for (i = 0; i < classList.length; i++) this.addClass(classList[i]);
+        return this;
     };
 
     /**
@@ -233,6 +193,7 @@ define(function(require, exports, module) {
      *    causes a re-rendering if the content has changed.
      *
      * @method setContent
+     * @chainable
      * @param {string|Document Fragment} content HTML content
      */
     Surface.prototype.setContent = function setContent(content) {
@@ -240,6 +201,7 @@ define(function(require, exports, module) {
             this.content = content;
             this._contentDirty = true;
         }
+        return this;
     };
 
     /**
@@ -257,33 +219,19 @@ define(function(require, exports, module) {
      * Set options for this surface
      *
      * @method setOptions
+     * @chainable
      * @param {Object} [options] overrides for default options.  See constructor.
      */
     Surface.prototype.setOptions = function setOptions(options) {
         if (options.size) this.setSize(options.size);
         if (options.classes) this.setClasses(options.classes);
         if (options.properties) this.setProperties(options.properties);
+        if (options.attributes) this.setAttributes(options.attributes);
         if (options.content) this.setContent(options.content);
+        return this;
     };
 
-    //  Attach Famous event handling to document events emanating from target
-    //    document element.  This occurs just after deployment to the document.
-    //    Calling this enables methods like #on and #pipe.
-    function _addEventListeners(target) {
-        for (var i in this.eventHandler.listeners) {
-            target.addEventListener(i, this.eventForwarder);
-        }
-    }
-
-    //  Detach Famous event handling from document events emanating from target
-    //  document element.  This occurs just before recall from the document.
-    function _removeEventListeners(target) {
-        for (var i in this.eventHandler.listeners) {
-            target.removeEventListener(i, this.eventForwarder);
-        }
-    }
-
-     //  Apply to document all changes from removeClass() since last setup().
+    //  Apply to document all changes from removeClass() since last setup().
     function _cleanupClasses(target) {
         for (var i = 0; i < this._dirtyClasses.length; i++) target.classList.remove(this._dirtyClasses[i]);
         this._dirtyClasses = [];
@@ -305,79 +253,21 @@ define(function(require, exports, module) {
         }
     }
 
-    /**
-     * Return a Matrix's webkit css representation to be used with the
-     *    CSS3 -webkit-transform style.
-     *    Example: -webkit-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,716,243,0,1)
-     *
-     * @method _formatCSSTransform
-     * @private
-     * @param {FamousMatrix} m matrix
-     * @return {string} matrix3d CSS style representation of the transform
-     */
-    function _formatCSSTransform(m) {
-        m[12] = Math.round(m[12] * devicePixelRatio) / devicePixelRatio;
-        m[13] = Math.round(m[13] * devicePixelRatio) / devicePixelRatio;
-
-        var result = 'matrix3d(';
-        for (var i = 0; i < 15; i++) {
-            result += (m[i] < 0.000001 && m[i] > -0.000001) ? '0,' : m[i] + ',';
+    // Apply values of all Famous-managed attributes to the document element.
+    //  These will be deployed to the document on call to #setup().
+    function _applyAttributes(target) {
+        for (var n in this.attributes) {
+            target.setAttribute(n, this.attributes[n]);
         }
-        result += m[15] + ')';
-        return result;
     }
 
-    /**
-     * Directly apply given FamousMatrix to the document element as the
-     *   appropriate webkit CSS style.
-     *
-     * @method setMatrix
-     *
-     * @static
-     * @private
-     * @param {Element} element document element
-     * @param {FamousMatrix} matrix
-     */
-
-    var _setMatrix;
-    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-        _setMatrix = function(element, matrix) {
-            element.style.zIndex = (matrix[14] * 1000000) | 0;    // fix for Firefox z-buffer issues
-            element.style.transform = _formatCSSTransform(matrix);
-        };
+    // Clear all Famous-managed attributes from the document element.
+    // These will be deployed to the document on call to #setup().
+    function _cleanupAttributes(target) {
+        for (var n in this.attributes) {
+            target.removeAttribute(n);
+        }
     }
-    else if (usePrefix) {
-        _setMatrix = function(element, matrix) {
-            element.style.webkitTransform = _formatCSSTransform(matrix);
-        };
-    }
-    else {
-        _setMatrix = function(element, matrix) {
-            element.style.transform = _formatCSSTransform(matrix);
-        };
-    }
-
-    // format origin as CSS percentage string
-    function _formatCSSOrigin(origin) {
-        return (100 * origin[0]) + '% ' + (100 * origin[1]) + '%';
-    }
-
-     // Directly apply given origin coordinates to the document element as the
-     // appropriate webkit CSS style.
-    var _setOrigin = usePrefix ? function(element, origin) {
-        element.style.webkitTransformOrigin = _formatCSSOrigin(origin);
-    } : function(element, origin) {
-        element.style.transformOrigin = _formatCSSOrigin(origin);
-    };
-
-     // Shrink given document element until it is effectively invisible.
-    var _setInvisible = usePrefix ? function(element) {
-        element.style.webkitTransform = 'scale3d(0.0001,0.0001,1)';
-        element.style.opacity = 0;
-    } : function(element) {
-        element.style.transform = 'scale3d(0.0001,0.0001,1)';
-        element.style.opacity = 0;
-    };
 
     function _xyNotEquals(a, b) {
         return (a && b) ? (a[0] !== b[0] || a[1] !== b[1]) : a !== b;
@@ -404,16 +294,16 @@ define(function(require, exports, module) {
             }
         }
         target.style.display = '';
-        _addEventListeners.call(this, target);
-        this._currTarget = target;
+        this.attach(target);
+        this._opacity = null;
+        this._currentTarget = target;
         this._stylesDirty = true;
         this._classesDirty = true;
+        this._attributesDirty = true;
         this._sizeDirty = true;
         this._contentDirty = true;
-        this._matrix = null;
-        this._opacity = undefined;
-        this._origin = null;
-        this._size = null;
+        this._originDirty = true;
+        this._transformDirty = true;
     };
 
     /**
@@ -426,12 +316,8 @@ define(function(require, exports, module) {
      * @param {Context} context commit context
      */
     Surface.prototype.commit = function commit(context) {
-        if (!this._currTarget) this.setup(context.allocator);
-        var target = this._currTarget;
-
-        var matrix = context.transform;
-        var opacity = context.opacity;
-        var origin = context.origin;
+        if (!this._currentTarget) this.setup(context.allocator);
+        var target = this._currentTarget;
         var size = context.size;
 
         if (this._classesDirty) {
@@ -439,28 +325,50 @@ define(function(require, exports, module) {
             var classList = this.getClassList();
             for (var i = 0; i < classList.length; i++) target.classList.add(classList[i]);
             this._classesDirty = false;
+            this._trueSizeCheck = true;
         }
 
         if (this._stylesDirty) {
             _applyStyles.call(this, target);
             this._stylesDirty = false;
+            this._trueSizeCheck = true;
         }
 
-        if (this._contentDirty) {
-            this.deploy(target);
-            this.eventHandler.emit('deploy');
-            this._contentDirty = false;
+        if (this._attributesDirty) {
+            _applyAttributes.call(this, target);
+            this._attributesDirty = false;
+            this._trueSizeCheck = true;
         }
 
         if (this.size) {
-            var origSize = size;
+            var origSize = context.size;
             size = [this.size[0], this.size[1]];
-            if (size[0] === undefined && origSize[0]) size[0] = origSize[0];
-            if (size[1] === undefined && origSize[1]) size[1] = origSize[1];
+            if (size[0] === undefined) size[0] = origSize[0];
+            if (size[1] === undefined) size[1] = origSize[1];
+            if (size[0] === true || size[1] === true) {
+                if (size[0] === true && (this._trueSizeCheck || this._size[0] === 0)) {
+                    var width = target.clientWidth;
+                    if (this._size && this._size[0] !== width) {
+                        this._size[0] = width;
+                        this._sizeDirty = true;
+                    }
+                    size[0] = width;
+                } else {
+                    if (this._size) size[0] = this._size[0];
+                }
+                if (size[1] === true && (this._trueSizeCheck || this._size[1] === 0)) {
+                    var height = target.clientHeight;
+                    if (this._size && this._size[1] !== height) {
+                        this._size[1] = height;
+                        this._sizeDirty = true;
+                    }
+                    size[1] = height;
+                } else {
+                    if (this._size) size[1] = this._size[1];
+                }
+                this._trueSizeCheck = false;
+            }
         }
-
-        if (size[0] === true) size[0] = target.clientWidth;
-        if (size[1] === true) size[1] = target.clientHeight;
 
         if (_xyNotEquals(this._size, size)) {
             if (!this._size) this._size = [0, 0];
@@ -469,39 +377,23 @@ define(function(require, exports, module) {
             this._sizeDirty = true;
         }
 
-        if (!matrix && this._matrix) {
-            this._matrix = null;
-            this._opacity = 0;
-            _setInvisible(target);
-            return;
-        }
-
-        if (this._opacity !== opacity) {
-            this._opacity = opacity;
-            target.style.opacity = (opacity >= 1) ? '0.999999' : opacity;
-        }
-
-        if (_xyNotEquals(this._origin, origin) || Transform.notEquals(this._matrix, matrix) || this._sizeDirty) {
-            if (!matrix) matrix = Transform.identity;
-            this._matrix = matrix;
-            var aaMatrix = matrix;
-            if (origin) {
-                if (!this._origin) this._origin = [0, 0];
-                this._origin[0] = origin[0];
-                this._origin[1] = origin[1];
-                aaMatrix = Transform.thenMove(matrix, [-this._size[0] * origin[0], -this._size[1] * origin[1], 0]);
-                _setOrigin(target, origin);
-            }
-            _setMatrix(target, aaMatrix);
-        }
-
         if (this._sizeDirty) {
             if (this._size) {
                 target.style.width = (this.size && this.size[0] === true) ? '' : this._size[0] + 'px';
                 target.style.height = (this.size && this.size[1] === true) ?  '' : this._size[1] + 'px';
             }
+            this._eventOutput.emit('resize');
             this._sizeDirty = false;
         }
+
+        if (this._contentDirty) {
+            this.deploy(target);
+            this._eventOutput.emit('deploy');
+            this._contentDirty = false;
+            this._trueSizeCheck = true;
+        }
+
+        ElementOutput.prototype.commit.call(this, context);
     };
 
     /**
@@ -515,14 +407,15 @@ define(function(require, exports, module) {
      */
     Surface.prototype.cleanup = function cleanup(allocator) {
         var i = 0;
-        var target = this._currTarget;
-        this.eventHandler.emit('recall');
+        var target = this._currentTarget;
+        this._eventOutput.emit('recall');
         this.recall(target);
         target.style.display = 'none';
+        target.style.opacity = '';
         target.style.width = '';
         target.style.height = '';
-        this._size = null;
         _cleanupStyles.call(this, target);
+        _cleanupAttributes.call(this, target);
         var classList = this.getClassList();
         _cleanupClasses.call(this, target);
         for (i = 0; i < classList.length; i++) target.classList.remove(classList[i]);
@@ -536,10 +429,9 @@ define(function(require, exports, module) {
                 target.classList.remove(this.elementClass);
             }
         }
-        _removeEventListeners.call(this, target);
-        this._currTarget = null;
+        this.detach(target);
+        this._currentTarget = null;
         allocator.deallocate(target);
-        _setInvisible(target);
     };
 
     /**
@@ -575,22 +467,23 @@ define(function(require, exports, module) {
      *  Get the x and y dimensions of the surface.
      *
      * @method getSize
-     * @param {boolean} actual return computed size rather than provided
      * @return {Array.Number} [x,y] size of surface
      */
-    Surface.prototype.getSize = function getSize(actual) {
-        return actual ? this._size : (this.size || this._size);
+    Surface.prototype.getSize = function getSize() {
+        return this._size ? this._size : this.size;
     };
 
     /**
      * Set x and y dimensions of the surface.
      *
      * @method setSize
+     * @chainable
      * @param {Array.Number} size as [width, height]
      */
     Surface.prototype.setSize = function setSize(size) {
         this.size = size ? [size[0], size[1]] : null;
         this._sizeDirty = true;
+        return this;
     };
 
     module.exports = Surface;

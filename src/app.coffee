@@ -14,7 +14,7 @@ Transform = require 'famous/core/Transform'
 Easing = require 'famous/transitions/Easing'
 
 #FastClick = require 'fastclick/lib/fastclick'
-FastClick = require 'famous/inputs/fastclick'
+#FastClick = require 'famous/inputs/fastclick'
 #FastClick.attach document.body
 
 # Facebook

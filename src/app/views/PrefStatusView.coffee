@@ -33,8 +33,8 @@ class PrefStatusView extends View
       margin: 300
     @itemsScrollView.sequenceFrom @_itemViews
     itemsScrollViewMod = new StateModifier
-      align: [0, 0]
-      origin: [0, 0]
+      align: [0.5, 0.5]
+      origin: [0.5, 0.5]
     @add(itemsScrollViewMod).add @itemsScrollView
 
 #    userPicNode = new RenderNode

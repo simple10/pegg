@@ -7,6 +7,7 @@ ActivityItemView = require 'views/ActivityItemView'
 ActivityStore = require 'stores/ActivityStore'
 Constants = require 'constants/PeggConstants'
 Utils = require 'lib/Utils'
+Modifier = require 'famous/core/Modifier'
 
 class ActivityView extends View
 
@@ -29,7 +30,10 @@ class ActivityView extends View
       properties:
         overflow: 'hidden'
     container.add @activityScrollview
-    @add container
+    containerMod = new Modifier
+      origin: [0.5, 0.5]
+      align: [0.5, 0.5]
+    @add(containerMod).add container
 
   loadActivity:  =>
     @activities.length = 0

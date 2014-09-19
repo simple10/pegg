@@ -3,7 +3,7 @@ Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'
 Utils = require 'lib/Utils'
-Cookies = require 'lib/Cookies'
+#Cookies = require 'lib/Cookies'
 Config = require('Config').public
 
 DB = require 'stores/helpers/ParseBackend'

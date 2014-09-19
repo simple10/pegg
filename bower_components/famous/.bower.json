@@ -1,0 +1,14 @@
+{
+  "name": "famous",
+  "homepage": "https://github.com/Famous/famous",
+  "version": "0.3.0-alpha",
+  "_release": "0.3.0-alpha",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.0-alpha",
+    "commit": "4f7b60b7944ee53829713b02b818a9a384c2e351"
+  },
+  "_source": "https://github.com/Famous/famous.git",
+  "_target": "0.3.0-alpha",
+  "_originalSource": "git+https://github.com/Famous/famous.git"
+}

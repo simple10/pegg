@@ -93,6 +93,8 @@ class AppView extends View
 #   @layout.footer.add @initFooter()
     @layout.content.add @initViewManager()
     @layoutState = new StateModifier
+      origin: [0.5, 0.5]
+      align: [0.5, 0.5]
     @add(@layoutState).add @layout
 
   initHeader: ->

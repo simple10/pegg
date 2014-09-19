@@ -17,7 +17,6 @@
 
 - FIX `Walls` `.forEach` bug.
 
-
 ## 0.2.1
 
 **famous/core:**
@@ -52,7 +51,6 @@
 - FIX `FlexibleLayout` caching bug
 - FIX `Scrollview` `groupScroll` option
 - FIX `ContextualView` `DEFAULT_OPTIONS` inheritance
-
 
 ## 0.2.0
 
