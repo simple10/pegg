@@ -179,16 +179,16 @@ class SingleCardView extends View
       SingleCardActions.plug payload.id, payload.full, payload.thumb
     @cardView.pipe @
 
-    if card.type is 'deny'
-      @navView.hideNav()
-      @hideComments()
-    else
+    if SingleCardStore.getReferrer()?
       @navView.showNav()
       @navView.setOptions {
         'cardType': 'review'
         'message': SingleCardStore.getMessage()
       }
       @showComments()
+    else
+      @navView.hideNav()
+      @hideComments()
 
   requireLogin: =>
     alert 'Please log in to view this card'

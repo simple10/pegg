@@ -11,7 +11,7 @@ class SingleCardStore extends EventEmitter
   _comments: []
   _message: ''
   _fail: 0
-  _referrer: ''
+  _referrer: null
   _peggeeId: null
 
   _setReferrer: (path) ->
@@ -63,50 +63,44 @@ class SingleCardStore extends EventEmitter
     #   - whether user has pegged peggee
     #   - whether there's a peggee
 
-    # scenario 1:
     #   You're logged in and you go to a card. You’ve preffed the card. You see your answer.
     if @_loggedIn and @_card? and @_peggeeId is @_userId and @_hasPreffed
       @_doReview()
 
-    # scenario 2:
     #   You’re logged in and you go to a card you can see. You have not preffed the card. You pref the card.
     else if @_loggedIn and @_card? and @_peggeeId is @_userId and not @_hasPreffed
       @_doPref()
 
-    # scenario 3:
     #   You’re logged in and you go to your friend's card. You've pegged them. You see their answer.
     else if @_loggedIn and @_card? and @_hasPegged
       @_doReview()
 
-    # scenario 4:
+    #   You’re logged in and you go to a peggee's card that you can't see. Access denied.
+    else if @_loggedIn and @_card? and @_peggeeId and not @_hasPreffed
+      @_doDeny()
+
     #   You’re logged in and you go to your friend's card. You haven’t pegged them. You pegg them first, then see their answer.
     else if @_loggedIn and @_card? and not @_hasPegged
       @_doPegg()
 
-    # scenario 5:
-    #   You’re logged in and you go to a non-friend’s card. The card is not public. You see "Sorry, this card isn't available. You're
-    #   probably not friends with the card's owner, and they have not shared it publicly."
+    #   You’re logged in and you go to a non-friend’s card. The card is not public. Access denied.
     else if @_loggedIn and @_peggeeId? and not @_card?
       @_doDeny()
 
-    # scenario 6:
     #   You’re not logged in, and you go to a peggee’s card. The card is public. You can pegg the card and see the answer image. Clicking
     #   “continue playing” button or leaving a comment asks you to login, then you proceed.
     else if not @_loggedIn and @_card? and @_peggeeId?
       @_doPegg()
 
-    # scenario 7:
     #   You’re not logged in, and you go to a peggee’s card. The card is not public. You can’t see the card. You must log in. Go to
     #   scenario 3.
     else if not @_loggedIn and @_peggeeId? and not @_card?
       @_doRequireLogin()
 
-    # scenario 7.5:
     #   You’re not logged in, and you go to a card. The card is not public. You can’t see the card. You must log in.
     else if not @_loggedIn and not @_card?
       @_doRequireLogin()
 
-    # scenario 8:
     #   You’re not logged in, and you go to a public card with no peggeeId. You pref the card. Card flips and shows answer image. XXX
     #   actions like share with friends, save your answer, continue playing. User logs in, does that.
     else if not @_loggedIn and @_card? and not @_peggeeId?
