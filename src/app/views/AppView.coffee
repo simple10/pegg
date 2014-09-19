@@ -23,6 +23,7 @@ Utils = require 'lib/Utils'
 # Stores
 AppStateStore = require 'stores/AppStateStore'
 UserStore = require 'stores/UserStore'
+SingleCardStore = require 'stores/SingleCardStore'
 
 # Menu
 Menu = require 'constants/menu'
@@ -75,6 +76,7 @@ class AppView extends View
 
   initListeners: ->
     AppStateStore.on Constants.stores.MENU_CHANGE, @togglePage
+    SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
@@ -135,12 +137,15 @@ class AppView extends View
   togglePage: =>
     pageID = AppStateStore.getCurrentPageID()
     if !UserStore.getLoggedIn() and pageID isnt 'card'
-      @showPage @getPage 'login'
+      @requireLogin()
     else
       @showPage @getPage pageID
       #@footer.bounceTabs()
       #@footer.hideTabs()
     @closeMenu()
+
+  requireLogin: =>
+    @showPage @getPage 'login'
 
   toggleMenu: =>
     if @menuOpen

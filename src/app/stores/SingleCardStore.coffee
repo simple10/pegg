@@ -32,7 +32,7 @@ class SingleCardStore extends EventEmitter
 
       # determine whether the peggee has preffed the card
       @_hasPreffed = false
-      if @_card? and @_card.hasPreffed? and @_loggedIn
+      if @_card? and @_card.hasPreffed?
         @_hasPreffed = _.contains(@_card.hasPreffed, @_peggeeId)
 
       if @_hasPreffed
@@ -101,6 +101,11 @@ class SingleCardStore extends EventEmitter
     else if not @_loggedIn and @_peggeeId? and not @_card?
       @_doRequireLogin()
 
+    # scenario 7.5:
+    #   You’re not logged in, and you go to a card. The card is not public. You can’t see the card. You must log in.
+    else if not @_loggedIn and not @_card?
+      @_doRequireLogin()
+
     # scenario 8:
     #   You’re not logged in, and you go to a public card with no peggeeId. You pref the card. Card flips and shows answer image. XXX
     #   actions like share with friends, save your answer, continue playing. User logs in, does that.
@@ -133,6 +138,7 @@ class SingleCardStore extends EventEmitter
 
   _doRequireLogin: () ->
     console.log "SingleCardStore :: _doRequireLogin called"
+    @emit Constants.stores.REQUIRE_LOGIN
 
   _fetchChoices: () ->
     @_card.choices.length = 0
