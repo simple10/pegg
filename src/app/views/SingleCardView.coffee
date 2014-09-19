@@ -179,10 +179,16 @@ class SingleCardView extends View
       SingleCardActions.plug payload.id, payload.full, payload.thumb
     @cardView.pipe @
 
-    @navView.setOptions {
-      'cardType': 'review'
-      'message': SingleCardStore.getMessage()
-    }
+    if card.type is 'deny'
+      @navView.hideNav()
+      @hideComments()
+    else
+      @navView.showNav()
+      @navView.setOptions {
+        'cardType': 'review'
+        'message': SingleCardStore.getMessage()
+      }
+      @showComments()
 
   requireLogin: =>
     alert 'Please log in to view this card'
@@ -200,6 +206,13 @@ class SingleCardView extends View
     console.log "points: #{points}"
     @points.setContent "+#{points}"
     Utils.animateAll @pointsMod, @layout.points.states
+
+  showComments: =>
+    Utils.animate @commentsMod, @layout.comments.states[1]
+
+  hideComments: =>
+    Utils.animate @commentsMod, @layout.comments.states[0]
+    @newComment.setAlign @layout.newComment.states[0].align
 
   saveComment: (comment) ->
     SingleCardActions.comment(comment)

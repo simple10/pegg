@@ -163,7 +163,7 @@ class CardView extends View
     @card = card
     @id = id
 
-    if type is 'review'
+    if type is 'review' or type is 'deny'
       @front.on 'click', @flip
       @back.on 'click', @flip
       @frontProfilePic.on 'click', @flip
@@ -171,20 +171,25 @@ class CardView extends View
       @backImage.on 'click', @flip
       @backText.on 'click', @flip
       @addImageModifier.setTransform @layout.addImage.hide
+
+    if type is 'review'
       @loadAnswer @card.plug, @card.answer.get 'text'
+      @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
+    else if type is 'deny'
+      @frontProfilePic.setContent "#{@card.pic}"
+      @loadAnswer @card.plug, null
     else
       @front.on 'click', @toggleChoices
       @back.on 'click', =>
         @_eventOutput.emit 'comment', @
-        #@flip()
       @frontProfilePic.on 'click', @toggleChoices
       @frontQuestion.on 'click', @toggleChoices
       @addImageModifier.setTransform @layout.addImage.show
+      @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
 
     if @card.question.length > 90
       @layout.question.classes = ["#{@layout.question.big.classes}--medium"]
     @frontQuestion.setContent @card.question
-    @frontProfilePic.setContent "#{@card.pic}/?height=200&type=normal&width=200"
     @flip() if @currentSide is 1
 
   loadChoices: (choices) ->

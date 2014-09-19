@@ -135,6 +135,13 @@ class SingleCardStore extends EventEmitter
 
   _doDeny: () ->
     console.log "SingleCardStore :: _doDeny called"
+    @_card = {
+      question: "Ruh roh!<br/><br/>Either this card doesn't exist, or you don't have access to it."
+      pic: '/images/access_denied_icon.jpg'
+      plug: '/images/access_denied_plug.jpg'
+      type: 'deny'
+    }
+    @emit Constants.stores.CARD_CHANGE
 
   _doRequireLogin: () ->
     console.log "SingleCardStore :: _doRequireLogin called"
