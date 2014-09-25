@@ -88,7 +88,7 @@ class ProfileView extends View
     
     @mainNode = @add @mainMod
     @container.add @scrollview
-    @container.pipe @scrollview
+#    @container.pipe @scrollview
     @mainNode.add @container
 
   _initFilterBar: () ->
