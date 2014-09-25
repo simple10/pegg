@@ -189,10 +189,10 @@ Parse.Cloud.define "hasViewedPegg", (request, response) ->
 
 
 Parse.Cloud.afterSave 'Pegg', (request) ->
+  userId = Parse.User.current().id
   Parse.Cloud.useMasterKey()
   cardId = request.object.get('card').id
   peggeeId = request.object.get('peggee').id
-  userId = Parse.User.current().id
 
   # UPDATE pref row with userId in hasPegged array
   card = new Parse.Object 'Card'
@@ -209,14 +209,14 @@ Parse.Cloud.afterSave 'Pegg', (request) ->
     success: (pref) ->
       pref.addUnique 'hasPegged', userId
       pref.save()
-      console.log "hasPegged saved: #{pref}"
+      console.log "hasPegged saved: #{pref.id}"
     error: ->
       console.log 'hasPegged failed'
 
 Parse.Cloud.afterSave 'Pref', (request) ->
+  userId = Parse.User.current().id
   Parse.Cloud.useMasterKey()
   cardId = request.object.get('card').id
-  userId = Parse.User.current().id
 
   # UPDATE card row with userId in hasPreffed array
   cardQuery = new Parse.Query 'Card'
@@ -225,17 +225,18 @@ Parse.Cloud.afterSave 'Pref', (request) ->
     success: (card) ->
       cardAcl = card.get 'ACL'
       if cardAcl isnt undefined
+        console.log "ACL added to card #{card.id}: #{userId}_Friends"
         cardAcl.setRoleReadAccess "#{userId}_Friends", true
         card.setACL cardAcl
       card.addUnique 'hasPreffed', userId
       card.save()
-      console.log "hasPreffed saved: #{card}"
+      console.log "hasPreffed saved: #{card.id}"
     error: ->
       console.log 'hasPreffed failed'
 
 Parse.Cloud.afterSave 'Points', (request) ->
-  Parse.Cloud.useMasterKey()
   userId = Parse.User.current().id
+  Parse.Cloud.useMasterKey()
   user = new Parse.Object 'User'
   user.set 'id', userId
 
@@ -259,7 +260,7 @@ Parse.Cloud.afterSave 'Points', (request) ->
               for badgeRow in badges
                 badgeCriteria = badgeRow.get 'criteria'
                 if totalPoints >= badgeCriteria.points
-                  console.log 'user: ' + user
+                  console.log 'user: ' + user.id
                   console.log "badgeID: #{badgeRow.id}"
                   console.log 'userBadgesIDs: ' + userBadgesIDs
                   unless badgeRow.id in userBadgesIDs

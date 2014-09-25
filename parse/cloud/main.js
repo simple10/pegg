@@ -218,10 +218,10 @@
 
   Parse.Cloud.afterSave('Pegg', function(request) {
     var card, cardId, peggee, peggeeId, pegger, prefQuery, userId;
+    userId = Parse.User.current().id;
     Parse.Cloud.useMasterKey();
     cardId = request.object.get('card').id;
     peggeeId = request.object.get('peggee').id;
-    userId = Parse.User.current().id;
     card = new Parse.Object('Card');
     card.set('id', cardId);
     peggee = new Parse.Object('User');
@@ -235,7 +235,7 @@
       success: function(pref) {
         pref.addUnique('hasPegged', userId);
         pref.save();
-        return console.log("hasPegged saved: " + pref);
+        return console.log("hasPegged saved: " + pref.id);
       },
       error: function() {
         return console.log('hasPegged failed');
@@ -245,9 +245,9 @@
 
   Parse.Cloud.afterSave('Pref', function(request) {
     var cardId, cardQuery, userId;
+    userId = Parse.User.current().id;
     Parse.Cloud.useMasterKey();
     cardId = request.object.get('card').id;
-    userId = Parse.User.current().id;
     cardQuery = new Parse.Query('Card');
     cardQuery.equalTo('objectId', cardId);
     return cardQuery.first({
@@ -255,12 +255,13 @@
         var cardAcl;
         cardAcl = card.get('ACL');
         if (cardAcl !== void 0) {
+          console.log("ACL added to card " + card.id + ": " + userId + "_Friends");
           cardAcl.setRoleReadAccess("" + userId + "_Friends", true);
           card.setACL(cardAcl);
         }
         card.addUnique('hasPreffed', userId);
         card.save();
-        return console.log("hasPreffed saved: " + card);
+        return console.log("hasPreffed saved: " + card.id);
       },
       error: function() {
         return console.log('hasPreffed failed');
@@ -270,8 +271,8 @@
 
   Parse.Cloud.afterSave('Points', function(request) {
     var badgesQuery, user, userId;
-    Parse.Cloud.useMasterKey();
     userId = Parse.User.current().id;
+    Parse.Cloud.useMasterKey();
     user = new Parse.Object('User');
     user.set('id', userId);
     badgesQuery = new Parse.Query('Badges');
@@ -302,7 +303,7 @@
                   badgeRow = badges[_j];
                   badgeCriteria = badgeRow.get('criteria');
                   if (totalPoints >= badgeCriteria.points) {
-                    console.log('user: ' + user);
+                    console.log('user: ' + user.id);
                     console.log("badgeID: " + badgeRow.id);
                     console.log('userBadgesIDs: ' + userBadgesIDs);
                     if (_ref = badgeRow.id, __indexOf.call(userBadgesIDs, _ref) < 0) {
