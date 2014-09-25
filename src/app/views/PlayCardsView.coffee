@@ -221,6 +221,7 @@ class PlayCardsView extends View
     for own cardId, cardObj of PlayStore.getCards()
       name = cardObj.firstName
       card = new CardView
+        size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
       card.loadCard cardId, cardObj, 'play'
       card.on 'comment', =>
         @collapseComments()

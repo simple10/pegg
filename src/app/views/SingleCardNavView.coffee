@@ -12,8 +12,8 @@ LayoutManager = require 'views/layouts/LayoutManager'
 
 class SingleCardNavView extends View
   @DEFAULT_OPTIONS:
-    cardType: 'review'
-  
+    cardType: null
+
   constructor: (options) ->
     super options
 
@@ -23,7 +23,7 @@ class SingleCardNavView extends View
     @initSurfaces()
     @initEvents()
 
-  setOptions: (options) => 
+  setOptions: (options) =>
     @_optionsManager.patch(options)
 
     # update the card message
