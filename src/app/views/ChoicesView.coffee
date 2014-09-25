@@ -19,8 +19,9 @@ class ChoicesView extends View
     @choices = []
     container = new ContainerSurface
       size: @options.size
-      properties:
-        overflow: 'hidden'
+## TODO: Famo.us Bug? When this is set, choices aren't clickable inside scrollview ##
+#      properties:
+#        overflow: 'hidden'
       classes: ['card__options__box']
     @scrollView = new Scrollview
       size: @options.size
