@@ -1,8 +1,7 @@
 require './scss/card.scss'
 
 View = require 'famous/core/View'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
-Scrollview = require 'famous/views/Scrollview'
+ScrollContainer = require 'famous/views/ScrollContainer'
 StateModifier = require 'famous/modifiers/StateModifier'
 # SequentialLayout = require 'famous/views/SequentialLayout'
 Surface = require 'famous/core/Surface'
@@ -17,18 +16,12 @@ class ChoicesView extends View
   constructor: () ->
     super
     @choices = []
-    container = new ContainerSurface
-      size: @options.size
-## TODO: Famo.us Bug? When this is set, choices aren't clickable inside scrollview ##
-#      properties:
-#        overflow: 'hidden'
-      classes: ['card__options__box']
-    @scrollView = new Scrollview
-      size: @options.size
+    @scrollView = new ScrollContainer
+      container:
+        size: @options.size
+        classes: ['card__options__box']
     @scrollView.sequenceFrom @choices
-    container.add @scrollView
-    @add container
-#    container.pipe @scrollView
+    @add @scrollView
 
   load: (choices) ->
     @clearChoices()
@@ -68,7 +61,7 @@ class ChoicesView extends View
 
   showChoices: () ->
     for choiceView in @choices
-      choiceView.state.setTransform Transform.translate(0,0,0)
+      choiceView.state.setTransform Transform.translate(0,0,5)
 
   hideChoices: () ->
     for choiceView in @choices

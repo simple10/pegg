@@ -12,16 +12,6 @@ config =
           # How are you feeling?
         }
       ]
-      [     # stage 2
-        {
-          type: 'pegg'
-          size: 2
-        }
-        {
-          type: 'friend_ranking'
-        # How do I compare to his friends?
-        }
-      ]
       [      # stage 1
         {
           type: 'pref'
