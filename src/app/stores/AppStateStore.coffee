@@ -30,7 +30,7 @@ class AppStateStore extends EventEmitter
 
   _loadPage: (pageID) ->
     @_currentPageID = pageID
-#    Parse.history.navigate pageID, true
+    Parse.history.navigate pageID, trigger: false
     if pageID is 'login' or pageID is 'signup'
       @emit Constants.stores.LOGIN_CHANGE
     else if pageID is 'activity'
@@ -44,7 +44,7 @@ class AppStateStore extends EventEmitter
 
   _loadCard: (cardId, peggeeId, referrer) ->
 #    console.log cardId, peggeeId
-    # Parse.history.navigate "#{@_currentPageID}/#{cardId}#{peggeeUrlSegment}", true
+    Parse.history.navigate "#{@_currentPageID}/#{cardId}/#{peggeeId}", trigger: false
     @_currentPageID = 'card'
     peggeeUrlSegment = if peggeeId? then "/#{peggeeId}" else ""
     console.log "#{@_currentPageID}/#{cardId}#{peggeeUrlSegment}"
@@ -54,11 +54,11 @@ class AppStateStore extends EventEmitter
 
   _logout: ->
     @_currentPageID = '/'
-    Parse.history.navigate @_currentPageID, true
+    Parse.history.navigate @_currentPageID, trigger: false
 
   _login: (referrer) ->
     @_currentPageID = referrer or 'play'
-    Parse.history.navigate @_currentPageID, true
+#    Parse.history.navigate @_currentPageID, true
     @emit Constants.stores.MENU_CHANGE
     @emit Constants.stores.LOGIN_CHANGE
 
