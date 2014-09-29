@@ -71,3 +71,4 @@ module.exports =
     SUBSCRIBE_FAIL: null
     SUBSCRIBE_PASS: null
     UNLOCK_ACHIEVED: null
+    BADGE_CHANGE: null

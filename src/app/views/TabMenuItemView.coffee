@@ -21,27 +21,33 @@ class TabMenuItemView extends View
   constructor: ->
     super
     @createBackground()
-    #@createIcon()
-    #@createTitle()
+    @createIcon()
+#    @createTitle()
 
   createBackground: ->
     @background = new Surface
       size: [@options.width, @options.height]
       #size: [null, null]
-      classes: ['tabmenu__item', "tabmenu__item--#{@options.pageID}"]
-    @add @background
+      classes: ['tabmenu__item']
+    @backgroundMod = new StateModifier
+      opacity: .3
+    @add(@backgroundMod).add @background
     @background.on 'click', =>
-      NavActions.selectMenuItem @getID()
+      @menuSelect()
+
 
   createIcon: ->
     @icon = new ImageSurface
       size: [@options.iconSize, @options.iconSize]
       content: @options.iconUrl
+      properties: @options.properties
     @iconState = new StateModifier
       #origin: [0.5, 0.5]
       #align: [0.5, 0.5]
-        #transform: Transform.translate 20, @options.iconSize/2, 0
+      transform: Transform.translate 17, 10, 0
     @add(@iconState).add @icon
+    @icon.on 'click', =>
+      @menuSelect()
 
   createTitle: ->
     @title = new Surface
@@ -49,10 +55,15 @@ class TabMenuItemView extends View
       content: @options.title
       classes: ['tabmenu__item__title']
     @titleState = new StateModifier
-      transform: Transform.translate @options.width/2, @options.height/2, 0
+      transform: Transform.translate 0, @options.height/2, 0
     @add(@titleState).add @title
 
   getID: ->
     @options.pageID
+
+  menuSelect: ->
+    NavActions.selectMenuItem @getID()
+    @background.setClasses ["tabmenu__item--#{@options.pageID}"]
+    @backgroundMod.setOpacity 1
 
 module.exports = TabMenuItemView

@@ -31,7 +31,8 @@ class FpsMeter extends View
       content: ''
 
     @add new Modifier
-      origin: [1, 1]
+      origin: [1, 0]
+      align: [1, 0]
       transform: Transform.inFront
     .add @surface
 

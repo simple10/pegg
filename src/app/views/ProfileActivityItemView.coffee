@@ -33,6 +33,7 @@ class ProfileActivityItemView extends View
 
     question = @options.data.question
     plug = @options.data.plug
+#    plug = @options.data.plug? @options.data.plug.S3
     numPegged = if @options.data.hasPegged? then @options.data.hasPegged.length else 0
 
     message = "

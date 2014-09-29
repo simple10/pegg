@@ -9,6 +9,7 @@ _ = require('Parse')._
 
 TabMenuItemView = require 'views/TabMenuItemView'
 Utils = require 'lib/Utils'
+UserStore = require 'stores/UserStore'
 
 
 ###
@@ -37,13 +38,21 @@ class TabMenuView extends View
     i = 0
     xOffset = 0
     while i < @options.model.length
+      if i is @options.model.length - 1
+        iconUrl = UserStore.getAvatar 'type=square'
+        properties =
+          borderRadius: "#{@options.tab.height}px"
+          padding: '4px'
+      else
+        iconUrl = @options.model[i].iconUrl
       @addTab
         pageID: @options.model[i].pageID
         title: @options.model[i].title
-        icon: @options.model[i].iconUrl
+        icon: iconUrl
         xOffset: xOffset
         width: Utils.getViewportWidth() / @options.model.length
         height: @options.tab.height
+        properties: properties
       i++
       xOffset += 1/@options.model.length
 
@@ -56,10 +65,11 @@ class TabMenuView extends View
       width: params.width
       height: params.height
       xOffset: params.xOffset
+      properties: params.properties
     tabModifier = new StateModifier
       origin: [0, 0]
       align: [params.xOffset, 0]
-      transform: Transform.translate 0, params.height, 0
+      transform: Transform.translate 0, params.height, 5
     @tabModifiers.push tabModifier
     @tabs.push tab
     @add(tabModifier).add tab
@@ -71,7 +81,7 @@ class TabMenuView extends View
     i = 0
     while i < @tabModifiers.length
       Timer.setTimeout ((i) ->
-        @tabModifiers[i].setTransform Transform.translate(0, 0, 0), transition
+        @tabModifiers[i].setTransform Transform.translate(0, 0, 11), transition
         return
       ).bind(this, i), i * delay
       i++
@@ -82,7 +92,7 @@ class TabMenuView extends View
     i = 0
     while i < @tabModifiers.length
       Timer.setTimeout ((i) ->
-        @tabModifiers[i].setTransform Transform.translate(0, @options.tab.height, 0), transition
+        @tabModifiers[i].setTransform Transform.translate(0, @options.tab.height, 11), transition
         return
       ).bind(this, i), i * delay
       i++
@@ -95,7 +105,7 @@ class TabMenuView extends View
     y = @options.tab.height
     while i < @tabModifiers.length * 2
       Timer.setTimeout ((i) ->
-        @tabModifiers[tab].setTransform Transform.translate(0, y, 0), transition
+        @tabModifiers[tab].setTransform Transform.translate(0, y, 11), transition
         tab++
         if tab == @tabModifiers.length
           tab = 0

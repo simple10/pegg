@@ -40,11 +40,13 @@ SettingsView = require 'views/SettingsView'
 NewCardView = require 'views/NewCardView'
 SingleCardView = require 'views/SingleCardView'
 LoginView = require 'views/LoginView'
+HomeView = require 'views/HomeView'
 
 # Layouts
 PlayViewLayout = require 'views/layouts/mobile/PlayViewLayout'
 NewCardViewLayout = require 'views/layouts/mobile/NewCardViewLayout'
 HeaderViewLayout = require 'views/layouts/mobile/HeaderViewLayout'
+FooterViewLayout = require 'views/layouts/mobile/FooterViewLayout'
 
 #Actions
 NavActions = require 'actions/NavActions'
@@ -60,15 +62,17 @@ class AppView extends View
         duration: 300
         curve: 'easeOut'
       model: Menu
+      tab:
+        height: FooterViewLayout.size[1]
     header:
-      height: HeaderViewLayout.size[1]
+      height: 0
   # Pages correspond to pageID in constants/menu.coffee
   pages: {}
   menuOpen: false
 
   constructor: ->
     super
-    @initMenu()
+#    @initMenu()
     @initLayout()
     @initPages()
     @initListeners()
@@ -80,7 +84,7 @@ class AppView extends View
 
   initMenu: ->
     @menu = new BandMenuView @options.menu
-    @menu.on 'toggleMenu', @toggleMenu
+    @menu.on 'toggleMenu', @togglePage
     @menuState = new StateModifier
       origin: [0,0]
     @add(@menuState).add @menu
@@ -88,9 +92,9 @@ class AppView extends View
   initLayout: ->
     @layout = new HeaderFooterLayout
       headerSize: @options.header.height
-      footerSize: 0
+      footerSize: @options.menu.tab.height
     @layout.header.add @initHeader()
-#   @layout.footer.add @initFooter()
+    @layout.footer.add @initFooter()
     @layout.content.add @initViewManager()
     @layoutState = new StateModifier
       origin: [0.5, 0.5]
@@ -98,13 +102,14 @@ class AppView extends View
     @add(@layoutState).add @layout
 
   initHeader: ->
-    @header = new HeaderView @options.header
-    @header.on 'toggleMenu', @toggleMenu
+    @header = new HeaderView height: 50
+    @header.on 'toggleMenu', =>
+      NavActions.selectMenuItem('home')
     @header
 
-#  initFooter: ->
-#    @footer = new TabMenuView @options.menu
-#    @footer
+  initFooter: ->
+    @footer = new TabMenuView @options.menu
+    @footer
 
   initPages: ->
     # Pages correspond to pageID in constants/menu.coffee
@@ -115,13 +120,14 @@ class AppView extends View
     @pages.profile = new ProfileView
     @pages.card = new SingleCardView
     @pages.login = new LoginView
+    @pages.home = new HomeView
     @togglePage()
 
   initViewManager: ->
     viewportHeight = Utils.getViewportHeight()
     @lightbox = new Lightbox
-#      inOpacity: 1
-#      outOpacity: 0
+      inOpacity: 1
+      outOpacity: 0
       inOrigin: [1, 1]
       outOrigin: [0, 0]
       showOrigin: [0.5, 0.5]
@@ -142,8 +148,8 @@ class AppView extends View
       @requireLogin()
     else
       @showPage @getPage pageID
-      #@footer.bounceTabs()
-      #@footer.hideTabs()
+      @footer.bounceTabs()
+#      @footer.hideTabs()
     @closeMenu()
 
   requireLogin: =>
@@ -162,7 +168,7 @@ class AppView extends View
       =>
         @menuOpen = false
     )
-    @menu.hide()
+#    @menu.hide()
 
   openMenu: ->
     @layoutState.setTransform(
@@ -171,14 +177,14 @@ class AppView extends View
       =>
         @menuOpen = true
     )
-    @menu.show()
+#    @menu.show()
 
-#  onScroll: =>
-#    if @tabsOpen
-#      @footer.hideTabs()
-#      @tabsOpen = false
-#    else
-#      @footer.showTabs()
-#      @tabsOpen = true
+  onScroll: =>
+    if @tabsOpen
+      @footer.hideTabs()
+      @tabsOpen = false
+    else
+      @footer.showTabs()
+      @tabsOpen = true
 
 module.exports = AppView

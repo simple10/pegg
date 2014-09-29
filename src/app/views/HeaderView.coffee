@@ -24,7 +24,7 @@ StateModifier = require 'famous/modifiers/StateModifier'
 ###
 class HeaderView extends View
   cssPrefix: 'header'
-  height: null
+  height: 50
 
   constructor: ->
     super
@@ -50,11 +50,11 @@ class HeaderView extends View
     menuIconMod = new Modifier
       transform: Transform.translate 8, 0, 0
     @logo = new ImageSurface
-      size: [100, 30]
+      size: [40, 40]
       classes: ["#{@cssPrefix}__logo"]
-      content: 'images/pegg.svg'
+      content: 'images/home.svg'
     logoMod = new StateModifier
-      transform: Transform.translate 22, 14, 0
+      transform: Transform.translate 10, 10, 0
     @pic = new ImageSurface
       size: [@options.height, @options.height]
       classes: ["#{@cssPrefix}__profilePic"]
@@ -77,10 +77,10 @@ class HeaderView extends View
 
     node = @add @mainMod
     node.add @background
-    node.add(menuIconMod).add @menuIcon
-    node.add(logoMod).add @logo
-    node.add(picMod).add @pic
-    node.add(meMod).add @me
+#    node.add(menuIconMod).add @menuIcon
+#    node.add(logoMod).add @logo
+#    node.add( picMod).add @pic
+#    node.add(meMod).add @me
 
 
   _update: =>

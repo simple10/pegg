@@ -7,19 +7,24 @@
 .tabmenu__item {
   cursor: pointer;
   text-align: left;
+  background-color: $white;
+  opacity: !important .3
 }
-.tabmenu__item--pegg {
-  background-color: $rainbow-red;
+.tabmenu__item--profile {
+  background-color: $rainbow-blue;
 }
 .tabmenu__item--friends {
   background-color: $rainbow-red;
 }
-.tabmenu__item--decks {
-  background-color: $rainbow-yellow;
+.tabmenu__item--play {
+  background-color: $rainbow-red;
 }
-.tabmenu__item--peggbox {
+.tabmenu__item--create {
   background-color: $rainbow-green;
 }
 .tabmenu__item--activity {
-  background-color: $rainbow-blue;
+  background-color: $rainbow-yellow;
+}
+.tabmenu__item__title {
+  text-align: center;
 }
