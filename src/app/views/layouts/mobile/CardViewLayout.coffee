@@ -86,14 +86,15 @@ module.exports = {
     size: [43, 48]
     classes: ['card__back__addImage']
     content: 'images/add-image.png'
-    show: Transform.multiply(
-      Transform.translate(0, 400, .5)
+    origin: [0.5, 1]
+    align: [0, 1]
+    transform: Transform.multiply(
+      Transform.translate 0, -80, -4
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI
       )
     )
-    hide: Transform.translate 0, -500, -1000
   choices:
     size: [width - width * .1, height - 300]
     hide: Transform.translate 0, 180, -10

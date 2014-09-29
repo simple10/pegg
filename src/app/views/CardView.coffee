@@ -5,6 +5,7 @@ Surface = require 'famous/core/Surface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 Modifier = require 'famous/core/Modifier'
 StateModifier = require 'famous/modifiers/StateModifier'
+RenderController = require 'famous/views/RenderController'
 Transform = require 'famous/core/Transform'
 Utility = require 'famous/utilities/Utility'
 Easing = require 'famous/transitions/Easing'
@@ -19,6 +20,7 @@ Constants = require 'constants/PeggConstants'
 ChoicesView = require 'views/ChoicesView'
 Utils = require 'lib/Utils'
 LayoutManager = require 'views/layouts/LayoutManager'
+UserStore = require 'stores/UserStore'
 
 class CardView extends View
 
@@ -107,14 +109,17 @@ class CardView extends View
       transform: @layout.answerText.transform
     @mainNode.add(@backTextModifier).add @backText
 
-    addImageButton = new ImageSurface
+    @addImageButton = new ImageSurface
       size: @layout.addImage.size
       content: @layout.addImage.content
       classes: @layout.addImage.classes
-    @addImageModifier = new StateModifier
-      transform: @layout.addImage.show
+    addImageMod = new StateModifier
+      origin: @layout.addImage.origin
+      align: @layout.addImage.align
+      transform: @layout.addImage.transform
+    @addImageRenderer = new RenderController
     imagePickView = new ImagePickView()
-    addImageButton.on 'click', =>
+    @addImageButton.on 'click', =>
       imagePickView.pick( (results) =>
         console.log JSON.stringify(results)
         @backImage.setContent results.fullS3
@@ -124,7 +129,7 @@ class CardView extends View
           thumb: results.thumb.key
       )
     @mainNode.add imagePickView
-    @mainNode.add(@addImageModifier).add addImageButton
+    @mainNode.add(addImageMod).add(@addImageRenderer)
 
   # Doesn't respond to gestures, just makes sure that the events
   # get to the right place
@@ -143,6 +148,7 @@ class CardView extends View
     @choicesView.clearChoices()
     @frontProfilePic.setContent ""
     @frontQuestion.setContent ""
+    @addImageRenderer.hide @addImageButton
 
     # clear event listeners
     @back.removeListener 'click', @flip
@@ -170,11 +176,12 @@ class CardView extends View
       @frontQuestion.on 'click', @flip
       @backImage.on 'click', @flip
       @backText.on 'click', @flip
-      @addImageModifier.setTransform @layout.addImage.hide
 
     if type is 'review'
       @loadAnswer @card.plug, @card.answer.get 'text'
       @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
+      if card.peggee is UserStore.getUser().id
+        @addImageRenderer.show @addImageButton
     else if type is 'deny'
       @frontProfilePic.setContent "#{@card.pic}"
       @loadAnswer @card.plug, null
@@ -184,7 +191,6 @@ class CardView extends View
         @_eventOutput.emit 'comment', @
       @frontProfilePic.on 'click', @toggleChoices
       @frontQuestion.on 'click', @toggleChoices
-      @addImageModifier.setTransform @layout.addImage.show
       @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
 
     if @card.question.length > 90
@@ -232,13 +238,13 @@ class CardView extends View
         @choiceWin choice, i
       else
         @choiceFail choice, i
-      @addImageModifier.setTransform @layout.addImage.hide
     else
       @_eventOutput.emit 'pref',
         id: @id
         choiceId: choice.id
         image: choice.image
       @loadAnswer choice.image, choice.text
+      @addImageRenderer.show @addImageButton
       @flip choice
 
   choiceFail: (choice, i) =>

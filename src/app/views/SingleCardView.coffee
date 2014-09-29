@@ -35,6 +35,9 @@ class SingleCardView extends View
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'SingleCardView'
 
+    @_viewportHeight = Utils.getViewportHeight()
+    @_viewportWidth = Utils.getViewportWidth()
+
     # create transitionable with initial value of 0
     @cardYPos = new Transitionable(0)
 
@@ -57,7 +60,7 @@ class SingleCardView extends View
     @cardView = new CardView
     @cardViewMod = new Modifier
       align: =>
-        yAlign = @cardYPos.get() / Utils.getViewportHeight()
+        yAlign = @_translateToAlign @cardYPos.get(), 'Y'
         [@layout.card.align[0], @layout.card.align[1] + yAlign]
       origin: @layout.card.origin
     @add(@cardViewMod).add @cardView
@@ -190,9 +193,6 @@ class SingleCardView extends View
       @navView.hideNav()
       @hideComments()
 
-  requireLogin: =>
-    alert 'Please log in to view this card'
-
   loadChoices: (choices) =>
     @cardView.loadChoices choices
 
@@ -233,5 +233,16 @@ class SingleCardView extends View
     Utils.animate @commentsMod, @layout.comments.states[2]
     @._commentsIsExpanded = true
     @newComment.setAlign @layout.newComment.states[1].align
+
+  requireLogin: =>
+    alert 'Please log in to view this card'
+
+  _translateToAlign: (delta, axis) =>
+    if axis is 'Y'
+      delta / @_viewportHeight
+    else if axis is 'X'
+      delta / @_viewportWidth
+    else
+      null
 
 module.exports = SingleCardView

@@ -64,9 +64,8 @@ class PlayCardsView extends View
       margin: 300
     @cardScrollViewMod = new Modifier
       align: =>
-        xAlign = 0.5
-        yAlign = @_translateToAlign @cardYPos.get()
-        [xAlign, yAlign]
+        yAlign = @_translateToAlign @cardYPos.get(), 'Y'
+        [@layout.cards.align[0], @layout.cards.align[1] + yAlign]
       origin: @layout.cards.origin
     @add(@cardScrollViewMod).add @cardScrollView
 
@@ -241,23 +240,6 @@ class PlayCardsView extends View
       'firstName': name
     }
 
-  _pipeCardsToScrollView: () =>
-    for i of @cardViews
-      @cardViews[i].pipe @cardScrollView
-    null
-
-  _unpipeCardsToScrollView: () =>
-    for i of @cardViews
-      @cardViews[i].unpipe @cardScrollView
-    null
-
-  _translateToAlign: (delta, axis) =>
-    axis = axis || 'Y'
-    if axis is 'Y'
-      delta / @_viewportHeight
-    else
-      delta / @_viewportWidth
-
   loadChoices: (cardId, choices) =>
     @cardViews[@index[cardId]].loadChoices choices
 
@@ -278,9 +260,6 @@ class PlayCardsView extends View
       @cardScrollView.goToPreviousPage()
       console.log @cardScrollView.getCurrentIndex()
     else PlayActions.prevCard()
-
-  saveComment: (comment) ->
-    PlayActions.comment(comment)
 
   cardPref: =>
     Utils.animate @commentsMod, @layout.comments.states[1]
@@ -307,6 +286,9 @@ class PlayCardsView extends View
     Utils.animate @commentsMod, @layout.comments.states[0]
     @newComment.setAlign @layout.newComment.states[0].align
 
+  saveComment: (comment) ->
+    PlayActions.comment(comment)
+
   collapseComments: =>
     @navView.showNav()
     # slide the cards down to their starting position
@@ -326,5 +308,22 @@ class PlayCardsView extends View
     @._commentsIsExpanded = true
     @newComment.setAlign @layout.newComment.states[1].align
 
+  _pipeCardsToScrollView: () =>
+    for i of @cardViews
+      @cardViews[i].pipe @cardScrollView
+    null
+
+  _unpipeCardsToScrollView: () =>
+    for i of @cardViews
+      @cardViews[i].unpipe @cardScrollView
+    null
+
+  _translateToAlign: (delta, axis) =>
+    if axis is 'Y'
+      delta / @_viewportHeight
+    else if axis is 'X'
+      delta / @_viewportWidth
+    else
+      null
 
 module.exports = PlayCardsView
