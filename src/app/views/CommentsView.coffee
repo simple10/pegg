@@ -16,40 +16,41 @@ Utils = require 'lib/Utils'
 class CommentsView extends View
   @DEFAULT_OPTIONS:
     width: Utils.getViewportWidth() - 50
-    height: Utils.getViewportHeight() - 260
+    height: Utils.getViewportHeight() - 290
 
   constructor: () ->
     super
     @init()
 
   init: ->
+
     @comments = new Scrollview
     @container = new ContainerSurface
       size: [@options.width, @options.height]
       properties:
         overflow: 'hidden'
     @container.add @comments
-    @add @container
     @addCommentText = new Surface
       classes: ['comments__text']
-      content: 'Tap here to enter a comment'
     @container.add @addCommentText
-    @container.on 'click', =>
-      @_eventOutput.emit 'open', @
+    @add @container
+
 
   load: (data) ->
 #   console.log 'loading comments', data
     surfaces = []
     @comments.sequenceFrom surfaces
-    i = 0
-    while i < data.length
+    @i = 0
+    while @i < data.length
       @addCommentText.setContent ''
-      comment = new CommentItemView(data[i], size: [@options.width, @options.height])
+      comment = new CommentItemView(data[@i], size: [@options.width, @options.height])
       comment.pipe @comments
       surfaces.push comment
-      i++
+      @i++
     if data.length is 0
-      @addCommentText.setContent 'Tap here to enter a comment'
+      @addCommentText.setContent 'No comments yet... Don\'t be a weeniecorn, say something.'
 
+  getCount: ->
+    return @i
 
 module.exports = CommentsView

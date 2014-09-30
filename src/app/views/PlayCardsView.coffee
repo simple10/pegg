@@ -25,6 +25,8 @@ InputView = require 'views/InputView'
 PlayNavView = require 'views/PlayNavView'
 LayoutManager = require 'views/layouts/LayoutManager'
 
+RenderController = require 'famous/views/RenderController'
+Easing = require 'famous/transitions/Easing'
 
 class PlayCardsView extends View
 
@@ -81,11 +83,6 @@ class PlayCardsView extends View
 
     ## COMMENTS ##
     @comments = new CommentsView
-    @commentsMod = new StateModifier
-      align: @layout.comments.align
-      origin: @layout.comments.origin
-      transform: Transform.translate null, null, -3
-    @add(@commentsMod).add @comments
     @newComment = new InputView
       size: @layout.newComment.size
       placeholder: "Enter a comment..."
@@ -98,8 +95,30 @@ class PlayCardsView extends View
     @newComment.on 'submit', (comment) =>
       @newComment.setValue ''
       @saveComment comment
-    @comments.on 'open', =>
+
+    @numComments = new Surface
+      size: @layout.numComments.size
+      content: "x comments..."
+      classes: ['comments__text', 'comments__num']
+    @numCommentsMod = new StateModifier
+      align: @layout.numComments.align
+      origin: @layout.numComments.origin
+    @add(@numCommentsMod).add @numComments
+    @numComments.on 'click', =>
       @expandComments()
+    @hideComments()
+
+    @rc = new RenderController
+      inTransition:  { duration: 500, curve: Easing.outCubic }
+      outTransition: { duration: 350, curve: Easing.outCubic }
+#    @rc.inTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
+#    @rc.outTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
+    @rc.hide(@comments)
+    @rcMod = new StateModifier
+      align: @layout.comments.align
+      origin: @layout.comments.origin
+    @add(@rcMod).add @rc
+
 
     ## POINTS ##
     @points = new Surface
@@ -280,31 +299,36 @@ class PlayCardsView extends View
     Utils.animateAll @pointsMod, @layout.points.states
 
   showComments: =>
-    Utils.animate @commentsMod, @layout.comments.states[1]
+    @numComments.setContent "#{@comments.getCount()} comments."
+    Utils.animate @numCommentsMod, @layout.numComments.states[0]
+#    @rc.show(@comments)
 
   hideComments: =>
-    Utils.animate @commentsMod, @layout.comments.states[0]
-    @newComment.setAlign @layout.newComment.states[0].align
+    Utils.animate @numCommentsMod, @layout.numComments.states[1]
+#    @newComment.setAlign @layout.newComment.states[0].align
+#    @rc.hide(@comments)
 
   saveComment: (comment) ->
     PlayActions.comment(comment)
 
   collapseComments: =>
+    @rc.hide(@comments)
     @navView.showNav()
     # slide the cards down to their starting position
     @cardYPos.set(0, @layout.cards.states[0].transition)
     # slide the comments down to their starting position
-    Utils.animate @commentsMod, @layout.comments.states[1]
+    Utils.animate @numCommentsMod, @layout.numComments.states[0]
     @._commentsIsExpanded = false
     @newComment.setAlign @layout.newComment.states[0].align
 
   expandComments: =>
+    @rc.show(@comments)
     @navView.hideNav()
     maxCardYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
     # move the cards up
     @cardYPos.set(maxCardYPos, @layout.cards.states[1].transition)
     # slide the comments up
-    Utils.animate @commentsMod, @layout.comments.states[2]
+    Utils.animate @numCommentsMod, @layout.numComments.states[1]
     @._commentsIsExpanded = true
     @newComment.setAlign @layout.newComment.states[1].align
 

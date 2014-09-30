@@ -37,34 +37,50 @@ module.exports =
     ]
   comments:
     origin: [0.5, 0]
-    align: [0.5, 1]
+    align: [0.5, 0.35]
+#    states: [
+#      {
+#        delay: 0
+#        align: [0.5, 1]
+#        transition: {duration: 500, curve: Easing.inQuad}
+#      }
+#      {
+#        delay: 0
+#        align: [0.5, 0.92]
+#        # align: [0.5, 0.25]
+#        transition: {duration: 500, curve: Easing.outQuad}
+#      }
+#      {
+#        delay: 0
+#        align: [0.5, 0.35]
+#        # align: [0.5, 0.35]
+#        transition: {duration: 500, curve: Easing.outQuad}
+#      }
+#    ]
+  numComments:
+    size: [Utils.getViewportWidth() - 50, 40]
+    origin: [0.5, 0]
+    align: [0.5, 0.94]
     states: [
       {
         delay: 0
-        align: [0.5, 1]
+        opacity: 1
         transition: {duration: 500, curve: Easing.inQuad}
       }
       {
         delay: 0
-        align: [0.5, 0.92]
-        # align: [0.5, 0.25]
-        transition: {duration: 500, curve: Easing.outQuad}
-      }
-      {
-        delay: 0
-        align: [0.5, 0.35]
-        # align: [0.5, 0.35]
-        transition: {duration: 500, curve: Easing.outQuad}
+        opacity: 0
+        transition: {duration: 500, curve: Easing.inQuad}
       }
     ]
   newComment:
     size: [Utils.getViewportWidth() - 50, 40]
     origin: [0.5, 0]
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     states: [
       {
         delay: 0
-        align: [0.5, 1]
+        align: [0.5, 1.5]
         transition: {duration: 500, curve: Easing.inQuad}
       }
       {
