@@ -273,6 +273,7 @@ class PlayCardsView extends View
 
     PlayActions.nextCard()
     @navView.hideRightArrow()
+    @hideComments()
 
   prevCard: (triggerPageChange) =>
     if triggerPageChange
