@@ -2,13 +2,13 @@
 
 .tabmenu__background {
   background-color: $darkblue;
+
 }
 
 .tabmenu__item {
   cursor: pointer;
   text-align: left;
   background-color: $white;
-  opacity: !important .3
 }
 .tabmenu__item--profile {
   background-color: $rainbow-blue;
