@@ -4,31 +4,31 @@
 
 require './scss/newcard.scss'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
+# Famo.us
+ContainerSurface = require 'famous/surfaces/ContainerSurface'
+ContainerSurface = require 'famous/surfaces/ContainerSurface'
+Easing = require 'famous/transitions/Easing'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 InputSurface = require 'famous/surfaces/InputSurface'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
 Modifier = require 'famous/core/Modifier'
+NavActions = require 'actions/NavActions'
+RenderController = require 'famous/views/RenderController'
+Scrollview = require 'famous/views/Scrollview'
 StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-Easing = require 'famous/transitions/Easing'
+Surface = require 'famous/core/Surface'
 Timer = require 'famous/utilities/Timer'
+Transform = require 'famous/core/Transform'
+Utils = require 'lib/Utils'
+View = require 'famous/core/View'
+
+# Pegg
+CardActions = require 'actions/CardActions'
+ConfirmCancelView = require 'views/ConfirmCancelView'
+Constants = require 'constants/PeggConstants'
+HeaderViewLayout = require 'views/layouts/mobile/HeaderViewLayout'
+InputView = require 'views/InputView'
 NewCardStore = require 'stores/NewCardStore'
 UserStore = require 'stores/UserStore'
-CardActions = require 'actions/CardActions'
-Utils = require 'lib/Utils'
-Scrollview = require 'famous/views/Scrollview'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
-Constants = require 'constants/PeggConstants'
-NavActions = require 'actions/NavActions'
-
-# Custom View
-InputView = require 'views/InputView'
-ConfirmCancelView = require 'views/ConfirmCancelView'
-
-# Layouts
-HeaderViewLayout = require 'views/layouts/mobile/HeaderViewLayout'
 
 class NewCardView extends View
 

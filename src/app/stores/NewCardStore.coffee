@@ -1,8 +1,11 @@
+# Famo.us
 EventEmitter = require 'famous/core/EventEmitter'
-Constants = require 'constants/PeggConstants'
+
+# Pegg
 AppDispatcher = require 'dispatchers/AppDispatcher'
-UserStore = require 'stores/UserStore'
+Constants = require 'constants/PeggConstants'
 DB = require 'stores/helpers/ParseBackend'
+UserStore = require 'stores/UserStore'
 
 
 class NewCardStore extends EventEmitter

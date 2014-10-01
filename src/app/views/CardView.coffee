@@ -1,26 +1,28 @@
 require './scss/card.scss'
+_ = require('Parse')._
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
+# Famo.us
+Easing = require 'famous/transitions/Easing'
+GenericSync = require 'famous/inputs/GenericSync'
 ImageSurface = require 'famous/surfaces/ImageSurface'
 Modifier = require 'famous/core/Modifier'
-StateModifier = require 'famous/modifiers/StateModifier'
+MouseSync = require 'famous/inputs/MouseSync'
 RenderController = require 'famous/views/RenderController'
+StateModifier = require 'famous/modifiers/StateModifier'
+Surface = require 'famous/core/Surface'
+Timer = require 'famous/utilities/Timer'
+TouchSync = require 'famous/inputs/TouchSync'
 Transform = require 'famous/core/Transform'
 Utility = require 'famous/utilities/Utility'
-Easing = require 'famous/transitions/Easing'
-Timer = require 'famous/utilities/Timer'
-GenericSync = require 'famous/inputs/GenericSync'
-MouseSync = require 'famous/inputs/MouseSync'
-TouchSync = require 'famous/inputs/TouchSync'
+View = require 'famous/core/View'
 
-_ = require('Parse')._
-ImagePickView = require 'views/ImagePickView'
-Constants = require 'constants/PeggConstants'
+# Pegg
 ChoicesView = require 'views/ChoicesView'
-Utils = require 'lib/Utils'
+Constants = require 'constants/PeggConstants'
+ImagePickView = require 'views/ImagePickView'
 LayoutManager = require 'views/layouts/LayoutManager'
 UserStore = require 'stores/UserStore'
+Utils = require 'lib/Utils'
 
 class CardView extends View
 
