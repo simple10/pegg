@@ -6,9 +6,9 @@ Utils = require 'lib/Utils'
 
 class ConfirmCancelView extends View
   @DEFAULT_OPTIONS:
-    showTransform: Transform.translate(0,0,10)
+    showTransform: Transform.translate(0,70,20)
     showTransition: true
-    hideTransform: Transform.translate(0,50,10)
+    hideTransform: Transform.translate(0,150,20)
     hideTransition: true
     doneCallback: (->)
     cancelCallback: (->)

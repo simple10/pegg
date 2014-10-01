@@ -136,14 +136,14 @@ class NewCardView extends View
     @add(newCardMod).add @newCardTitle
 
     @container = new ContainerSurface
-      size: [Utils.getViewportWidth(), Utils.getViewportHeight() - headerHeight]
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
       classes: ['categoriesContainer']
       properties:
         overflow: 'hidden'
     @categoryScrollviewMod = new StateModifier
       origin: @options.categories.origin
       align: @options.categories.align
-      transform: Transform.translate 0, headerHeight, 1
+#      transform: Transform.translate 0, -100, 10
     @categoryScrollview = new Scrollview
       # size: @options.categories.size
       # classes: @options.categories.classes

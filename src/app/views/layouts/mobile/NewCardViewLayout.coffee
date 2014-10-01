@@ -16,7 +16,7 @@ module.exports =
   categories:
     size: [window.innerWidth, window.innerHeight]
     classes: ['newcard__categories']
-    align: [0, 1]
+    align: [0, 1.5]
     origin: [0, 0]
     states: [
       {
@@ -27,7 +27,7 @@ module.exports =
       }
       {
         delay: 20
-        align: [0, 1]
+        align: [0, 1.5]
         transition: {duration: 500, curve: Easing.inCubic}
       }
     ]
@@ -39,7 +39,7 @@ module.exports =
   step1_0: # number
     size: [30, 30]
     classes: ['newcard__number']
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -57,7 +57,7 @@ module.exports =
     ]
   step1_1: # input field
     size: [Utils.getViewportWidth() - 50, 40]
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -76,7 +76,7 @@ module.exports =
   step1_2: # button
     size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button']
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -95,7 +95,7 @@ module.exports =
   step2_0: # number
       size: [30, 30]
       classes: ['newcard__number']
-      align: [0.5, 1]
+      align: [0.5, 1.5]
       origin: [0.5, 0]
       states: [
         {
@@ -113,7 +113,7 @@ module.exports =
       ]
   step2_1: # input field
     size: [Utils.getViewportWidth() - 50, 40]
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -131,7 +131,7 @@ module.exports =
     ]
   step2_2: # input field
     size: [Utils.getViewportWidth() - 50, 40]
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -149,7 +149,7 @@ module.exports =
     ]
   step2_3: # input field
     size: [Utils.getViewportWidth() - 50, 40]
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -167,7 +167,7 @@ module.exports =
     ]
   step2_4: # input field
     size: [Utils.getViewportWidth() - 50, 40]
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -186,7 +186,7 @@ module.exports =
   step2_5: # button
     size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button']
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, -0.5]
     states: [
       {
@@ -205,7 +205,7 @@ module.exports =
   step3_0: # number
     size: [30, 30]
     classes: ['newcard__number']
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -223,7 +223,7 @@ module.exports =
   ]
   step3_1: # link container
     size: [ [Utils.getViewportWidth()-30, 55], [59, 55], [Utils.getViewportWidth() - 100, 55] ]
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     classes: {image: ['newcard__step3__deckIcon'], text: ['newcard__step3__deckText']}
     states: [
@@ -242,7 +242,7 @@ module.exports =
     ]
   step3_2: # surface
     size: [Utils.getViewportWidth() - 50, 40]
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     classes: ['newcard__step3__deckText', 'newcard__center']
     states: [
@@ -281,7 +281,7 @@ module.exports =
   step3_3: # button
     size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button']
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -300,7 +300,7 @@ module.exports =
   step4_0: # surface
     size: [Utils.getViewportWidth() - 100, 40]
     classes: ['newcard__header--big']
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -319,7 +319,7 @@ module.exports =
   step4_1: # button
     size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button', 'newcard__button--blue']
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
@@ -338,7 +338,7 @@ module.exports =
   step4_2: # button
     size: [Utils.getViewportWidth() - 50, 40]
     classes: ['newcard__button', 'newcard__button--blue']
-    align: [0.5, 1]
+    align: [0.5, 1.5]
     origin: [0.5, 0]
     states: [
       {
