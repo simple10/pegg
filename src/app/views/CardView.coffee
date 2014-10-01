@@ -123,6 +123,7 @@ class CardView extends View
       imagePickView.pick( (results) =>
         console.log JSON.stringify(results)
         @backImage.setContent results.fullS3
+        debugger
         @_eventOutput.emit 'plug',
           id: @id
           full: results.key
@@ -242,8 +243,9 @@ class CardView extends View
       @_eventOutput.emit 'pref',
         id: @id
         choiceId: choice.id
-        image: choice.image
-      @loadAnswer choice.image, choice.text
+        plug: choice.plug
+        thumb: choice.thumb
+      @loadAnswer choice.plug.S3, choice.text
       @addImageRenderer.show @addImageButton
       @flip choice
 

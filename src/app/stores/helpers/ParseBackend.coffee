@@ -132,7 +132,7 @@ class ParseBackend
     newPegg.save()
     cb 'savePegg done'
 
-  savePref: (cardId, choiceId, plugUrl, userId, cb) ->
+  savePref: (cardId, choiceId, plug, thumb, userId, cb) ->
     # INSERT into Pref table a row with user's choice
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -146,7 +146,8 @@ class ParseBackend
     newPref = new Parse.Object 'Pref'
     newPref.set 'answer', answer
     newPref.set 'card', card
-    newPref.set 'plug', plugUrl
+    newPref.set 'plug', plug
+    newPref.set 'plugThumb', thumb
     newPref.set 'user', preffer
     newPref.set 'ACL', newPrefAcl
     newPref.save
@@ -627,7 +628,7 @@ class ParseBackend
             userId: userId
             question: card.get 'question'
             answer: activity.get('answer').get 'text'
-            plug: activity.get 'plug'
+            plug: activity.get 'plugThumb'
             hasPegged: activity.get 'hasPegged'
           }
         if results.length

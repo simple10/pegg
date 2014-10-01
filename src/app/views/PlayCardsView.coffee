@@ -246,7 +246,7 @@ class PlayCardsView extends View
       card.on 'pegg', (payload) =>
         PlayActions.pegg payload.peggee, payload.id, payload.choiceId, payload.answerId
       card.on 'pref', (payload) =>
-        PlayActions.pref payload.id, payload.choiceId, payload.image
+        PlayActions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
       card.on 'plug', (payload) =>
         PlayActions.plug payload.id, payload.full, payload.thumb
       card.pipe @
@@ -282,7 +282,7 @@ class PlayCardsView extends View
     else PlayActions.prevCard()
 
   cardPref: =>
-    Utils.animate @commentsMod, @layout.comments.states[1]
+    @showComments()
     @navView.showRightArrow()
 
   cardFail: =>

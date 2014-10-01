@@ -32,8 +32,12 @@ class ProfileActivityItemView extends View
     container.pipe @._eventOutput
 
     question = @options.data.question
-    plug = @options.data.plug
-#    plug = @options.data.plug? @options.data.plug.S3
+
+    if @options.data.plug?
+      try
+        plug = JSON.parse(@options.data.plug).S3
+      catch
+        plug = ""
     numPegged = if @options.data.hasPegged? then @options.data.hasPegged.length else 0
 
     message = "

@@ -93,14 +93,16 @@ class StageState extends EventHandler
       (choices) =>
         for choice in choices
           text = choice.get 'text'
-          image = choice.get 'image'
+          plug = choice.get 'plug'
+          thumb = choice.get 'plugThumb'
           # only add choices that are not blank
           if text isnt ''
             # image isnt '' and
             @_cardSet[cardId].choices.push
               id: choice.id
               text: text
-              image: image
+              plug: plug
+              thumb: thumb
         @emit Constants.stores.CHOICES_CHANGE,
           cardId: cardId
           choices: @_cardSet[cardId].choices

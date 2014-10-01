@@ -81,14 +81,17 @@ class PlayStore extends EventHandler
       @_fail++
       @emit Constants.stores.CARD_FAIL
 
-  _pref: (cardId, choiceId, plugUrl) ->
+  _pref: (cardId, choiceId, plug, thumb) ->
     console.log "save Pref: card: " + cardId + " choice: " + choiceId
     userId = UserStore.getUser().id
 
     # save answered status
     @_cards[cardId].answered = true
 
-    DB.savePref(cardId, choiceId, plugUrl, userId, (res)=>
+    sPlug = JSON.stringify plug
+    sThumb = JSON.stringify thumb
+
+    DB.savePref(cardId, choiceId, sPlug, sThumb, userId, (res)=>
       # TODO: catch save fail
       if res?
         console.log res
@@ -220,7 +223,7 @@ AppDispatcher.register (payload) ->
     when Constants.actions.PEGG_SUBMIT
       play._pegg action.peggee, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
-      play._pref action.card, action.choice, action.plug
+      play._pref action.card, action.choice, action.plug, action.thumb
     when Constants.actions.PLUG_IMAGE
       play._plug action.card, action.full, action.thumb
     when Constants.actions.NEXT_CARD
