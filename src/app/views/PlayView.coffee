@@ -1,15 +1,17 @@
-
+# Famo.us
 View = require 'famous/core/View'
 Transform = require 'famous/core/Transform'
+Lightbox = require 'famous/views/Lightbox'
+Easing = require 'famous/transitions/Easing'
+
+# Pegg
 Constants = require 'constants/PeggConstants'
 PlayStore = require 'stores/PlayStore'
 PlayCardsView = require 'views/PlayCardsView'
 PlayStatusView = require 'views/PlayStatusView'
 PlayBadgesView = require 'views/PlayBadgesView'
+PickMoodView = require 'views/PickMoodView'
 Utils = require 'lib/Utils'
-Lightbox = require 'famous/views/Lightbox'
-Easing = require 'famous/transitions/Easing'
-
 
 class PlayView extends View
 
@@ -22,8 +24,12 @@ class PlayView extends View
     PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
     PlayStore.on Constants.stores.STATUS_CHANGE, @loadStatus
     PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadges
+    PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods
 
   initViews: ->
+
+    ## MOOD STATUS ##
+    @pickMood = new PickMoodView
 
     ## CARDS VIEW ##
     @cardsView = new PlayCardsView
@@ -46,6 +52,11 @@ class PlayView extends View
       inTransition: { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
     @add @lightbox
+
+
+  loadMoods: =>
+    @pickMood.load PlayStore.getMoods()
+    @lightbox.show @pickMood
 
   loadBadges: =>
     @badgesView.load PlayStore.getBadges()

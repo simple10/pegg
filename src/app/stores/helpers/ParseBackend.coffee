@@ -118,12 +118,14 @@ class ParseBackend
     newPegg.set 'peggee', peggee
     newPegg.save()
 
-  savePref: (cardId, choiceId, plug, thumb, userId) ->
+  savePref: (cardId, choiceId, plug, thumb, userId, moodId) ->
     # INSERT into Pref table a row with user's choice
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     preffer = new Parse.Object 'User'
     preffer.set 'id',  userId
+    mood = new Parse.Object 'Category'
+    mood.set 'id', moodId
     newPrefAcl = new Parse.ACL preffer
     newPrefAcl.setRoleReadAccess "#{userId}_Friends", true
     # newPrefAcl.setPublicReadAccess true
@@ -135,6 +137,7 @@ class ParseBackend
     newPref.set 'plug', plug
     newPref.set 'plugThumb', thumb
     newPref.set 'user', preffer
+    newPref.set 'mood', mood
     newPref.set 'ACL', newPrefAcl
     newPref.save()
 
@@ -219,7 +222,7 @@ class ParseBackend
         console.log "Error: #{error.code}  #{error.message}"
         cb null
 
-  saveMood: (moodId, userId, cb) ->
+  saveMood: (moodId, userId) ->
     # INSERT into Mood table a row with user's mood
     mood = new Parse.Object 'Category'
     mood.set 'id', moodId
@@ -232,7 +235,6 @@ class ParseBackend
     newMood.set 'user', user
     newMood.set 'ACL', newUserAcl
     newMood.save()
-    cb 'saveMood done'
 
   getUnpreffedCards: (num, mood, userId, cb) ->
     # Gets unanswered preferences: cards the user answers about himself
@@ -265,16 +267,22 @@ class ParseBackend
         console.log "Error fetching categories: " + error.code + " " + error.message
         cb null
 
-  getPeggCards: (num, user, cb) ->
+  getPeggCards: (num, user, moodId, peggeeId) ->
     # Gets unpegged preferences: cards the user answers about a friend
     cards = {}
     prefUser = new Parse.Object 'User'
     prefUser.set 'id', user.id
+    peggeeUser = new Parse.Object 'User'
+    peggeeUser.set 'id', peggeeId
+    mood = new Parse.Object 'Category'
+    mood.set 'id', moodId
     prefQuery = new Parse.Query Pref
     prefQuery.limit num
     prefQuery.include 'user'
     prefQuery.include 'card'
     prefQuery.include 'answer'
+    prefQuery.equalTo 'user', peggeeUser if peggeeId?
+    prefQuery.equalTo 'mood', mood if moodId?
     prefQuery.notEqualTo 'user', prefUser
     prefQuery.notContainedIn 'hasPegged', [user.id]
     #prefQuery.containedIn 'hasPegged', [user.id]
@@ -293,10 +301,7 @@ class ParseBackend
             answer: pref.get 'answer'
             plug: pref.get 'plug'
           }
-        cb cards
-      error: (error) ->
-        console.log "Error fetching cards: " + error.code + " " + error.message
-        cb null
+          cards
 
   getCard: (cardId, cb) ->
     cardQuery = new Parse.Query Card
@@ -367,7 +372,7 @@ class ParseBackend
         console.log "Error fetching choices: " + error.code + " " + error.message
         cb null
 
-  getUserMood: (moodId, userId, cb) ->
+  getUserMood: (moodId, userId) ->
     mood = new Parse.Object 'Category'
     mood.set 'id', moodId
     user = new Parse.Object 'User'
@@ -382,16 +387,13 @@ class ParseBackend
         if result?
           user = result.get 'user'
           mood = result.get 'mood'
-          cb {
+          return {
             firstName: user.get 'first_name'
             name: mood.get 'name'
             pic: mood.get 'iconUrl'
           }
         else
-          cb null
-      error: (error) =>
-        console.log "Error: " + error.code + " " + error.message
-        cb null
+          return null
 
   getActivity: (userId, page, cb) ->
     activities = []
@@ -494,16 +496,10 @@ class ParseBackend
         console.log "Error: " + error.code + " " + error.message
         cb null
 
-  getTodaysMoods: (cb) ->
+  getTodaysMoods: ->
     catQuery = new Parse.Query Category
 #    catQuery.equalTo 'type', 'mood'
-    catQuery.find
-      success: (results) =>
-        cb results
-      error: (error) ->
-        console.log "Error fetching categories: " + error.code + " " + error.message
-        cb null
-
+    catQuery.find()
 
   getPrefCount: (choiceId, cb) ->
     choice = new Parse.Object 'Choice'

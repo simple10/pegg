@@ -100,7 +100,7 @@ else
   pickView = ->
     if UserStore.getLoggedIn()
       lightbox.show appView
-      PlayActions.load GameFlow, GameScript
+      PlayActions.load()
       ActivityActions.load 1
       CardActions.loadCategories()
     else if  AppStateStore.getCurrentPageID() is 'card'

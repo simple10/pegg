@@ -10,7 +10,6 @@ ContainerSurface = require 'famous/surfaces/ContainerSurface'
 PeggStatusView = require 'views/PeggStatusView'
 PrefStatusView = require 'views/PrefStatusView'
 DoneStatusView = require 'views/DoneStatusView'
-PickMoodView = require 'views/PickMoodView'
 Utils = require 'lib/Utils'
 Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
@@ -22,9 +21,6 @@ class PlayStatusView extends View
     @init()
 
   init: ->
-    ## MOOD STATUS ##
-    @pickMood = new PickMoodView @options.view
-
     ## PREF STATUS ##
     @prefStatus = new PrefStatusView @options.view
 
@@ -58,9 +54,6 @@ class PlayStatusView extends View
       when 'peggs_done', 'prefs_done'
         @doneStatus.load status
         @lightbox.show @doneStatus
-      when 'pick_mood'
-        @pickMood.load status
-        @lightbox.show @pickMood
 
   hide: ->
     @lightbox.hide()

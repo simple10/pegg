@@ -4,7 +4,7 @@ Constants = require('constants/PeggConstants').actions
 PlayActions =
   load: (flow, script) ->
     AppDispatcher.handleViewAction
-      actionType: Constants.LOAD_GAME
+      actionType: Constants.LOAD_APP
       flow: flow
       script: script
 
@@ -48,17 +48,13 @@ PlayActions =
       moodId: moodId
       moodUrl: moodUrl
 
-  nextStage: () ->
+  nextPage: () ->
     AppDispatcher.handleViewAction
-      actionType: Constants.NEXT_STAGE
+      actionType: Constants.NEXT_PAGE
 
-  nextCard: () ->
+  prevPage: () ->
     AppDispatcher.handleViewAction
-      actionType: Constants.NEXT_CARD
-
-  prevCard: () ->
-    AppDispatcher.handleViewAction
-      actionType: Constants.PREV_CARD
+      actionType: Constants.PREV_PAGE
 
   comment: (comment) ->
     AppDispatcher.handleViewAction

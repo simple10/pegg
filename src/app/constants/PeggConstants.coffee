@@ -13,7 +13,7 @@ module.exports =
     LOAD_ACTIVITY: null
     LOAD_CARD: null
     LOAD_CATEGORIES: null
-    LOAD_GAME: null
+    LOAD_APP: null
     LOAD_LINK: null
     LOGIN: null
     LOGOUT: null
@@ -52,6 +52,7 @@ module.exports =
     LOGIN_CHANGE: null
     MENU_CHANGE: null
     MOOD_CHANGE: null
+    MOODS_LOADED: null
     NO_PEGGS_REMAINING: null
     NO_PREFS_REMAINING: null
     PLAY_CHANGE: null

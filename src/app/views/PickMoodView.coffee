@@ -66,8 +66,7 @@ class MoodsView extends View
 #      align: [0.05, 0.9]
 #    container.add(passMoodMod).add passMood
 
-  load: (data) ->
-    moods = data.moods
+  load: (moods) ->
     moodIndex = []
     random = Math.floor(Math.random() * moods.length)
     moodIndex.push random
@@ -91,7 +90,6 @@ class MoodsView extends View
       classes: ["#{@cssPrefix}__box"]
     moodContainer.on 'click', =>
       PlayActions.mood text, id, url
-      PlayActions.nextStage()
 
     moodImage = new ImageSurface
       content: url

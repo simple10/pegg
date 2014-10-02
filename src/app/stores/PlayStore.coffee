@@ -6,7 +6,6 @@ EventHandler = require 'famous/core/EventHandler'
 # Pegg
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require 'constants/PeggConstants'
-GameState = require 'stores/helpers/GameState'
 UserStore = require 'stores/UserStore'
 
 class PlayStore extends EventHandler
@@ -14,27 +13,31 @@ class PlayStore extends EventHandler
   _fails: 0
   _game: null
   _showHelpMessages: true
+  _size: 4
+  _moodId: ''
   # _cardSet = {}
   # _playerId = ""
   # _play = data[0]   # the cards to play
   # _status = data[1]   # the status screen to display
   # _badges = []
 
-  _loadMoodGame: (type, size, moodId) ->
-    @_fetchPeggs size, moodId, null
+  _loadMoodGame: (moodId) ->
+    @_fetchPeggs @_size, moodId, null
       .fail @_failHandler
       .done (cards) =>
         @_loadGame cards
 
-  _loadPeggeeGame: (type, size, peggeeId) ->
-    @_fetchPeggs size, null, peggeeId
+  _loadPeggeeGame: (peggeeId) ->
+    @_fetchPeggs @_size, null, peggeeId
       .fail @_failHandler
       .done (cards) =>
         @_loadGame cards
 
-  _loadGame: (cards) ->
+  _loadUser: ->
     @_user = UserStore.getUser()
     @_avatar = UserStore.getAvatar 'type=square'
+
+  _loadGame: (cards) ->
     @_game = []
     # @_fetchPrefs
 
@@ -69,21 +72,14 @@ class PlayStore extends EventHandler
           @_fetchPrefsDone()
     )
 
-  _fetchPeggs: (num, moodId, peggeeId) ->
+  _fetchPeggs: (num, moodId, peggeeId) =>
     # Gets unpegged preferences: cards the user answers about a friend
     cardsLoaded = false
-    DB.getPeggCards( num, UserStore.getUser()
-      (cards) =>
-        @_cardSet = cards
+    DB.getPeggCards num, @_user, moodId, peggeeId
+      .then (cards) =>
         for own id, card of cards
-          cardsLoaded = true
-          @_playerId = card.peggee
           @_fetchChoices id
-        if cardsLoaded
-          @emit Constants.stores.CARDS_CHANGE
-        else
-          @_fetchPeggsDone()
-    )
+        cards
 
   _fetchChoices: (cardId) ->
     DB.getChoices(cardId
@@ -138,12 +134,6 @@ class PlayStore extends EventHandler
         @emit Constants.stores.STATUS_CHANGE
       )
 
-  _fetchMoods: ->
-    DB.getTodaysMoods( (results) =>
-      @_status['moods'] = results
-      @emit Constants.stores.STATUS_CHANGE
-    )
-
   _fetchPrefsDone: ->
     @_status['type'] = 'prefs_done'
     @emit Constants.stores.STATUS_CHANGE
@@ -191,7 +181,7 @@ class PlayStore extends EventHandler
     sPlug = JSON.stringify plug
     sThumb = JSON.stringify thumb
 
-    DB.savePref cardId, choiceId, sPlug, sThumb, @_user.id
+    DB.savePref cardId, choiceId, sPlug, sThumb, @_user.id, @_moodId
       .fail @_failHandler
       .done =>
         DB.savePrefCount cardId, choiceId
@@ -199,13 +189,10 @@ class PlayStore extends EventHandler
         @_savePrefActivity cardId, @_user.id
         @emit Constants.stores.PREF_SAVED
 
-  _saveMoodActivity: (moodId) ->
-    DB.getUserMood moodId, @_user.id
+  _saveMoodActivity: (moodId, moodText, moodUrl) ->
+    message = "#{@_user.get 'first_name'} is feeling #{moodText}"
+    DB.saveActivity message, moodUrl, @_user.id
       .fail @_failHandler
-      .done (mood) =>
-        message = "#{mood.firstName} is feeling #{mood.name}"
-        DB.saveActivity message, mood.pic, @_user.id
-          .fail @_failHandler
 
   _saveNewCardActivity: (cardId, question, pic) ->
     message = "#{@_user.get 'first_name'} created card: #{question}"
@@ -235,9 +222,6 @@ class PlayStore extends EventHandler
     DB.saveActivity message, @_avatar, @_user.id, cardId, peggeeId
       .fail @_failHandler
 
-  getCurrentPage: ->
-    @_game[@_currentPage]
-
   _plug: (cardId, full, thumb) ->
     console.log "save Plug: card: " + cardId + " image: " + full
     @_user.id = UserStore.getUser().id
@@ -248,7 +232,7 @@ class PlayStore extends EventHandler
         @emit Constants.stores.PLUG_SAVED
 
   _failHandler: (error) ->
-    alert error
+    console.log "ERROR:", error
 
   _comment: (comment, cardId, peggeeId) ->
     console.log "comment: #{comment}  peggee: #{peggeeId}  card: #{cardId}"
@@ -261,12 +245,14 @@ class PlayStore extends EventHandler
 
   _mood: (moodText, moodId, moodUrl) ->
     console.log "moodId: " + moodId
-    _loadGame moodText, moodId, moodUrl
+    @_moodId = moodId
+    @_loadMoodGame moodId
     DB.saveMood moodId, @_user.id
       .fail @_failHandler
       .done =>
-        @emit Constants.stores.MOOD_CHANGE
-        @_saveMoodActivity(moodId, moodText, moodUrl, @_user.id)
+        # TODO change playnav to do this on game change:
+        # @emit Constants.stores.MOOD_CHANGE
+        @_saveMoodActivity(moodId, moodText, moodUrl)
 
   _badgesViewed: (badges) ->
     # mark the current badges as viewed
@@ -275,11 +261,23 @@ class PlayStore extends EventHandler
       .done =>
         @_next()
 
+  _fetchMoods: =>
+    DB.getTodaysMoods()
+      .then (results) =>
+        @_moods = results
+        @emit Constants.stores.MOODS_LOADED
+
+  getCurrentPage: ->
+    @_game[@_currentPage]
+
   getComments: ->
     @getCurrentPage().comments
 
   getChoices: ->
     @getCurrentPage().choices
+
+  getMoods: ->
+    @_moods
 
 play = new PlayStore
 
@@ -289,8 +287,9 @@ AppDispatcher.register (payload) ->
 
   # Pay attention to events relevant to PlayStore
   switch action.actionType
-    # when Constants.actions.LOAD_GAME
-    #   play._loadGame action.type, action.size
+    when Constants.actions.LOAD_APP
+      play._loadUser()
+      play._fetchMoods()
     when Constants.actions.PEGG_SUBMIT
       play._pegg action.peggee, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
