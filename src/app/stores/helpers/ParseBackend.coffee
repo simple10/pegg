@@ -14,32 +14,6 @@ UserMood = Parse.Object.extend 'UserMood'
 
 class ParseBackend
 
-  saveMoodActivity: (moodId, userId) ->
-    @getUserMood moodId, userId, (mood) =>
-      message = "#{mood.firstName} is feeling #{mood.name}"
-      @saveActivity message, mood.pic, userId
-
-  saveCommentActivity: (comment, cardId, peggeeId, user, pic) ->
-    message = "#{user.get 'first_name'} commented: #{comment}"
-    @saveActivity message, pic, user.id, cardId, peggeeId
-
-  saveNewCardActivity: (cardId, question, user, pic) ->
-    message = "#{user.get 'first_name'} created card: #{question}"
-    @saveActivity message, pic, user.id, cardId
-
-  savePrefActivity: (cardId, userId) ->
-    @getPrefCard cardId, userId, (prefCard) =>
-      himHerSelf = if prefCard.gender is 'male' then 'himself' else 'herself'
-      message = "#{prefCard.firstName} pegged #{himHerSelf}: #{prefCard.question}"
-      @saveActivity message, prefCard.pic, userId, cardId, userId
-
-  savePeggActivity: (cardId, userId, peggeeId, tries) ->
-    @getPrefCard cardId, peggeeId, (prefCard) =>
-      @getUser userId, (user) =>
-        trys = if tries is 1 then 'try' else 'tries'
-        message = "#{user.firstName} pegged #{prefCard.firstName} in #{tries} #{trys}: #{prefCard.question}"
-        @saveActivity message, user.pic, userId, cardId, peggeeId
-
   saveActivity: (message, pic, userId, cardId, peggeeId) ->
     console.log "saveActivity: ", message, pic, userId, cardId, peggeeId
     user = new Parse.Object 'User'
@@ -78,6 +52,19 @@ class ParseBackend
   getUser: (userId, cb) ->
     query = new Parse.Query User
     query.equalTo 'objectId', userId
+    # promise = Parse.Promise()
+    # query.first
+    #   success: (result) =>
+    #     user = {
+    #       firstName: result.get 'first_name'
+    #       lastName: result.get 'last_name'
+    #       gender: result.get 'gender'
+    #       pic: result.get 'avatar_url'
+    #     }
+    #     promise.resolve user
+    #   error: (error) ->
+    #     promise.reject error
+    # promise
     query.first
       success: (result) =>
         user = {
@@ -108,7 +95,7 @@ class ParseBackend
         console.log "Error: #{error.code}  #{error.message}"
         cb null
 
-  savePegg: (peggeeId, cardId, choiceId, answerId, userId, cb) ->
+  savePegg: (peggeeId, cardId, choiceId, answerId, userId) ->
     # INSERT into Pegg table a row with current user's pegg
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -130,9 +117,8 @@ class ParseBackend
     newPegg.set 'ACL', newPeggAcl
     newPegg.set 'peggee', peggee
     newPegg.save()
-    cb 'savePegg done'
 
-  savePref: (cardId, choiceId, plug, thumb, userId, cb) ->
+  savePref: (cardId, choiceId, plug, thumb, userId) ->
     # INSERT into Pref table a row with user's choice
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -150,15 +136,9 @@ class ParseBackend
     newPref.set 'plugThumb', thumb
     newPref.set 'user', preffer
     newPref.set 'ACL', newPrefAcl
-    newPref.save
-      success: (result) ->
-        cb "Pref saved: #{result}"
-      error: (error) ->
-        console.log "Error: #{error.code}  #{error.message}"
-        cb null
+    newPref.save()
 
-
-  savePlug: (cardId, full, thumb, peggeeId, cb) ->
+  savePlug: (cardId, full, thumb, peggeeId) ->
     # UPDATE Pref table with user's new image
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -167,16 +147,21 @@ class ParseBackend
     prefQuery = new Parse.Query Pref
     prefQuery.equalTo 'user', peggee
     prefQuery.equalTo 'card', card
+    promise = Parse.Promise()
     prefQuery.first
       success: (result) =>
         result.set 'plug', full
         result.set 'plugThumb', thumb
         result.save()
-        cb "Plug saved: #{full}"
+          .then ->
+            promise.resolve()
+          .fail (error) ->
+            promise.reject(error)
       error: (error) ->
-        console.log "Error: #{error.code}  #{error.message}"
-        cb null
+        promise.reject(error)
+    promise
 
+  # used to display popularity of choices
   savePrefCount: (cardId, choiceId, cb) ->
     card = new Parse.Object 'Card'
     card.set 'id', cardId

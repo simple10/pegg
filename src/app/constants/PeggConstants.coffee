@@ -8,8 +8,6 @@ module.exports =
     AUTH: null
     BADGES_VIEWED: null
     CARD_COMMENT: null
-    CARD_PASS: null
-    CARD_RATE: null
     CARD_SELECT: null
     FILTER_PREFS: null
     LOAD_ACTIVITY: null
@@ -20,14 +18,13 @@ module.exports =
     LOGIN: null
     LOGOUT: null
     MENU_SELECT: null
-    NEXT_CARD: null
-    NEXT_STAGE: null
+    NEXT_PAGE: null
     PEGG_SUBMIT: null
     PICK_MOOD: null
     PLAY_CONTINUE: null
     PLUG_IMAGE: null
     PREF_SUBMIT: null
-    PREV_CARD: null
+    PREV_PAGE: null
     SUBSCRIBER_SUBMIT: null
     USER_LOAD: null
     USER_LOGIN: null
@@ -47,7 +44,6 @@ module.exports =
     CARDS_CHANGE: null
     CARD_CHANGE: null
     CARD_FAIL: null
-    CARD_RATED: null
     CARD_WIN: null
     CATEGORIES_CHANGE: null
     CHOICES_CHANGE: null

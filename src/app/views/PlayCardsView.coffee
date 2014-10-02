@@ -310,7 +310,8 @@ class PlayCardsView extends View
 #    @rc.hide(@comments)
 
   saveComment: (comment) ->
-    PlayActions.comment(comment)
+    # FIXME need cardId, peggeeID
+    PlayActions.comment(comment, cardId, peggeeId)
 
   collapseComments: =>
     @rc.hide(@comments)
