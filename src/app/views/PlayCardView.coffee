@@ -67,10 +67,10 @@ class PlayCardView extends View
     ## NAV ##
     @navView = new PlayNavView
     @navView._eventOutput.on 'click', (data) =>
-      if data is 'prevCard'
-        @prevCard(true)
-      else if data is 'nextCard'
-        @nextCard(true)  
+      if data is 'prevPage'
+        @prevPage()
+      else if data is 'nextPage'
+        @nextPage()
     @add(@navView)
     @navView.hideRightArrow()
 
@@ -184,22 +184,17 @@ class PlayCardView extends View
 
 
   load: (card) =>
-    cardView = new CardView
-      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
-    cardView.loadCard card, 'play'
-    card.on 'comment', =>
+    @cardView.loadCard card, 'play'
+    @cardView.on 'comment', =>
       @collapseComments()
-    card.on 'pegg', (payload) =>
+    @cardView.on 'pegg', (payload) =>
       PlayActions.pegg payload.peggee, payload.id, payload.choiceId, payload.answerId
-    card.on 'pref', (payload) =>
+    @cardView.on 'pref', (payload) =>
       PlayActions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
-    card.on 'plug', (payload) =>
+    @cardView.on 'plug', (payload) =>
       PlayActions.plug payload.id, payload.full, payload.thumb
-    card.pipe @
+    @cardView.pipe @
 
-
-  loadChoices: (cardId, choices) =>
-    @cardViews[@index[cardId]].loadChoices choices
 
   loadComments: =>
     @comments.load PlayStore.getComments()
