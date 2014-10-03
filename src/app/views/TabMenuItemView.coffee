@@ -21,16 +21,16 @@ class TabMenuItemView extends View
   constructor: ->
     super
     @createBackground()
-    @createIcon()
+#    @createIcon()
 #    @createTitle()
 
   createBackground: ->
     @background = new Surface
       size: [@options.width, @options.height]
       #size: [null, null]
-      classes: ['tabmenu__item']
+      classes: ['tabmenu__item', "tabmenu__item--#{@options.pageID}"]
     @backgroundMod = new StateModifier
-      opacity: .3
+#      opacity: .3
     @add(@backgroundMod).add @background
     @background.on 'click', =>
       @menuSelect()
