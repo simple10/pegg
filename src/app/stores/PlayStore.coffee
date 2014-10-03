@@ -61,7 +61,6 @@ class PlayStore extends EventHandler
       #   show help message - no friends to play
       #   fetch unpreffed cards for mood
       @_fetchPrefs().done (cards...) =>
-        console.log "Pref Cards:  ", cards
         @_game = _.map cards, (card) ->
           {type: 'card', card: card}
         @_title = "Pegg yourself!"
@@ -82,9 +81,8 @@ class PlayStore extends EventHandler
     choicesDone = []
     for card in cards
       choicesDone.push(
-        @_fetchChoices(card.id)
-          .then (cardChoices) =>
-            card.choices = cardChoices
+        @_fetchChoices(card)
+          .then (card) =>
             card.firstName = @_user.get 'first_name'
             card.pic = @_avatar
             card.type = 'card'
@@ -92,16 +90,17 @@ class PlayStore extends EventHandler
       )
     Parse.Promise.when choicesDone
 
-  _fetchChoices: (cardId) ->
-    DB.getChoices cardId
+  _fetchChoices: (card) ->
+    DB.getChoices card.id
       .then (choices) =>
-        _.map choices, (choice) ->
+        card.choices = _.map choices, (choice) ->
           text = choice.get 'text'
           if text isnt ''
             id: choice.id
             text: text
             plug: choice.get 'plug'
             thumb: choice.get 'plugThumb'
+        card
 
   _fetchRanking: (userId) ->
     DB.getTopScores(userId,

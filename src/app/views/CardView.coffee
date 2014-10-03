@@ -94,8 +94,9 @@ class CardView extends View
     #    @rc.inTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
     #    @rc.outTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
     @mainNode.add(@choicesMod).add @rc
-    @choiceShowing = false
-    @choicesView.hideChoices()
+    @rc.show @choicesView
+    @choiceShowing = true
+#    @choicesView.hideChoices()
 
   initAnswer: ->
     @backImage = new ImageSurface
@@ -133,7 +134,6 @@ class CardView extends View
       imagePickView.pick( (results) =>
         console.log JSON.stringify(results)
         @backImage.setContent results.fullS3
-        debugger
         @_eventOutput.emit 'plug',
           id: @card.id
           full: results.key
@@ -171,12 +171,11 @@ class CardView extends View
     @frontProfilePic.removeListener 'click', @toggleChoices
     @frontQuestion.removeListener 'click', @flip
     @frontQuestion.removeListener 'click', @toggleChoices
-#    @choicesView.removeListener 'choice', ((i) ->
-#      @pickAnswer i
-#    ).bind @
+    @choicesView.removeListener 'choice', @choiceHandler
+
 
     # reset card elements positioning
-    @toggleChoices() if not @choiceShowing
+    @toggleChoices() if @choiceShowing
 
   loadCard: (card, type) ->
     @clearCard()
@@ -212,11 +211,9 @@ class CardView extends View
     @flip() if @currentSide is 1
 
     @choicesView.load @card.choices
-    @choicesView.on 'choice', ((i) ->
-      @pickAnswer i
-    ).bind @
+    @choicesView.on 'choice', @choiceHandler
 
-  choiceHandler: (i) ->
+  choiceHandler: (i) =>
     @pickAnswer i
 
   toggleChoices: =>
@@ -227,7 +224,7 @@ class CardView extends View
       Utils.animate(@frontProfilePicMod, @layout.profilePic.big)
 
       @rc.hide(@choicesView)
-      @choicesView.hideChoices()
+#      @choicesView.hideChoices()
 #      @choicesMod.setTransform Transform.translate(0, 0, -3)
       @_eventOutput.emit 'choices:hidden', @
       @choiceShowing = false
@@ -239,7 +236,7 @@ class CardView extends View
       Utils.animate(@frontProfilePicMod, @layout.profilePic.small)
 
       @rc.show(@choicesView)
-      @choicesView.showChoices()
+#      @choicesView.showChoices()
 #      @choicesMod.setTransform Transform.translate(0, 0, 5)
       @_eventOutput.emit 'choices:showing', @
       @choiceShowing = true

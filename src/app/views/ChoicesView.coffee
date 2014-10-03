@@ -64,13 +64,13 @@ class ChoicesView extends View
   clearChoices: () ->
     @choices.length = 0
 
-  showChoices: () ->
-    for choiceView in @choices
-      choiceView.state.setTransform Transform.translate(0,0,5)
-
-  hideChoices: () ->
-    for choiceView in @choices
-      choiceView.state.setTransform Transform.translate(0,0,-3)
+#  showChoices: () ->
+#    for choiceView in @choices
+#      choiceView.state.setTransform Transform.translate(0,0,5)
+#
+#  hideChoices: () ->
+#    for choiceView in @choices
+#      choiceView.state.setTransform Transform.translate(0,0,-3)
 
   fail: (choice, i) ->
     choiceView = @choices[i]
