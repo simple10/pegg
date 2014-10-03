@@ -20,10 +20,11 @@ class ChoiceView extends View
     super
     @state = new StateModifier
       size: @options.size
+      transform: Transform.translate(0,0,5)
     @mainNode = @add @state
     @createFlipper()
     @mainNode.add(@flipper)
-    @state.setTransform Transform.translate(0,0,-3)
+#    @state.setTransform Transform.translate(0,0,-3)
 
   createFlipper: () ->
     @createFront()

@@ -81,7 +81,7 @@ class TabMenuView extends View
     i = 0
     while i < @tabModifiers.length
       Timer.setTimeout ((i) ->
-        @tabModifiers[i].setTransform Transform.translate(0, 0, 11), transition
+        @tabModifiers[i].setTransform Transform.translate(0, 0, 19), transition
         return
       ).bind(this, i), i * delay
       i++
@@ -92,7 +92,7 @@ class TabMenuView extends View
     i = 0
     while i < @tabModifiers.length
       Timer.setTimeout ((i) ->
-        @tabModifiers[i].setTransform Transform.translate(0, @options.tab.height, 11), transition
+        @tabModifiers[i].setTransform Transform.translate(0, @options.tab.height, 19), transition
         return
       ).bind(this, i), i * delay
       i++
@@ -105,7 +105,7 @@ class TabMenuView extends View
     y = @options.tab.height
     while i < @tabModifiers.length * 2
       Timer.setTimeout ((i) ->
-        @tabModifiers[tab].setTransform Transform.translate(0, y, 11), transition
+        @tabModifiers[tab].setTransform Transform.translate(0, y, 19), transition
         tab++
         if tab == @tabModifiers.length
           tab = 0

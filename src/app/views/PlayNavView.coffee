@@ -103,11 +103,11 @@ class PlayNavView extends View
   initEvents: =>
     @leftArrow.on 'click', =>
       #console.log 'left arrow'
-      @_eventOutput.emit('click', 'prevCard')
+      @_eventOutput.emit('click', 'prevPage')
 
     @rightArrow.on 'click', =>
       #console.log 'right arrow'
-      @_eventOutput.emit('click', 'nextCard')
+      @_eventOutput.emit('click', 'nextPage')
 
   initViewState: =>
     @progressBar.reset PlayStore.getSetLength()

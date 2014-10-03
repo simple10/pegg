@@ -5,7 +5,6 @@ Modifier = require 'famous/core/Modifier'
 StateModifier = require 'famous/modifiers/StateModifier'
 ContainerSurface = require 'famous/surfaces/ContainerSurface'
 ImageSurface = require 'famous/surfaces/ImageSurface'
-Scrollview = require 'famous/views/Scrollview'
 Utility = require 'famous/utilities/Utility'
 Surface = require 'famous/core/Surface'
 Transform = require 'famous/core/Transform'
@@ -28,7 +27,7 @@ LayoutManager = require 'views/layouts/LayoutManager'
 RenderController = require 'famous/views/RenderController'
 Easing = require 'famous/transitions/Easing'
 
-class PlayCardsView extends View
+class PlayCardView extends View
 
   constructor: (options) ->
     super options
@@ -53,23 +52,17 @@ class PlayCardsView extends View
     PlayStore.on Constants.stores.CARD_WIN, (points) =>
       @cardWin points
     PlayStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
-    PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
-    PlayStore.on Constants.stores.CHOICES_CHANGE, (payload) =>
-      @loadChoices payload.cardId, payload.choices
 
   initViews: ->
 
     ## CARDS ##
-    @cardScrollView = new Scrollview
-      direction: Utility.Direction.X
-      paginated: true
-      margin: 300
-    @cardScrollViewMod = new Modifier
+    @cardView = new CardView
+    @cardViewMod = new Modifier
       align: =>
         yAlign = @_translateToAlign @cardYPos.get(), 'Y'
         [@layout.cards.align[0], @layout.cards.align[1] + yAlign]
       origin: @layout.cards.origin
-    @add(@cardScrollViewMod).add @cardScrollView
+    @add(@cardViewMod).add @cardView
 
     ## NAV ##
     @navView = new PlayNavView
@@ -135,74 +128,35 @@ class PlayCardsView extends View
     GenericSync.register mouse: MouseSync
     GenericSync.register touch: TouchSync
 
-    onEdgeEnd = false
     minVelocity = 0.5
     minDelta = 100
-    choicesShowing = false
+
     @sync = new GenericSync ['mouse', 'touch']
 
-    @_eventInput.on 'choices:showing', (card) =>
-      choicesShowing = true
-      @collapseComments() if @_commentsIsExpanded
-      @_unpipeCardsToScrollView()
-
-    @_eventInput.on 'choices:hidden', (card) =>
-      choicesShowing = false
-      @collapseComments() if @_commentsIsExpanded
-      @_pipeCardsToScrollView()
-
     @_eventInput.on 'card:flipped', (card) =>
-      choicesShowing = false
       @collapseComments() if @_commentsIsExpanded
-      @_pipeCardsToScrollView()
 
     @_eventInput.pipe @sync
-    @cardScrollView.on 'onEdge', () =>
-      # check to see if we have hit the end, i.e. bottom or right most item
-      if @cardScrollView._onEdge is 1 then onEdgeEnd = true
-    @cardScrollView.on 'offEdge', () =>
-      onEdgeEnd = false
-    @cardScrollView.on 'pageChange', (data) =>
-      # get the state of the current card
-      # used to determine if comments need to be hidden or shown
-      card = @cardViews[@cardScrollView._node.index]
-      if data.direction is 1
-        @nextCard()
-      if data.direction is -1
-        @prevCard()
-      # showChoices is true when the front of the card is visible
-      if card.showChoices
-        @hideComments()
-      else
-        @showComments()
 
     isMovingY = false
-    isMovingX = false
     startPos = 0
 
     @sync.on 'start', (data) =>
       startPos = @cardYPos.get()
 
     @sync.on 'update', ((data) ->
-      dx = data.delta[0]
       dy = data.delta[1]
-      if !isMovingX && !isMovingY
-        if Math.abs(dy) > Math.abs(dx)
-          @_unpipeCardsToScrollView()
+      if !isMovingY
+        if Math.abs(dy) > 0
           isMovingY = true
-        else if !choicesShowing
-          @_pipeCardsToScrollView()
-          isMovingX = true
-      if @_commentsIsExpanded
-        @_unpipeCardsToScrollView()
       if isMovingY
-        if PlayStore.getCurrentCardIsAnswered()
-          currentPosition = @cardYPos.get()
-          # calculate the max Y offset to prevent the user from being able
-          # to drag the card past this point
-          max = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
-          pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
-          @cardYPos.set(-pos)
+        currentPosition = @cardYPos.get()
+        #        console.log 'currentPosition', currentPosition
+        # calculate the max Y offset to prevent the user from being able
+        # to drag the card past this point
+        max = @layout.card.states[1].align[1] * Utils.getViewportHeight()
+        pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
+        @cardYPos.set(-pos)
     ).bind(@)
 
     @sync.on 'end', ((data) ->
@@ -215,49 +169,34 @@ class PlayCardsView extends View
         # swiping/dragging up and crossed pos and vel threshold
         if delta > minDelta && Math.abs(velocity) > minVelocity
           @expandComments()
-        # swiping/dragging down and crossed pos and vel threshold
+          # swiping/dragging down and crossed pos and vel threshold
         else if delta < -minDelta && Math.abs(velocity) > minVelocity
           @collapseComments()
-        # otherwise threshold not met, so return to original position
+          # otherwise threshold not met, so return to original position
         else if delta
           if !@_commentsIsExpanded
             @collapseComments()
-          else 
+          else
             @expandComments()
-      else if isMovingX
-        if onEdgeEnd then @nextCard()
       # reset axis movement flags
       isMovingY = false
-      isMovingX = false
     ).bind(@)
 
-  loadCards: =>
-    @cardViews = []
-    @index = []
-    @cardScrollView.sequenceFrom @cardViews
-    i = 0
-    for own cardId, cardObj of PlayStore.getCards()
-      name = cardObj.firstName
-      card = new CardView
-        size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
-      card.loadCard cardId, cardObj, 'play'
-      card.on 'comment', =>
-        @collapseComments()
-      card.on 'pegg', (payload) =>
-        PlayActions.pegg payload.peggee, payload.id, payload.choiceId, payload.answerId
-      card.on 'pref', (payload) =>
-        PlayActions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
-      card.on 'plug', (payload) =>
-        PlayActions.plug payload.id, payload.full, payload.thumb
-      card.pipe @
-      @cardViews.push card
-      @index[cardId] = i++
 
-    @_pipeCardsToScrollView()
-    @navView.setOptions {
-      'cardType': PlayStore.getCurrentCardsType()
-      'firstName': name
-    }
+  load: (card) =>
+    cardView = new CardView
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
+    cardView.loadCard card, 'play'
+    card.on 'comment', =>
+      @collapseComments()
+    card.on 'pegg', (payload) =>
+      PlayActions.pegg payload.peggee, payload.id, payload.choiceId, payload.answerId
+    card.on 'pref', (payload) =>
+      PlayActions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
+    card.on 'plug', (payload) =>
+      PlayActions.plug payload.id, payload.full, payload.thumb
+    card.pipe @
+
 
   loadChoices: (cardId, choices) =>
     @cardViews[@index[cardId]].loadChoices choices
@@ -265,21 +204,13 @@ class PlayCardsView extends View
   loadComments: =>
     @comments.load PlayStore.getComments()
 
-  nextCard: (triggerPageChange) =>
-    if triggerPageChange
-      if @cardScrollView._node.index isnt PlayStore.getSetLength() - 1
-        # tapped next button and not at end of card set
-        @cardScrollView.goToNextPage()
-
-    PlayActions.nextCard()
+  nextPage: =>
+    PlayActions.nextPage()
     @navView.hideRightArrow()
     @hideComments()
 
-  prevCard: (triggerPageChange) =>
-    if triggerPageChange
-      @cardScrollView.goToPreviousPage()
-      console.log @cardScrollView.getCurrentIndex()
-    else PlayActions.prevCard()
+  prevPage: =>
+    PlayActions.prevPage()
 
   cardPref: =>
     @showComments()
@@ -334,15 +265,6 @@ class PlayCardsView extends View
     @._commentsIsExpanded = true
     @newComment.setAlign @layout.newComment.states[1].align
 
-  _pipeCardsToScrollView: () =>
-    for i of @cardViews
-      @cardViews[i].pipe @cardScrollView
-    null
-
-  _unpipeCardsToScrollView: () =>
-    for i of @cardViews
-      @cardViews[i].unpipe @cardScrollView
-    null
 
   _translateToAlign: (delta, axis) =>
     if axis is 'Y'
@@ -352,4 +274,4 @@ class PlayCardsView extends View
     else
       null
 
-module.exports = PlayCardsView
+module.exports = PlayCardView

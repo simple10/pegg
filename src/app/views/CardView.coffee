@@ -15,6 +15,7 @@ TouchSync = require 'famous/inputs/TouchSync'
 Transform = require 'famous/core/Transform'
 Utility = require 'famous/utilities/Utility'
 View = require 'famous/core/View'
+RenderController = require 'famous/views/RenderController'
 
 # Pegg
 ChoicesView = require 'views/ChoicesView'
@@ -86,8 +87,16 @@ class CardView extends View
     @choicesMod = new StateModifier
       origin: @layout.choices.origin
       align: @layout.choices.align
-    @mainNode.add(@choicesMod).add @choicesView
-    @choicesMod.setTransform @layout.choices.hide
+      transform: @layout.choices.transform
+
+    @rc = new RenderController
+      inTransition:  { duration: 500, curve: Easing.outCubic }
+      outTransition: { duration: 350, curve: Easing.outCubic }
+    #    @rc.inTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
+    #    @rc.outTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
+
+    @mainNode.add(@choicesMod).add @rc
+
 
   initAnswer: ->
     @backImage = new ImageSurface
@@ -167,10 +176,9 @@ class CardView extends View
     # reset card elements positioning
     @toggleChoices() if not @showChoices
 
-  loadCard: (id, card, type) ->
+  loadCard: (card, type) ->
     @clearCard()
     @card = card
-    @id = id
 
     if type is 'review' or type is 'deny'
       @front.on 'click', @flip
@@ -201,11 +209,11 @@ class CardView extends View
     @frontQuestion.setContent @card.question
     @flip() if @currentSide is 1
 
-  loadChoices: (choices) ->
-    @choicesView.load choices
+    @choicesView.load @card.choices
     @choicesView.on 'choice', ((i) ->
       @pickAnswer i
     ).bind @
+
 
   toggleChoices: =>
     if @showChoices
@@ -214,19 +222,17 @@ class CardView extends View
       Utils.animate(@frontQuestionMod, @layout.question.small)
       Utils.animate(@frontProfilePicMod, @layout.profilePic.small)
 
-      @choicesMod.setTransform @layout.choices.show
-      @choicesView.showChoices()
       @showChoices = false
       @_eventOutput.emit 'choices:showing', @
+      @rc.show(@choicesView)
     else
       @frontQuestion.setClasses @layout.question.big.classes
       @frontQuestion.setSize @layout.question.big.size
       Utils.animate(@frontQuestionMod, @layout.question.big)
       Utils.animate(@frontProfilePicMod, @layout.profilePic.big)
 
-      @choicesMod.setTransform @layout.choices.hide
-      @choicesView.hideChoices()
       @showChoices = true
+      @rc.hide(@choicesView)
       @_eventOutput.emit 'choices:hidden', @
 
   pickAnswer: (i) =>

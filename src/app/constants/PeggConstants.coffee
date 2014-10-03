@@ -69,3 +69,4 @@ module.exports =
     SUBSCRIBE_PASS: null
     UNLOCK_ACHIEVED: null
     BADGE_CHANGE: null
+    GAME_LOADED: null

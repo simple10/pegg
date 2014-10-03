@@ -7,7 +7,7 @@ Easing = require 'famous/transitions/Easing'
 # Pegg
 Constants = require 'constants/PeggConstants'
 PlayStore = require 'stores/PlayStore'
-PlayCardsView = require 'views/PlayCardsView'
+PlayCardView = require 'views/PlayCardView'
 PlayStatusView = require 'views/PlayStatusView'
 PlayBadgesView = require 'views/PlayBadgesView'
 PickMoodView = require 'views/PickMoodView'
@@ -21,7 +21,7 @@ class PlayView extends View
     @initListeners()
 
   initListeners: ->
-    PlayStore.on Constants.stores.CARDS_CHANGE, @loadCards
+    PlayStore.on Constants.stores.GAME_LOADED, @loadPage
     PlayStore.on Constants.stores.STATUS_CHANGE, @loadStatus
     PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadges
     PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods
@@ -32,7 +32,7 @@ class PlayView extends View
     @pickMood = new PickMoodView
 
     ## CARDS VIEW ##
-    @cardsView = new PlayCardsView
+    @playCardView = new PlayCardView
 
     ## BADGES VIEW ##
     @badgesView = new PlayBadgesView
@@ -66,8 +66,14 @@ class PlayView extends View
     @statusView.load PlayStore.getStatus()
     @lightbox.show @statusView
 
-  loadCards: =>
-    @lightbox.show @cardsView
-
+  loadPage: =>
+    page = PlayStore.getCurrentPage()
+    switch page.type
+      when 'card'
+        @playCardView.load page.card
+        @lightbox.show @playCardView
+#      when "message"
+##        @messageView.load page
+##        @lightbox.show @messageView
 
 module.exports = PlayView

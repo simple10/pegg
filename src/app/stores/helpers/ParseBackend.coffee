@@ -236,27 +236,23 @@ class ParseBackend
     newMood.set 'ACL', newUserAcl
     newMood.save()
 
-  getUnpreffedCards: (num, mood, userId, cb) ->
+  getUnpreffedCards: (num, mood, userId) ->
     # Gets unanswered preferences: cards the user answers about himself
-    cards  = {}
     cardQuery = new Parse.Query Card
     cardQuery.limit num
     cardQuery.notContainedIn 'hasPreffed', [userId]
     if mood?
       cardQuery.containedIn 'categories', [mood.text]
     #cardQuery.skip Math.floor(Math.random() * 180)
-    cardQuery.find
-      success: (results) =>
+    cardQuery.find()
+      .then (results) =>
+        cards = []
         for card in results
-          cards[card.id] = {
+          cards.push {
             id: card.id
             question: card.get 'question'
-            choices: []
           }
-        cb cards
-      error: (error) ->
-        console.log "Error fetching cards: " + error.code + " " + error.message
-        cb null
+        cards
 
   getCategories: (cb) ->
     catQuery = new Parse.Query Category
@@ -357,7 +353,7 @@ class ParseBackend
         console.log "Error fetching card: " + error.code + " " + error.message
         cb null
 
-  getChoices: (cardId, cb) ->
+  getChoices: (cardId) ->
     choiceQuery = new Parse.Query Choice
     card = new Parse.Object 'Card'
     card.set 'id',  cardId
@@ -365,12 +361,9 @@ class ParseBackend
     choiceQuery.find
       success: (choices) =>
         if choices?.length > 0
-          cb choices
+          return choices
         else
-          cb null
-      error: (error) ->
-        console.log "Error fetching choices: " + error.code + " " + error.message
-        cb null
+          return null
 
   getUserMood: (moodId, userId) ->
     mood = new Parse.Object 'Category'

@@ -1,4 +1,6 @@
 DB = require 'stores/helpers/ParseBackend'
+Parse = require 'Parse'
+_ = Parse._
 
 # Famo.us
 EventHandler = require 'famous/core/EventHandler'
@@ -9,12 +11,12 @@ Constants = require 'constants/PeggConstants'
 UserStore = require 'stores/UserStore'
 
 class PlayStore extends EventHandler
-  _currentPage: null
+  _currentPage: 0
   _fails: 0
   _game: null
   _showHelpMessages: true
   _size: 4
-  _moodId: ''
+  _mood: {}
   # _cardSet = {}
   # _playerId = ""
   # _play = data[0]   # the cards to play
@@ -39,67 +41,65 @@ class PlayStore extends EventHandler
 
   _loadGame: (cards) ->
     @_game = []
+    @_currentPage = 0
     # @_fetchPrefs
 
-    # for each card in cards
-    #   put help message in game
-    #   put card in game
-    #   put pegg status in game
-    #   if card not preffed
-    #     fetch pref card
-    #     put help message in game
-    #     put pref card in game
-    #     put pref status in game
-    # put done status in game
+    if cards? and cards.length > 0
+      # for each card in cards
+      #   put help message in game
+      #   put card in game
+      #   put pegg status in game
+      #   if card not preffed
+      #     fetch pref card
+      #     put help message in game
+      #     put pref card in game
+      #     put pref status in game
+      # put done status in game
 
-  _fetchPrefs: (num, mood) ->
+    else
+      # if no pegg cards
+      #   show help message - no friends to play
+      #   fetch unpreffed cards for mood
+      @_fetchPrefs().done (cards...) =>
+        console.log "Pref Cards:  ", cards
+        @_game = _.map cards, (card) ->
+          {type: 'card', card: card}
+        @emit Constants.stores.GAME_LOADED
+
+  _fetchPrefs: =>
     # Gets unanswered preferences: cards the user answers about himself
-    cardsLoaded = false
-    user = UserStore.getUser()
-    DB.getUnpreffedCards( num, mood, user.id
-      (cards) =>
-        @_cardSet = cards
-        for own id, card of cards
-          cardsLoaded = true
-          card.firstName = user.get 'first_name'
-          card.pic = user.get 'avatar_url'
-          # FIXME periodically this will return before the view is ready, causing an error. Should be made syncronous.
-          @_fetchChoices id
-        if cardsLoaded
-          @_playerId =  UserStore.getUser().id
-          @emit Constants.stores.CARDS_CHANGE
-        else
-          @_fetchPrefsDone()
-    )
+    DB.getUnpreffedCards @_size, @_mood, @_user.id
+      .then @_loadCardsChoices
 
   _fetchPeggs: (num, moodId, peggeeId) =>
     # Gets unpegged preferences: cards the user answers about a friend
-    cardsLoaded = false
     DB.getPeggCards num, @_user, moodId, peggeeId
-      .then (cards) =>
-        for own id, card of cards
-          @_fetchChoices id
-        cards
+      .then @_loadCardsChoices
+
+  _loadCardsChoices: (cards) =>
+    choicesDone = []
+    for card in cards
+      choicesDone.push(
+        @_fetchChoices(card.id)
+          .then (cardChoices) =>
+            card.choices = cardChoices
+            card.firstName = @_user.get 'first_name'
+            card.pic = @_avatar
+            card.type = 'card'
+            card
+      )
+    Parse.Promise.when choicesDone
 
   _fetchChoices: (cardId) ->
-    DB.getChoices(cardId
-      (choices) =>
-        for choice in choices
+    DB.getChoices cardId
+      .then (choices) =>
+        _.map choices, (choice) ->
           text = choice.get 'text'
-          plug = choice.get 'plug'
-          thumb = choice.get 'plugThumb'
-          # only add choices that are not blank
           if text isnt ''
-            # image isnt '' and
-            @_cardSet[cardId].choices.push
-              id: choice.id
-              text: text
-              plug: plug
-              thumb: thumb
-        @emit Constants.stores.CHOICES_CHANGE,
-          cardId: cardId
-          choices: @_cardSet[cardId].choices
-    )
+            id: choice.id
+            text: text
+            plug: choice.get 'plug'
+            thumb: choice.get 'plugThumb'
 
   _fetchRanking: (userId) ->
     DB.getTopScores(userId,
@@ -181,7 +181,7 @@ class PlayStore extends EventHandler
     sPlug = JSON.stringify plug
     sThumb = JSON.stringify thumb
 
-    DB.savePref cardId, choiceId, sPlug, sThumb, @_user.id, @_moodId
+    DB.savePref cardId, choiceId, sPlug, sThumb, @_user.id, @_mood.id
       .fail @_failHandler
       .done =>
         DB.savePrefCount cardId, choiceId
@@ -245,7 +245,7 @@ class PlayStore extends EventHandler
 
   _mood: (moodText, moodId, moodUrl) ->
     console.log "moodId: " + moodId
-    @_moodId = moodId
+    @_mood = { text: moodText, id: moodId, url: moodUrl }
     @_loadMoodGame moodId
     DB.saveMood moodId, @_user.id
       .fail @_failHandler
