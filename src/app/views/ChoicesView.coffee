@@ -2,6 +2,7 @@ require './scss/card.scss'
 
 View = require 'famous/core/View'
 ScrollContainer = require 'famous/views/ScrollContainer'
+ScrollView = require 'famous/views/Scrollview'
 StateModifier = require 'famous/modifiers/StateModifier'
 # SequentialLayout = require 'famous/views/SequentialLayout'
 Surface = require 'famous/core/Surface'
@@ -10,18 +11,22 @@ PlayStore = require 'stores/PlayStore'
 ChoiceView = require 'views/ChoiceView'
 Transform = require 'famous/core/Transform'
 Utils = require 'lib/Utils'
+LayoutManager = require 'views/layouts/LayoutManager'
 
 class ChoicesView extends View
 
   constructor: () ->
     super
     @choices = []
-    @scrollView = new ScrollContainer
-      container:
-        size: @options.size
-        classes: ['card__options__box']
+    @scrollView = new ScrollView
+#      container:
+#        size: @options.size
+#        classes: ['card__options__box']
+    @scrollMod = new StateModifier
+      align: [0.5, 0.5]
+      origin: [0.5, 0.5]
     @scrollView.sequenceFrom @choices
-    @add @scrollView
+    @add(@scrollMod).add @scrollView
 
   load: (choices) ->
     @clearChoices()

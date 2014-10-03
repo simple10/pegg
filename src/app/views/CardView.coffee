@@ -82,21 +82,20 @@ class CardView extends View
     @mainNode.add(@frontQuestionMod).add @frontQuestion
 
   initChoices: ->
-    @showChoices = true
     @choicesView = new ChoicesView @layout.choices
     @choicesMod = new StateModifier
       origin: @layout.choices.origin
       align: @layout.choices.align
-      transform: @layout.choices.transform
+      transform: @layout.choices.show
 
     @rc = new RenderController
       inTransition:  { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
     #    @rc.inTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
     #    @rc.outTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
-
     @mainNode.add(@choicesMod).add @rc
-
+    @choiceShowing = false
+    @choicesView.hideChoices()
 
   initAnswer: ->
     @backImage = new ImageSurface
@@ -174,7 +173,7 @@ class CardView extends View
     @frontQuestion.removeListener 'click', @toggleChoices
 
     # reset card elements positioning
-    @toggleChoices() if not @showChoices
+    @toggleChoices() if not @choiceShowing
 
   loadCard: (card, type) ->
     @clearCard()
@@ -216,24 +215,30 @@ class CardView extends View
 
 
   toggleChoices: =>
-    if @showChoices
-      @frontQuestion.setClasses @layout.question.small.classes
-      @frontQuestion.setSize @layout.question.small.size
-      Utils.animate(@frontQuestionMod, @layout.question.small)
-      Utils.animate(@frontProfilePicMod, @layout.profilePic.small)
-
-      @showChoices = false
-      @_eventOutput.emit 'choices:showing', @
-      @rc.show(@choicesView)
-    else
+    if @choiceShowing
       @frontQuestion.setClasses @layout.question.big.classes
       @frontQuestion.setSize @layout.question.big.size
       Utils.animate(@frontQuestionMod, @layout.question.big)
       Utils.animate(@frontProfilePicMod, @layout.profilePic.big)
 
-      @showChoices = true
       @rc.hide(@choicesView)
+      @choicesView.hideChoices()
+#      @choicesMod.setTransform Transform.translate(0, 0, -3)
       @_eventOutput.emit 'choices:hidden', @
+      @choiceShowing = false
+
+    else
+      @frontQuestion.setClasses @layout.question.small.classes
+      @frontQuestion.setSize @layout.question.small.size
+      Utils.animate(@frontQuestionMod, @layout.question.small)
+      Utils.animate(@frontProfilePicMod, @layout.profilePic.small)
+
+      @rc.show(@choicesView)
+      @choicesView.showChoices()
+#      @choicesMod.setTransform Transform.translate(0, 0, 5)
+      @_eventOutput.emit 'choices:showing', @
+      @choiceShowing = true
+
 
   pickAnswer: (i) =>
     choice = @card.choices[i]
@@ -255,12 +260,13 @@ class CardView extends View
         thumb: choice.thumb
       @loadAnswer choice.plug.S3, choice.text
       @addImageRenderer.show @addImageButton
-      @flip choice
+      @flip()
 
   choiceFail: (choice, i) =>
     @choicesView.fail choice, i
 
   choiceWin: (choice, i) =>
+    @toggleChoices()
     @choicesView.win choice, i
     @choicesView.on 'choice:doneShowingStatus', () =>
       @loadAnswer @card.plug, choice.text

@@ -154,7 +154,7 @@ class PlayCardView extends View
         #        console.log 'currentPosition', currentPosition
         # calculate the max Y offset to prevent the user from being able
         # to drag the card past this point
-        max = @layout.card.states[1].align[1] * Utils.getViewportHeight()
+        max = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
         pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
         @cardYPos.set(-pos)
     ).bind(@)

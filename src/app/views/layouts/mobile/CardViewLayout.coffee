@@ -99,7 +99,8 @@ module.exports = {
     size: [width - width * .1, height - 300]
     align: [0.5, 0.5]
     origin: [0.5, 0.5]
-    transform: Transform.translate 0, 180, 4
+    show: Transform.translate 0, 180, 4
+    hide: Transform.translate 0, 180, -3
     choice:
       size: [width - width * .1, 65]
       align: [0.5, 0.5]

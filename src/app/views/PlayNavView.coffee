@@ -27,19 +27,8 @@ class PlayNavView extends View
     @initListeners()
 
   initListeners: ->
-    PlayStore.on Constants.stores.CARDS_CHANGE, @initViewState
-#    PlayStore.on Constants.stores.CARD_CHANGE, @updateViewState
-    PlayStore.on Constants.stores.MOOD_CHANGE, @updateMoodIcon
-    PlayStore.on Constants.stores.PREF_SAVED, @incrementProgressBar
-    PlayStore.on Constants.stores.CARD_WIN, @incrementProgressBar
-
-  setOptions: (options) =>
-    @_optionsManager.patch(options);
-    # update the card message
-    if @options.cardType is 'pref'
-      @message.setContent PlayStore.getMessage @options.cardType
-    else
-      @message.setContent "Pegg #{@options.firstName}"
+    PlayStore.on Constants.stores.GAME_LOADED, @loadNav
+    PlayStore.on Constants.stores.GAME_CHANGE, @updateNav
 
 
   initSurfaces: =>
@@ -81,21 +70,21 @@ class PlayNavView extends View
       align: @layout.rightArrow.align
       origin: @layout.rightArrow.origin
 
-    ## MESSAGE ##
-    @message = new Surface
-      size: @layout.message.size
+    ## TITLE ##
+    @title = new Surface
+      size: @layout.title.size
       content: ''
-      classes: @layout.message.classes
-    @messageMod = new StateModifier
-      align: @layout.message.align
-      origin: @layout.message.origin
-      transform: @layout.message.transform
+      classes: @layout.title.classes
+    @titleMod = new StateModifier
+      align: @layout.title.align
+      origin: @layout.title.origin
+      transform: @layout.title.transform
 
     # Attach modifiers and surfaces to the view
     @node = @add @mainMod
 #    @node.add(@leftArrowMod).add @leftArrow
     @node.add(@rightArrowMod).add @rightArrow
-    @node.add(@messageMod).add @message
+    @node.add(@titleMod).add @title
     @node.add(@moodImageMod).add @moodImage
     @node.add(@progressBarMod).add @progressBar
 
@@ -111,8 +100,7 @@ class PlayNavView extends View
 
   initViewState: =>
     @progressBar.reset PlayStore.getSetLength()
-    @showNav()
-    @showMessage()
+
 #    @hideRightArrow()
 #    @hideLeftArrow()
 
@@ -125,38 +113,30 @@ class PlayNavView extends View
 #      @showRightArrow()
 #      @showLeftArrow()
 
-  updateMoodIcon: =>
-    # change mood icon
-    mood = PlayStore.getCurrentMood()
-    @moodImage.setContent mood.url
-
   showNav: =>
-    #console.log 'show nav'
-    #console.log @layout.wrapper.states
     Utils.animate @mainMod, @layout.wrapper.states[0]
 
   hideNav: =>
-    #console.log 'hide nav'
-    #console.log @layout.wrapper.states[1]
     Utils.animate @mainMod, @layout.wrapper.states[1]
 
-#  showLeftArrow: =>
-#    Utils.animate @leftArrowMod, @layout.leftArrow.states[0]
-#
-#  hideLeftArrow: =>
-#    Utils.animate @leftArrowMod, @layout.leftArrow.states[1]
-#
+  loadNav: =>
+    # change mood icon
+    gameState = PlayStore.getGameState()
+    @moodImage.setContent gameState.mood.url
+    @title.setContent gameState.title
+    @progressBar.reset gameState.size
+
+  showLeftArrow: =>
+    Utils.animate @leftArrowMod, @layout.leftArrow.states[0]
+
+  hideLeftArrow: =>
+    Utils.animate @leftArrowMod, @layout.leftArrow.states[1]
+
   showRightArrow: =>
     Utils.animate @rightArrowMod, @layout.rightArrow.states[0]
 
   hideRightArrow: =>
     Utils.animate @rightArrowMod, @layout.rightArrow.states[1]
-
-  showMessage: =>
-    Utils.animate @messageMod, @layout.message.states[0]
-
-  hideMessage: =>
-    Utils.animate @messageMod, @layout.message.states[1]
 
   incrementProgressBar: =>
     @progressBar.increment(1)

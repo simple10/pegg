@@ -57,9 +57,9 @@ module.exports =
         transition: {duration: 500, curve: Easing.inQuad}
       }
     ]
-  message:
+  title:
     size: [180, 50]
-    classes: ['card__message']
+    classes: ['card__title']
     align: [0.6, -0.5]
     origin: [0.5, 0.5]
     states: [

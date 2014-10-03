@@ -38,7 +38,6 @@ ProfileView = require 'views/ProfileView'
 ActivityView = require 'views/ActivityView'
 SettingsView = require 'views/SettingsView'
 NewCardView = require 'views/NewCardView'
-SingleCardView = require 'views/SingleCardView'
 LoginView = require 'views/LoginView'
 HomeView = require 'views/HomeView'
 
@@ -118,7 +117,6 @@ class AppView extends View
     @pages.settings = new SettingsView
     @pages.activity = new ActivityView
     @pages.profile = new ProfileView
-    @pages.card = new SingleCardView
     @pages.login = new LoginView
     @pages.home = new HomeView
     @togglePage()

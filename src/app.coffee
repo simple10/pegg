@@ -46,7 +46,6 @@ Constants = require 'constants/PeggConstants'
 # Routes
 Routes = require 'routes/AppRoutes'
 
-GameFlow = require('config/game').game_flows.default
 GameScript = require('config/game').scripts.cosmic_unicorn
 
 Utils = require 'lib/Utils'

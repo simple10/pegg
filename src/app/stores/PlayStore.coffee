@@ -273,11 +273,14 @@ class PlayStore extends EventHandler
   getComments: ->
     @getCurrentPage().comments
 
-  getChoices: ->
-    @getCurrentPage().choices
-
   getMoods: ->
     @_moods
+
+  getGameState: ->
+    mood: @_mood
+    title: @_title
+    position: @_currentPage
+    size: @_game.length
 
 play = new PlayStore
 
