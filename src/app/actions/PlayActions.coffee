@@ -16,10 +16,10 @@ PlayActions =
       plug: plug
       thumb: thumb
 
-  pegg: (peggee, card, choice, answer) ->
+  pegg: (peggeeId, card, choice, answer) ->
     AppDispatcher.handleViewAction
       actionType: Constants.PEGG_SUBMIT
-      peggee: peggee
+      peggeeId: peggeeId
       card: card
       choice: choice
       answer: answer

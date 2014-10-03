@@ -11,7 +11,7 @@ Constants = require 'constants/PeggConstants'
 UserStore = require 'stores/UserStore'
 
 class PlayStore extends EventHandler
-  _currentPage: 0
+  _currentPage: -1
   _fails: 0
   _game: null
   _showHelpMessages: true
@@ -47,9 +47,10 @@ class PlayStore extends EventHandler
     console.log cards
 
     if cards? and cards.length > 0
-      # for each card in cards
+      for card in cards
       #   put help message in game
       #   put card in game
+        @_game.push {type: 'card', card: card}
       #   put pegg status in game
       #   if card not preffed
       #     fetch pref card
@@ -57,6 +58,8 @@ class PlayStore extends EventHandler
       #     put pref card in game
       #     put pref status in game
       # put done status in game
+      @_next()
+      @emit Constants.stores.GAME_LOADED
 
     else
       # if no pegg cards
@@ -65,7 +68,7 @@ class PlayStore extends EventHandler
       @_fetchPrefs().done (cards...) =>
         @_game = _.map cards, (card) ->
           {type: 'card', card: card}
-        @_title = "Pegg yourself!"
+        @_next()
         @emit Constants.stores.GAME_LOADED
 
 
@@ -82,12 +85,7 @@ class PlayStore extends EventHandler
   _loadCardsChoices: (cards) =>
     choicesDone = []
     for card in cards
-      choicesDone.push(
-        @_fetchChoices(card)
-          .then (card) =>
-            card.type = 'card'
-            card
-      )
+      choicesDone.push @_fetchChoices(card)
     Parse.Promise.when choicesDone
 
   _fetchChoices: (card) ->
@@ -148,6 +146,11 @@ class PlayStore extends EventHandler
     page = @getCurrentPage()
     if page.type is 'help' and not @_showHelpMessages
       @_currentPage++
+    else if page.type is 'card' 
+      if page.card.peggeeId isnt @_user.id
+        @_title = "Pegg #{page.card.firstName}!"
+      else
+        @_title = "Pegg yourself!"
     @emit Constants.stores.PAGE_CHANGE
 
   _prev: ->
@@ -165,11 +168,11 @@ class PlayStore extends EventHandler
       .done =>
         if choiceId is answerId
           points = 10 - 3 * @_fails
-          @_fails = 0
           @emit Constants.stores.CARD_WIN, points
           DB.savePoints @_user.id, peggeeId, points
             .fail @_failHandler
-          @_savePeggActivity cardId, @_user, peggeeId, @_fails
+          @_savePeggActivity cardId, peggeeId, @_fails + 1
+          @_fails = 0
         else
           @_fails++
           @emit Constants.stores.CARD_FAIL
@@ -215,7 +218,7 @@ class PlayStore extends EventHandler
       .fail @_failHandler
       .done (prefCard) =>
         trys = if tries is 1 then 'try' else 'tries'
-        message = "#{@_user.firstName} pegged #{prefCard.firstName} in #{tries} #{trys}: #{prefCard.question}"
+        message = "#{@_user.get 'first_name'} pegged #{prefCard.firstName} in #{tries} #{trys}: #{prefCard.question}"
         DB.saveActivity message, @_avatar, @_user.id, cardId, peggeeId
           .fail @_failHandler
 
@@ -284,6 +287,11 @@ class PlayStore extends EventHandler
     position: @_currentPage
     size: @_game.length
 
+  getMessage: (status) ->
+    switch status
+      when 'win' then return "Good job!"
+      when 'fail' then return "Boo."
+
 play = new PlayStore
 
 # Register callback with AppDispatcher to be notified of events
@@ -296,7 +304,7 @@ AppDispatcher.register (payload) ->
       play._loadUser()
       play._fetchMoods()
     when Constants.actions.PEGG_SUBMIT
-      play._pegg action.peggee, action.card, action.choice, action.answer
+      play._pegg action.peggeeId, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
       play._pref action.card, action.choice, action.plug, action.thumb
     when Constants.actions.PLUG_IMAGE

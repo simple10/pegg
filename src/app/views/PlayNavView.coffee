@@ -28,6 +28,7 @@ class PlayNavView extends View
 
   initListeners: ->
     PlayStore.on Constants.stores.GAME_LOADED, @loadNav
+    PlayStore.on Constants.stores.PAGE_CHANGE, @loadNav
     PlayStore.on Constants.stores.GAME_CHANGE, @updateNav
 
 

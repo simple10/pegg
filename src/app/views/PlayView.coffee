@@ -21,7 +21,6 @@ class PlayView extends View
     @initListeners()
 
   initListeners: ->
-    PlayStore.on Constants.stores.GAME_LOADED, @loadPage
     PlayStore.on Constants.stores.PAGE_CHANGE, @loadPage
     PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadges
     PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods

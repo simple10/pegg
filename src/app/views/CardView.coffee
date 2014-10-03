@@ -192,7 +192,7 @@ class CardView extends View
     if type is 'review'
       @loadAnswer @card.plug, @card.answer.get 'text'
       @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
-      if card.peggee is UserStore.getUser().id
+      if card.peggeeId is UserStore.getUser().id
         @addImageRenderer.show @addImageButton
     else if type is 'deny'
       @frontProfilePic.setContent "#{@card.pic}"
@@ -244,10 +244,10 @@ class CardView extends View
 
   pickAnswer: (i) =>
     choice = @card.choices[i]
-    if @card.peggee?
+    if @card.peggeeId?
       @_eventOutput.emit 'pegg',
-        peggee: @card.peggee
-        id: @id
+        peggeeId: @card.peggeeId
+        id: @card.id
         choiceId: choice.id
         answerId: @card.answer.id
       if @card.answer.id is choice.id

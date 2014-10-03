@@ -188,7 +188,7 @@ class ParseBackend
         prefCount.save()
 
 
-  savePoints: (peggerId, peggeeId, points, cb) ->
+  savePoints: (peggerId, peggeeId, points) ->
     # UPDATE points row with new points
     pointsQuery = new Parse.Query 'Points'
     pegger = new Parse.Object 'User'
@@ -197,8 +197,8 @@ class ParseBackend
     peggee.set 'id',  peggeeId
     pointsQuery.equalTo 'pegger', pegger
     pointsQuery.equalTo 'peggee', peggee
-    pointsQuery.first
-      success: (result) =>
+    pointsQuery.first()
+      .then (result) =>
         if result?
           points = result.get('points') + points
           cardsPlayed = result.get('cardsPlayed') + 1
@@ -216,10 +216,7 @@ class ParseBackend
           newPoints.set 'cardsPlayed', 1
           newPoints.set 'ACL', newPointsAcl
           newPoints.save()
-        cb points
-      error: (error) ->
-        console.log "Error: #{error.code}  #{error.message}"
-        cb null
+        points
 
   saveMood: (moodId, userId) ->
     # INSERT into Mood table a row with user's mood
@@ -293,7 +290,7 @@ class ParseBackend
           peggee = pref.get 'user'
           cards.push {
             id: card.id
-            peggee: peggee.id
+            peggeeId: peggee.id
             firstName: peggee.get 'first_name'
             pic: peggee.get 'avatar_url'
             question: card.get 'question'
@@ -333,14 +330,14 @@ class ParseBackend
     prefQuery.include 'answer'
     prefQuery.equalTo 'user', peggee
     prefQuery.equalTo 'card', card
-    prefQuery.first
-      success: (pref) =>
+    prefQuery.first()
+      .then (pref) =>
         if pref?
           card = pref.get 'card'
           peggee = pref.get 'user'
           cardObj = {
             id: card.id
-            peggee: peggee.id
+            peggeeId: peggee.id
             firstName: peggee.get 'first_name'
             pic: peggee.get 'avatar_url'
             gender: peggee.get 'gender'

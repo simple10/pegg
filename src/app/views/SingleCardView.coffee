@@ -175,7 +175,7 @@ class SingleCardView extends View
     @cardView.on 'comment', =>
       @collapseComments()
     @cardView.on 'pegg', (payload) =>
-      SingleCardActions.pegg payload.peggee, payload.id, payload.choiceId, payload.answerId
+      SingleCardActions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
     @cardView.on 'pref', (payload) =>
       SingleCardActions.pref payload.id, payload.choiceId, payload.image
     @cardView.on 'plug', (payload) =>
