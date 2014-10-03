@@ -64,7 +64,9 @@ class PlayStore extends EventHandler
         console.log "Pref Cards:  ", cards
         @_game = _.map cards, (card) ->
           {type: 'card', card: card}
+        @_title = "Pegg yourself!"
         @emit Constants.stores.GAME_LOADED
+
 
   _fetchPrefs: =>
     # Gets unanswered preferences: cards the user answers about himself
@@ -147,6 +149,7 @@ class PlayStore extends EventHandler
     page = @getCurrentPage()
     if page.type is 'help' and not @_showHelpMessages
       @_currentPage++
+    @emit Constants.stores.PAGE_CHANGE
 
   _prev: ->
     @_currentPage--

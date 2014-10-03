@@ -55,6 +55,7 @@ module.exports =
     MOODS_LOADED: null
     NO_PEGGS_REMAINING: null
     NO_PREFS_REMAINING: null
+    PAGE_CHANGE: null
     PLAY_CHANGE: null
     PLAY_PEGGS: null
     PLAY_PREFS: null

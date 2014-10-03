@@ -171,6 +171,9 @@ class CardView extends View
     @frontProfilePic.removeListener 'click', @toggleChoices
     @frontQuestion.removeListener 'click', @flip
     @frontQuestion.removeListener 'click', @toggleChoices
+#    @choicesView.removeListener 'choice', ((i) ->
+#      @pickAnswer i
+#    ).bind @
 
     # reset card elements positioning
     @toggleChoices() if not @choiceShowing
@@ -213,6 +216,8 @@ class CardView extends View
       @pickAnswer i
     ).bind @
 
+  choiceHandler: (i) ->
+    @pickAnswer i
 
   toggleChoices: =>
     if @choiceShowing
@@ -258,7 +263,7 @@ class CardView extends View
         choiceId: choice.id
         plug: choice.plug
         thumb: choice.thumb
-      @loadAnswer choice.plug.S3, choice.text
+      @loadAnswer choice.plug?.S3, choice.text
       @addImageRenderer.show @addImageButton
       @flip()
 

@@ -60,7 +60,7 @@ module.exports =
   title:
     size: [180, 50]
     classes: ['card__title']
-    align: [0.6, -0.5]
+    align: [0.6, 0.05]
     origin: [0.5, 0.5]
     states: [
       {

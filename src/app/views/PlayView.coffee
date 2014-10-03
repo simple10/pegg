@@ -22,9 +22,10 @@ class PlayView extends View
 
   initListeners: ->
     PlayStore.on Constants.stores.GAME_LOADED, @loadPage
-    PlayStore.on Constants.stores.STATUS_CHANGE, @loadStatus
+    PlayStore.on Constants.stores.PAGE_CHANGE, @loadPage
     PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadges
     PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods
+
 
   initViews: ->
 
@@ -53,7 +54,6 @@ class PlayView extends View
       outTransition: { duration: 350, curve: Easing.outCubic }
     @add @lightbox
 
-
   loadMoods: =>
     @pickMood.load PlayStore.getMoods()
     @lightbox.show @pickMood
@@ -62,16 +62,15 @@ class PlayView extends View
     @badgesView.load PlayStore.getBadges()
     @lightbox.show @badgesView
 
-  loadStatus: =>
-    @statusView.load PlayStore.getStatus()
-    @lightbox.show @statusView
-
   loadPage: =>
     page = PlayStore.getCurrentPage()
     switch page.type
       when 'card'
         @playCardView.load page.card
         @lightbox.show @playCardView
+      when 'status'
+        @statusView.load page.status
+        @lightbox.show @statusView
 #      when "message"
 ##        @messageView.load page
 ##        @lightbox.show @messageView
