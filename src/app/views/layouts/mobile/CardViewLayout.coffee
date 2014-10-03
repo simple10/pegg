@@ -87,7 +87,7 @@ module.exports = {
     classes: ['card__back__addImage']
     content: 'images/add-image.png'
     origin: [0.5, 1]
-    align: [0, 1]
+    align: [0.5, 1]
     transform: Transform.multiply(
       Transform.translate 0, -80, -4
       Transform.multiply(

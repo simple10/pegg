@@ -135,7 +135,7 @@ class CardView extends View
         @backImage.setContent results.fullS3
         debugger
         @_eventOutput.emit 'plug',
-          id: @id
+          id: @card.id
           full: results.key
           thumb: results.thumb.key
       )
@@ -254,7 +254,7 @@ class CardView extends View
         @choiceFail choice, i
     else
       @_eventOutput.emit 'pref',
-        id: @id
+        id: @card.id
         choiceId: choice.id
         plug: choice.plug
         thumb: choice.thumb

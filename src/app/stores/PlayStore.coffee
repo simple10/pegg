@@ -186,7 +186,7 @@ class PlayStore extends EventHandler
       .done =>
         DB.savePrefCount cardId, choiceId
           .fail @_failHandler
-        @_savePrefActivity cardId, @_user.id
+        @_savePrefActivity cardId
         @emit Constants.stores.PREF_SAVED
 
   _saveMoodActivity: (moodId, moodText, moodUrl) ->

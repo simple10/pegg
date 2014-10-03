@@ -165,7 +165,7 @@ class ParseBackend
     promise
 
   # used to display popularity of choices
-  savePrefCount: (cardId, choiceId, cb) ->
+  savePrefCount: (cardId, choiceId) ->
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     choice = new Parse.Object 'Choice'
@@ -187,7 +187,6 @@ class ParseBackend
         prefCount.set 'count', 1
         prefCount.save()
 
-      cb 'savePrefCounts done'
 
   savePoints: (peggerId, peggeeId, points, cb) ->
     # UPDATE points row with new points
@@ -318,7 +317,7 @@ class ParseBackend
         console.log "Error fetching card: " + error.code + " " + error.message
         cb null
 
-  getPrefCard: (cardId, peggeeId, cb) ->
+  getPrefCard: (cardId, peggeeId) ->
     peggee = new Parse.Object 'User'
     peggee.set 'id',  peggeeId
     card = new Parse.Object 'Card'
@@ -346,12 +345,10 @@ class ParseBackend
             answer: pref.get 'answer'
             plug: pref.get 'plug'
           }
-          cb cardObj
+          cardObj
         else
-          cb null
-      error: (error) ->
-        console.log "Error fetching card: " + error.code + " " + error.message
-        cb null
+          null
+
 
   getChoices: (cardId) ->
     choiceQuery = new Parse.Query Choice
