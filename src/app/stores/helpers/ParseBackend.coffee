@@ -235,11 +235,12 @@ class ParseBackend
     newMood.set 'ACL', newUserAcl
     newMood.save()
 
-  getUnpreffedCards: (num, mood, userId) ->
+  getUnpreffedCards: (num, mood, user) ->
+    # TODO: change mood to moodId, use Pointers instead of an array in Categories column
     # Gets unanswered preferences: cards the user answers about himself
     cardQuery = new Parse.Query Card
     cardQuery.limit num
-    cardQuery.notContainedIn 'hasPreffed', [userId]
+    cardQuery.notContainedIn 'hasPreffed', [user.id]
     if mood?
       cardQuery.containedIn 'categories', [mood.text]
     #cardQuery.skip Math.floor(Math.random() * 180)
@@ -249,6 +250,8 @@ class ParseBackend
         for card in results
           cards.push {
             id: card.id
+            firstName: user.get 'first_name'
+            pic: user.get 'avatar_url'
             question: card.get 'question'
           }
         cards
@@ -264,7 +267,7 @@ class ParseBackend
 
   getPeggCards: (num, user, moodId, peggeeId) ->
     # Gets unpegged preferences: cards the user answers about a friend
-    cards = {}
+
     prefUser = new Parse.Object 'User'
     prefUser.set 'id', user.id
     peggeeUser = new Parse.Object 'User'
@@ -276,27 +279,29 @@ class ParseBackend
     prefQuery.include 'user'
     prefQuery.include 'card'
     prefQuery.include 'answer'
-    prefQuery.equalTo 'user', peggeeUser if peggeeId?
-    prefQuery.equalTo 'mood', mood if moodId?
+#    prefQuery.equalTo 'user', peggeeUser if peggeeId?
+#    prefQuery.equalTo 'mood', mood if moodId?
     prefQuery.notEqualTo 'user', prefUser
     prefQuery.notContainedIn 'hasPegged', [user.id]
     #prefQuery.containedIn 'hasPegged', [user.id]
     #prefQuery.skip Math.floor(Math.random() * 300)
-    prefQuery.find
-      success: (results) =>
+    prefQuery.find()
+      .then (results) =>
+        cards = []
         for pref in results
           card = pref.get 'card'
           peggee = pref.get 'user'
-          cards[card.id] = {
+          cards.push {
+            id: card.id
             peggee: peggee.id
             firstName: peggee.get 'first_name'
             pic: peggee.get 'avatar_url'
             question: card.get 'question'
-            choices: []
             answer: pref.get 'answer'
             plug: pref.get 'plug'
+            hasPreffed: card.get 'hasPreffed'
           }
-          cards
+        cards
 
   getCard: (cardId, cb) ->
     cardQuery = new Parse.Query Card

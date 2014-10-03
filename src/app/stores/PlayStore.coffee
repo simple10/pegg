@@ -17,22 +17,23 @@ class PlayStore extends EventHandler
   _showHelpMessages: true
   _size: 4
   _mood: {}
+  _peggee: {}
   # _cardSet = {}
   # _playerId = ""
   # _play = data[0]   # the cards to play
   # _status = data[1]   # the status screen to display
   # _badges = []
 
-  _loadMoodGame: (moodId) ->
-    @_fetchPeggs @_size, moodId, null
+  _loadMoodGame: ->
+    @_fetchPeggs()
       .fail @_failHandler
-      .done (cards) =>
+      .done (cards...) =>
         @_loadGame cards
 
-  _loadPeggeeGame: (peggeeId) ->
-    @_fetchPeggs @_size, null, peggeeId
+  _loadPeggeeGame: ->
+    @_fetchPeggs()
       .fail @_failHandler
-      .done (cards) =>
+      .done (cards...) =>
         @_loadGame cards
 
   _loadUser: ->
@@ -42,7 +43,8 @@ class PlayStore extends EventHandler
   _loadGame: (cards) ->
     @_game = []
     @_currentPage = 0
-    # @_fetchPrefs
+
+    console.log cards
 
     if cards? and cards.length > 0
       # for each card in cards
@@ -69,12 +71,12 @@ class PlayStore extends EventHandler
 
   _fetchPrefs: =>
     # Gets unanswered preferences: cards the user answers about himself
-    DB.getUnpreffedCards @_size, @_mood, @_user.id
+    DB.getUnpreffedCards @_size, @_mood, @_user
       .then @_loadCardsChoices
 
-  _fetchPeggs: (num, moodId, peggeeId) =>
+  _fetchPeggs: =>
     # Gets unpegged preferences: cards the user answers about a friend
-    DB.getPeggCards num, @_user, moodId, peggeeId
+    DB.getPeggCards @_size, @_user, @_mood.id, @_peggee.id
       .then @_loadCardsChoices
 
   _loadCardsChoices: (cards) =>
@@ -83,8 +85,6 @@ class PlayStore extends EventHandler
       choicesDone.push(
         @_fetchChoices(card)
           .then (card) =>
-            card.firstName = @_user.get 'first_name'
-            card.pic = @_avatar
             card.type = 'card'
             card
       )
