@@ -93,11 +93,15 @@ class PlayStore extends EventHandler
       .then (choices) =>
         card.choices = _.map choices, (choice) ->
           text = choice.get 'text'
+          plug = choice.get 'plug'
+          if plug? then plug = plug.S3
+          thumb = choice.get 'plugThumb'
+          if thumb? then thumb = thumb.S3
           if text isnt ''
             id: choice.id
             text: text
-            plug: choice.get 'plug'
-            thumb: choice.get 'plugThumb'
+            plug: plug
+            thumb: thumb
         card
 
   _fetchRanking: (userId) ->
