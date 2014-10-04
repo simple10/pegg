@@ -97,6 +97,7 @@ class CardView extends View
     @rc.show @choicesView
     @choiceShowing = true
 #    @choicesView.hideChoices()
+    @choicesView.on 'choice:doneShowingStatus', @flip
 
   initAnswer: ->
     @backImage = new ImageSurface
@@ -173,13 +174,15 @@ class CardView extends View
     @frontQuestion.removeListener 'click', @toggleChoices
     @choicesView.removeListener 'choice', @choiceHandler
 
-
     # reset card elements positioning
     @toggleChoices() if @choiceShowing
 
   loadCard: (card, type) ->
     @clearCard()
     @card = card
+
+    if @card.answer?
+      @loadAnswer @card.answer.plug, @card.answer.text
 
     if type is 'review' or type is 'deny'
       @front.on 'click', @flip
@@ -190,13 +193,13 @@ class CardView extends View
       @backText.on 'click', @flip
 
     if type is 'review'
-      @loadAnswer @card.plug, @card.answer.get 'text'
+      @loadAnswer @card.answer.plug, @card.answer.text
       @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
       if card.peggeeId is UserStore.getUser().id
         @addImageRenderer.show @addImageButton
     else if type is 'deny'
       @frontProfilePic.setContent "#{@card.pic}"
-      @loadAnswer @card.plug, null
+      @loadAnswer @card.answer.plug, null
     else
       @front.on 'click', @toggleChoices
       @back.on 'click', =>
@@ -222,22 +225,15 @@ class CardView extends View
       @frontQuestion.setSize @layout.question.big.size
       Utils.animate(@frontQuestionMod, @layout.question.big)
       Utils.animate(@frontProfilePicMod, @layout.profilePic.big)
-
       @rc.hide(@choicesView)
-#      @choicesView.hideChoices()
-#      @choicesMod.setTransform Transform.translate(0, 0, -3)
       @_eventOutput.emit 'choices:hidden', @
       @choiceShowing = false
-
     else
       @frontQuestion.setClasses @layout.question.small.classes
       @frontQuestion.setSize @layout.question.small.size
       Utils.animate(@frontQuestionMod, @layout.question.small)
       Utils.animate(@frontProfilePicMod, @layout.profilePic.small)
-
       @rc.show(@choicesView)
-#      @choicesView.showChoices()
-#      @choicesMod.setTransform Transform.translate(0, 0, 5)
       @_eventOutput.emit 'choices:showing', @
       @choiceShowing = true
 
@@ -260,7 +256,7 @@ class CardView extends View
         choiceId: choice.id
         plug: choice.plug
         thumb: choice.thumb
-      @loadAnswer choice.plug?.S3, choice.text
+      @loadAnswer choice.plug, choice.text
       @addImageRenderer.show @addImageButton
       @flip()
 
@@ -268,11 +264,7 @@ class CardView extends View
     @choicesView.fail choice, i
 
   choiceWin: (choice, i) =>
-    @toggleChoices()
     @choicesView.win choice, i
-    @choicesView.on 'choice:doneShowingStatus', () =>
-      @loadAnswer @card.plug, choice.text
-      @flip()
 
   flip: =>
     @currentSide = if @currentSide is 1 then 0 else 1

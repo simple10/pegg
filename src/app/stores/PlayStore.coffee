@@ -143,6 +143,7 @@ class PlayStore extends EventHandler
 
   _next: ->
     @_currentPage++
+    @_fails = 0
     page = @getCurrentPage()
     if page.type is 'help' and not @_showHelpMessages
       @_currentPage++
@@ -172,7 +173,6 @@ class PlayStore extends EventHandler
           DB.savePoints @_user.id, peggeeId, points
             .fail @_failHandler
           @_savePeggActivity cardId, peggeeId, @_fails + 1
-          @_fails = 0
         else
           @_fails++
           @emit Constants.stores.CARD_FAIL

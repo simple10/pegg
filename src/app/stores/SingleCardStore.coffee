@@ -132,7 +132,8 @@ class SingleCardStore extends EventEmitter
     @_card = {
       question: "Ruh roh!<br/><br/>Either this card doesn't exist, or you don't have access to it."
       pic: '/images/access_denied_icon.jpg'
-      plug: '/images/access_denied_plug.jpg'
+      answer:
+        plug: '/images/access_denied_plug.jpg'
       type: 'deny'
     }
     @emit Constants.stores.CARD_CHANGE

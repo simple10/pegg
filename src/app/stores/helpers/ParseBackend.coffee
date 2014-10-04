@@ -288,14 +288,18 @@ class ParseBackend
         for pref in results
           card = pref.get 'card'
           peggee = pref.get 'user'
+          plug = pref.get 'plug'
+          if plug? then plug = JSON.parse(plug).S3
           cards.push {
             id: card.id
             peggeeId: peggee.id
-            firstName: peggee.get 'first_name'
-            pic: peggee.get 'avatar_url'
-            question: card.get 'question'
-            answer: pref.get 'answer'
-            plug: pref.get 'plug'
+            firstName: peggee.get 'first_name' or ''
+            pic: peggee.get 'avatar_url' or ''
+            question: card.get('question') or ''
+            answer:
+              id: pref.get('answer').id
+              text: pref.get('answer').get('text')
+              plug: plug
             hasPreffed: card.get 'hasPreffed'
           }
         cards
