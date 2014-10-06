@@ -43,7 +43,7 @@ class CardView extends View
   initCard: ->
     @state = new StateModifier
       origin: @layout.card.origin
-      align: @layout.card.align
+#      align: @layout.card.align
     @mainNode = @add @state
     ## Front Card
     @front = new ImageSurface
