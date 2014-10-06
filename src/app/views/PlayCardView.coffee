@@ -52,6 +52,15 @@ class PlayCardView extends View
     PlayStore.on Constants.stores.CARD_WIN, (points) =>
       @cardWin points
     PlayStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
+    @cardView.on 'comment', =>
+      @collapseComments()
+    @cardView.on 'pegg', (payload) =>
+      PlayActions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
+    @cardView.on 'pref', (payload) =>
+      PlayActions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
+    @cardView.on 'plug', (payload) =>
+      PlayActions.plug payload.id, payload.full, payload.thumb
+    @cardView.pipe @
 
   initViews: ->
 
@@ -185,16 +194,6 @@ class PlayCardView extends View
 
   load: (card) =>
     @cardView.loadCard card, 'play'
-    @cardView.on 'comment', =>
-      @collapseComments()
-    @cardView.on 'pegg', (payload) =>
-      PlayActions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
-    @cardView.on 'pref', (payload) =>
-      PlayActions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
-    @cardView.on 'plug', (payload) =>
-      PlayActions.plug payload.id, payload.full, payload.thumb
-    @cardView.pipe @
-
 
   loadComments: =>
     @comments.load PlayStore.getComments()

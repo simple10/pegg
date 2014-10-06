@@ -169,7 +169,7 @@ class CardView extends View
     @frontProfilePic.removeListener 'click', @toggleChoices
     @frontQuestion.removeListener 'click', @flip
     @frontQuestion.removeListener 'click', @toggleChoices
-    @choicesView.removeListener 'choice', @choiceHandler
+    @choicesView.removeListener 'choice', @pickAnswer
 
     # reset card elements positioning
     @toggleChoices() if @choiceShowing
@@ -211,10 +211,7 @@ class CardView extends View
     @flip() if @currentSide is 1
 
     @choicesView.load @card.choices
-    @choicesView.on 'choice', @choiceHandler
-
-  choiceHandler: (i) =>
-    @pickAnswer i
+    @choicesView.on 'choice', @pickAnswer
 
   toggleChoices: =>
     if @choiceShowing
