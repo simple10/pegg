@@ -43,7 +43,7 @@ class CardView extends View
   initCard: ->
     @state = new StateModifier
       origin: @layout.card.origin
-#      align: @layout.card.align
+      align: @layout.card.align
     @mainNode = @add @state
     ## Front Card
     @front = new ImageSurface
@@ -91,12 +91,9 @@ class CardView extends View
     @rc = new RenderController
       inTransition:  { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
-    #    @rc.inTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
-    #    @rc.outTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
     @mainNode.add(@choicesMod).add @rc
     @rc.show @choicesView
     @choiceShowing = true
-#    @choicesView.hideChoices()
     @choicesView.on 'choice:doneShowingStatus', @flip
 
   initAnswer: ->
@@ -268,6 +265,8 @@ class CardView extends View
 
   flip: =>
     @currentSide = if @currentSide is 1 then 0 else 1
+#    @rc.hide @choicesView
+
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide
       @layout.card.transition

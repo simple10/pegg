@@ -187,10 +187,10 @@ class PlayStore extends EventHandler
     # save answered status
     @getCurrentPage().answered = true
 
-    sPlug = JSON.stringify plug
-    sThumb = JSON.stringify thumb
+#    sPlug = JSON.stringify plug
+#    sThumb = JSON.stringify thumb
 
-    DB.savePref cardId, choiceId, sPlug, sThumb, @_user.id, @_mood.id
+    DB.savePref cardId, choiceId, plug, thumb, @_user.id, @_mood.id
       .fail @_failHandler
       .done =>
         DB.savePrefCount cardId, choiceId

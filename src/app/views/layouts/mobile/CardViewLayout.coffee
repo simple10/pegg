@@ -97,9 +97,9 @@ module.exports = {
     )
   choices:
     size: [width - width * .1, height - 300]
-    align: [0.5, 0.5]
-    origin: [0.5, 0.5]
-    show: Transform.translate 0, 180, 4
+    align: [0.5, 0]
+    origin: [0.5, 0]
+    show: Transform.translate 0, 180, null
     hide: Transform.translate 0, 180, -3
     choice:
       size: [width - width * .1, 65]

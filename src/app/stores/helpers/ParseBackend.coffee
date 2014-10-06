@@ -288,8 +288,7 @@ class ParseBackend
         for pref in results
           card = pref.get 'card'
           peggee = pref.get 'user'
-          plug = pref.get 'plug'
-          if plug? then plug = JSON.parse(plug).S3
+#          if plug? then plug = JSON.parse(plug).S3
           cards.push {
             id: card.id
             peggeeId: peggee.id
@@ -299,7 +298,7 @@ class ParseBackend
             answer:
               id: pref.get('answer').id
               text: pref.get('answer').get('text')
-              plug: plug
+              plug: pref.get 'plug'
             hasPreffed: card.get 'hasPreffed'
           }
         cards
@@ -339,8 +338,6 @@ class ParseBackend
         if pref?
           card = pref.get 'card'
           peggee = pref.get 'user'
-          plug = pref.get 'plug'
-          if plug? then plug = JSON.parse(plug).S3
           cardObj = {
             id: card.id
             peggeeId: peggee.id
@@ -353,7 +350,7 @@ class ParseBackend
             answer:
               id: pref.get('answer').id
               text: pref.get('answer').get('text')
-              plug: plug
+              plug: pref.get 'plug'
           }
           cardObj
         else

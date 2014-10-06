@@ -18,13 +18,13 @@ class ChoicesView extends View
   constructor: () ->
     super
     @choices = []
-    @scrollView = new ScrollView
-#      container:
-#        size: @options.size
-#        classes: ['card__options__box']
+    @scrollView = new ScrollContainer
+      container:
+        size: @options.size
+        classes: ['card__options__box']
     @scrollMod = new StateModifier
-      align: [0.5, 0.5]
-      origin: [0.5, 0.5]
+      align: @options.align
+      origin: @options.origin
     @scrollView.sequenceFrom @choices
     @add(@scrollMod).add @scrollView
 
