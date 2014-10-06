@@ -276,20 +276,20 @@ class ParseBackend
     prefQuery.include 'user'
     prefQuery.include 'card'
     prefQuery.include 'answer'
-#    prefQuery.equalTo 'user', peggeeUser if peggeeId?
-#    prefQuery.equalTo 'mood', mood if moodId?
+    prefQuery.equalTo 'user', peggeeUser if peggeeId?
+    prefQuery.equalTo 'mood', mood if moodId?
     prefQuery.notEqualTo 'user', prefUser
     prefQuery.notContainedIn 'hasPegged', [user.id]
     #prefQuery.containedIn 'hasPegged', [user.id]
     #prefQuery.skip Math.floor(Math.random() * 300)
     prefQuery.find()
       .then (results) =>
-        cards = []
+        cards = {}
         for pref in results
           card = pref.get 'card'
           peggee = pref.get 'user'
 #          if plug? then plug = JSON.parse(plug).S3
-          cards.push {
+          cards[card.id] = {
             id: card.id
             peggeeId: peggee.id
             firstName: peggee.get 'first_name' or ''
@@ -302,6 +302,7 @@ class ParseBackend
             hasPreffed: card.get 'hasPreffed'
           }
         cards
+        if results? then cards else null
 
   getCard: (cardId, cb) ->
     cardQuery = new Parse.Query Card
@@ -355,6 +356,44 @@ class ParseBackend
           cardObj
         else
           null
+
+  getPrefCards: (cardIds, peggeeId) ->
+    peggee = new Parse.Object 'User'
+    peggee.set 'id',  peggeeId
+
+    cards = Parse._.map cardIds, (cardId) ->
+      card = new Parse.Object 'Card'
+      card.set 'id',  cardId
+      card
+
+    prefQuery = new Parse.Query Pref
+    prefQuery.include 'user'
+    prefQuery.include 'card'
+    prefQuery.include 'answer'
+    prefQuery.equalTo 'user', peggee
+    prefQuery.containedIn 'card', cards
+    prefQuery.find()
+      .then (results) =>
+        prefs = {}
+        for pref in results
+          card = pref.get 'card'
+          peggee = pref.get 'user'
+          cardObj = {
+            id: card.id
+            peggeeId: peggee.id
+            firstName: peggee.get 'first_name'
+            pic: peggee.get 'avatar_url'
+            gender: peggee.get 'gender'
+            hasPegged: pref.get 'hasPegged'.id
+            question: card.get 'question'
+            choices: []
+            answer:
+              id: pref.get('answer').id
+              text: pref.get('answer').get('text')
+              plug: pref.get 'plug'
+          }
+          prefs[card.id] = cardObj
+        if results? then prefs else null
 
 
   getChoices: (cardId) ->
@@ -470,28 +509,31 @@ class ParseBackend
             console.log "Error: " + error.code + " " + error.message
             cb null
 
-  getTopScores: (peggeeId, cb) ->
-    scores = []
+  getTopPeggers: (peggeeIds) ->
+    peggees = []
+    for peggeeId in peggeeIds
+      peggeeObj = new Parse.Object 'User'
+      peggeeObj.set 'id', peggeeId
+      peggees.push peggeeObj
+
     pointsQuery = new Parse.Query Points
-    peggee = new Parse.Object 'User'
-    peggee.set 'id', peggeeId
-    pointsQuery.equalTo 'peggee', peggee
     pointsQuery.descending 'points'
-    pointsQuery.include 'peggee'
+    pointsQuery.containedIn 'peggee', peggees
     pointsQuery.include 'pegger'
-    pointsQuery.find
-      success: (results) =>
+    pointsQuery.include 'peggee'
+    pointsQuery.find()
+      .then (results) =>
+        scores = {}
         for score in results
-          scores.push {
-            peggee: score.get 'peggee'
+          peggee = score.get 'peggee'
+          scores[peggee.id] ?= []
+          scores[peggee.id].push {
+            peggee: peggee
             pegger: score.get 'pegger'
             points: score.get 'points'
             cardsPlayed: score.get 'cardsPlayed'
           }
-        cb scores
-      error: (error) =>
-        console.log "Error: " + error.code + " " + error.message
-        cb null
+        scores
 
   getTodaysMoods: ->
     catQuery = new Parse.Query Category
@@ -511,26 +553,20 @@ class ParseBackend
         cb null
 
 
-  getPrefCounts: (cards, cb) ->
+  getPrefPopularities: (cards) ->
     cardObjs = []
 
-    if !Array.isArray cards
-      for own id, card of cards
-        cardObj = new Parse.Object 'Card'
-        cardObj.set 'id', id
-        cardObjs.push cardObj
-    else
-      for card in cards
-        cardObj = new Parse.Object 'Card'
-        cardObj.set 'id', card.cardId
-        cardObjs.push cardObj
+    for card in cards
+      cardObj = new Parse.Object 'Card'
+      cardObj.set 'id', card.id
+      cardObjs.push cardObj
 
     prefCountsQuery = new Parse.Query PrefCounts
     prefCountsQuery.containedIn 'card', cardObjs
     prefCountsQuery.include 'card'
     prefCountsQuery.include 'choice'
-    prefCountsQuery.find
-      success: (results) =>
+    prefCountsQuery.find()
+      .then (results) =>
         cards = {}
         for res in results
           choice = res.get 'choice'
@@ -547,10 +583,7 @@ class ParseBackend
             count: count
           }
           cards[card.id].total += count
-        cb cards
-      error: (error) =>
-        console.log "Error: " + error.code + " " + error.message
-        cb null
+        cards
 
   getPrefImages: (userId, filter, cb) ->
     user = new Parse.Object 'User'
