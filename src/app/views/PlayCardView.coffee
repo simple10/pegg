@@ -23,6 +23,7 @@ CommentsView = require 'views/CommentsView'
 InputView = require 'views/InputView'
 PlayNavView = require 'views/PlayNavView'
 LayoutManager = require 'views/layouts/LayoutManager'
+UserStore = require 'stores/UserStore'
 
 RenderController = require 'famous/views/RenderController'
 Easing = require 'famous/transitions/Easing'
@@ -194,10 +195,12 @@ class PlayCardView extends View
   load: (card) =>
     @card = card
     @cardView.loadCard card, 'play'
-    @loadComments()
+    if card.comments?
+      @loadComments()
 
   loadComments: =>
     @commentsView.load @card.comments
+    @numComments.setContent "#{@commentsView.getCount()} comments."
 
   nextPage: =>
     PlayActions.nextPage()
@@ -226,7 +229,6 @@ class PlayCardView extends View
     Utils.animateAll @pointsMod, @layout.points.states
 
   showComments: =>
-    @numComments.setContent "#{@commentsView.getCount()} comments."
     Utils.animate @numCommentsMod, @layout.numComments.states[0]
 #    @rc.show(@commentsView)
 
@@ -238,7 +240,10 @@ class PlayCardView extends View
   saveComment: (comment) ->
     # FIXME need cardId, peggeeID
     PlayActions.comment(comment, @card.id, @card.peggeeId)
-    @card.comments.unshift comment
+    newComment =
+      userImg: UserStore.getAvatar 'type=square'
+      text: comment
+    @card.comments.unshift newComment
     @loadComments()
 
   collapseComments: =>

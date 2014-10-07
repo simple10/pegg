@@ -113,6 +113,6 @@ else
   AppStateStore.on Constants.stores.LOGIN_CHANGE, pickView
   UserStore.on Constants.stores.LOGIN_CHANGE, pickView
 
-  mainContext.add new FpsMeter
+#  mainContext.add new FpsMeter
 
 
