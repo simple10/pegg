@@ -44,33 +44,58 @@ class PlayStore extends EventHandler
     @_game = []
     @_currentPage = 0
 
-    console.log cards
+    console.log "peggCards: ", cards
 
-    if cards? and cards.length > 0
+    if cards? and cards.length >= 0
+      peggCards = {}
       for card in cards
-      #   put help message in game
-      #   put card in game
-        @_game.push {type: 'card', card: card}
-      #   put pegg status in game
-      #   if card not preffed
-      #     fetch pref card
-      #     put help message in game
-      #     put pref card in game
-      #     put pref status in game
-      # put done status in game
-      @_next()
-      @emit Constants.stores.GAME_LOADED
+        peggCards[card.id] = card
+
+      prefCards = {}
+      peggeeIds = []
+      for own cardId, peggCard of peggCards
+        peggeeIds.push peggCard.peggeeId
+        if peggCard.hasPreffed.indexOf @_user.id is -1
+          prefCards[cardId] = @_peggToPref peggCard
+
+      dataLoaded = []
+      dataLoaded.push Parse.Promise.as prefCards
+      dataLoaded.push Parse.Promise.as peggCards
+      dataLoaded.push DB.getPrefPopularities prefCards
+      dataLoaded.push DB.getTopPeggers peggeeIds
+
+      Parse.Promise.when dataLoaded
+        .done @_sortGame
 
     else
-      # if no pegg cards
-      #   show help message - no friends to play
-      #   fetch unpreffed cards for mood
-      @_fetchPrefs().done (cards...) =>
-        @_game = _.map cards, (card) ->
-          {type: 'card', card: card}
-        @_next()
-        @emit Constants.stores.GAME_LOADED
+      # if no pegg cards, fetch unpreffed cards for mood
+      @_fetchPrefs().done @_sortGame
 
+  _sortGame: (prefCards, peggCards, prefPopularities, topPeggers) =>
+    debugger
+    if arguments.length is 1
+      @_game = _.map prefCards, (prefCard) ->
+        {type: 'card', card: prefCard}
+    else
+      for own cardId, peggCard of peggCards
+        peggeeId = peggCard.peggeeId
+        @_game.push {type: 'card', card: peggCard}                                # pegg card
+        @_game.push {type: 'topPeggers', stats: topPeggers[peggeeId]}             # top peggers
+        if prefCards[cardId]?
+          @_game.push {type: 'card', card: prefCards[cardId]}                     # pref card
+          @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]} # pref popularity
+
+    @_game.push {type: 'done'} # done screen
+    @_next()
+    @emit Constants.stores.GAME_LOADED
+
+  _peggToPref: (card) ->
+    card = _.clone card
+    delete card.answer
+    card.peggeeId = @_user.id
+    card.firstName = @_user.get 'first_name'
+    card.pic = @_avatar
+    card
 
   _fetchPrefs: =>
     # Gets unanswered preferences: cards the user answers about himself
@@ -84,11 +109,12 @@ class PlayStore extends EventHandler
 
   _loadCardsChoices: (cards) =>
     choicesDone = []
-    for card in cards
+    for own cardId, card of cards
       choicesDone.push @_fetchChoices(card)
     Parse.Promise.when choicesDone
 
   _fetchChoices: (card) ->
+    console.log "fetch choices - card: ", card
     DB.getChoices card.id
       .then (choices) =>
         card.choices = _.map choices, (choice) ->
@@ -104,13 +130,6 @@ class PlayStore extends EventHandler
             thumb: thumb
         card
 
-  _fetchRanking: (userId) ->
-    DB.getTopScores(userId,
-      (points) =>
-        @_status['stats'] = points
-        @emit Constants.stores.STATUS_CHANGE
-      )
-
   _fetchNewBadges: (userId) ->
     DB.getNewBadges(userId,
       (badges) =>
@@ -120,30 +139,6 @@ class PlayStore extends EventHandler
         else
           @loadStatus()
       )
-
-  _fetchLikeness: (cards) ->
-    DB.getPrefCounts(cards,
-      (results) =>
-        # mash up results with cards played
-        for own id, card of cards
-          for choice in card.choices
-            if results[id]?
-              unless choice.id of results[id].choices
-                results[id].choices[choice.id] = {
-                  choiceText: choice.text
-                  count: 0
-                }
-        @_status['stats'] = results
-        @emit Constants.stores.STATUS_CHANGE
-      )
-
-  _fetchPrefsDone: ->
-    @_status['type'] = 'prefs_done'
-    @emit Constants.stores.STATUS_CHANGE
-
-  _fetchPeggsDone: ->
-    @_status['type'] = 'peggs_done'
-    @emit Constants.stores.STATUS_CHANGE
 
   _next: ->
     @_currentPage++
