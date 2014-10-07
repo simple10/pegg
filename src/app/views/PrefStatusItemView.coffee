@@ -127,7 +127,7 @@ class PrefStatusItemView extends View
           <div class='status__pref__question__child'>
           #{data.question}
           </div>
-      </div>​​​​​​​​​​​​​​​​​​​​​​​​"
+      </div>"
     @_total = data.total
 
     console.log data
