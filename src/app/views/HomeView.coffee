@@ -26,12 +26,12 @@ class HomeView extends View
 
   init: ->
 
-    @type = new TypeView
-      size: [100, 50]
-      classes: ['home__type']
-      origin: [0.5, 0.5]
-      align: [0.5, 0.5]
-    @add @type
+#    @type = new TypeView
+#      size: [100, 50]
+#      classes: ['home__type']
+#      origin: [0.5, 0.5]
+#      align: [0.5, 0.5]
+#    @add @type
 
     days = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     today = new Date()
@@ -69,8 +69,8 @@ class HomeView extends View
       align: [0.5, 0.3]
     @add(gridMod).add @grid
 
-    @_addDashboardItem 0, 'images/activity_60px.png' , 'Activity'
-    @_addDashboardItem 0, 'images/sun_100px.png' , 'Challenges'
+    @_addDashboardItem 0, 'images/Unicorn_Rookie1@2x.png' , 'Activity'
+    @_addDashboardItem 0, 'images/Unicorn_Cosmic1@2x.png' , 'Challenges'
     @_addDashboardItem 0, 'images/Unicorn_Glowing1@2x.png' , 'Stats'
     @_addDashboardItem 0, 'images/Unicorn_Fire1@2x.png' , 'Peggbox'
 

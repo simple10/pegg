@@ -7,11 +7,11 @@
 }
 
 .card__front__pic--big {
-
+  z-index: 1;
 }
 
 .card__front__pic--small {
-
+  z-index: 1;
 }
 
 .card__front {
@@ -39,6 +39,7 @@
   font-size: 16px;
   line-height: 20px;
   overflow: hidden;
+  z-index: 1;
 }
 
 .card__front__option {
@@ -122,10 +123,11 @@
 
 .card__back__image {
   font-size: 23px;
+  z-index: 5;
 }
 
 .card__back__text {
-
+  z-index: 5;
 }
 
 .card__shim {
@@ -139,5 +141,5 @@
 }
 
 .card__options__box {
-
+  z-index: 1;
 }
