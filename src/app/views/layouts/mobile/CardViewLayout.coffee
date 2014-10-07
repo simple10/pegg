@@ -47,7 +47,7 @@ module.exports = {
     origin: [0.5, 0]
     align: [0.5, 0]
     size: [width - 20, height - 180]
-    transition: {duration: 500, curve: Easing.outQuad}
+    transition: {duration: 1000, curve: Easing.outQuad}
     front:
       transform: Transform.translate 0, 78, null
 #      hide: Transform.translate 0,0, -1000
@@ -97,8 +97,8 @@ module.exports = {
     )
   choices:
     size: [width - width * .1, height - 300]
-    align: [0.5, 0]
-    origin: [0.5, 0]
+#    align: [null, 0.5]
+#    origin: [undefined, 0.5]
     show: Transform.translate 0, 180, null
     hide: Transform.translate 0, 180, 3
     choice:

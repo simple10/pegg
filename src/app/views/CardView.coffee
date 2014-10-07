@@ -43,6 +43,7 @@ class CardView extends View
   initCard: ->
     @state = new StateModifier
       origin: @layout.card.origin
+      # align is dynamically set by parent view
 #      align: @layout.card.align
     @mainNode = @add @state
     ## Front Card
@@ -84,13 +85,17 @@ class CardView extends View
   initChoices: ->
     @choicesView = new ChoicesView @layout.choices
     @choicesMod = new StateModifier
-      origin: @layout.choices.origin
-      align: @layout.choices.align
+#   Don't set origin and align, conflicts with parent Modifier
+#      origin: @layout.choices.origin
+#      align: @layout.choices.align
       transform: @layout.choices.show
 
     @rc = new RenderController
       inTransition:  { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
+# example usage of inTransformFrom:
+#    @rc.inTransformFrom (t) ->
+#      Transform.translate 0, Utils.getViewportHeight() * t, 0
     @mainNode.add(@choicesMod).add @rc
     @rc.show @choicesView
     @choiceShowing = true
@@ -262,7 +267,8 @@ class CardView extends View
 
   flip: =>
     @currentSide = if @currentSide is 1 then 0 else 1
-#    @rc.hide @choicesView
+
+    @rc.hide @choicesView
 
     @state.setTransform(
       Transform.rotateY Math.PI * @currentSide

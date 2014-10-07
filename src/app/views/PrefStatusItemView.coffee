@@ -81,22 +81,27 @@ class PrefStatusItemView extends View
         classes = ['status__pref__percentage--green']
       when 3
         classes = ['status__pref__percentage--blue']
-    percentageNode = new RenderNode
-      size: [Utils.getViewportWidth()-60, 40]
+    renderNodeMod = new StateModifier
+      align: [0, 0]
+      origin: [0, 0]
+      size: [undefined, 40]
+    percentageNode = new RenderNode renderNodeMod
+#      size: [Utils.getViewportWidth()-60, 40]
     percentageBar = new Surface
       classes: classes
-      size: [3, 40]
     percentageText = new Surface
       classes: ['status__pref__percentage']
-      size: [null, 40]
+#      size: [null, 40]
       content: '0%'
     percentageBarMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
+      size: [3, 40]
       transform: Transform.translate 30, null, null
     percentageTextMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
+      size: [null, 40]
       transform: Transform.translate 30, null, null
     percentageNode.add(percentageBarMod).add percentageBar
     percentageNode.add(percentageTextMod).add percentageText
