@@ -11,6 +11,9 @@ PlayCardView = require 'views/PlayCardView'
 PlayStatusView = require 'views/PlayStatusView'
 PlayBadgesView = require 'views/PlayBadgesView'
 PickMoodView = require 'views/PickMoodView'
+PeggStatusView = require 'views/PeggStatusView'
+PrefStatusView = require 'views/PrefStatusView'
+DoneStatusView = require 'views/DoneStatusView'
 Utils = require 'lib/Utils'
 
 class PlayView extends View
@@ -37,8 +40,14 @@ class PlayView extends View
     ## BADGES VIEW ##
     @badgesView = new PlayBadgesView
 
-    ## STATUS VIEW ##
-    @statusView = new PlayStatusView
+    ## PREF STATUS ##
+    @prefStatus = new PrefStatusView
+
+    ## PEGG STATUS ##
+    @peggStatus = new PeggStatusView
+
+    ## DONE STATUS ##
+    @doneStatus = new DoneStatusView
 
     viewportWidth = Utils.getViewportWidth()
     @lightbox = new Lightbox
@@ -67,9 +76,12 @@ class PlayView extends View
       when 'card'
         @playCardView.load page.card
         @lightbox.show @playCardView
-      when 'status'
-        @statusView.load page.status
-        @lightbox.show @statusView
+      when 'topPeggers'
+        @peggStatus.load page.stats
+        @lightbox.show @peggStatus
+      when 'prefPopularities'
+        @prefStatus.load page.stats
+        @lightbox.show @prefStatus
 #      when "message"
 ##        @messageView.load page
 ##        @lightbox.show @messageView

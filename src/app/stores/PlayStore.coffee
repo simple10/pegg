@@ -42,11 +42,12 @@ class PlayStore extends EventHandler
 
   _loadGame: (cards) ->
     @_game = []
-    @_currentPage = 0
+    @_currentPage = -1
+    dataLoaded = []
 
     console.log "peggCards: ", cards
 
-    if cards? and cards.length >= 0
+    if cards? and cards.length > 0
       peggCards = {}
       for card in cards
         peggCards[card.id] = card
@@ -58,7 +59,6 @@ class PlayStore extends EventHandler
         if peggCard.hasPreffed.indexOf @_user.id is -1
           prefCards[cardId] = @_peggToPref peggCard
 
-      dataLoaded = []
       dataLoaded.push Parse.Promise.as prefCards
       dataLoaded.push Parse.Promise.as peggCards
       dataLoaded.push DB.getPrefPopularities prefCards
@@ -68,14 +68,21 @@ class PlayStore extends EventHandler
         .done @_sortGame
 
     else
-      # if no pegg cards, fetch unpreffed cards for mood
-      @_fetchPrefs().done @_sortGame
+      # if no pegg cards, fetch unpreffed cards for mood & pref popularities
+      @_fetchPrefs()
+        .then (cards...) =>
+          DB.getPrefPopularities (cards)
+            .then (prefPops) =>
+              prefCards = {}
+              for card in cards
+                prefCards[card.id] = card
+              @_sortGame(prefCards, prefPops)
 
-  _sortGame: (prefCards, peggCards, prefPopularities, topPeggers) =>
-    debugger
-    if arguments.length is 1
-      @_game = _.map prefCards, (prefCard) ->
-        {type: 'card', card: prefCard}
+  _sortGame: (prefCards, prefPopularities, peggCards, topPeggers) =>
+    if arguments.length is 2
+      for own cardId, prefCard of prefCards
+        @_game.push {type: 'card', card: prefCard}                                # pref card
+        @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]}   # pref popularity
     else
       for own cardId, peggCard of peggCards
         peggeeId = peggCard.peggeeId

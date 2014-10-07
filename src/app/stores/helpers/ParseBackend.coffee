@@ -243,15 +243,15 @@ class ParseBackend
     #cardQuery.skip Math.floor(Math.random() * 180)
     cardQuery.find()
       .then (results) =>
-        cards = []
-        for card in results
-          cards.push {
-            id: card.id
+        cards = {}
+        for pref in results
+          cards[pref.id] = {
+            id: pref.id
             firstName: user.get 'first_name'
             pic: user.get 'avatar_url'
-            question: card.get 'question'
+            question: pref.get 'question'
           }
-        cards
+        if results? then cards else null
 
   getCategories: (cb) ->
     catQuery = new Parse.Query Category
@@ -301,7 +301,6 @@ class ParseBackend
               plug: pref.get 'plug'
             hasPreffed: card.get 'hasPreffed'
           }
-        cards
         if results? then cards else null
 
   getCard: (cardId, cb) ->
@@ -555,7 +554,6 @@ class ParseBackend
 
   getPrefPopularities: (cards) ->
     cardObjs = []
-
     for card in cards
       cardObj = new Parse.Object 'Card'
       cardObj.set 'id', card.id
