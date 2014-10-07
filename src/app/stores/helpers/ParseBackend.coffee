@@ -554,9 +554,10 @@ class ParseBackend
 
   getPrefPopularities: (cards) ->
     cardObjs = []
-    for card in cards
+
+    for own id, card of cards
       cardObj = new Parse.Object 'Card'
-      cardObj.set 'id', card.id
+      cardObj.set 'id', id
       cardObjs.push cardObj
 
     prefCountsQuery = new Parse.Query PrefCounts

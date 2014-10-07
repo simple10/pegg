@@ -35,33 +35,34 @@ class DoneStatusView extends View
     title = new Surface
       classes: ['status__done__title']
       size: [Utils.getViewportWidth()-20, 200]
+      content: 'All Done!<br/>Play again?'
     titleMod = new StateModifier
       align: [0.5, 0.28]
       origin: [0.5, 0]
     @add(titleMod).add title
 
-    next = new ImageSurface
-      content: 'images/continue_big_text.png'
-      size: [60, 120]
-    nextMod = new StateModifier
-      align: [0.6, 0.91]
-      origin: [0, 1]
-    @add(nextMod).add next
-
-    share = new ImageSurface
-      content: 'images/share_big_text.png'
-      size: [48, 95]
-    shareMod = new StateModifier
-      align: [0.2, 0.9]
-      origin: [0, 1]
-    @add(shareMod).add share
-
-    next.on 'click', ->
-      PlayActions.nextStage()
+#    next = new ImageSurface
+#      content: 'images/continue_big_text.png'
+#      size: [60, 120]
+#    nextMod = new StateModifier
+#      align: [0.6, 0.91]
+#      origin: [0, 1]
+#    @add(nextMod).add next
+#
+#    share = new ImageSurface
+#      content: 'images/share_big_text.png'
+#      size: [48, 95]
+#    shareMod = new StateModifier
+#      align: [0.2, 0.9]
+#      origin: [0, 1]
+#    @add(shareMod).add share
+#
+#    next.on 'click', ->
+#      PlayActions.nextPage()
 
   load: (data) ->
 #    if data.done.length > 0
-    title.setContent PlayStore.getMessage data.type
+#    title.setContent PlayStore.getMessage data.type
 
 
 

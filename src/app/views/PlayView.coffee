@@ -82,6 +82,8 @@ class PlayView extends View
       when 'prefPopularities'
         @prefStatus.load page.stats
         @lightbox.show @prefStatus
+      when 'done'
+        @lightbox.show @doneStatus
 #      when "message"
 ##        @messageView.load page
 ##        @lightbox.show @messageView

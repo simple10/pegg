@@ -53,6 +53,7 @@ class PrefStatusView extends View
     @_title = new Surface
       classes: ['status__pref__title']
       size: [Utils.getViewportWidth() - 60, 200]
+      content: 'Good choice! <br/> Here\'s what other people picked'
     titleMod = new StateModifier
       align: [0.5, 0.1]
       origin: [0.5, 0]
@@ -91,13 +92,11 @@ class PrefStatusView extends View
     share.pipe @itemsScrollView
 
     next.on 'click', ->
-      PlayActions.nextStage()
+      PlayActions.nextPage()
 
-    @load()
-
-  load: (data) ->
+  load: (stats) ->
 #    @_title.setContent UserStore.getName 'first'
-    @_title.setContent PlayStore.getMessage 'pref_status' if data?
+#    @_title.setContent PlayStore.getMessage 'pref_status' if data?
 #    @_userPic.setContent UserStore.getAvatar 'height=150&type=normal&width=150'
 #    @_userPic.setContent PlayStore.getMessage 'unicorn'
 
@@ -108,11 +107,10 @@ class PrefStatusView extends View
     @_itemViews.push @titleNode
 
     # Add a PrefStatusItemViews for every stat
-    for own id, stat of data?.stats
-      prefStatusItem = new PrefStatusItemView
-      prefStatusItem.load stat
-      prefStatusItem.pipe @itemsScrollView
-      @_itemViews.push prefStatusItem
+    prefStatusItem = new PrefStatusItemView
+    prefStatusItem.load stats
+    prefStatusItem.pipe @itemsScrollView
+    @_itemViews.push prefStatusItem
 
     # Add the buttons
     @_itemViews.push @nextNode

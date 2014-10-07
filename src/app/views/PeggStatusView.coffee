@@ -86,26 +86,25 @@ class PeggStatusView extends View
     @shareNode.add(shareMod).add share
 
     next.on 'click', ->
-      PlayActions.nextStage()
+      PlayActions.nextPage()
 
-    @load()
 
-  load: (data) ->
-    console.log 'PeggStatusView.load.data: ' + data
+  load: (stats) ->
+    console.log 'PeggStatusView.load.data: ' + stats
 
     itemViews.length = 0
     itemViews.push @picNode
     itemViews.push @titleNode
 
-    if data? and data.stats? and data.stats.length > 0
-      peggee = data.stats[0].peggee
-      title.setContent "#{peggee.get 'first_name'} #{peggee.get 'last_name'}'s <br/>Top Peggers:"
-      pic.setContent "#{peggee.get 'avatar_url'}?height=150&type=normal&width=150"
+#    if data? and data.stats? and data.stats.length > 0
+    peggee = stats[0].peggee
+    title.setContent "#{peggee.get 'first_name'} #{peggee.get 'last_name'}'s <br/>Top Peggers:"
+    pic.setContent "#{peggee.get 'avatar_url'}?height=150&type=normal&width=150"
 
-      for stat in data.stats
-        peggItem =  new PeggStatusItemView
-        peggItem.load stat
-        itemViews.push peggItem
+    for stat in stats
+      peggItem =  new PeggStatusItemView
+      peggItem.load stat
+      itemViews.push peggItem
 
     itemViews.push @nextNode
     itemViews.push @shareNode

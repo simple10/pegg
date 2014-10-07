@@ -26,7 +26,7 @@ class PrefStatusItemView extends View
 
   _init: ->
     container = new ContainerSurface
-      size: [Utils.getViewportWidth(), undefined]
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight()-300]
       # properties:
       #   overflow: 'hidden'
     container.pipe @._eventOutput
@@ -35,9 +35,11 @@ class PrefStatusItemView extends View
       align: [0.5, 0.5]
       origin: [0.5, 0.5]
     sequentialLayout.sequenceFrom @_sequence
+#    sequentialLayout.pipe @._eventOutput
 
     # QUESTION
     questionNode = new RenderNode
+      size: [Utils.getViewportWidth()-60, 40]
 #    cardSurface = new ImageSurface
 #      size: [Utils.getContentWidth(), 380]
 #      content: 'images/Card.svg'
@@ -80,13 +82,14 @@ class PrefStatusItemView extends View
       when 3
         classes = ['status__pref__percentage--blue']
     percentageNode = new RenderNode
+      size: [Utils.getViewportWidth()-60, 40]
     percentageBar = new Surface
       classes: classes
       size: [3, 40]
     percentageText = new Surface
       classes: ['status__pref__percentage']
       size: [null, 40]
-      content: '???%'
+      content: '0%'
     percentageBarMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
@@ -106,9 +109,10 @@ class PrefStatusItemView extends View
 
     # CHOICE TEXT
     choiceNode = new RenderNode
+      size: [Utils.getViewportWidth()-60, 40]
     choice = new Surface
       classes: ['status__pref__choice']
-      size: [Utils.getViewportWidth()-60, 60]
+      size: [Utils.getViewportWidth()-60, 40]
     choiceMod = new StateModifier
       align: [0, 0.02]
       origin: [0, 0]

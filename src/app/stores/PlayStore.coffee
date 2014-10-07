@@ -60,8 +60,8 @@ class PlayStore extends EventHandler
           prefCards[cardId] = @_peggToPref peggCard
 
       dataLoaded.push Parse.Promise.as prefCards
-      dataLoaded.push Parse.Promise.as peggCards
       dataLoaded.push DB.getPrefPopularities prefCards
+      dataLoaded.push Parse.Promise.as peggCards
       dataLoaded.push DB.getTopPeggers peggeeIds
 
       Parse.Promise.when dataLoaded
@@ -71,11 +71,11 @@ class PlayStore extends EventHandler
       # if no pegg cards, fetch unpreffed cards for mood & pref popularities
       @_fetchPrefs()
         .then (cards...) =>
-          DB.getPrefPopularities (cards)
+          prefCards = {}
+          for card in cards
+            prefCards[card.id] = card
+          DB.getPrefPopularities (prefCards)
             .then (prefPops) =>
-              prefCards = {}
-              for card in cards
-                prefCards[card.id] = card
               @_sortGame(prefCards, prefPops)
 
   _sortGame: (prefCards, prefPopularities, peggCards, topPeggers) =>
@@ -99,7 +99,7 @@ class PlayStore extends EventHandler
   _peggToPref: (card) ->
     card = _.clone card
     delete card.answer
-    card.peggeeId = @_user.id
+    delete card.peggeeId
     card.firstName = @_user.get 'first_name'
     card.pic = @_avatar
     card
