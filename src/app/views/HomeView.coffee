@@ -33,9 +33,13 @@ class HomeView extends View
       align: [0.5, 0.5]
     @add @type
 
+    days = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    today = new Date()
+    day = today.getDay()
     @day = new Surface
       size: [Utils.getViewportWidth(), 100]
       classes: ["#{@cssPrefix}__welcome", "#{@cssPrefix}__text--yellow"]
+      content: "Happy #{days[day]}!"
     dayMod = new Modifier
       origin: [0.5, 0]
       align: [0.5, 0.05]
@@ -43,7 +47,7 @@ class HomeView extends View
 
     title = new Surface
       size: [Utils.getViewportWidth(), 100]
-      content: 'How are you <br/> feeling?'
+      content: 'DASHBOARD'
       classes: ["#{@cssPrefix}__title"]
     titleMod = new Modifier
       origin: [0.5, 0]
@@ -65,61 +69,40 @@ class HomeView extends View
       align: [0.5, 0.3]
     @add(gridMod).add @grid
 
-#    passMood = new Surface
-#      content: "Not in the mood? <span class='#{@cssPrefix}__text--yellow'>Play random</span>"
-#      size: [Utils.getViewportWidth() - 20, 30]
-#      classes: ["#{@cssPrefix}__pass"]
-#    passMoodMod = new Modifier
-#      origin: [0, 1]
-#      align: [0.05, 0.9]
-#    container.add(passMoodMod).add passMood
-
-  load: (data) ->
-    moods = data.moods
-    moodIndex = []
-    random = Math.floor(Math.random() * moods.length)
-    moodIndex.push random
-    # load 4 unique moods
-    for i in [0..3]
-      while moodIndex.indexOf(random) isnt -1
-        random = Math.floor(Math.random() * moods.length)
-      moodIndex.push random
-      @_addMood moods[random].id, moods[random].get('iconUrl'), moods[random].get('name')
-
-    # load today's day message
-    days = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-    today = new Date()
-    day = today.getDay()
-    @day.setContent "Happy #{days[day]}!"
+    @_addDashboardItem 0, 'images/activity_60px.png' , 'Activity'
+    @_addDashboardItem 0, 'images/sun_100px.png' , 'Challenges'
+    @_addDashboardItem 0, 'images/Unicorn_Glowing1@2x.png' , 'Stats'
+    @_addDashboardItem 0, 'images/Unicorn_Fire1@2x.png' , 'Peggbox'
 
 
-  _addMood: (id, url, text) ->
-    moodContainer = new ContainerSurface
+  _addDashboardItem: (id, url, text) ->
+    container = new ContainerSurface
       size: [Utils.getViewportWidth()/2, Utils.getViewportWidth()/2]
       classes: ["#{@cssPrefix}__box"]
-    moodContainer.on 'click', =>
-      PlayActions.mood text, id, url
-      PlayActions.nextStage()
+    container.on 'click', =>
+#      PlayActions.mood text, id, url
+#      PlayActions.nextStage()
+      console.log id, url, text
 
-    moodImage = new ImageSurface
+    image = new ImageSurface
       content: url
       size: [Utils.getViewportWidth()/2 - 80, Utils.getViewportWidth()/2 - 80]
       classes: ["#{@cssPrefix}__box__image"]
-    moodImageMod = new Modifier
+    imageMod = new Modifier
       origin: [0.5, 0]
       align: [0.5, 0]
-    moodContainer.add(moodImageMod).add moodImage
+    container.add(imageMod).add image
 
-    moodText = new Surface
+    text = new Surface
       content: text
       size: [Utils.getViewportWidth()/2 - 50, 50]
       classes: ["#{@cssPrefix}__box__text"]
-    moodTextMod = new Modifier
+    textMod = new Modifier
       origin: [0.5, 0.9]
       align: [0.5, 0.9]
-    moodContainer.add(moodTextMod).add moodText
+    container.add(textMod).add text
 
-    @surfaces.push moodContainer
+    @surfaces.push container
 
 
   rearrange: ->
