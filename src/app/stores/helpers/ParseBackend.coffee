@@ -29,7 +29,7 @@ class ParseBackend
     activity.set 'ACL', newActivityAcl
     activity.save()
 
-  saveComment: (comment, cardId, peggeeId, userId, userImg, cb) ->
+  saveComment: (comment, cardId, peggeeId, userId, userImg) ->
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     author = new Parse.Object 'User'
@@ -47,7 +47,6 @@ class ParseBackend
     newComment.set 'userImg', userImg
     newComment.set 'ACL', newCommentAcl
     newComment.save()
-    cb newComment
 
   getUser: (userId, cb) ->
     query = new Parse.Query User
@@ -78,7 +77,7 @@ class ParseBackend
         console.log "Error: #{error.code}  #{error.message}"
         cb null
 
-  getComments: (cardId, peggeeId, cb) ->
+  getComments: (cardId, peggeeId) ->
     query = new Parse.Query Comment
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -88,12 +87,15 @@ class ParseBackend
     query.equalTo 'card', card
     query.include 'author'
     query.descending 'createdAt'
-    query.find
-      success: (results) =>
-        cb results
-      error: (error) ->
-        console.log "Error: #{error.code}  #{error.message}"
-        cb null
+    query.find()
+      .then (results) =>
+        comments = []
+        for comment in results
+          comments.push
+            userImg: comment.get 'userImg'
+            text: comment.get 'text'
+        if results? then comments else null
+
 
   savePegg: (peggeeId, cardId, choiceId, answerId, userId) ->
     # INSERT into Pegg table a row with current user's pegg
@@ -400,12 +402,23 @@ class ParseBackend
     card = new Parse.Object 'Card'
     card.set 'id',  cardId
     choiceQuery.equalTo 'card', card
-    choiceQuery.find
-      success: (choices) =>
-        if choices?.length > 0
-          return choices
-        else
-          return null
+    choiceQuery.find()
+      .then (results) =>
+        choices = []
+        for choice in results
+          text = choice.get 'text'
+          plug = choice.get 'plug'
+          if plug? then plug = plug.S3
+          thumb = choice.get 'plugThumb'
+          if thumb? then thumb = thumb.S3
+          if text isnt ''
+            choices.push
+              id: choice.id
+              text: text
+              plug: plug
+              thumb: thumb
+        if results? then choices else null
+
 
   getUserMood: (moodId, userId) ->
     mood = new Parse.Object 'Category'

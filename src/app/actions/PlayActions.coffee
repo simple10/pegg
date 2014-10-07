@@ -56,10 +56,12 @@ PlayActions =
     AppDispatcher.handleViewAction
       actionType: Constants.PREV_PAGE
 
-  comment: (comment) ->
+  comment: (comment, cardId, peggeeId) ->
     AppDispatcher.handleViewAction
       actionType: Constants.CARD_COMMENT
       comment: comment
+      cardId: cardId
+      peggeeId: peggeeId
 
   badgesViewed: (badges) ->
     AppDispatcher.handleViewAction

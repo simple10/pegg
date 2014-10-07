@@ -234,7 +234,7 @@ class CardView extends View
 
   pickAnswer: (i) =>
     choice = @card.choices[i]
-    if @card.peggeeId?
+    if @card.answer?
       @_eventOutput.emit 'pegg',
         peggeeId: @card.peggeeId
         id: @card.id

@@ -99,7 +99,7 @@ class PlayStore extends EventHandler
   _peggToPref: (card) ->
     card = _.clone card
     delete card.answer
-    delete card.peggeeId
+    card.peggeeId = @_user.id
     card.firstName = @_user.get 'first_name'
     card.pic = @_avatar
     card
@@ -107,34 +107,32 @@ class PlayStore extends EventHandler
   _fetchPrefs: =>
     # Gets unanswered preferences: cards the user answers about himself
     DB.getUnpreffedCards @_size, @_mood, @_user
-      .then @_loadCardsChoices
+      .then @_loadAncillaryDatums
 
   _fetchPeggs: =>
     # Gets unpegged preferences: cards the user answers about a friend
     DB.getPeggCards @_size, @_user, @_mood.id, @_peggee.id
-      .then @_loadCardsChoices
+      .then @_loadAncillaryDatums
 
-  _loadCardsChoices: (cards) =>
-    choicesDone = []
+  _loadAncillaryDatums: (cards) =>
+    dataDone = []
     for own cardId, card of cards
-      choicesDone.push @_fetchChoices(card)
-    Parse.Promise.when choicesDone
+      dataDone.push @_fetchChoices(card).then @_fetchComments
+    Parse.Promise.when dataDone
+
+  _fetchComments: (card) ->
+    if card.peggeeId?
+      DB.getComments card.id, card.peggeeId
+        .then (comments) =>
+          card.comments = comments
+          card
+    else
+      Parse.Promise.as card
 
   _fetchChoices: (card) ->
-    console.log "fetch choices - card: ", card
     DB.getChoices card.id
       .then (choices) =>
-        card.choices = _.map choices, (choice) ->
-          text = choice.get 'text'
-          plug = choice.get 'plug'
-          if plug? then plug = plug.S3
-          thumb = choice.get 'plugThumb'
-          if thumb? then thumb = thumb.S3
-          if text isnt ''
-            id: choice.id
-            text: text
-            plug: plug
-            thumb: thumb
+        card.choices = choices
         card
 
   _fetchNewBadges: (userId) ->
@@ -250,9 +248,8 @@ class PlayStore extends EventHandler
     DB.saveComment comment, cardId, peggeeId, @_user.id, @_avatar
       .fail @_failHandler
       .done (res) =>
-        @getCurrentPage().comments.unshift res
+        @getCurrentPage().card.comments.unshift res
         @_saveCommentActivity comment, peggeeId, cardId
-        @emit Constants.stores.COMMENTS_CHANGE
 
   _mood: (moodText, moodId, moodUrl) ->
     console.log "moodId: " + moodId
@@ -282,7 +279,11 @@ class PlayStore extends EventHandler
     @_game[@_currentPage]
 
   getComments: ->
-    @getCurrentPage().comments
+    page = @getCurrentPage()
+    if page.type is 'card'
+      return page.card.comments
+    else
+      return null
 
   getMoods: ->
     @_moods

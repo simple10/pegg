@@ -32,12 +32,12 @@ class CommentsItemView extends View
 
     pic = new ImageSurface
       size: [@options.pic.width, @options.pic.height]
-      content: @comment.get 'userImg'
+      content: @comment.userImg
       classes: ['comments__pic']
     text = new Surface
       size: [@options.text.width, @options.text.height]
       classes: ['comments__text']
-      content: @comment.get 'text'
+      content: @comment.text
       properties:
         marginLeft: @options.pic.width + 10 + 'px'
     #@add pic

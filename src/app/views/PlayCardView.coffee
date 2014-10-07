@@ -51,7 +51,6 @@ class PlayCardView extends View
     PlayStore.on Constants.stores.CARD_FAIL, @cardFail
     PlayStore.on Constants.stores.CARD_WIN, (points) =>
       @cardWin points
-    PlayStore.on Constants.stores.COMMENTS_CHANGE, @loadComments
     @cardView.on 'comment', =>
       @collapseComments()
     @cardView.on 'pegg', (payload) =>
@@ -84,7 +83,7 @@ class PlayCardView extends View
     @navView.hideRightArrow()
 
     ## COMMENTS ##
-    @comments = new CommentsView
+    @commentsView = new CommentsView
     @newComment = new InputView
       size: @layout.newComment.size
       placeholder: "Enter a comment..."
@@ -115,7 +114,7 @@ class PlayCardView extends View
       outTransition: { duration: 350, curve: Easing.outCubic }
 #    @rc.inTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
 #    @rc.outTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
-    @rc.hide(@comments)
+    @rc.hide(@commentsView)
     @rcMod = new StateModifier
       align: @layout.comments.align
       origin: @layout.comments.origin
@@ -193,10 +192,12 @@ class PlayCardView extends View
 
 
   load: (card) =>
+    @card = card
     @cardView.loadCard card, 'play'
+    @loadComments()
 
   loadComments: =>
-    @comments.load PlayStore.getComments()
+    @commentsView.load @card.comments
 
   nextPage: =>
     PlayActions.nextPage()
@@ -225,21 +226,23 @@ class PlayCardView extends View
     Utils.animateAll @pointsMod, @layout.points.states
 
   showComments: =>
-    @numComments.setContent "#{@comments.getCount()} comments."
+    @numComments.setContent "#{@commentsView.getCount()} comments."
     Utils.animate @numCommentsMod, @layout.numComments.states[0]
-#    @rc.show(@comments)
+#    @rc.show(@commentsView)
 
   hideComments: =>
     Utils.animate @numCommentsMod, @layout.numComments.states[1]
 #    @newComment.setAlign @layout.newComment.states[0].align
-#    @rc.hide(@comments)
+#    @rc.hide(@commentsView)
 
   saveComment: (comment) ->
     # FIXME need cardId, peggeeID
-    PlayActions.comment(comment, cardId, peggeeId)
+    PlayActions.comment(comment, @card.id, @card.peggeeId)
+    @card.comments.unshift comment
+    @loadComments()
 
   collapseComments: =>
-    @rc.hide(@comments)
+    @rc.hide(@commentsView)
     @navView.showNav()
     # slide the cards down to their starting position
     @cardYPos.set(0, @layout.cards.states[0].transition)
@@ -249,7 +252,7 @@ class PlayCardView extends View
     @newComment.setAlign @layout.newComment.states[0].align
 
   expandComments: =>
-    @rc.show(@comments)
+    @rc.show(@commentsView)
     @navView.hideNav()
     maxCardYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
     # move the cards up
