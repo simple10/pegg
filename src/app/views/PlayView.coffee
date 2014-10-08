@@ -28,7 +28,6 @@ class PlayView extends View
     PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadges
     PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods
 
-
   initViews: ->
 
     ## MOOD STATUS ##
