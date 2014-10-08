@@ -25,6 +25,7 @@ module.exports =
     PLUG_IMAGE: null
     PREF_SUBMIT: null
     PREV_PAGE: null
+    SHOW_MESSAGE: null
     SUBSCRIBER_SUBMIT: null
     USER_LOAD: null
     USER_LOGIN: null
@@ -65,6 +66,7 @@ module.exports =
     PROFILE_ACTIVITY_CHANGE: null
     PROFILE_LOAD: null
     REQUIRE_LOGIN: null
+    SHOW_MESSAGE: null
     STATUS_CHANGE: null
     SUBSCRIBE_FAIL: null
     SUBSCRIBE_PASS: null
