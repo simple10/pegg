@@ -33,7 +33,8 @@ class NewCardStore extends EventEmitter
     DB.saveCategories @_cardId, @_categories, (message) =>
       user = UserStore.getUser()
       pic = UserStore.getAvatar()
-      DB.saveNewCardActivity(@_cardId, @_question, user, pic)
+      message = "#{user.get 'first_name'} created a card: #{@_question}"
+      DB.saveActivity message, pic, user.id, @_cardId
 
   newCard: ->
     @_cardId = null
