@@ -35,8 +35,6 @@ class ProgressBarView extends View
 #      origin: @options.title.origin
     @activeBar = new ImageSurface
       content: 'images/progress_active.png'
-      properties:
-        zIndex: 5
     @activeBarMod = new StateModifier
       align: @options.bar.align
       origin: @options.bar.origin

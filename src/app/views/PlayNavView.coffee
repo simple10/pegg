@@ -29,8 +29,6 @@ class PlayNavView extends View
   initListeners: ->
     PlayStore.on Constants.stores.GAME_LOADED, @loadNav
     PlayStore.on Constants.stores.PAGE_CHANGE, @loadNav
-    PlayStore.on Constants.stores.GAME_CHANGE, @updateNav
-
 
   initSurfaces: =>
     ## Main View Modifier ##
@@ -38,6 +36,7 @@ class PlayNavView extends View
       size: @layout.wrapper.size
       align: @layout.wrapper.align
       origin: @layout.wrapper.origin
+      transform: @layout.wrapper.transform
 
     ## LEFT ARROW ##
     @leftArrow = new ImageSurface

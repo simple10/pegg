@@ -152,7 +152,7 @@ class PlayStore extends EventHandler
     if page.type is 'help' and not @_showHelpMessages
       @_currentPage++
     else if page.type is 'card' 
-      if page.card.peggeeId isnt @_user.id
+      if page.card.peggeeId? and page.card.peggeeId isnt @_user.id
         @_title = "Pegg #{page.card.firstName}!"
       else
         @_title = "Pegg yourself!"
