@@ -9,6 +9,7 @@
   cursor: pointer;
   text-align: left;
   background-color: $white;
+  z-index: 100;
 }
 .tabmenu__item--profile {
   background-color: $rainbow-blue;

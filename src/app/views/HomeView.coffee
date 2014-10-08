@@ -40,19 +40,35 @@ class HomeView extends View
     @add @lightbox
 
     @lightbox.show @homeMenuView
+    @direction = 1
 
   loadPage: (page) =>
     switch page
       when 'Home'
+        @reverseLightbox()
         @lightbox.show @homeMenuView
       when 'Activity'
+        @reverseLightbox()
         @lightbox.show @activityView
+
 #      when 'challenges'
 #        @lightbox.show @challengesView
 #      when 'stats'
 #        @lightbox.show @statsView
 #      when 'peggbox'
 #        @lightbox.show @peggboxView
+
+  reverseLightbox: () =>
+    if @direction is -1
+      @lightbox.setOptions
+        inTransform: Transform.translate -Utils.getViewportWidth(), 0, -1000
+        outTransform: Transform.translate Utils.getViewportWidth(), 0, -300
+      @direction = 1
+    else
+      @lightbox.setOptions
+        outTransform: Transform.translate -Utils.getViewportWidth(), 0, -1000
+        inTransform: Transform.translate Utils.getViewportWidth(), 0, -300
+      @direction = -1
 
 
 module.exports = HomeView

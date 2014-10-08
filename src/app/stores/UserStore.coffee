@@ -24,18 +24,19 @@ class UserStore extends EventEmitter
 
   auth: (res) ->
     access_token = Utils.parseQueryString res, 'access_token'
-    params = "access_token=#{access_token}"
-    future = new Date().addDays Config.facebook.expirationDays
-    expirationDate = future.toISOString()
+    if access_token?
+      params = "access_token=#{access_token}"
+      future = new Date().addDays Config.facebook.expirationDays
+      expirationDate = future.toISOString()
 
-    Utils.getAjax("https://graph.facebook.com/me", params, (res) =>
-      userData = JSON.parse res
-      authData =
-        expiration_date: expirationDate
-        id: userData.id
-        access_token: access_token
-      @_loginParse authData
-    )
+      Utils.getAjax "https://graph.facebook.com/me", params, (res) =>
+        userData = JSON.parse res
+        authData =
+          expiration_date: expirationDate
+          id: userData.id
+          access_token: access_token
+        @_loginParse authData
+
 
   _loginParse: (authData) ->
     Parse.FacebookUtils.logIn authData,

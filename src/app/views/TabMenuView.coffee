@@ -67,7 +67,7 @@ class TabMenuView extends View
     tabModifier = new StateModifier
       origin: [0, 0]
       align: [params.xOffset, 0]
-      transform: Transform.translate 0, params.height, 5
+      transform: Transform.translate 0, params.height, 10
     @tabModifiers.push tabModifier
     @tabs.push tab
     @add(tabModifier).add tab
