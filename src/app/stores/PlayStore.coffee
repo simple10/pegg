@@ -9,12 +9,12 @@ EventHandler = require 'famous/core/EventHandler'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require 'constants/PeggConstants'
 UserStore = require 'stores/UserStore'
+MessageActions = require 'actions/MessageActions'
 
 class PlayStore extends EventHandler
   _currentPage: -1
   _fails: 0
   _game: null
-  _showHelpMessages: true
   _size: 4
   _mood: {}
   _peggee: {}
@@ -149,20 +149,18 @@ class PlayStore extends EventHandler
     @_currentPage++
     @_fails = 0
     page = @getCurrentPage()
-    if page.type is 'help' and not @_showHelpMessages
-      @_currentPage++
-    else if page.type is 'card' 
+    if page.type is 'card' 
       if page.card.peggeeId? and page.card.peggeeId isnt @_user.id
         @_title = "Pegg #{page.card.firstName}!"
       else
         @_title = "Pegg yourself!"
+    if @_currentPage is 0
+      MessageActions.show 'first_card'
     @emit Constants.stores.PAGE_CHANGE
 
   _prev: ->
     @_currentPage--
     page = @getCurrentPage()
-    if page.type is 'help' and not @_showHelpMessages
-      @_currentPage--
 
   _pegg: (peggeeId, cardId, choiceId, answerId) ->
     console.log "save Pegg: card: " + cardId + " choice: " + choiceId

@@ -9,8 +9,14 @@ EventEmitter = require 'famous/core/EventEmitter'
 
 class MessageStore extends EventEmitter
 
+  _type: ''
+
   _show: (type) ->
+    @_type = type
     @emit Constants.stores.SHOW_MESSAGE
+
+  getMessage: ->
+    "Help Message (#{@_type})"
 
 messages = new MessageStore
 
@@ -24,4 +30,4 @@ AppDispatcher.register (payload) ->
     when Constants.actions.SHOW_MESSAGE
       messages._show action.type
 
-module.exports = moods
+module.exports = messages

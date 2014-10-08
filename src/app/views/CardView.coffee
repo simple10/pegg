@@ -15,7 +15,6 @@ TouchSync = require 'famous/inputs/TouchSync'
 Transform = require 'famous/core/Transform'
 Utility = require 'famous/utilities/Utility'
 View = require 'famous/core/View'
-RenderController = require 'famous/views/RenderController'
 
 # Pegg
 ChoicesView = require 'views/ChoicesView'

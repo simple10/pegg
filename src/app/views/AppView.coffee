@@ -15,31 +15,34 @@ Modifier = require 'famous/core/Modifier'
 StateModifier = require 'famous/modifiers/StateModifier'
 Lightbox = require 'famous/views/Lightbox'
 Easing = require 'famous/transitions/Easing'
-Constants = require 'constants/PeggConstants'
+RenderController = require 'famous/views/RenderController'
 
 # Helpers
 Utils = require 'lib/Utils'
+Constants = require 'constants/PeggConstants'
 
 # Stores
 AppStateStore = require 'stores/AppStateStore'
 UserStore = require 'stores/UserStore'
+MessageStore = require 'stores/MessageStore'
 SingleCardStore = require 'stores/SingleCardStore'
 
 # Menu
 Menu = require 'constants/menu'
 
 # Views
+ActivityView = require 'views/ActivityView'
 HeaderView = require 'views/HeaderView'
-TabMenuView = require 'views/TabMenuView'
+HomeView = require 'views/HomeView'
+LayoutManager = require 'views/layouts/LayoutManager'
+LoginView = require 'views/LoginView'
+MessageView = require 'views/MessageView'
+NewCardView = require 'views/NewCardView'
 PeggBoxView = require 'views/PeggBoxView'
 PlayView = require 'views/PlayView'
 ProfileView = require 'views/ProfileView'
-ActivityView = require 'views/ActivityView'
 SettingsView = require 'views/SettingsView'
-NewCardView = require 'views/NewCardView'
-LoginView = require 'views/LoginView'
-HomeView = require 'views/HomeView'
-LayoutManager = require 'views/layouts/LayoutManager'
+TabMenuView = require 'views/TabMenuView'
 
 
 #Actions
@@ -67,11 +70,13 @@ class AppView extends View
     @initLayout()
     @initPages()
     @initListeners()
+    @initMessage()
     #NavActions.selectMenuItem
 
   initListeners: ->
     AppStateStore.on Constants.stores.MENU_CHANGE, @togglePage
     SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
+    MessageStore.on Constants.stores.SHOW_MESSAGE, @showMessage
 
   initLayout: ->
     @layout = new HeaderFooterLayout
@@ -95,6 +100,14 @@ class AppView extends View
     @footer = new TabMenuView @options.menu
     @footer
 
+  initMessage: ->
+    @messageRC = new RenderController
+      inTransition:  { duration: 500, curve: Easing.outCubic }
+      outTransition: { duration: 350, curve: Easing.outCubic }
+    @messageView = new MessageView
+    @messageView.on 'hide', @hideMessage
+    @add @messageRC
+
   initPages: ->
     # Pages correspond to pageID in constants/menu.coffee
     @pages.play = new PlayView
@@ -114,10 +127,18 @@ class AppView extends View
       inOrigin: [1, 1]
       outOrigin: [0, 0]
       showOrigin: [0.5, 0.5]
+      # showTransform: Transform.translate null, null, -1
       inTransform: Transform.translate 0, viewportHeight, -300
       outTransform: Transform.translate 0, -viewportHeight, -1000
       inTransition: { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
+
+  showMessage: =>
+    @messageRC.show @messageView
+    @messageView.load()
+
+  hideMessage: =>
+    @messageRC.hide @messageView
 
   showPage: (page) ->
     @lightbox.show page
