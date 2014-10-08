@@ -11,6 +11,8 @@ Constants = require 'constants/PeggConstants'
 Engine = require 'famous/core/Engine'
 NavActions = require 'actions/NavActions'
 Utils = require 'lib/Utils'
+LayoutManager = require 'views/layouts/LayoutManager'
+
 
 class SignupView extends View
 
@@ -20,6 +22,9 @@ class SignupView extends View
 
   constructor: (options) ->
     super options
+    @layoutManager = new LayoutManager()
+    @layout = @layoutManager.getViewLayout 'SignupView'
+
     @letmeinCount = 0
     @initListeners()
     @initSplash()
@@ -30,15 +35,15 @@ class SignupView extends View
 
   initSplash: ->
     logoSurface = new ImageSurface
-      size: @options.logo.size
-      classes: @options.logo.classes
+      size: @layout.logo.size
+      classes: @layout.logo.classes
       content: "images/cosmic-unicorn-noback.svg"
     logoMod = new StateModifier
-      origin: @options.logo.origin
-      align: @options.logo.align
+      origin: @layout.logo.origin
+      align: @layout.logo.align
     markSurface = new Surface
-      size: @options.mark.size
-      classes: @options.mark.classes
+      size: @layout.mark.size
+      classes: @layout.mark.classes
       content: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
       	 width="150px" height="70px" viewBox="0 0 425.197 198.425" enable-background="new 0 0 425.197 198.425"
       	 xml:space="preserve">
@@ -56,13 +61,13 @@ class SignupView extends View
       	c-33.117-9.598-49.817,32.303-49.817,32.303l-0.929,1.521l4.431-33.823l-19.071,145.56"/>
       '
     markMod = new StateModifier
-      origin: @options.mark.origin
-      align: @options.mark.align
+      origin: @layout.mark.origin
+      align: @layout.mark.align
     @add(logoMod).add logoSurface
     @add(markMod).add markSurface
 
-    Utils.animateAll logoMod, @options.logo.states
-    Utils.animateAll markMod, @options.mark.states
+    Utils.animateAll logoMod, @layout.logo.states
+    Utils.animateAll markMod, @layout.mark.states
 
     @initSignUp()
 
@@ -71,36 +76,36 @@ class SignupView extends View
 
   initSignUp: ->
 #    signupText = new Surface
-#      size: @options.signupText.size
+#      size: @layout.signupText.size
 #      content: 'Who\'s got you pegged?'
-#      classes: @options.signupText.classes
+#      classes: @layout.signupText.classes
 #    signupTextMod = new StateModifier
-#      origin: @options.signupText.origin
-#      align: @options.signupText.align
+#      origin: @layout.signupText.origin
+#      align: @layout.signupText.align
 #    @add(signupTextMod).add signupText
     @signupInput = new InputView
-      size: @options.signupInput.size
+      size: @layout.signupInput.size
       placeholder: 'Enter your email'
-      classes: @options.signupInput.classes
+      classes: @layout.signupInput.classes
     @signupInputMod = new StateModifier
-      origin: @options.signupInput.origin
-      align: @options.signupInput.align
+      origin: @layout.signupInput.origin
+      align: @layout.signupInput.align
     @add(@signupInputMod).add @signupInput
 
     signupButton = new Surface
-      size: @options.signupButton.size
+      size: @layout.signupButton.size
       content: 'I\'m sexy and I know it.'
-      classes: @options.signupButton.classes
+      classes: @layout.signupButton.classes
       properties:
-        lineHeight: "#{@options.signupButton.size[1]}px"
+        lineHeight: "#{@layout.signupButton.size[1]}px"
     signupButtonMod = new StateModifier
-      origin: @options.signupButton.origin
-      align:  @options.signupButton.align
+      origin: @layout.signupButton.origin
+      align:  @layout.signupButton.align
     @add(signupButtonMod).add signupButton
 
-    #Utils.animateAll signupTextMod, @options.signupText.states
-    Utils.animateAll signupButtonMod, @options.signupButton.states
-    Utils.animateAll @signupInputMod, @options.signupInput.states
+    #Utils.animateAll signupTextMod, @layout.signupText.states
+    Utils.animateAll signupButtonMod, @layout.signupButton.states
+    Utils.animateAll @signupInputMod, @layout.signupInput.states
 
     signupButton.on 'click', =>
       @onSubmit()
@@ -118,19 +123,19 @@ class SignupView extends View
   showMessage: =>
     if UserStore.getSubscriptionStatus()
       message = 'Ooh, yeah! ttyl.'
-      classes = ["#{@options.signupMessage.classes}--success"]
+      classes = ["#{@layout.signupMessage.classes}--success"]
     else
       message = 'Nah, guess not. Fail.'
-      classes = ["#{@options.signupMessage.classes}--fail"]
+      classes = ["#{@layout.signupMessage.classes}--fail"]
     messageText = new Surface
-      size: @options.signupMessage.size
+      size: @layout.signupMessage.size
       content: message
       classes: classes
     messageMod = new StateModifier
-      origin: @options.signupMessage.origin
-      align: @options.signupMessage.align
+      origin: @layout.signupMessage.origin
+      align: @layout.signupMessage.align
     @add(messageMod).add messageText
-    messageMod.setAlign @options.signupMessage.states[0].align, @options.signupMessage.states[0].transition
+    messageMod.setAlign @layout.signupMessage.states[0].align, @layout.signupMessage.states[0].transition
 
 
 module.exports = SignupView

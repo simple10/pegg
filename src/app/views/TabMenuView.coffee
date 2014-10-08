@@ -10,6 +10,7 @@ _ = require('Parse')._
 TabMenuItemView = require 'views/TabMenuItemView'
 Utils = require 'lib/Utils'
 UserStore = require 'stores/UserStore'
+LayoutManager = require 'views/layouts/LayoutManager'
 
 
 ###
@@ -18,18 +19,15 @@ UserStore = require 'stores/UserStore'
 ###
 class TabMenuView extends View
   @DEFAULT_OPTIONS:
-    tab:
-      height: 60
-      staggerDelay: 35
-      transition:
-        duration: 400
-        curve: 'easeOut'
     model: null
-
 
   constructor: (options) ->
     options = _.defaults options, @constructor.DEFAULT_OPTIONS
     super options
+
+    @layoutManager = new LayoutManager()
+    @layout = @layoutManager.getViewLayout 'FooterView'
+
     @init()
 
   init: ->
@@ -41,7 +39,7 @@ class TabMenuView extends View
       if i is @options.model.length - 1
         iconUrl = UserStore.getAvatar 'type=square'
         properties =
-          borderRadius: "#{@options.tab.height}px"
+          borderRadius: "#{@layout.height}px"
           padding: '4px'
       else
         iconUrl = @options.model[i].iconUrl
@@ -51,7 +49,7 @@ class TabMenuView extends View
         icon: iconUrl
         xOffset: xOffset
         width: Utils.getViewportWidth() / @options.model.length
-        height: @options.tab.height
+        height: @layout.height
         properties: properties
       i++
       xOffset += 1/@options.model.length
@@ -76,8 +74,8 @@ class TabMenuView extends View
 
 
   showTabs: ->
-    transition = @options.tab.transition
-    delay = @options.tab.staggerDelay
+    transition = @layout.transition
+    delay = @layout.staggerDelay
     i = 0
     while i < @tabModifiers.length
       Timer.setTimeout ((i) ->
@@ -87,22 +85,22 @@ class TabMenuView extends View
       i++
 
   hideTabs: ->
-    transition = @options.tab.transition
-    delay = @options.tab.staggerDelay
+    transition = @layout.transition
+    delay = @layout.staggerDelay
     i = 0
     while i < @tabModifiers.length
       Timer.setTimeout ((i) ->
-        @tabModifiers[i].setTransform Transform.translate(0, @options.tab.height, 19), transition
+        @tabModifiers[i].setTransform Transform.translate(0, @layout.height, 19), transition
         return
       ).bind(this, i), i * delay
       i++
 
   bounceTabs: ->
-    transition = @options.tab.transition
-    delay = @options.tab.staggerDelay
+    transition = @layout.transition
+    delay = @layout.staggerDelay
     i = 0
     tab = 0
-    y = @options.tab.height
+    y = @layout.height
     while i < @tabModifiers.length * 2
       Timer.setTimeout ((i) ->
         @tabModifiers[tab].setTransform Transform.translate(0, y, 19), transition

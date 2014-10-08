@@ -25,10 +25,11 @@ View = require 'famous/core/View'
 CardActions = require 'actions/CardActions'
 ConfirmCancelView = require 'views/ConfirmCancelView'
 Constants = require 'constants/PeggConstants'
-HeaderViewLayout = require 'views/layouts/mobile/HeaderViewLayout'
 InputView = require 'views/InputView'
 NewCardStore = require 'stores/NewCardStore'
 UserStore = require 'stores/UserStore'
+LayoutManager = require 'views/layouts/LayoutManager'
+
 
 class NewCardView extends View
 
@@ -38,6 +39,11 @@ class NewCardView extends View
     @_numOfselectedCategories = 0
     @_selectedCategories = {}
     @_selectedCategoriesSurface = null
+
+
+    @layoutManager = new LayoutManager()
+    @layout = @layoutManager.getViewLayout 'NewCardView'
+
 
     @initSurfaces()
     @initListeners()
@@ -79,8 +85,8 @@ class NewCardView extends View
     categories = NewCardStore.getCategories()
     for category, key in categories
       categorySurface = new Surface
-        size: @options.category.size
-        classes: @options.category.classes
+        size: @layout.category.size
+        classes: @layout.category.classes
         content: "<span class='category-name'>#{category.get 'name'}</span>"
       @categorySurfaces.push categorySurface
       categorySurface.on('click', ((surface, category) ->
@@ -93,8 +99,8 @@ class NewCardView extends View
       categorySurface.pipe @categoryScrollview
     # append a blank at the end that the confirm view can cover
     spacer = new Surface
-      size: @options.categoriesConfirm.size
-      classes: @options.category.classes
+      size: @layout.categoriesConfirm.size
+      classes: @layout.category.classes
     spacer.pipe @categoryScrollview
     @categorySurfaces.push spacer
 
@@ -105,8 +111,6 @@ class NewCardView extends View
     @step2Inputs = []
     @step4Mods = []
     @step3Mods = []
-
-    headerHeight = HeaderViewLayout.size[1]
 
 #    @back = new ImageSurface
 #      size: [50, 50]
@@ -119,20 +123,20 @@ class NewCardView extends View
 #      origin: [0, 1]
 #    @playNode.add(@backMod).add @back
     cardIcon = new ImageSurface
-      size: @options.cardIcon.size
-      classes: @options.cardIcon.classes
+      size: @layout.cardIcon.size
+      classes: @layout.cardIcon.classes
       content: 'images/newcard_medium2.png'
     cardIconMod = new StateModifier
-      origin: @options.cardIcon.origin
-      align: @options.cardIcon.align
+      origin: @layout.cardIcon.origin
+      align: @layout.cardIcon.align
     @add(cardIconMod).add cardIcon
     @newCardTitle = new Surface
-      size: @options.newCardTitle.size
+      size: @layout.newCardTitle.size
       content: 'NEW CARD'
-      classes: @options.newCardTitle.classes
+      classes: @layout.newCardTitle.classes
     newCardMod = new StateModifier
-      origin: @options.newCardTitle.origin
-      align: @options.newCardTitle.align
+      origin: @layout.newCardTitle.origin
+      align: @layout.newCardTitle.align
     @add(newCardMod).add @newCardTitle
 
     @container = new ContainerSurface
@@ -141,12 +145,12 @@ class NewCardView extends View
       properties:
         overflow: 'hidden'
     @categoryScrollviewMod = new StateModifier
-      origin: @options.categories.origin
-      align: @options.categories.align
+      origin: @layout.categories.origin
+      align: @layout.categories.align
 #      transform: Transform.translate 0, -100, 10
     @categoryScrollview = new Scrollview
-      # size: @options.categories.size
-      # classes: @options.categories.classes
+      # size: @layout.categories.size
+      # classes: @layout.categories.classes
     @categorySurfaces = []
     @categoryScrollview.sequenceFrom @categorySurfaces
 
@@ -155,7 +159,7 @@ class NewCardView extends View
 
     @categoriesConfirm = new ConfirmCancelView
       classes: ['newcard']
-      size: @options.categoriesConfirm.size
+      size: @layout.categoriesConfirm.size
     @add @categoriesConfirm
 
 
@@ -248,22 +252,22 @@ class NewCardView extends View
 
   showStep: (step, mods) ->
     for mod, i in mods
-      Utils.animate mod, @["options"]["#{step}_#{i}"].states[0]
+      Utils.animate mod, @layout["#{step}_#{i}"].states[0]
 
   hideStep: (step, mods, inputs) ->
     inputs or= []
     for mod, i in mods
-      Utils.animate mod, @["options"]["#{step}_#{i}"].states[1]
+      Utils.animate mod, @layout["#{step}_#{i}"].states[1]
     for input in inputs
       input.clear()
 
   showCategories: () ->
-    Utils.animate @categoryScrollviewMod, @options.categories.states[0]
+    Utils.animate @categoryScrollviewMod, @layout.categories.states[0]
     if @_numOfselectedCategories
       @categoriesConfirm.show()
 
   hideCategories: () ->
-    Utils.animate @categoryScrollviewMod, @options.categories.states[1]
+    Utils.animate @categoryScrollviewMod, @layout.categories.states[1]
 
   _resetSelectedCategories: () ->
     for id, surface of @_selectedCategories
@@ -279,79 +283,79 @@ class NewCardView extends View
 
   addInputView: (step, num, placeholder)->
     inputView = new InputView
-      size: @options["step#{step}_#{num}"].size
+      size: @layout["step#{step}_#{num}"].size
       placeholder: placeholder
-      align: @options["step#{step}_#{num}"].states[0].align
-      origin: @options["step#{step}_#{num}"].origin
-      transform: @options["step#{step}_#{num}"].states[0].transform
+      align: @layout["step#{step}_#{num}"].states[0].align
+      origin: @layout["step#{step}_#{num}"].origin
+      transform: @layout["step#{step}_#{num}"].states[0].transform
     inputViewMod = new StateModifier
-      origin: @options["step#{step}_#{num}"].origin
-      align: @options["step#{step}_#{num}"].align
+      origin: @layout["step#{step}_#{num}"].origin
+      align: @layout["step#{step}_#{num}"].align
     @["step#{step}Mods"].push inputViewMod
     @["step#{step}Inputs"].push inputView
     @add(inputViewMod).add inputView
 
   addSurface: (step, num, content)->
     surface = new Surface
-      size: @options["step#{step}_#{num}"].size
+      size: @layout["step#{step}_#{num}"].size
       content: content
-      classes: @options["step#{step}_#{num}"].classes
+      classes: @layout["step#{step}_#{num}"].classes
     surfaceMod = new StateModifier
-      align: @options["step#{step}_#{num}"].align
-      origin: @options["step#{step}_#{num}"].origin
+      align: @layout["step#{step}_#{num}"].align
+      origin: @layout["step#{step}_#{num}"].origin
     @["step#{step}Mods"].push surfaceMod
     @add(surfaceMod).add surface
     surface
 
   addNum: (step, num)->
     numSurface = new Surface
-      size: @options["step#{step}_#{num}"].size
+      size: @layout["step#{step}_#{num}"].size
       content: step
-      classes: @options["step#{step}_#{num}"].classes
+      classes: @layout["step#{step}_#{num}"].classes
     numMod = new StateModifier
-      origin: @options["step#{step}_#{num}"].origin
-      align: @options["step#{step}_#{num}"].align
+      origin: @layout["step#{step}_#{num}"].origin
+      align: @layout["step#{step}_#{num}"].align
     @["step#{step}Mods"].push numMod
     @add(numMod).add numSurface
 
   addButton: (step, num, text, func)->
     submit = new Surface
-      size: @options["step#{step}_#{num}"].size
+      size: @layout["step#{step}_#{num}"].size
       content: text
-      classes: @options["step#{step}_#{num}"].classes
+      classes: @layout["step#{step}_#{num}"].classes
       properties:
-        lineHeight: @options["step#{step}_#{num}"].size[1] + 'px'
+        lineHeight: @layout["step#{step}_#{num}"].size[1] + 'px'
     submitMod = new StateModifier
-      origin: @options["step#{step}_#{num}"].origin
-      align: @options["step#{step}_#{num}"].align
+      origin: @layout["step#{step}_#{num}"].origin
+      align: @layout["step#{step}_#{num}"].align
     @["step#{step}Mods"].push submitMod
     @add(submitMod).add submit
     submit.on 'click', func
 
   addLinkContainer: (step, num, image, text, func) ->
     imageSurface = new ImageSurface
-      size: @options["step#{step}_#{num}"].size[1]
-      classes: @options["step#{step}_#{num}"].classes.image
+      size: @layout["step#{step}_#{num}"].size[1]
+      classes: @layout["step#{step}_#{num}"].classes.image
       content: image
     imageMod = new StateModifier
       origin: [0, 0.5]
       align: [0, 0.5]
     textSurface = new Surface
-      size: @options["step#{step}_#{num}"].size[2]
+      size: @layout["step#{step}_#{num}"].size[2]
       content: text
-      classes: @options["step#{step}_#{num}"].classes.text
+      classes: @layout["step#{step}_#{num}"].classes.text
       properties:
-        lineHeight: "#{@options["step#{step}_#{num}"].size[0]}px"
+        lineHeight: "#{@layout["step#{step}_#{num}"].size[0]}px"
     textMod = new StateModifier
       origin: [0, 0.5]
       align: [0.25, 0.5]
     container = new ContainerSurface
-      size: @options["step#{step}_#{num}"].size[0]
+      size: @layout["step#{step}_#{num}"].size[0]
     container.add(imageMod).add imageSurface
     container.add(textMod).add textSurface
     containerMod = new StateModifier
-      origin: @options["step#{step}_#{num}"].origin
-      align: @options["step#{step}_#{num}"].align
+      origin: @layout["step#{step}_#{num}"].origin
+      align: @layout["step#{step}_#{num}"].align
     @["step#{step}Mods"].push containerMod
     @add(containerMod).add container
     container.on 'click', func

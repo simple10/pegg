@@ -31,7 +31,6 @@ Menu = require 'constants/menu'
 # Views
 HeaderView = require 'views/HeaderView'
 TabMenuView = require 'views/TabMenuView'
-BandMenuView = require 'views/BandMenuView'
 PeggBoxView = require 'views/PeggBoxView'
 PlayView = require 'views/PlayView'
 ProfileView = require 'views/ProfileView'
@@ -40,12 +39,8 @@ SettingsView = require 'views/SettingsView'
 NewCardView = require 'views/NewCardView'
 LoginView = require 'views/LoginView'
 HomeView = require 'views/HomeView'
+LayoutManager = require 'views/layouts/LayoutManager'
 
-# Layouts
-PlayViewLayout = require 'views/layouts/mobile/PlayViewLayout'
-NewCardViewLayout = require 'views/layouts/mobile/NewCardViewLayout'
-HeaderViewLayout = require 'views/layouts/mobile/HeaderViewLayout'
-FooterViewLayout = require 'views/layouts/mobile/FooterViewLayout'
 
 #Actions
 NavActions = require 'actions/NavActions'
@@ -56,13 +51,7 @@ UserActions = require 'actions/UserActions'
 class AppView extends View
   @DEFAULT_OPTIONS:
     menu:
-      width: Utils.getViewportWidth() - 60
-      transition:
-        duration: 300
-        curve: 'easeOut'
       model: Menu
-      tab:
-        height: FooterViewLayout.size[1]
     header:
       height: 0
   # Pages correspond to pageID in constants/menu.coffee
@@ -71,7 +60,10 @@ class AppView extends View
 
   constructor: ->
     super
-#    @initMenu()
+
+    @layoutManager = new LayoutManager()
+    @footerLayout = @layoutManager.getViewLayout 'FooterView'
+
     @initLayout()
     @initPages()
     @initListeners()
@@ -81,17 +73,10 @@ class AppView extends View
     AppStateStore.on Constants.stores.MENU_CHANGE, @togglePage
     SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
 
-  initMenu: ->
-    @menu = new BandMenuView @options.menu
-    @menu.on 'toggleMenu', @togglePage
-    @menuState = new StateModifier
-      origin: [0,0]
-    @add(@menuState).add @menu
-
   initLayout: ->
     @layout = new HeaderFooterLayout
       headerSize: @options.header.height
-      footerSize: @options.menu.tab.height
+      footerSize: @footerLayout.height
     @layout.header.add @initHeader()
     @layout.footer.add @initFooter()
     @layout.content.add @initViewManager()
@@ -113,7 +98,7 @@ class AppView extends View
   initPages: ->
     # Pages correspond to pageID in constants/menu.coffee
     @pages.play = new PlayView
-    @pages.create = new NewCardView NewCardViewLayout
+    @pages.create = new NewCardView
     @pages.settings = new SettingsView
     @pages.activity = new ActivityView
     @pages.profile = new ProfileView
@@ -148,34 +133,9 @@ class AppView extends View
       @showPage @getPage pageID
       @footer.bounceTabs()
 #      @footer.hideTabs()
-    @closeMenu()
 
   requireLogin: =>
     @showPage @getPage 'login'
-
-  toggleMenu: =>
-    if @menuOpen
-      @closeMenu()
-    else
-      @openMenu()
-
-  closeMenu: ->
-    @layoutState.setTransform(
-      Transform.translate 0, 0, 0
-      @options.menu.transition
-      =>
-        @menuOpen = false
-    )
-#    @menu.hide()
-
-  openMenu: ->
-    @layoutState.setTransform(
-      Transform.translate @options.menu.width, 0, 0
-      @options.menu.transition
-      =>
-        @menuOpen = true
-    )
-#    @menu.show()
 
   onScroll: =>
     if @tabsOpen

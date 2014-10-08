@@ -26,10 +26,6 @@ FpsMeter = require 'views/FpsMeterView'
 LoginView = require 'views/LoginView'
 SignupView = require 'views/SignupView'
 
-# Layouts
-SignupViewLayout = require 'views/layouts/mobile/SignupViewLayout'
-LoginViewLayout = require 'views/layouts/mobile/LoginViewLayout'
-
 # Stores
 UserStore = require 'stores/UserStore'
 AppStateStore = require 'stores/AppStateStore'
@@ -78,7 +74,7 @@ else
 
   appView = new AppView
   loginView = new LoginView
-  signupView = new SignupView SignupViewLayout
+  signupView = new SignupView
   lightbox = new Lightbox
   #  inOpacity: 1
   #  outOpacity: 0

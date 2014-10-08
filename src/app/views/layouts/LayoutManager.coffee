@@ -10,6 +10,7 @@ mobile = {
   StatusViewLayout: require 'views/layouts/mobile/StatusViewLayout'
   SingleCardViewLayout: require 'views/layouts/mobile/SingleCardViewLayout'
   CardViewLayout: require 'views/layouts/mobile/CardViewLayout'
+  FooterViewLayout: require 'views/layouts/mobile/FooterViewLayout'
 }
 
 desktop = {}
