@@ -1,6 +1,13 @@
 @import "settings";
 
 
+.activity__title {
+  text-align: center;
+  color: $white;
+  font-size: 25px;
+  text-transform: uppercase;
+}
+
 .activity__background {
   background-color: $darkblue;
 }

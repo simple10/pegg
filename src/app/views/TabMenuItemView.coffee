@@ -44,7 +44,7 @@ class TabMenuItemView extends View
     @iconState = new StateModifier
       #origin: [0.5, 0.5]
       #align: [0.5, 0.5]
-      transform: Transform.translate 17, 10, 0
+      transform: Transform.translate 17, 10, null
     @add(@iconState).add @icon
     @icon.on 'click', =>
       @menuSelect()
@@ -55,7 +55,7 @@ class TabMenuItemView extends View
       content: @options.title
       classes: ['tabmenu__item__title']
     @titleState = new StateModifier
-      transform: Transform.translate 0, @options.height/2, 0
+      transform: Transform.translate 0, @options.height/2, null
     @add(@titleState).add @title
 
   getID: ->
@@ -63,7 +63,7 @@ class TabMenuItemView extends View
 
   menuSelect: ->
     NavActions.selectMenuItem @getID()
-    @background.setClasses ["tabmenu__item--#{@options.pageID}"]
+    @background.setClasses ['tabmenu__item', "tabmenu__item--#{@options.pageID}"]
     @backgroundMod.setOpacity 1
 
 module.exports = TabMenuItemView
