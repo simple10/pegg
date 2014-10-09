@@ -1,9 +1,9 @@
 require './scss/login.scss'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-StateModifier = require 'famous/modifiers/StateModifier'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
 UserActions = require 'actions/UserActions'
 Utils = require 'lib/Utils'
 LayoutManager = require 'views/layouts/LayoutManager'

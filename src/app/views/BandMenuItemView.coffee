@@ -1,10 +1,10 @@
 require './scss/bandmenu'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-ImageSurface = require 'famous/surfaces/ImageSurface'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
 NavActions = require 'actions/NavActions'
 Utils = require 'lib/Utils'
 

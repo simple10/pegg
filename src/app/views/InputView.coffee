@@ -1,12 +1,12 @@
 require './scss/input.scss'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-StateModifier = require 'famous/modifiers/StateModifier'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
-InputSurface = require 'famous/surfaces/InputSurface'
-Transform = require 'famous/core/Transform'
-Easing = require 'famous/transitions/Easing'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
+InputSurface = require 'famous/src/surfaces/InputSurface'
+Transform = require 'famous/src/core/Transform'
+Easing = require 'famous/src/transitions/Easing'
 Utils = require 'lib/Utils'
 
 class InputView extends View

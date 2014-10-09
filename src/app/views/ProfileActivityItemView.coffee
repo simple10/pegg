@@ -1,11 +1,11 @@
 require './scss/profile'
 
-View = require 'famous/core/View'
-Transform = require 'famous/core/Transform'
-Surface = require 'famous/core/Surface'
-StateModifier = require 'famous/modifiers/StateModifier'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
+View = require 'famous/src/core/View'
+Transform = require 'famous/src/core/Transform'
+Surface = require 'famous/src/core/Surface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
 NavActions = require 'actions/NavActions'
 Utils = require 'lib/Utils'
 

@@ -1,17 +1,17 @@
 require './scss/activity.scss'
 
-View = require 'famous/core/View'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
-Scrollview = require 'famous/views/Scrollview'
-Surface = require 'famous/core/Surface'
+View = require 'famous/src/core/View'
+ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
+Scrollview = require 'famous/src/views/Scrollview'
+Surface = require 'famous/src/core/Surface'
 ActivityItemView = require 'views/ActivityItemView'
 ActivityStore = require 'stores/ActivityStore'
 Constants = require 'constants/PeggConstants'
 Utils = require 'lib/Utils'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-Modifier = require 'famous/core/Modifier'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+Modifier = require 'famous/src/core/Modifier'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
 
 class ActivityView extends View
 

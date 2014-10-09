@@ -5,15 +5,15 @@
 # Being kept around for reference and because there is a chance we will use
 # this in the future
 
-View = require 'famous/core/View'
-RenderNode = require 'famous/core/RenderNode'
-Surface = require 'famous/core/Surface'
-Scrollview = require 'famous/views/Scrollview'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
-StateModifier = require 'famous/modifiers/StateModifier'
-Utility = require 'famous/utilities/Utility'
-Transform = require 'famous/core/Transform'
-SequentialLayout = require 'famous/views/SequentialLayout'
+View = require 'famous/src/core/View'
+RenderNode = require 'famous/src/core/RenderNode'
+Surface = require 'famous/src/core/Surface'
+Scrollview = require 'famous/src/views/Scrollview'
+ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Utility = require 'famous/src/utilities/Utility'
+Transform = require 'famous/src/core/Transform'
+SequentialLayout = require 'famous/src/views/SequentialLayout'
 
 Utils = require 'lib/Utils'
 PrefBoardRowView = require 'views/PrefBoardRowView'

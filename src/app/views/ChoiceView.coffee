@@ -1,11 +1,11 @@
 require './scss/card.scss'
 
-View = require 'famous/core/View'
-Timer = require 'famous/utilities/Timer'
-Surface = require 'famous/core/Surface'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-Flipper = require 'famous/views/Flipper'
+View = require 'famous/src/core/View'
+Timer = require 'famous/src/utilities/Timer'
+Surface = require 'famous/src/core/Surface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
+Flipper = require 'famous/src/views/Flipper'
 PlayStore = require 'stores/PlayStore'
 Utils = require 'lib/Utils'
 

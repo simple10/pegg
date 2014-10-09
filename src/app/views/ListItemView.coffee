@@ -1,9 +1,9 @@
 require './scss/peggbox'
 
-View = require 'famous/core/View'
-Transform = require 'famous/core/Transform'
-Surface = require 'famous/core/Surface'
-StateModifier = require 'famous/modifiers/StateModifier'
+View = require 'famous/src/core/View'
+Transform = require 'famous/src/core/Transform'
+Surface = require 'famous/src/core/Surface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
 Utils = require 'lib/Utils'
 
 class ListItemView extends View

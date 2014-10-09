@@ -1,8 +1,8 @@
 # Famo.us
-View = require 'famous/core/View'
-Transform = require 'famous/core/Transform'
-Lightbox = require 'famous/views/Lightbox'
-Easing = require 'famous/transitions/Easing'
+View = require 'famous/src/core/View'
+Transform = require 'famous/src/core/Transform'
+Lightbox = require 'famous/src/views/Lightbox'
+Easing = require 'famous/src/transitions/Easing'
 
 # Pegg
 Constants = require 'constants/PeggConstants'

@@ -1,5 +1,5 @@
 # Famo.us
-EventEmitter = require 'famous/core/EventEmitter'
+EventEmitter = require 'famous/src/core/EventEmitter'
 
 # Pegg
 AppDispatcher = require 'dispatchers/AppDispatcher'

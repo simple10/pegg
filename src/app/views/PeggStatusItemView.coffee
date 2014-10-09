@@ -1,12 +1,12 @@
 
 require './scss/status.scss'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
+ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
 Utils = require 'lib/Utils'
 
 class PeggStatusItemView extends View

@@ -2,20 +2,20 @@
 
 require './scss/header.scss'
 
-View = require 'famous/core/View'
-Utility = require 'famous/utilities/Utility'
-Surface = require 'famous/core/Surface'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-Modifier  = require 'famous/core/Modifier'
-Transform = require 'famous/core/Transform'
+View = require 'famous/src/core/View'
+Utility = require 'famous/src/utilities/Utility'
+Surface = require 'famous/src/core/Surface'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+Modifier  = require 'famous/src/core/Modifier'
+Transform = require 'famous/src/core/Transform'
 UserActions = require 'actions/UserActions'
 UserStore = require 'stores/UserStore'
 AppStateStore = require 'stores/AppStateStore'
 Constants = require 'constants/PeggConstants'
 NavActions = require 'actions/NavActions'
-Easing = require 'famous/transitions/Easing'
-Timer = require 'famous/utilities/Timer'
-StateModifier = require 'famous/modifiers/StateModifier'
+Easing = require 'famous/src/transitions/Easing'
+Timer = require 'famous/src/utilities/Timer'
+StateModifier = require 'famous/src/modifiers/StateModifier'
 
 ###
 # Events:

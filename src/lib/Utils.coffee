@@ -1,5 +1,5 @@
-Timer = require 'famous/utilities/Timer'
-Transform = require 'famous/core/Transform'
+Timer = require 'famous/src/utilities/Timer'
+Transform = require 'famous/src/core/Transform'
 
 Utils =
   # Creates enumeration with keys equal to values.

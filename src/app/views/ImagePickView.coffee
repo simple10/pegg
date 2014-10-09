@@ -1,6 +1,6 @@
 Config = require('Config').public
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
 
 # todo: add script to dom and init view when loaded or use bower
 # <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>

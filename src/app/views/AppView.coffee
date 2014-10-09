@@ -5,17 +5,17 @@
 # CSS
 require './scss/app.scss'
 
-View = require 'famous/core/View'
-Utility = require 'famous/utilities/Utility'
-HeaderFooterLayout = require 'famous/views/HeaderFooterLayout'
-Surface = require 'famous/core/Surface'
-Transform = require 'famous/core/Transform'
-Transitionable  = require 'famous/transitions/Transitionable'
-Modifier = require 'famous/core/Modifier'
-StateModifier = require 'famous/modifiers/StateModifier'
-Lightbox = require 'famous/views/Lightbox'
-Easing = require 'famous/transitions/Easing'
-RenderController = require 'famous/views/RenderController'
+View = require 'famous/src/core/View'
+Utility = require 'famous/src/utilities/Utility'
+HeaderFooterLayout = require 'famous/src/views/HeaderFooterLayout'
+Surface = require 'famous/src/core/Surface'
+Transform = require 'famous/src/core/Transform'
+Transitionable  = require 'famous/src/transitions/Transitionable'
+Modifier = require 'famous/src/core/Modifier'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Lightbox = require 'famous/src/views/Lightbox'
+Easing = require 'famous/src/transitions/Easing'
+RenderController = require 'famous/src/views/RenderController'
 
 # Helpers
 Utils = require 'lib/Utils'

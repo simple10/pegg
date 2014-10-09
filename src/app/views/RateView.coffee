@@ -1,11 +1,11 @@
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-StateModifier = require 'famous/modifiers/StateModifier'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
 PlayActions = require 'actions/PlayActions'
-Transform = require 'famous/core/Transform'
-Timer = require 'famous/utilities/Timer'
+Transform = require 'famous/src/core/Transform'
+Timer = require 'famous/src/utilities/Timer'
 Utils = require 'lib/Utils'
 
 class RateView extends View

@@ -1,6 +1,6 @@
 Config = require('Config').public.aviary
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
 
 # todo: add script to dom and init view when loaded
 # <script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>

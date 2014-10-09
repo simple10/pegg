@@ -1,9 +1,9 @@
 
 require './scss/settings.scss'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-StateModifier = require 'famous/modifiers/StateModifier'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
 Utils = require 'lib/Utils'
 UserStore = require 'stores/UserStore'
 NavActions = require 'actions/NavActions'

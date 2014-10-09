@@ -1,4 +1,4 @@
-EventHandler = require 'famous/core/EventHandler'
+EventHandler = require 'famous/src/core/EventHandler'
 Constants = require 'constants/PeggConstants'
 UserStore = require 'stores/UserStore'
 DB = require 'stores/helpers/ParseBackend'

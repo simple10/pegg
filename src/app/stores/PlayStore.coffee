@@ -3,7 +3,7 @@ Parse = require 'Parse'
 _ = Parse._
 
 # Famo.us
-EventHandler = require 'famous/core/EventHandler'
+EventHandler = require 'famous/src/core/EventHandler'
 
 # Pegg
 AppDispatcher = require 'dispatchers/AppDispatcher'

@@ -1,10 +1,10 @@
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-Easing = require 'famous/transitions/Easing'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
+Easing = require 'famous/src/transitions/Easing'
 
 Utils = require 'lib/Utils'
 

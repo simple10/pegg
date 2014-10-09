@@ -1,6 +1,6 @@
 TabMenuView = require 'views/TabMenuView'
 helper = require '../helpers/Common'
-Timer = require 'famous/utilities/Timer'
+Timer = require 'famous/src/utilities/Timer'
 expect = helper.expect
 should = helper.should
 spy = helper.spy

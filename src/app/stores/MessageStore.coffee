@@ -5,7 +5,7 @@ Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 
 # Famo.us
-EventEmitter = require 'famous/core/EventEmitter'
+EventEmitter = require 'famous/src/core/EventEmitter'
 
 class MessageStore extends EventEmitter
 

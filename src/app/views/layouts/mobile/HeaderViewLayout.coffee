@@ -1,5 +1,5 @@
-Easing = require 'famous/transitions/Easing'
-Transform = require 'famous/core/Transform'
+Easing = require 'famous/src/transitions/Easing'
+Transform = require 'famous/src/core/Transform'
 Utils = require 'lib/Utils'
 
 module.exports = {

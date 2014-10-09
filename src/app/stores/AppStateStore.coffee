@@ -12,7 +12,7 @@
 # TODO: refactor with state machine.
 # See http://statejs.org
 
-EventEmitter = require 'famous/core/EventEmitter'
+EventEmitter = require 'famous/src/core/EventEmitter'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 ActivityActions = require 'actions/ActivityActions'

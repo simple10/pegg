@@ -1,5 +1,5 @@
 # CSS
-require 'famous/core/famous.css'
+require 'famous/src/core/famous.css'
 
 # Polyfills
 require 'famous-polyfills/functionPrototypeBind'
@@ -7,14 +7,14 @@ require 'famous-polyfills/classList'
 require 'famous-polyfills/requestAnimationFrame'
 
 # Famous
-Engine = require 'famous/core/Engine'
-Lightbox = require 'famous/views/Lightbox'
-Timer = require 'famous/utilities/Timer'
-Transform = require 'famous/core/Transform'
-Easing = require 'famous/transitions/Easing'
+Engine = require 'famous/src/core/Engine'
+Lightbox = require 'famous/src/views/Lightbox'
+Timer = require 'famous/src/utilities/Timer'
+Transform = require 'famous/src/core/Transform'
+Easing = require 'famous/src/transitions/Easing'
 
 #FastClick = require 'fastclick/lib/fastclick'
-#FastClick = require 'famous/inputs/fastclick'
+#FastClick = require 'famous/src/inputs/fastclick'
 #FastClick.attach document.body
 
 # Facebook
@@ -46,10 +46,10 @@ GameScript = require('config/game').scripts.cosmic_unicorn
 
 Utils = require 'lib/Utils'
 
-Transitionable = require 'famous/transitions/Transitionable'
-SpringTransition = require 'famous/transitions/SpringTransition'
-#WallTransition = require 'famous/transitions/WallTransition'
-#SnapTransition = require 'famous/transitions/SnapTransition'
+Transitionable = require 'famous/src/transitions/Transitionable'
+SpringTransition = require 'famous/src/transitions/SpringTransition'
+#WallTransition = require 'famous/src/transitions/WallTransition'
+#SnapTransition = require 'famous/src/transitions/SnapTransition'
 Transitionable.registerMethod 'spring', SpringTransition
 
 # Chrome maxes out at 60 FPS

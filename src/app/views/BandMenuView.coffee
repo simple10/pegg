@@ -1,10 +1,10 @@
 require './scss/bandmenu.scss'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-Timer = require 'famous/utilities/Timer'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
+Timer = require 'famous/src/utilities/Timer'
 BandMenuItemView = require 'views/BandMenuItemView'
 _ = require('Parse')._
 Utils = require 'lib/Utils'

@@ -1,8 +1,8 @@
-View = require 'famous/core/View'
-SequentialLayout = require 'famous/views/SequentialLayout'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-Utility = require 'famous/utilities/Utility'
+View = require 'famous/src/core/View'
+SequentialLayout = require 'famous/src/views/SequentialLayout'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
+Utility = require 'famous/src/utilities/Utility'
 
 Utils = require 'lib/Utils'
 PrefBoardImageView = require 'views/PrefBoardImageView'

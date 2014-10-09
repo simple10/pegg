@@ -1,13 +1,13 @@
 
 require './scss/decks.scss'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-Easing = require 'famous/transitions/Easing'
-GridLayout = require 'famous/views/GridLayout'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
+Easing = require 'famous/src/transitions/Easing'
+GridLayout = require 'famous/src/views/GridLayout'
 Utils = require 'lib/Utils'
 
 class DecksView extends View

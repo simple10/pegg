@@ -1,14 +1,14 @@
 require './scss/play.scss'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-Timer = require 'famous/utilities/Timer'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
+Timer = require 'famous/src/utilities/Timer'
 Utils = require 'lib/Utils'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
-SequentialLayout = require 'famous/views/SequentialLayout'
+ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
+SequentialLayout = require 'famous/src/views/SequentialLayout'
 
 class ProgressBarView extends View
 

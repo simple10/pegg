@@ -2,7 +2,7 @@
   "name": "pegg",
   "dependencies": {
     "famous-polyfills": "git+https://github.com/Famous/polyfills.git#0.1.1",
-    "famous": "git+https://github.com/Famous/famous.git#0.3.0-alpha",
+    "famous": "git+https://github.com/Famous/famous.git#0.3.0-rc",
     "zepto": "~1.1.3"
   }
 }

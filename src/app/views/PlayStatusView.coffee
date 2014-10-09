@@ -1,18 +1,18 @@
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-ImageSurface = require 'famous/surfaces/ImageSurface'
-StateModifier = require 'famous/modifiers/StateModifier'
-Transform = require 'famous/core/Transform'
-Timer = require 'famous/utilities/Timer'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Transform = require 'famous/src/core/Transform'
+Timer = require 'famous/src/utilities/Timer'
 PlayActions = require 'actions/PlayActions'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
+ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
 PeggStatusView = require 'views/PeggStatusView'
 PrefStatusView = require 'views/PrefStatusView'
 DoneStatusView = require 'views/DoneStatusView'
 Utils = require 'lib/Utils'
-Lightbox = require 'famous/views/Lightbox'
-Easing = require 'famous/transitions/Easing'
+Lightbox = require 'famous/src/views/Lightbox'
+Easing = require 'famous/src/transitions/Easing'
 
 class PlayStatusView extends View
 

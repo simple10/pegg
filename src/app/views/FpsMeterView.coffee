@@ -1,11 +1,11 @@
 require './scss/fpsmeter.scss'
 
-View = require 'famous/core/View'
-Surface = require 'famous/core/Surface'
-Modifier = require 'famous/core/Modifier'
-Engine = require 'famous/core/Engine'
-Timer = require 'famous/utilities/Timer'
-Transform = require 'famous/core/Transform'
+View = require 'famous/src/core/View'
+Surface = require 'famous/src/core/Surface'
+Modifier = require 'famous/src/core/Modifier'
+Engine = require 'famous/src/core/Engine'
+Timer = require 'famous/src/utilities/Timer'
+Transform = require 'famous/src/core/Transform'
 
 
 class FpsMeter extends View

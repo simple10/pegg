@@ -1,4 +1,4 @@
-EventEmitter = require 'famous/core/EventEmitter'
+EventEmitter = require 'famous/src/core/EventEmitter'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Parse = require 'Parse'

@@ -1,8 +1,8 @@
 require './scss/activity.scss'
 
-View = require 'famous/core/View'
-ContainerSurface = require 'famous/surfaces/ContainerSurface'
-Scrollview = require 'famous/views/Scrollview'
+View = require 'famous/src/core/View'
+ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
+Scrollview = require 'famous/src/views/Scrollview'
 
 ListItemView = require 'views/ListItemView'
 Utils = require 'lib/Utils'
