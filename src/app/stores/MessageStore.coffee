@@ -9,14 +9,21 @@ EventEmitter = require 'famous/src/core/EventEmitter'
 
 class MessageStore extends EventEmitter
 
-  _type: ''
+  _messages:
+    first_card: "Welcome to your first card! Do this to play, that to do the other thing."
 
   _show: (type) ->
     @_type = type
-    @emit Constants.stores.SHOW_MESSAGE
+    # showMessage = DB.getUserPref 'show_help__first_card', UserStore.getUser().id
+    # if showMessage
+    #   @_dismiss type
+    #   @emit Constants.stores.SHOW_MESSAGE
+
+  _dismiss: (type) ->
+    # DB.saveUserPref 'show_help__first_card', false, UserStore.getUser().id
 
   getMessage: ->
-    "Help Message (#{@_type})"
+    @_messages[@_type]
 
 messages = new MessageStore
 
