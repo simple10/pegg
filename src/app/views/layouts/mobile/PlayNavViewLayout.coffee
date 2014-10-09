@@ -76,7 +76,7 @@ module.exports =
         transition: {duration: 500, curve: Easing.inExpo}
       }
     ]
-  progressBarView:
+  progress:
     size: [160, 55]
     origin: [0.5, 0.5]
     align: [0.5, 0.29]
@@ -84,6 +84,8 @@ module.exports =
       align: [0.5, 0.1]
       origin: [0.5, 0]
       size: [160, 15]
+      active:
+        classes: ['progressBar__active']
     percentage:
       align: [0.5, 0]
       origin: [0.5, 0]

@@ -28,7 +28,7 @@ class PlayNavView extends View
 
   initListeners: ->
     PlayStore.on Constants.stores.GAME_LOADED, @loadNav
-    PlayStore.on Constants.stores.PAGE_CHANGE, @loadNav
+    PlayStore.on Constants.stores.PAGE_CHANGE, @updateNav
 
   initSurfaces: =>
     ## Main View Modifier ##
@@ -56,10 +56,10 @@ class PlayNavView extends View
       origin: @layout.moodImage.origin
 
     ## PROGRESS BAR ##
-    @progressBar = new ProgressBarView @layout.progressBarView
+    @progressBar = new ProgressBarView
     @progressBarMod = new StateModifier
-      align: @layout.progressBarView.align
-      origin: @layout.progressBarView.origin
+      align: @layout.progress.align
+      origin: @layout.progress.origin
 
     ## RIGHT ARROW ##
     @rightArrow = new ImageSurface
@@ -98,12 +98,6 @@ class PlayNavView extends View
       #console.log 'right arrow'
       @_eventOutput.emit('click', 'nextPage')
 
-  initViewState: =>
-    @progressBar.reset PlayStore.getSetLength()
-
-#    @hideRightArrow()
-#    @hideLeftArrow()
-
 #  updateViewState: (cardIndex) =>
 #    #console.log cardIndex
 #    if cardIndex is 0
@@ -123,7 +117,6 @@ class PlayNavView extends View
     # change mood icon
     gameState = PlayStore.getGameState()
     @moodImage.setContent gameState.mood.url
-    @title.setContent gameState.title
     @progressBar.reset gameState.size
 
   showLeftArrow: =>
@@ -138,7 +131,9 @@ class PlayNavView extends View
   hideRightArrow: =>
     Utils.animate @rightArrowMod, @layout.rightArrow.states[1]
 
-  incrementProgressBar: =>
+  updateNav: =>
+    gameState = PlayStore.getGameState()
+    @title.setContent gameState.title
     @progressBar.increment(1)
 
 module.exports = PlayNavView

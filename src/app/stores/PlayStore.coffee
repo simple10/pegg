@@ -93,8 +93,9 @@ class PlayStore extends EventHandler
           @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]} # pref popularity
 
     @_game.push {type: 'done'} # done screen
-    @_next()
     @emit Constants.stores.GAME_LOADED
+    @_next()
+
 
   _peggToPref: (card) ->
     card = _.clone card

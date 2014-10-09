@@ -10,60 +10,63 @@ Utils = require 'lib/Utils'
 ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
 SequentialLayout = require 'famous/src/views/SequentialLayout'
 
+LayoutManager = require 'views/layouts/LayoutManager'
+
 class ProgressBarView extends View
 
   constructor: (options) ->
     super options
     @last = 0
+
+    @layoutManager = new LayoutManager()
+    @layout = @layoutManager.getViewLayout 'PlayNavView'
+
     @init()
 
   reset: (steps) =>
+    debugger
     @steps = steps
     @last = 0
-    @activeBar.setSize [@last, @options.bar.size[1]]
+    @activeBar.setSize [@last, @layout.progress.bar.size[1]]
     @percentage.setContent '0%'
 
   init: ->
     container = new ContainerSurface
-      size: @options.size
-#    text = new Surface
-#      content: 'Progress'
-#      size: @options.title.size
-#      classes: ['progressBar__title']
-#    textMod = new StateModifier
-#      align: @options.title.align
-#      origin: @options.title.origin
+      size: @layout.progress.size
+
     @activeBar = new ImageSurface
       content: 'images/progress_active.png'
+      classes: @layout.progress.bar.active.classes
     @activeBarMod = new StateModifier
-      align: @options.bar.align
-      origin: @options.bar.origin
+      align: @layout.progress.bar.align
+      origin: @layout.progress.bar.origin
     container.add(@activeBarMod).add @activeBar
+
     inactiveBar = new ImageSurface
       content: 'images/progress_inactive.png'
-      size: @options.bar.size
+      size: @layout.progress.bar.size
     inactiveBarMod = new StateModifier
-      align: @options.bar.align
-      origin: @options.bar.origin
+      align: @layout.progress.bar.align
+      origin: @layout.progress.bar.origin
     container.add(inactiveBarMod).add inactiveBar
-#    container.add(textMod).add text
 
     @percentage = new Surface
-      size: @options.percentage.size
-      classes:  @options.percentage.classes
+      size: @layout.progress.percentage.size
+      classes:  @layout.progress.percentage.classes
     percentageMod = new StateModifier
-      align:  @options.percentage.align
-      origin:  @options.percentage.origin
-      transform:  @options.percentage.transform
+      align:  @layout.progress.percentage.align
+      origin:  @layout.progress.percentage.origin
+      transform:  @layout.progress.percentage.transform
     @add(percentageMod).add @percentage
 
     @add container
 
   increment: (x) =>
-    size = @options.size[0]
+    size = @layout.progress.size[0]
     step = size / @steps
     next = @last + step * x
-    @activeBar.setSize [next, @options.bar.size[1]]
+    debugger
+    @activeBar.setSize [next, @layout.progress.bar.size[1]]
     @percentage.setContent "#{Math.floor(next/size*100)}%"
     @last = next
 
