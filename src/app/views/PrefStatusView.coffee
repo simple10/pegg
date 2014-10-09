@@ -37,6 +37,13 @@ class PrefStatusView extends View
       origin: [0.5, 0.5]
     @add(itemsScrollViewMod).add @itemsScrollView
 
+    bg = new Surface
+      size: [Utils.getViewportWidth(), Utils.getViewportHeight()]
+      transform: Transform.translate null, null, -1
+      classes: ["status__pref__bg"]
+    bg.pipe @itemsScrollView
+    @add bg
+
 #    userPicNode = new RenderNode
 #    @_userPic = new ImageSurface
 #      classes: ['status__preffer__pic']

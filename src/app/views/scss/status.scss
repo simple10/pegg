@@ -41,10 +41,17 @@
 
 .status__pref__choice {
   color: $white;
+  padding-bottom: 16px;
+}
+
+.status__pref__bg {
+  z-index: -10;
 }
 
 .status__pref__question {
   font-size: 22px;
+  color: $white;
+  padding-bottom: 16px;
 }
 
 .status__pref__percentage--red {
@@ -78,15 +85,3 @@
   text-align: center;
   font-size: 25px;
 }
-
-
-​.status__pref__question__parent {
-   display: ​table;
-   margin-bottom: 20px;
- }
-
- .status__pref__question__child {
-   display: table-cell;
-   vertical-align: bottom;
-   color: $white;
- }​

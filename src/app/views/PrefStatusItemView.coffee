@@ -12,8 +12,6 @@ RenderNode = require 'famous/src/core/RenderNode'
 Utils = require 'lib/Utils'
 
 class PrefStatusItemView extends View
-  @DEFAULT_OPTIONS:
-    size: [undefined, Utils.getViewportHeight()]
 
   constructor: (options) ->
     super options
@@ -25,15 +23,10 @@ class PrefStatusItemView extends View
     @_init()
 
   _init: ->
-    container = new ContainerSurface
-      size: [Utils.getViewportWidth(), Utils.getViewportHeight()-300]
-      # properties:
-      #   overflow: 'hidden'
-    container.pipe @._eventOutput
-
     sequentialLayout = new SequentialLayout
       align: [0.5, 0.5]
       origin: [0.5, 0.5]
+      itemSpacing: 10
     sequentialLayout.sequenceFrom @_sequence
 #    sequentialLayout.pipe @._eventOutput
 
@@ -52,7 +45,8 @@ class PrefStatusItemView extends View
 
     @_question = new Surface
       classes: ['status__pref__question']
-      # size: [Utils.getContentWidth()-20, 140]
+      size: [Utils.getContentWidth()-40, true]
+    @_question.pipe @._eventOutput
     questionMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
@@ -66,8 +60,8 @@ class PrefStatusItemView extends View
     while i < 4
       @_addChoice(i)
       i++
-    container.add sequentialLayout
-    @add container
+
+    @add sequentialLayout
 
 
   _addChoice: (i) ->
@@ -86,13 +80,13 @@ class PrefStatusItemView extends View
       origin: [0, 0]
       size: [undefined, 40]
     percentageNode = new RenderNode renderNodeMod
-#      size: [Utils.getViewportWidth()-60, 40]
     percentageBar = new Surface
       classes: classes
+    percentageBar.pipe @._eventOutput
     percentageText = new Surface
       classes: ['status__pref__percentage']
-#      size: [null, 40]
       content: '0%'
+    percentageText.pipe @._eventOutput
     percentageBarMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
@@ -117,35 +111,32 @@ class PrefStatusItemView extends View
       size: [Utils.getViewportWidth()-60, 40]
     choice = new Surface
       classes: ['status__pref__choice']
-      size: [Utils.getViewportWidth()-60, 40]
+      size: [Utils.getViewportWidth()-60, true]
     choiceMod = new StateModifier
-      align: [0, 0.02]
+      align: [0, 0]
       origin: [0, 0]
       transform: Transform.translate 30, null, null
+    choice.pipe @._eventOutput
     choiceNode.add(choiceMod).add choice
     @_sequence.push choiceNode
     @_choices.push choice
 
   load: (data) =>
-    @_question.setContent "
-      <div class='status__pref__question__parent'>
-          <div class='status__pref__question__child'>
-          #{data.question}
-          </div>
-      </div>"
+    @_question.setContent data.question
     @_total = data.total
 
     console.log data
     i = 0
     for id, choice of data.choices
       @_choices[i].setContent choice.choiceText
+      @_choices[i].setSize [Utils.getViewportWidth()-60, true]
       fraction = choice.count / @_total
       width = (Utils.getViewportWidth()-60) * fraction + 3
       @_percentages[i].bar.setSize [ width, 40 ]
       @_percentages[i].text.setContent "#{Math.round fraction * 100}%"
       if fraction < 0.25
         @_percentages[i].textMod.setTransform Transform.translate width + 30, null, null
-      @_question.setSize [Utils.getViewportWidth()-40, 60 + Math.floor(data.question.length/25) * 10]
+      @_question.setSize [Utils.getContentWidth()-40, true]
       if i is 3 then break
       i++
 
