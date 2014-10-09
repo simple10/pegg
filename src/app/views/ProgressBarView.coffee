@@ -24,7 +24,6 @@ class ProgressBarView extends View
     @init()
 
   reset: (steps) =>
-    debugger
     @steps = steps
     @last = 0
     @activeBar.setSize [@last, @layout.progress.bar.size[1]]
@@ -65,7 +64,6 @@ class ProgressBarView extends View
     size = @layout.progress.size[0]
     step = size / @steps
     next = @last + step * x
-    debugger
     @activeBar.setSize [next, @layout.progress.bar.size[1]]
     @percentage.setContent "#{Math.floor(next/size*100)}%"
     @last = next

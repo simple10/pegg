@@ -153,10 +153,10 @@ class PlayStore extends EventHandler
     if page.type is 'card' 
       if page.card.peggeeId? and page.card.peggeeId isnt @_user.id
         @_title = "Pegg #{page.card.firstName}!"
+        MessageActions.show 'tutorial__first_pegg_card'
       else
         @_title = "Pegg yourself!"
-    if @_currentPage is 0
-      MessageActions.show 'first_card'
+        MessageActions.show 'tutorial__first_unpreffed_card'
     @emit Constants.stores.PAGE_CHANGE
 
   _prev: ->

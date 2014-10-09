@@ -11,8 +11,54 @@ PrefCounts = Parse.Object.extend 'PrefCounts'
 Activity = Parse.Object.extend 'Activity'
 User = Parse.Object.extend 'User'
 UserMood = Parse.Object.extend 'UserMood'
+UserSetting = Parse.Object.extend 'UserSetting'
 
 class ParseBackend
+
+  # Get a user's setting
+  #
+  # @param key
+  # @param userId
+  # @param defaultSetting The return value if there isn't currently a setting. Defaults to null.
+  # @return A Parse promise that resolves with the setting's value once the query has completed.
+  getUserSetting: (key, userId, defaultSetting) ->
+    @_getUserSetting arguments...
+      .then (result) =>
+        console.log "getUserSetting: result:", result
+        if result? then result.get 'value' else defaultSetting
+
+  _getUserSetting: (key, userId, defaultSetting) ->
+    console.log "getUserSetting: (#{key}, #{userId}, #{defaultSetting})"
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    query = new Parse.Query UserSetting
+    query.equalTo 'key', key
+    query.equalTo 'user', user
+    query.first()
+
+  # Save a user's setting
+  #
+  # @param key
+  # @param value
+  # @param userId
+  # @return A Parse promise that resolves when save has completed.
+  saveUserSetting: (key, value, userId) ->
+    console.log "saveUserSetting: (#{key}, #{value}, #{userId})"
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    @_getUserSetting key, userId
+      .then (result) =>
+        setting = result
+        if not setting?
+          setting = new Parse.Object 'UserSetting'
+          settingAcl = new Parse.ACL user
+          settingAcl.setPublicReadAccess false
+          setting.set 'ACL', settingAcl
+          setting.set 'key', key
+          setting.set 'user', user
+        setting.set 'value', value
+        setting.save()
+
 
   saveActivity: (message, pic, userId, cardId, peggeeId) ->
     console.log "saveActivity: ", message, pic, userId, cardId, peggeeId
