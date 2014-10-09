@@ -48,7 +48,7 @@ class CommentsView extends View
       surfaces.push comment
       @i++
     if data.length is 0
-      @addCommentText.setContent 'No comments yet... Don\'t be a weeniecorn, say something.'
+      @addCommentText.setContent 'Don\'t be a weeniecorn, say something!'
 
   getCount: ->
     return @i

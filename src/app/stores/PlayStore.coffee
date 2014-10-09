@@ -38,7 +38,7 @@ class PlayStore extends EventHandler
 
   _loadUser: ->
     @_user = UserStore.getUser()
-    @_avatar = UserStore.getAvatar 'type=square'
+    @_avatar = UserStore.getAvatar()
 
   _loadGame: (cards) ->
     @_game = []

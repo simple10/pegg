@@ -59,9 +59,9 @@ module.exports =
         transition: {duration: 500, curve: Easing.outBounce}
       }
     ]
-  fbButton:
+  gpButton:
     size: [Utils.getViewportWidth(), Utils.getViewportHeight() / 4]
-    classes: ['login__button--facebook']
+    classes: ['login__button--google']
     align: [1, 0.45]
     origin: [0, 0]
     states: [
@@ -72,14 +72,14 @@ module.exports =
         transition: {duration: 600, curve: Easing.inOutBack}
       }
     ]
-  gpButton:
+  fbButton:
     size: [Utils.getViewportWidth(), Utils.getViewportHeight() / 4]
-    classes: ['login__button--google']
+    classes: ['login__button--facebook']
     align: [1, 0.7]
     origin: [0, 0]
     states: [
       {
-        delay: 170
+        delay: 150
         align: [0, 0.75]
         transform: Transform.translate null, null, 1
         transition: {duration: 600, curve: Easing.inOutBack}

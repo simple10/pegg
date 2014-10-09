@@ -60,20 +60,20 @@ class LoginView extends View
       origin: @layout.fbButton.origin
     fbButton.on "click", ->
       UserActions.login()
-    gpButton = new Surface
-      size: @layout.gpButton.size
-      content: 'Login with Google'
-      classes: @layout.gpButton.classes
-      properties:
-        lineHeight: "#{@layout.gpButton.size[1]}px"
-    gpButtonMod = new StateModifier
-      align: @layout.gpButton.align
-      origin: @layout.gpButton.origin
+#    gpButton = new Surface
+#      size: @layout.gpButton.size
+#      content: 'Login with Google'
+#      classes: @layout.gpButton.classes
+#      properties:
+#        lineHeight: "#{@layout.gpButton.size[1]}px"
+#    gpButtonMod = new StateModifier
+#      align: @layout.gpButton.align
+#      origin: @layout.gpButton.origin
     @add(fbButtonMod).add fbButton
-    @add(gpButtonMod).add gpButton
+#    @add(gpButtonMod).add gpButton
 
     Utils.animateAll fbButtonMod, @layout.fbButton.states
-    Utils.animateAll gpButtonMod, @layout.gpButton.states
+#    Utils.animateAll gpButtonMod, @layout.gpButton.states
 
 
 

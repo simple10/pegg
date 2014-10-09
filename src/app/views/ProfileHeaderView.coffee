@@ -6,6 +6,8 @@ StateModifier = require 'famous/src/modifiers/StateModifier'
 Transform = require 'famous/src/core/Transform'
 Easing = require 'famous/src/transitions/Easing'
 
+UserStore = require 'stores/UserStore'
+NavActions = require 'actions/NavActions'
 Utils = require 'lib/Utils'
 
 class ProfileHeaderView extends View
@@ -69,6 +71,18 @@ class ProfileHeaderView extends View
       align: [0.5, 0.95]
       origin: [0.5, 1]
 
+    logout = new Surface
+      size: [ 200 , 50 ]
+      content: 'Logout'
+      classes: ['profileHeader', 'profile__logout']
+    logoutMod = new StateModifier
+      align: [0.5, 0.95]
+      origin: [0.5, 1]
+    logout.on 'click', ->
+      UserStore.logout()
+      NavActions.logout()
+
+
     node = @add @mainMod
     # @picContainer.add @pic
     # node.add(picMod).add @picContainer
@@ -76,6 +90,7 @@ class ProfileHeaderView extends View
     node.add(picMod).add @pic
     node.add(nameMod).add @name
     node.add(bioMod).add @bio
+    node.add(logoutMod).add logout
 
     nameMod.setTransform Transform.translate(0, 160, 0), {duration: 500, easing: Easing.outCubic}
 
