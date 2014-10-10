@@ -69,10 +69,10 @@ class HomeMenuView extends View
       align: [0.5, 0.3]
     @add(gridMod).add @grid
 
-    @_addDashboardItem 0, 'images/Unicorn_Rookie1@2x.png' , 'Activity'
-    @_addDashboardItem 0, 'images/Unicorn_Cosmic1@2x.png' , 'Challenges'
-    @_addDashboardItem 0, 'images/Unicorn_Glowing1@2x.png' , 'Stats'
-    @_addDashboardItem 0, 'images/Unicorn_Fire1@2x.png' , 'Peggbox'
+    @_addDashboardItem 0, 'images/Deck-Red.svg' , 'Activity'
+    @_addDashboardItem 0, 'images/Deck-Blue.svg' , 'Challenges'
+    @_addDashboardItem 0, 'images/Deck-Yellow.svg' , 'Stats'
+    @_addDashboardItem 0, 'images/Deck-Green.svg' , 'Peggbox'
 
 
   _addDashboardItem: (id, url, page) =>
@@ -84,7 +84,7 @@ class HomeMenuView extends View
 
     image = new ImageSurface
       content: url
-      size: [Utils.getViewportWidth()/2 - 80, Utils.getViewportWidth()/2 - 80]
+      size: [Utils.getViewportWidth()/2 - 65, Utils.getViewportWidth()/2 - 65]
       classes: ["#{@cssPrefix}__box__image"]
     imageMod = new Modifier
       origin: [0.5, 0]
@@ -97,7 +97,7 @@ class HomeMenuView extends View
       classes: ["#{@cssPrefix}__box__text"]
     textMod = new Modifier
       origin: [0.5, 0.9]
-      align: [0.5, 0.9]
+      align: [0.5, 0.94]
     container.add(textMod).add text
 
     @surfaces.push container
