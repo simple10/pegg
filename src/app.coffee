@@ -1,6 +1,10 @@
 # CSS
 require 'famous/src/core/famous.css'
 
+# Fastclick
+attachFastClick = require 'imports?define=>false!fastclick/lib/fastclick'
+attachFastClick document.body
+
 # Polyfills
 require 'famous-polyfills/functionPrototypeBind'
 require 'famous-polyfills/classList'
@@ -12,10 +16,6 @@ Lightbox = require 'famous/src/views/Lightbox'
 Timer = require 'famous/src/utilities/Timer'
 Transform = require 'famous/src/core/Transform'
 Easing = require 'famous/src/transitions/Easing'
-
-#FastClick = require 'fastclick/lib/fastclick'
-#FastClick = require 'famous/src/inputs/fastclick'
-#FastClick.attach document.body
 
 # Facebook
 Facebook = require 'Facebook'
