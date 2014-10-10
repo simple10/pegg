@@ -37,9 +37,11 @@ class MessageView extends View
 
     @box = new Surface
       classes: ["message__box"]
-    boxMod = new Modifier
+    @boxMod = new Modifier
       size: @layout.box.size
-    @mainNode.add(boxMod).add @box
+      origin: @layout.box.origin
+      align: @layout.box.align
+    @mainNode.add(@boxMod).add @box
 
     @text = new Surface
       content: 'Help Text'
@@ -52,16 +54,23 @@ class MessageView extends View
     @okButton = new Surface
       content: 'OK'
       classes: ["message__button"]
-    okButtonMod = new Modifier
+    @okButtonMod = new Modifier
       size: @layout.okButton.size
       transform: @layout.okButton.transform
     @okButton.on 'click', =>
       @_eventOutput.emit 'hide'
-    @mainNode.add(okButtonMod).add @okButton
+    @mainNode.add(@okButtonMod).add @okButton
 
-  load: (payload) ->
+  load: (payload) =>
     if payload.type is 'loading'
       payload.message = 'loading...'
+      @boxMod.setOpacity 0
+      @okButtonMod.setOpacity 0
+      @text.setClasses ['message__text--loading']
+    else
+      @text.setClasses ["message__text"]
+      @okButtonMod.setOpacity 1
+      @boxMod.setOpacity 1
     @text.setContent payload.message
 
 module.exports = MessageView
