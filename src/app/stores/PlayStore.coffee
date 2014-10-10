@@ -54,7 +54,6 @@ class PlayStore extends EventHandler
       peggeeIds = []
       for own cardId, peggCard of peggCards
         peggeeIds.push peggCard.peggeeId
-        debugger
         if peggCard.hasPreffed.indexOf(UserStore.getUser().id) is -1
           prefCards[cardId] = @_peggToPref peggCard
 
