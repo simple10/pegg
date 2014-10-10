@@ -545,28 +545,27 @@ class ParseBackend
         console.log "Error: " + error.code + " " + error.message
         cb null
 
-  getNewBadges: (userId, cb) ->
+  getNewBadge: (userId) ->
     user = new Parse.Object 'User'
     user.set 'id', userId
-    userBadgesQuery = new Parse.Query 'UserBadges'
-    userBadgesQuery.equalTo 'user', user
-    userBadgesQuery.equalTo 'hasViewed', false
-    userBadgesQuery.find
-      success: (userBadges) ->
-        userBadgesIDs = []
-        for userBadge in userBadges
-          userBadgesIDs.push userBadge.get('badge').id
-        badgesQuery = new Parse.Query 'Badges'
-        badgesQuery.containedIn 'objectId', userBadgesIDs
-        badgesQuery.find
-          success: (badges) =>
-            if badges.length
-              cb badges
-            else
-              cb null
-          error: (error) ->
-            console.log "Error: " + error.code + " " + error.message
-            cb null
+    userBadgeQuery = new Parse.Query 'UserBadges'
+    userBadgeQuery.equalTo 'user', user
+    userBadgeQuery.equalTo 'hasViewed', false
+    userBadgeQuery.first()
+      .then (userBadge) ->
+        if userBadge?
+          badgesQuery = new Parse.Query 'Badges'
+          badgesQuery.equalTo 'objectId', userBadge.get('badge').id
+          badgesQuery.first()
+            .then (result) =>
+              badge =
+                userBadgeId: userBadge.id
+                image: result.get 'image'
+                name: result.get 'name'
+                criteria: result.get 'criteria'
+              if result? then badge else null
+        else
+          null
 
   getTopPeggers: (peggeeIds) ->
     peggees = []
@@ -742,20 +741,14 @@ class ParseBackend
 #      cardCat.save()
 #      cb('catgories saved.')
 
-  saveBadgeView: (badges, userId, cb) ->
-    user = new Parse.Object 'User'
-    user.set 'id', userId
+  saveBadgeView: (userBadgeId) ->
     userBadgesQuery = new Parse.Query 'UserBadges'
-    userBadgesQuery.equalTo 'user', user
-    userBadgesQuery.containedIn 'badge', badges
-    userBadgesQuery.find
-      success: (userBadges) ->
-        for userBadge in userBadges
-          userBadge.set 'hasViewed', true
-          userBadge.save()
-        cb("#{userBadges.length} user badges saved.")
-      error: ->
-        cb('saving badges failed.')
+#    userBadgesQuery.equalTo 'user', user
+    userBadgesQuery.equalTo 'objectId', userBadgeId
+    userBadgesQuery.first()
+      .then (userBadge) ->
+        userBadge.set 'hasViewed', true
+        userBadge.save()
 
 parse = new ParseBackend()
 

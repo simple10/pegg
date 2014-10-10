@@ -78,49 +78,49 @@ class PlayBadgesView extends View
     @shareNode.add(shareMod).add share
 
     next.on 'click', =>
-      PlayActions.badgesViewed(@badges)
+      PlayActions.badgesViewed(@badge)
 
     @load()
 
-  load: (badges) ->
-    return unless badges?
-    @badges = badges
+  load: (badge) ->
+    return unless badge?
+    @badge = badge
     @_sequence.length = 0
 
-    someNewBadges = "a new badge"
-    if badges.length > 1 
-      someNewBadges = "new badges"
-    @title.setContent "Congratulations! You've earned " + someNewBadges + "!"
+#    someNewBadges = "a new badge"
+#    if badges.length > 1
+#      someNewBadges = "new badges"
+    @title.setContent "Congratulations! <br/> You've leveled up, unicorn."
     @_sequence.push @titleNode
 
-    for badge in (badges or [])
-      picNode = new RenderNode
-      pic = new ImageSurface
-        classes: ['status__pegg__pic']
-        size: [150, 150]
-        properties:
-          borderRadius: '200px'
-      picMod = new StateModifier
-        align: [0.5, 0]
-        origin: [0.5, 0]
-      picNode.add(picMod).add pic
-      pic.pipe @scrollview
-      pic.setContent badge.get 'image'
-      @_sequence.push picNode
+#    for badge in (badges or [])
+    picNode = new RenderNode
+    pic = new ImageSurface
+      classes: ['status__pegg__pic']
+      size: [150, 150]
+      properties:
+        borderRadius: '200px'
+    picMod = new StateModifier
+      align: [0.5, 0]
+      origin: [0.5, 0]
+    picNode.add(picMod).add pic
+    pic.pipe @scrollview
+    pic.setContent @badge.image
+    @_sequence.push picNode
 
-      nameNode = new RenderNode
-      name = new Surface
-        classes: ['status__pegg__title']
-        size: [Utils.getViewportWidth(), 120]
-        properties:
-          marginTop: '20px'
-      nameMod = new StateModifier
-        align: [0.5, 0]
-        origin: [0.5, 0]
-      nameNode.add(name).add nameMod
-      name.pipe @scrollview
-      name.setContent badge.get 'name'
-      @_sequence.push nameNode
+    nameNode = new RenderNode
+    name = new Surface
+      classes: ['status__pegg__title']
+      size: [Utils.getViewportWidth(), 120]
+      properties:
+        marginTop: '20px'
+    nameMod = new StateModifier
+      align: [0.5, 0]
+      origin: [0.5, 0]
+    nameNode.add(name).add nameMod
+    name.pipe @scrollview
+    name.setContent @badge.name
+    @_sequence.push nameNode
 
     @_sequence.push @shareNode
     @_sequence.push @nextNode

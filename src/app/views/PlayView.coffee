@@ -25,7 +25,7 @@ class PlayView extends View
 
   initListeners: ->
     PlayStore.on Constants.stores.PAGE_CHANGE, @loadPage
-    PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadges
+    PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadge
     PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods
 
   initViews: ->
@@ -65,8 +65,8 @@ class PlayView extends View
     @pickMood.load PlayStore.getMoods()
     @lightbox.show @pickMood
 
-  loadBadges: =>
-    @badgesView.load PlayStore.getBadges()
+  loadBadge: =>
+    @badgesView.load PlayStore.getBadge()
     @lightbox.show @badgesView
 
   loadPage: =>

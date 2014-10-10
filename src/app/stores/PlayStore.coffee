@@ -22,7 +22,7 @@ class PlayStore extends EventHandler
   # _playerId = ""
   # _play = data[0]   # the cards to play
   # _status = data[1]   # the status screen to display
-  # _badges = []
+  _badge = {}
 
   _loadMoodGame: ->
     @_fetchPeggs()
@@ -136,32 +136,35 @@ class PlayStore extends EventHandler
         card.choices = choices
         card
 
-  _fetchNewBadges: (userId) ->
-    DB.getNewBadges(userId,
-      (badges) =>
-        if badges?
-          @_badges = badges
+  _fetchNewBadge: (userId) ->
+    DB.getNewBadge userId
+      .then (badge) =>
+        if badge?
+          @_badge = badge
           @emit Constants.stores.BADGE_CHANGE
+          true
         else
-          @loadStatus()
-      )
+          false
 
   _next: ->
-    @_currentPage++
-    @_fails = 0
-    page = @getCurrentPage()
-    if page.type is 'card' 
-      if page.card.peggeeId? and page.card.peggeeId isnt @_user.id
-        @_title = "Pegg #{page.card.firstName}!"
-        MessageActions.show 'tutorial__first_pegg_card'
-      else
-        @_title = "Pegg yourself!"
-        MessageActions.show 'tutorial__first_unpreffed_card'
-    @emit Constants.stores.PAGE_CHANGE
+    @_fetchNewBadge @_user.id
+      .then (isBadge) =>
+        if !isBadge
+          @_currentPage++
+          @_fails = 0
+          page = @getCurrentPage()
+          if page.type is 'card'
+            if page.card.peggeeId? and page.card.peggeeId isnt @_user.id
+              @_title = "Pegg #{page.card.firstName}!"
+              MessageActions.show 'tutorial__first_pegg_card'
+            else
+              @_title = "Pegg yourself!"
+              MessageActions.show 'tutorial__first_unpreffed_card'
+          @emit Constants.stores.PAGE_CHANGE
 
   _prev: ->
     @_currentPage--
-    page = @getCurrentPage()
+
 
   _pegg: (peggeeId, cardId, choiceId, answerId) ->
     console.log "save Pegg: card: " + cardId + " choice: " + choiceId
@@ -179,6 +182,7 @@ class PlayStore extends EventHandler
         else
           @_fails++
           @emit Constants.stores.CARD_FAIL
+
 
   _pref: (cardId, choiceId, plug, thumb) ->
     console.log "save Pref: card: " + cardId + " choice: " + choiceId
@@ -261,9 +265,9 @@ class PlayStore extends EventHandler
         # @emit Constants.stores.MOOD_CHANGE
         @_saveMoodActivity(moodId, moodText, moodUrl)
 
-  _badgesViewed: (badges) ->
-    # mark the current badges as viewed
-    DB.saveBadgeView badges, @_user.id
+  _badgesViewed: (badge) ->
+    # mark the current badge as viewed
+    DB.saveBadgeView badge.userBadgeId
       .fail @_failHandler
       .done =>
         @_next()
@@ -286,6 +290,9 @@ class PlayStore extends EventHandler
 
   getMoods: ->
     @_moods
+
+  getBadge: ->
+    @_badge
 
   getGameState: ->
     mood: @_mood
