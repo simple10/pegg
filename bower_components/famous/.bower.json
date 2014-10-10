@@ -1,6 +1,6 @@
 {
   "name": "famous",
-  "version": "0.3.0-rc",
+  "version": "0.3.0",
   "homepage": "https://github.com/Famous/famous",
   "authors": [
     "Adam Cmiel <adam@famo.us>",
@@ -81,13 +81,13 @@
     "test",
     "tests"
   ],
-  "_release": "0.3.0-rc",
+  "_release": "0.3.0",
   "_resolution": {
     "type": "version",
-    "tag": "0.3.0-rc",
-    "commit": "2152afd66b541c996e0b90d432527b7f8a405c54"
+    "tag": "0.3.0",
+    "commit": "b63994b1b1dd83e5094fec11109c9d8bc2e31e2e"
   },
   "_source": "https://github.com/Famous/famous.git",
-  "_target": "0.3.0-rc",
+  "_target": "0.3.0",
   "_originalSource": "git+https://github.com/Famous/famous.git"
 }
