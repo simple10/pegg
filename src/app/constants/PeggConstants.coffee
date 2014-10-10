@@ -15,6 +15,8 @@ module.exports =
     LOAD_CATEGORIES: null
     LOAD_APP: null
     LOAD_LINK: null
+    LOADING_START: null
+    LOADING_DONE: null
     LOGIN: null
     LOGOUT: null
     MENU_SELECT: null
@@ -49,6 +51,7 @@ module.exports =
     CATEGORIES_CHANGE: null
     CHOICES_CHANGE: null
     COMMENTS_CHANGE: null
+    HIDE_MESSAGE: null
     LOAD_ERROR: null
     LOGIN_CHANGE: null
     MENU_CHANGE: null

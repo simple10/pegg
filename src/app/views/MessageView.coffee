@@ -59,7 +59,9 @@ class MessageView extends View
       @_eventOutput.emit 'hide'
     @mainNode.add(okButtonMod).add @okButton
 
-  load: ->
-    @text.setContent MessageStore.getMessage()
+  load: (payload) ->
+    if payload.type is 'loading'
+      payload.message = 'loading...'
+    @text.setContent payload.message
 
 module.exports = MessageView

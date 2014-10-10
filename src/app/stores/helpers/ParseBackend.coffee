@@ -218,11 +218,10 @@ class ParseBackend
     card.set 'id', cardId
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
-    
+
     prefCount = new Parse.Object 'PrefCounts'
     prefCount.set 'card', card
     prefCount.set 'choice', choice
-    
     @getPrefCount choiceId
       .then (res) ->
         # if it already exists... update it

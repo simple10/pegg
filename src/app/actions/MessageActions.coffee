@@ -7,4 +7,14 @@ MessageActions =
       actionType: Constants.SHOW_MESSAGE
       type: type
 
+  loading: (context) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.LOADING_START
+      context: context
+
+  doneLoading: (context) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.LOADING_DONE
+      context: context
+
 module.exports = MessageActions

@@ -77,6 +77,7 @@ class AppView extends View
     AppStateStore.on Constants.stores.MENU_CHANGE, @togglePage
     SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
     MessageStore.on Constants.stores.SHOW_MESSAGE, @showMessage
+    MessageStore.on Constants.stores.HIDE_MESSAGE, @hideMessage
 
   initLayout: ->
     @layout = new HeaderFooterLayout
@@ -133,9 +134,9 @@ class AppView extends View
       inTransition: { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
 
-  showMessage: =>
+  showMessage: (payload) =>
     @messageRC.show @messageView
-    @messageView.load()
+    @messageView.load(payload)
 
   hideMessage: =>
     @messageRC.hide @messageView

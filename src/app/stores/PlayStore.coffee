@@ -25,12 +25,14 @@ class PlayStore extends EventHandler
   _badge = {}
 
   _loadMoodGame: ->
+    MessageActions.loading 'game'
     @_fetchPeggs()
       .fail @_failHandler
       .done (cards...) =>
         @_loadGame cards
 
   _loadPeggeeGame: ->
+    MessageActions.loading 'game'
     @_fetchPeggs()
       .fail @_failHandler
       .done (cards...) =>
@@ -65,7 +67,11 @@ class PlayStore extends EventHandler
       dataLoaded.push DB.getTopPeggers peggeeIds
 
       Parse.Promise.when dataLoaded
-        .done @_sortGame
+        .then @_sortGame
+        .done =>
+          MessageActions.doneLoading 'game'
+          @emit Constants.stores.GAME_LOADED
+          @_next()
 
     else
       # if no pegg cards, fetch unpreffed cards for mood & pref popularities
@@ -93,8 +99,6 @@ class PlayStore extends EventHandler
           @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]} # pref popularity
 
     @_game.push {type: 'done'} # done screen
-    @emit Constants.stores.GAME_LOADED
-    @_next()
 
 
   _peggToPref: (card) ->

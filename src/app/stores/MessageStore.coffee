@@ -15,18 +15,20 @@ class MessageStore extends EventEmitter
     tutorial__first_pegg_card: "Time to rally! Tap each card to answer questions about your friends."
 
   _show: (type) ->
-    @_type = type
     DB.getUserSetting "show:#{type}", UserStore.getUser().id, true
       .then (showMessage) =>
         if showMessage
-          @emit Constants.stores.SHOW_MESSAGE
+          @emit Constants.stores.SHOW_MESSAGE, type: type, message: @_messages[type]
           @_dismiss type
 
   _dismiss: (type) ->
     DB.saveUserSetting "show:#{type}", false, UserStore.getUser().id
 
-  getMessage: ->
-    @_messages[@_type]
+  _loading: (context) ->
+    @emit Constants.stores.SHOW_MESSAGE, type: 'loading'
+
+  _doneLoading: (context) ->
+    @emit Constants.stores.HIDE_MESSAGE
 
 messages = new MessageStore
 
@@ -39,5 +41,9 @@ AppDispatcher.register (payload) ->
   switch action.actionType
     when Constants.actions.SHOW_MESSAGE
       messages._show action.type
+    when Constants.actions.LOADING_START
+      messages._loading action.context
+    when Constants.actions.LOADING_DONE
+      messages._doneLoading action.context
 
 module.exports = messages
