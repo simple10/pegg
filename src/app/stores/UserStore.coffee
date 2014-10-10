@@ -94,8 +94,7 @@ class UserStore extends EventEmitter
     DB.getProfileActivity @getUser().id, filter, (activity) =>
       @_activity = activity
       @emit Constants.stores.PROFILE_ACTIVITY_CHANGE
-
-    @emit Constants.stores.CHANGE
+      @emit Constants.stores.CHANGE
 
   logout: ->
     FB.logout()

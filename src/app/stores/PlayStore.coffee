@@ -38,10 +38,6 @@ class PlayStore extends EventHandler
       .done (cards...) =>
         @_loadGame cards
 
-  _loadUser: ->
-    @_user = UserStore.getUser()
-    @_avatar = UserStore.getAvatar()
-
   _loadGame: (cards) ->
     @_game = []
     @_currentPage = -1
@@ -58,7 +54,7 @@ class PlayStore extends EventHandler
       peggeeIds = []
       for own cardId, peggCard of peggCards
         peggeeIds.push peggCard.peggeeId
-        if peggCard.hasPreffed.indexOf @_user.id is -1
+        if peggCard.hasPreffed.indexOf UserStore.getUser().id is -1
           prefCards[cardId] = @_peggToPref peggCard
 
       dataLoaded.push Parse.Promise.as prefCards
@@ -83,6 +79,10 @@ class PlayStore extends EventHandler
           DB.getPrefPopularities (prefCards)
             .then (prefPops) =>
               @_sortGame(prefCards, prefPops)
+            .done =>
+              MessageActions.doneLoading 'game'
+              @emit Constants.stores.GAME_LOADED
+              @_next()
 
   _sortGame: (prefCards, prefPopularities, peggCards, topPeggers) =>
     if arguments.length is 2
@@ -104,19 +104,19 @@ class PlayStore extends EventHandler
   _peggToPref: (card) ->
     card = _.clone card
     delete card.answer
-    card.peggeeId = @_user.id
-    card.firstName = @_user.get 'first_name'
-    card.pic = @_avatar
+    card.peggeeId = UserStore.getUser().id
+    card.firstName = UserStore.getUser().get 'first_name'
+    card.pic = UserStore.getAvatar()
     card
 
   _fetchPrefs: =>
     # Gets unanswered preferences: cards the user answers about himself
-    DB.getUnpreffedCards @_size, @_mood, @_user
+    DB.getUnpreffedCards @_size, @_mood, UserStore.getUser()
       .then @_loadAncillaryDatums
 
   _fetchPeggs: =>
     # Gets unpegged preferences: cards the user answers about a friend
-    DB.getPeggCards @_size, @_user, @_mood.id, @_peggee.id
+    DB.getPeggCards @_size, UserStore.getUser(), @_mood.id, @_peggee.id
       .then @_loadAncillaryDatums
 
   _loadAncillaryDatums: (cards) =>
@@ -151,14 +151,14 @@ class PlayStore extends EventHandler
           false
 
   _next: ->
-    @_fetchNewBadge @_user.id
+    @_fetchNewBadge UserStore.getUser().id
       .then (isBadge) =>
         if !isBadge
           @_currentPage++
           @_fails = 0
           page = @getCurrentPage()
           if page.type is 'card'
-            if page.card.peggeeId? and page.card.peggeeId isnt @_user.id
+            if page.card.peggeeId? and page.card.peggeeId isnt UserStore.getUser().id
               @_title = "Pegg #{page.card.firstName}!"
               MessageActions.show 'tutorial__first_pegg_card'
             else
@@ -174,13 +174,13 @@ class PlayStore extends EventHandler
     console.log "save Pegg: card: " + cardId + " choice: " + choiceId
 
     # Save pegg
-    DB.savePegg peggeeId, cardId, choiceId, answerId, @_user.id
+    DB.savePegg peggeeId, cardId, choiceId, answerId, UserStore.getUser().id
       .fail @_failHandler
       .done =>
         if choiceId is answerId
           points = 10 - 3 * @_fails
           @emit Constants.stores.CARD_WIN, points
-          DB.savePoints @_user.id, peggeeId, points
+          DB.savePoints UserStore.getUser().id, peggeeId, points
             .fail @_failHandler
           @_savePeggActivity cardId, peggeeId, @_fails + 1
         else
@@ -197,7 +197,7 @@ class PlayStore extends EventHandler
 #    sPlug = JSON.stringify plug
 #    sThumb = JSON.stringify thumb
 
-    DB.savePref cardId, choiceId, plug, thumb, @_user.id, @_mood.id
+    DB.savePref cardId, choiceId, plug, thumb, UserStore.getUser().id, @_mood.id
       .fail @_failHandler
       .done =>
         DB.savePrefCount cardId, choiceId
@@ -206,22 +206,22 @@ class PlayStore extends EventHandler
         @emit Constants.stores.PREF_SAVED
 
   _saveMoodActivity: (moodId, moodText, moodUrl) ->
-    message = "#{@_user.get 'first_name'} is feeling #{moodText}"
-    DB.saveActivity message, moodUrl, @_user.id
+    message = "#{UserStore.getUser().get 'first_name'} is feeling #{moodText}"
+    DB.saveActivity message, moodUrl, UserStore.getUser().id
       .fail @_failHandler
 
   _saveNewCardActivity: (cardId, question, pic) ->
-    message = "#{@_user.get 'first_name'} created card: #{question}"
-    DB.saveActivity message, pic, @_user.id, cardId
+    message = "#{UserStore.getUser().get 'first_name'} created card: #{question}"
+    DB.saveActivity message, pic, UserStore.getUser().id, cardId
       .fail @_failHandler
 
   _savePrefActivity: (cardId) ->
-    DB.getPrefCard cardId, @_user.id
+    DB.getPrefCard cardId, UserStore.getUser().id
       .fail @_failHandler
       .done (prefCard) =>
         himHerSelf = if prefCard.gender is 'male' then 'himself' else 'herself'
         message = "#{prefCard.firstName} pegged #{himHerSelf}: #{prefCard.question}"
-        DB.saveActivity message, prefCard.pic, @_user.id, cardId, @_user.id
+        DB.saveActivity message, prefCard.pic, UserStore.getUser().id, cardId, UserStore.getUser().id
           .fail @_failHandler
 
   _savePeggActivity: (cardId, peggeeId, tries) ->
@@ -229,20 +229,20 @@ class PlayStore extends EventHandler
       .fail @_failHandler
       .done (prefCard) =>
         trys = if tries is 1 then 'try' else 'tries'
-        message = "#{@_user.get 'first_name'} pegged #{prefCard.firstName} in #{tries} #{trys}: #{prefCard.question}"
-        DB.saveActivity message, @_avatar, @_user.id, cardId, peggeeId
+        message = "#{UserStore.getUser().get 'first_name'} pegged #{prefCard.firstName} in #{tries} #{trys}: #{prefCard.question}"
+        DB.saveActivity message, UserStore.getAvatar(), UserStore.getUser().id, cardId, peggeeId
           .fail @_failHandler
 
   _saveCommentActivity: (comment, peggeeId, cardId) ->
-    message = "#{@_user.get 'first_name'} commented: #{comment}"
-    DB.saveActivity message, @_avatar, @_user.id, cardId, peggeeId
+    message = "#{UserStore.getUser().get 'first_name'} commented: #{comment}"
+    DB.saveActivity message, UserStore.getAvatar(), UserStore.getUser().id, cardId, peggeeId
       .fail @_failHandler
 
   _plug: (cardId, full, thumb) ->
     console.log "save Plug: card: " + cardId + " image: " + full
-    @_user.id = UserStore.getUser().id
+    UserStore.getUser().id = UserStore.getUser().id
 
-    DB.savePlug cardId, full, thumb, @_user.id
+    DB.savePlug cardId, full, thumb, UserStore.getUser().id
       .fail @_failHandler
       .done =>
         @emit Constants.stores.PLUG_SAVED
@@ -252,7 +252,7 @@ class PlayStore extends EventHandler
 
   _comment: (comment, cardId, peggeeId) ->
     console.log "comment: #{comment}  peggee: #{peggeeId}  card: #{cardId}"
-    DB.saveComment comment, cardId, peggeeId, @_user.id, @_avatar
+    DB.saveComment comment, cardId, peggeeId, UserStore.getUser().id, UserStore.getAvatar()
       .fail @_failHandler
       .done (res) =>
         @getCurrentPage().card.comments.unshift res
@@ -262,7 +262,7 @@ class PlayStore extends EventHandler
     console.log "moodId: " + moodId
     @_mood = { text: moodText, id: moodId, url: moodUrl }
     @_loadMoodGame moodId
-    DB.saveMood moodId, @_user.id
+    DB.saveMood moodId, UserStore.getUser().id
       .fail @_failHandler
       .done =>
         # TODO change playnav to do this on game change:
@@ -318,7 +318,6 @@ AppDispatcher.register (payload) ->
   # Pay attention to events relevant to PlayStore
   switch action.actionType
     when Constants.actions.LOAD_APP
-      play._loadUser()
       play._fetchMoods()
     when Constants.actions.PEGG_SUBMIT
       play._pegg action.peggeeId, action.card, action.choice, action.answer
