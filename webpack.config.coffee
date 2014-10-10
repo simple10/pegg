@@ -19,8 +19,12 @@ module.exports =
   entry:
     bundle: './src/app'
 
-  devtool: 'eval'
-  # devtool: 'source-map'
+  # http://webpack.github.io/docs/configuration.html#devtool
+  # eval does not work with code that has 'use strict'; like fastclick.js.
+  # eval is not considered production safe.
+  # source-map with coffeescript was broken for awhile but seems to be working fine with chrome.
+  #devtool: 'eval'
+  devtool: 'source-map'
 
   output:
     path: path.join(__dirname, 'dist')

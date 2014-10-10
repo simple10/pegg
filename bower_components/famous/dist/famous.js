@@ -7,7 +7,7 @@
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/Entity',['require','exports','module'],function(require, exports, module) {
+define('famous/core/Entity',['require','exports','module'],function(require, exports, module) {
     /**
      * A singleton that maintains a global registry of Surfaces.
      *   Private.
@@ -85,7 +85,7 @@ define('famous/src/core/Entity',['require','exports','module'],function(require,
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/Transform',['require','exports','module'],function(require, exports, module) {
+define('famous/core/Transform',['require','exports','module'],function(require, exports, module) {
 
     /**
      *  A high-performance static matrix math library used to calculate
@@ -768,7 +768,7 @@ define('famous/src/core/Transform',['require','exports','module'],function(requi
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/SpecParser',['require','exports','module','./Transform'],function(require, exports, module) {
+define('famous/core/SpecParser',['require','exports','module','./Transform'],function(require, exports, module) {
     var Transform = require('./Transform');
 
     /**
@@ -945,7 +945,7 @@ define('famous/src/core/SpecParser',['require','exports','module','./Transform']
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/RenderNode',['require','exports','module','./Entity','./SpecParser'],function(require, exports, module) {
+define('famous/core/RenderNode',['require','exports','module','./Entity','./SpecParser'],function(require, exports, module) {
     var Entity = require('./Entity');
     var SpecParser = require('./SpecParser');
 
@@ -1113,7 +1113,7 @@ define('famous/src/core/RenderNode',['require','exports','module','./Entity','./
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/EventEmitter',['require','exports','module'],function(require, exports, module) {
+define('famous/core/EventEmitter',['require','exports','module'],function(require, exports, module) {
     /**
      * EventEmitter represents a channel for events.
      *
@@ -1209,7 +1209,7 @@ define('famous/src/core/EventEmitter',['require','exports','module'],function(re
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/EventHandler',['require','exports','module','./EventEmitter'],function(require, exports, module) {
+define('famous/core/EventHandler',['require','exports','module','./EventEmitter'],function(require, exports, module) {
     var EventEmitter = require('./EventEmitter');
 
     /**
@@ -1416,7 +1416,7 @@ define('famous/src/core/EventHandler',['require','exports','module','./EventEmit
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/ElementAllocator',['require','exports','module'],function(require, exports, module) {
+define('famous/core/ElementAllocator',['require','exports','module'],function(require, exports, module) {
 
     /**
      * Internal helper object to Context that handles the process of
@@ -1523,7 +1523,7 @@ define('famous/src/core/ElementAllocator',['require','exports','module'],functio
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/utilities/Utility',['require','exports','module'],function(require, exports, module) {
+define('famous/utilities/Utility',['require','exports','module'],function(require, exports, module) {
     /**
      * This namespace holds standalone functionality.
      *  Currently includes name mapping for transition curves,
@@ -1645,7 +1645,7 @@ define('famous/src/utilities/Utility',['require','exports','module'],function(re
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/transitions/MultipleTransition',['require','exports','module','../utilities/Utility'],function(require, exports, module) {
+define('famous/transitions/MultipleTransition',['require','exports','module','../utilities/Utility'],function(require, exports, module) {
     var Utility = require('../utilities/Utility');
 
     /**
@@ -1723,7 +1723,7 @@ define('famous/src/transitions/MultipleTransition',['require','exports','module'
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/transitions/TweenTransition',['require','exports','module'],function(require, exports, module) {
+define('famous/transitions/TweenTransition',['require','exports','module'],function(require, exports, module) {
 
     /**
      *
@@ -2150,7 +2150,7 @@ define('famous/src/transitions/TweenTransition',['require','exports','module'],f
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/transitions/Transitionable',['require','exports','module','./MultipleTransition','./TweenTransition'],function(require, exports, module) {
+define('famous/transitions/Transitionable',['require','exports','module','./MultipleTransition','./TweenTransition'],function(require, exports, module) {
     var MultipleTransition = require('./MultipleTransition');
     var TweenTransition = require('./TweenTransition');
 
@@ -2373,7 +2373,7 @@ define('famous/src/transitions/Transitionable',['require','exports','module','./
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/Context',['require','exports','module','./RenderNode','./EventHandler','./ElementAllocator','./Transform','../transitions/Transitionable'],function(require, exports, module) {
+define('famous/core/Context',['require','exports','module','./RenderNode','./EventHandler','./ElementAllocator','./Transform','../transitions/Transitionable'],function(require, exports, module) {
     var RenderNode = require('./RenderNode');
     var EventHandler = require('./EventHandler');
     var ElementAllocator = require('./ElementAllocator');
@@ -2607,7 +2607,7 @@ define('famous/src/core/Context',['require','exports','module','./RenderNode','.
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/ElementOutput',['require','exports','module','./Entity','./EventHandler','./Transform'],function(require, exports, module) {
+define('famous/core/ElementOutput',['require','exports','module','./Entity','./EventHandler','./Transform'],function(require, exports, module) {
     var Entity = require('./Entity');
     var EventHandler = require('./EventHandler');
     var Transform = require('./Transform');
@@ -2936,7 +2936,7 @@ define('famous/src/core/ElementOutput',['require','exports','module','./Entity',
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/OptionsManager',['require','exports','module','./EventHandler'],function(require, exports, module) {
+define('famous/core/OptionsManager',['require','exports','module','./EventHandler'],function(require, exports, module) {
     var EventHandler = require('./EventHandler');
 
     /**
@@ -3138,7 +3138,7 @@ define('famous/src/core/OptionsManager',['require','exports','module','./EventHa
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/Engine',['require','exports','module','./Context','./EventHandler','./OptionsManager'],function(require, exports, module) {
+define('famous/core/Engine',['require','exports','module','./Context','./EventHandler','./OptionsManager'],function(require, exports, module) {
 
     /**
      * The singleton object initiated upon process
@@ -3519,7 +3519,7 @@ define('famous/src/core/Engine',['require','exports','module','./Context','./Eve
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/Surface',['require','exports','module','./ElementOutput'],function(require, exports, module) {
+define('famous/core/Surface',['require','exports','module','./ElementOutput'],function(require, exports, module) {
     var ElementOutput = require('./ElementOutput');
 
     /**
@@ -4011,7 +4011,7 @@ define('famous/src/core/Surface',['require','exports','module','./ElementOutput'
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/Group',['require','exports','module','./Context','./Transform','./Surface'],function(require, exports, module) {
+define('famous/core/Group',['require','exports','module','./Context','./Transform','./Surface'],function(require, exports, module) {
     var Context = require('./Context');
     var Transform = require('./Transform');
     var Surface = require('./Surface');
@@ -4136,7 +4136,7 @@ define('famous/src/core/Group',['require','exports','module','./Context','./Tran
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/transitions/TransitionableTransform',['require','exports','module','./Transitionable','../core/Transform','../utilities/Utility'],function(require, exports, module) {
+define('famous/transitions/TransitionableTransform',['require','exports','module','./Transitionable','../core/Transform','../utilities/Utility'],function(require, exports, module) {
     var Transitionable = require('./Transitionable');
     var Transform = require('../core/Transform');
     var Utility = require('../utilities/Utility');
@@ -4367,7 +4367,7 @@ define('famous/src/transitions/TransitionableTransform',['require','exports','mo
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/Modifier',['require','exports','module','./Transform','../transitions/Transitionable','../transitions/TransitionableTransform'],function(require, exports, module) {
+define('famous/core/Modifier',['require','exports','module','./Transform','../transitions/Transitionable','../transitions/TransitionableTransform'],function(require, exports, module) {
     var Transform = require('./Transform');
 
     /* TODO: remove these dependencies when deprecation complete */
@@ -4802,7 +4802,7 @@ define('famous/src/core/Modifier',['require','exports','module','./Transform','.
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/Scene',['require','exports','module','./Transform','./Modifier','./RenderNode'],function(require, exports, module) {
+define('famous/core/Scene',['require','exports','module','./Transform','./Modifier','./RenderNode'],function(require, exports, module) {
     var Transform = require('./Transform');
     var Modifier = require('./Modifier');
     var RenderNode = require('./RenderNode');
@@ -4982,7 +4982,7 @@ define('famous/src/core/Scene',['require','exports','module','./Transform','./Mo
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/View',['require','exports','module','./EventHandler','./OptionsManager','./RenderNode','../utilities/Utility'],function(require, exports, module) {
+define('famous/core/View',['require','exports','module','./EventHandler','./OptionsManager','./RenderNode','../utilities/Utility'],function(require, exports, module) {
     var EventHandler = require('./EventHandler');
     var OptionsManager = require('./OptionsManager');
     var RenderNode = require('./RenderNode');
@@ -5093,7 +5093,7 @@ define('famous/src/core/View',['require','exports','module','./EventHandler','./
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/core/ViewSequence',['require','exports','module'],function(require, exports, module) {
+define('famous/core/ViewSequence',['require','exports','module'],function(require, exports, module) {
 
     /**
      * Helper object used to iterate through items sequentially. Used in
@@ -5432,7 +5432,7 @@ define('famous/src/core/ViewSequence',['require','exports','module'],function(re
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/events/EventArbiter',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
+define('famous/events/EventArbiter',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
     var EventHandler = require('../core/EventHandler');
 
     /**
@@ -5517,7 +5517,7 @@ define('famous/src/events/EventArbiter',['require','exports','module','../core/E
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/events/EventFilter',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
+define('famous/events/EventFilter',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
     var EventHandler = require('../core/EventHandler');
 
     /**
@@ -5575,7 +5575,7 @@ define('famous/src/events/EventFilter',['require','exports','module','../core/Ev
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/events/EventMapper',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
+define('famous/events/EventMapper',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
     var EventHandler = require('../core/EventHandler');
 
     /**
@@ -5622,7 +5622,7 @@ define('famous/src/events/EventMapper',['require','exports','module','../core/Ev
     module.exports = EventMapper;
 });
 
-define('famous/src/inputs/Accumulator',['require','exports','module','../core/EventHandler','../transitions/Transitionable'],function(require, exports, module) {
+define('famous/inputs/Accumulator',['require','exports','module','../core/EventHandler','../transitions/Transitionable'],function(require, exports, module) {
     var EventHandler = require('../core/EventHandler');
     var Transitionable = require('../transitions/Transitionable');
 
@@ -5684,7 +5684,7 @@ define('famous/src/inputs/Accumulator',['require','exports','module','../core/Ev
     module.exports = Accumulator;
 });
 
-define('famous/src/inputs/DesktopEmulationMode',['require','exports','module'],function(require, exports, module) {
+define('famous/inputs/DesktopEmulationMode',['require','exports','module'],function(require, exports, module) {
     var hasTouch = 'ontouchstart' in window;
 
     function kill(type) {
@@ -5711,7 +5711,7 @@ define('famous/src/inputs/DesktopEmulationMode',['require','exports','module'],f
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/inputs/FastClick',['require','exports','module'],function(require, exports, module) {
+define('famous/inputs/FastClick',['require','exports','module'],function(require, exports, module) {
     /**
      * FastClick is an override shim which maps event pairs of
      *   'touchstart' and 'touchend' which differ by less than a certain
@@ -5779,7 +5779,7 @@ define('famous/src/inputs/FastClick',['require','exports','module'],function(req
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/inputs/GenericSync',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
+define('famous/inputs/GenericSync',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
 
     var EventHandler = require('../core/EventHandler');
 
@@ -5905,7 +5905,7 @@ define('famous/src/inputs/GenericSync',['require','exports','module','../core/Ev
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/inputs/MouseSync',['require','exports','module','../core/EventHandler','../core/OptionsManager'],function(require, exports, module) {
+define('famous/inputs/MouseSync',['require','exports','module','../core/EventHandler','../core/OptionsManager'],function(require, exports, module) {
     var EventHandler = require('../core/EventHandler');
     var OptionsManager = require('../core/OptionsManager');
 
@@ -6082,7 +6082,7 @@ define('famous/src/inputs/MouseSync',['require','exports','module','../core/Even
             nextDelta = [scale * diffX, scale * diffY];
             nextVel = [
                 scale * (this._position[0] - this._positionHistory[0].position[0]) / diffTime,
-                scale * (this._position[0] - this._positionHistory[0].position[1]) / diffTime
+                scale * (this._position[1] - this._positionHistory[0].position[1]) / diffTime
             ];
             this._position[0] += nextDelta[0];
             this._position[1] += nextDelta[1];
@@ -6187,7 +6187,7 @@ define('famous/src/inputs/MouseSync',['require','exports','module','../core/Even
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/inputs/TwoFingerSync',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
+define('famous/inputs/TwoFingerSync',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
     var EventHandler = require('../core/EventHandler');
 
     /**
@@ -6310,7 +6310,7 @@ define('famous/src/inputs/TwoFingerSync',['require','exports','module','../core/
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/inputs/PinchSync',['require','exports','module','./TwoFingerSync','../core/OptionsManager'],function(require, exports, module) {
+define('famous/inputs/PinchSync',['require','exports','module','./TwoFingerSync','../core/OptionsManager'],function(require, exports, module) {
     var TwoFingerSync = require('./TwoFingerSync');
     var OptionsManager = require('../core/OptionsManager');
 
@@ -6409,7 +6409,7 @@ define('famous/src/inputs/PinchSync',['require','exports','module','./TwoFingerS
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/inputs/RotateSync',['require','exports','module','./TwoFingerSync','../core/OptionsManager'],function(require, exports, module) {
+define('famous/inputs/RotateSync',['require','exports','module','./TwoFingerSync','../core/OptionsManager'],function(require, exports, module) {
     var TwoFingerSync = require('./TwoFingerSync');
     var OptionsManager = require('../core/OptionsManager');
 
@@ -6509,7 +6509,7 @@ define('famous/src/inputs/RotateSync',['require','exports','module','./TwoFinger
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/inputs/ScaleSync',['require','exports','module','./TwoFingerSync','../core/OptionsManager'],function(require, exports, module) {
+define('famous/inputs/ScaleSync',['require','exports','module','./TwoFingerSync','../core/OptionsManager'],function(require, exports, module) {
     var TwoFingerSync = require('./TwoFingerSync');
     var OptionsManager = require('../core/OptionsManager');
 
@@ -6616,7 +6616,7 @@ define('famous/src/inputs/ScaleSync',['require','exports','module','./TwoFingerS
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/inputs/ScrollSync',['require','exports','module','../core/EventHandler','../core/Engine','../core/OptionsManager'],function(require, exports, module) {
+define('famous/inputs/ScrollSync',['require','exports','module','../core/EventHandler','../core/Engine','../core/OptionsManager'],function(require, exports, module) {
     var EventHandler = require('../core/EventHandler');
     var Engine = require('../core/Engine');
     var OptionsManager = require('../core/OptionsManager');
@@ -6814,7 +6814,7 @@ define('famous/src/inputs/ScrollSync',['require','exports','module','../core/Eve
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/inputs/TouchTracker',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
+define('famous/inputs/TouchTracker',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
     var EventHandler = require('../core/EventHandler');
 
     var _now = Date.now;
@@ -6939,7 +6939,7 @@ define('famous/src/inputs/TouchTracker',['require','exports','module','../core/E
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/inputs/TouchSync',['require','exports','module','./TouchTracker','../core/EventHandler','../core/OptionsManager'],function(require, exports, module) {
+define('famous/inputs/TouchSync',['require','exports','module','./TouchTracker','../core/EventHandler','../core/OptionsManager'],function(require, exports, module) {
     var TouchTracker = require('./TouchTracker');
     var EventHandler = require('../core/EventHandler');
     var OptionsManager = require('../core/OptionsManager');
@@ -7162,7 +7162,7 @@ define('famous/src/inputs/TouchSync',['require','exports','module','./TouchTrack
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/math/Vector',['require','exports','module'],function(require, exports, module) {
+define('famous/math/Vector',['require','exports','module'],function(require, exports, module) {
 
     /**
      * Three-element floating point vector.
@@ -7543,7 +7543,7 @@ define('famous/src/math/Vector',['require','exports','module'],function(require,
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/math/Matrix',['require','exports','module','./Vector'],function(require, exports, module) {
+define('famous/math/Matrix',['require','exports','module','./Vector'],function(require, exports, module) {
     var Vector = require('./Vector');
 
     /**
@@ -7699,7 +7699,7 @@ define('famous/src/math/Matrix',['require','exports','module','./Vector'],functi
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/math/Quaternion',['require','exports','module','./Matrix'],function(require, exports, module) {
+define('famous/math/Quaternion',['require','exports','module','./Matrix'],function(require, exports, module) {
     var Matrix = require('./Matrix');
 
     /**
@@ -8132,7 +8132,7 @@ define('famous/src/math/Quaternion',['require','exports','module','./Matrix'],fu
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/math/Random',['require','exports','module'],function(require, exports, module) {
+define('famous/math/Random',['require','exports','module'],function(require, exports, module) {
 
     var RAND = Math.random;
 
@@ -8234,7 +8234,7 @@ define('famous/src/math/Random',['require','exports','module'],function(require,
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/math/Utilities',['require','exports','module'],function(require, exports, module) {
+define('famous/math/Utilities',['require','exports','module'],function(require, exports, module) {
     /**
      * A few static methods.
      *
@@ -8282,7 +8282,7 @@ define('famous/src/math/Utilities',['require','exports','module'],function(requi
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/modifiers/Draggable',['require','exports','module','../core/Transform','../transitions/Transitionable','../core/EventHandler','../math/Utilities','../inputs/GenericSync','../inputs/MouseSync','../inputs/TouchSync'],function(require, exports, module) {
+define('famous/modifiers/Draggable',['require','exports','module','../core/Transform','../transitions/Transitionable','../core/EventHandler','../math/Utilities','../inputs/GenericSync','../inputs/MouseSync','../inputs/TouchSync'],function(require, exports, module) {
     var Transform = require('../core/Transform');
     var Transitionable = require('../transitions/Transitionable');
     var EventHandler = require('../core/EventHandler');
@@ -8534,7 +8534,7 @@ define('famous/src/modifiers/Draggable',['require','exports','module','../core/T
     module.exports = Draggable;
 });
 
-define('famous/src/modifiers/Fader',['require','exports','module','../transitions/Transitionable','../core/OptionsManager'],function(require, exports, module) {
+define('famous/modifiers/Fader',['require','exports','module','../transitions/Transitionable','../core/OptionsManager'],function(require, exports, module) {
     var Transitionable = require('../transitions/Transitionable');
     var OptionsManager = require('../core/OptionsManager');
 
@@ -8666,7 +8666,7 @@ define('famous/src/modifiers/Fader',['require','exports','module','../transition
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/modifiers/ModifierChain',['require','exports','module'],function(require, exports, module) {
+define('famous/modifiers/ModifierChain',['require','exports','module'],function(require, exports, module) {
 
     /**
      * A class to add and remove a chain of modifiers
@@ -8737,7 +8737,7 @@ define('famous/src/modifiers/ModifierChain',['require','exports','module'],funct
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/modifiers/StateModifier',['require','exports','module','../core/Modifier','../core/Transform','../transitions/Transitionable','../transitions/TransitionableTransform'],function(require, exports, module) {
+define('famous/modifiers/StateModifier',['require','exports','module','../core/Modifier','../core/Transform','../transitions/Transitionable','../transitions/TransitionableTransform'],function(require, exports, module) {
     var Modifier = require('../core/Modifier');
     var Transform = require('../core/Transform');
     var Transitionable = require('../transitions/Transitionable');
@@ -9054,7 +9054,7 @@ define('famous/src/modifiers/StateModifier',['require','exports','module','../co
  * @license MPL 2.0
  * @copyright Famous Industries, Inc. 2014
  */
-define('famous/src/physics/PhysicsEngine',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
+define('famous/physics/PhysicsEngine',['require','exports','module','../core/EventHandler'],function(require, exports, module) {
     var EventHandler = require('../core/EventHandler');
 
     /**
@@ -9580,7 +9580,7 @@ define('famous/src/physics/PhysicsEngine',['require','exports','module','../core
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/integrators/SymplecticEuler',['require','exports','module'],function(require, exports, module) {
+define('famous/physics/integrators/SymplecticEuler',['require','exports','module'],function(require, exports, module) {
 
     /**
      * Ordinary Differential Equation (ODE) Integrator.
@@ -9683,7 +9683,7 @@ define('famous/src/physics/integrators/SymplecticEuler',['require','exports','mo
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/bodies/Particle',['require','exports','module','../../math/Vector','../../core/Transform','../../core/EventHandler','../integrators/SymplecticEuler'],function(require, exports, module) {
+define('famous/physics/bodies/Particle',['require','exports','module','../../math/Vector','../../core/Transform','../../core/EventHandler','../integrators/SymplecticEuler'],function(require, exports, module) {
     var Vector = require('../../math/Vector');
     var Transform = require('../../core/Transform');
     var EventHandler = require('../../core/EventHandler');
@@ -10071,7 +10071,7 @@ define('famous/src/physics/bodies/Particle',['require','exports','module','../..
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/bodies/Body',['require','exports','module','./Particle','../../core/Transform','../../math/Vector','../../math/Quaternion','../../math/Matrix','../integrators/SymplecticEuler'],function(require, exports, module) {
+define('famous/physics/bodies/Body',['require','exports','module','./Particle','../../core/Transform','../../math/Vector','../../math/Quaternion','../../math/Matrix','../integrators/SymplecticEuler'],function(require, exports, module) {
     var Particle = require('./Particle');
     var Transform = require('../../core/Transform');
     var Vector = require('../../math/Vector');
@@ -10301,7 +10301,7 @@ define('famous/src/physics/bodies/Body',['require','exports','module','./Particl
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/bodies/Circle',['require','exports','module','./Body','../../math/Matrix'],function(require, exports, module) {
+define('famous/physics/bodies/Circle',['require','exports','module','./Body','../../math/Matrix'],function(require, exports, module) {
     var Body = require('./Body');
     var Matrix = require('../../math/Matrix');
 
@@ -10363,7 +10363,7 @@ define('famous/src/physics/bodies/Circle',['require','exports','module','./Body'
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/bodies/Rectangle',['require','exports','module','./Body','../../math/Matrix'],function(require, exports, module) {
+define('famous/physics/bodies/Rectangle',['require','exports','module','./Body','../../math/Matrix'],function(require, exports, module) {
     var Body = require('./Body');
     var Matrix = require('../../math/Matrix');
 
@@ -10425,7 +10425,7 @@ define('famous/src/physics/bodies/Rectangle',['require','exports','module','./Bo
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/constraints/Constraint',['require','exports','module','../../core/EventHandler'],function(require, exports, module) {
+define('famous/physics/constraints/Constraint',['require','exports','module','../../core/EventHandler'],function(require, exports, module) {
     var EventHandler = require('../../core/EventHandler');
 
     /**
@@ -10481,7 +10481,7 @@ define('famous/src/physics/constraints/Constraint',['require','exports','module'
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/constraints/Collision',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/constraints/Collision',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
     var Constraint = require('./Constraint');
     var Vector = require('../../math/Vector');
 
@@ -10626,7 +10626,7 @@ define('famous/src/physics/constraints/Collision',['require','exports','module',
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/constraints/Curve',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/constraints/Curve',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
     var Constraint = require('./Constraint');
     var Vector = require('../../math/Vector');
 
@@ -10760,7 +10760,7 @@ define('famous/src/physics/constraints/Curve',['require','exports','module','./C
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/constraints/Distance',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/constraints/Distance',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
     var Constraint = require('./Constraint');
     var Vector = require('../../math/Vector');
 
@@ -10929,7 +10929,7 @@ define('famous/src/physics/constraints/Distance',['require','exports','module','
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/constraints/Snap',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/constraints/Snap',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
     var Constraint = require('./Constraint');
     var Vector = require('../../math/Vector');
 
@@ -11105,7 +11105,7 @@ define('famous/src/physics/constraints/Snap',['require','exports','module','./Co
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/constraints/Surface',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/constraints/Surface',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
     var Constraint = require('./Constraint');
     var Vector = require('../../math/Vector');
 
@@ -11222,7 +11222,7 @@ define('famous/src/physics/constraints/Surface',['require','exports','module','.
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/constraints/Wall',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/constraints/Wall',['require','exports','module','./Constraint','../../math/Vector'],function(require, exports, module) {
     var Constraint = require('./Constraint');
     var Vector = require('../../math/Vector');
 
@@ -11411,7 +11411,7 @@ define('famous/src/physics/constraints/Wall',['require','exports','module','./Co
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/constraints/Walls',['require','exports','module','./Constraint','./Wall','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/constraints/Walls',['require','exports','module','./Constraint','./Wall','../../math/Vector'],function(require, exports, module) {
     var Constraint = require('./Constraint');
     var Wall = require('./Wall');
     var Vector = require('../../math/Vector');
@@ -11651,7 +11651,7 @@ define('famous/src/physics/constraints/Walls',['require','exports','module','./C
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/forces/Force',['require','exports','module','../../math/Vector','../../core/EventHandler'],function(require, exports, module) {
+define('famous/physics/forces/Force',['require','exports','module','../../math/Vector','../../core/EventHandler'],function(require, exports, module) {
     var Vector = require('../../math/Vector');
     var EventHandler = require('../../core/EventHandler');
 
@@ -11713,7 +11713,7 @@ define('famous/src/physics/forces/Force',['require','exports','module','../../ma
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/forces/Drag',['require','exports','module','./Force'],function(require, exports, module) {
+define('famous/physics/forces/Drag',['require','exports','module','./Force'],function(require, exports, module) {
     var Force = require('./Force');
 
     /**
@@ -11833,7 +11833,7 @@ define('famous/src/physics/forces/Drag',['require','exports','module','./Force']
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/forces/Repulsion',['require','exports','module','./Force','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/forces/Repulsion',['require','exports','module','./Force','../../math/Vector'],function(require, exports, module) {
     var Force = require('./Force');
     var Vector = require('../../math/Vector');
 
@@ -12047,7 +12047,7 @@ define('famous/src/physics/forces/Repulsion',['require','exports','module','./Fo
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/forces/RotationalDrag',['require','exports','module','./Drag'],function(require, exports, module) {
+define('famous/physics/forces/RotationalDrag',['require','exports','module','./Drag'],function(require, exports, module) {
     var Drag = require('./Drag');
 
     /**
@@ -12147,7 +12147,7 @@ define('famous/src/physics/forces/RotationalDrag',['require','exports','module',
 
 /*global console */
 
-define('famous/src/physics/forces/Spring',['require','exports','module','./Force','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/forces/Spring',['require','exports','module','./Force','../../math/Vector'],function(require, exports, module) {
     var Force = require('./Force');
     var Vector = require('../../math/Vector');
 
@@ -12414,7 +12414,7 @@ define('famous/src/physics/forces/Spring',['require','exports','module','./Force
  */
 
 //TODO: test inheritance
-define('famous/src/physics/forces/RotationalSpring',['require','exports','module','./Force','./Spring','../../math/Quaternion'],function(require, exports, module) {
+define('famous/physics/forces/RotationalSpring',['require','exports','module','./Force','./Spring','../../math/Quaternion'],function(require, exports, module) {
     var Force = require('./Force');
     var Spring = require('./Spring');
     var Quaternion = require('../../math/Quaternion');
@@ -12557,7 +12557,7 @@ define('famous/src/physics/forces/RotationalSpring',['require','exports','module
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/physics/forces/VectorField',['require','exports','module','./Force','../../math/Vector'],function(require, exports, module) {
+define('famous/physics/forces/VectorField',['require','exports','module','./Force','../../math/Vector'],function(require, exports, module) {
     var Force = require('./Force');
     var Vector = require('../../math/Vector');
 
@@ -12757,7 +12757,7 @@ define('famous/src/physics/forces/VectorField',['require','exports','module','./
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/surfaces/CanvasSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
+define('famous/surfaces/CanvasSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
     var Surface = require('../core/Surface');
 
     /**
@@ -12876,7 +12876,7 @@ define('famous/src/surfaces/CanvasSurface',['require','exports','module','../cor
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/surfaces/ContainerSurface',['require','exports','module','../core/Surface','../core/Context'],function(require, exports, module) {
+define('famous/surfaces/ContainerSurface',['require','exports','module','../core/Surface','../core/Context'],function(require, exports, module) {
     var Surface = require('../core/Surface');
     var Context = require('../core/Context');
 
@@ -12982,7 +12982,7 @@ define('famous/src/surfaces/ContainerSurface',['require','exports','module','../
     module.exports = ContainerSurface;
 });
 
-define('famous/src/surfaces/FormContainerSurface',['require','exports','module','./ContainerSurface'],function(require, exports, module) {
+define('famous/surfaces/FormContainerSurface',['require','exports','module','./ContainerSurface'],function(require, exports, module) {
     var ContainerSurface = require('./ContainerSurface');
 
     function FormContainerSurface(options) {
@@ -13013,7 +13013,7 @@ define('famous/src/surfaces/FormContainerSurface',['require','exports','module',
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/surfaces/ImageSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
+define('famous/surfaces/ImageSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
     var Surface = require('../core/Surface');
 
     /**
@@ -13135,7 +13135,7 @@ define('famous/src/surfaces/ImageSurface',['require','exports','module','../core
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/surfaces/InputSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
+define('famous/surfaces/InputSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
     var Surface = require('../core/Surface');
 
     /**
@@ -13288,7 +13288,7 @@ define('famous/src/surfaces/InputSurface',['require','exports','module','../core
     module.exports = InputSurface;
 });
 
-define('famous/src/surfaces/SubmitInputSurface',['require','exports','module','./InputSurface'],function(require, exports, module) {
+define('famous/surfaces/SubmitInputSurface',['require','exports','module','./InputSurface'],function(require, exports, module) {
     var InputSurface = require('./InputSurface');
 
     function SubmitInputSurface(options) {
@@ -13321,7 +13321,7 @@ define('famous/src/surfaces/SubmitInputSurface',['require','exports','module','.
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/surfaces/TextareaSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
+define('famous/surfaces/TextareaSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
     var Surface = require('../core/Surface');
 
     /**
@@ -13516,7 +13516,7 @@ define('famous/src/surfaces/TextareaSurface',['require','exports','module','../c
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/surfaces/VideoSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
+define('famous/surfaces/VideoSurface',['require','exports','module','../core/Surface'],function(require, exports, module) {
     var Surface = require('../core/Surface');
 
     /**
@@ -13537,12 +13537,12 @@ define('famous/src/surfaces/VideoSurface',['require','exports','module','../core
      * @param {boolean} [options.autoplay] autoplay
      */
     function VideoSurface(options) {
+        Surface.apply(this, arguments);
         this._videoUrl = undefined;
         this.options = Object.create(VideoSurface.DEFAULT_OPTIONS);
         if (options) this.setOptions(options);
-
-        Surface.apply(this, arguments);
     }
+
     VideoSurface.prototype = Object.create(Surface.prototype);
     VideoSurface.prototype.constructor = VideoSurface;
 
@@ -13621,7 +13621,7 @@ define('famous/src/surfaces/VideoSurface',['require','exports','module','../core
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/transitions/CachedMap',['require','exports','module'],function(require, exports, module) {
+define('famous/transitions/CachedMap',['require','exports','module'],function(require, exports, module) {
     /**
      * A simple in-memory object cache.  Used as a helper for Views with
      * provider functions.
@@ -13673,7 +13673,7 @@ define('famous/src/transitions/CachedMap',['require','exports','module'],functio
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/transitions/Easing',['require','exports','module'],function(require, exports, module) {
+define('famous/transitions/Easing',['require','exports','module'],function(require, exports, module) {
 
     /**
      * A library of curves which map an animation explicitly as a function of time.
@@ -13966,7 +13966,7 @@ define('famous/src/transitions/Easing',['require','exports','module'],function(r
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/transitions/SnapTransition',['require','exports','module','../physics/PhysicsEngine','../physics/bodies/Particle','../physics/constraints/Snap','../math/Vector'],function(require, exports, module) {
+define('famous/transitions/SnapTransition',['require','exports','module','../physics/PhysicsEngine','../physics/bodies/Particle','../physics/constraints/Snap','../math/Vector'],function(require, exports, module) {
     var PE = require('../physics/PhysicsEngine');
     var Particle = require('../physics/bodies/Particle');
     var Spring = require('../physics/constraints/Snap');
@@ -14237,7 +14237,7 @@ s     *
 
 /*global console*/
 
-define('famous/src/transitions/SpringTransition',['require','exports','module','../physics/PhysicsEngine','../physics/bodies/Particle','../physics/forces/Spring','../math/Vector'],function(require, exports, module) {
+define('famous/transitions/SpringTransition',['require','exports','module','../physics/PhysicsEngine','../physics/bodies/Particle','../physics/forces/Spring','../math/Vector'],function(require, exports, module) {
     var PE = require('../physics/PhysicsEngine');
     var Particle = require('../physics/bodies/Particle');
     var Spring = require('../physics/forces/Spring');
@@ -14514,7 +14514,7 @@ define('famous/src/transitions/SpringTransition',['require','exports','module','
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/transitions/WallTransition',['require','exports','module','../physics/PhysicsEngine','../physics/bodies/Particle','../physics/forces/Spring','../physics/constraints/Wall','../math/Vector'],function(require, exports, module) {
+define('famous/transitions/WallTransition',['require','exports','module','../physics/PhysicsEngine','../physics/bodies/Particle','../physics/forces/Spring','../physics/constraints/Wall','../math/Vector'],function(require, exports, module) {
     var PE = require('../physics/PhysicsEngine');
     var Particle = require('../physics/bodies/Particle');
     var Spring = require('../physics/forces/Spring');
@@ -14814,7 +14814,7 @@ define('famous/src/transitions/WallTransition',['require','exports','module','..
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/utilities/KeyCodes',['require','exports','module'],function(require, exports, module) {
+define('famous/utilities/KeyCodes',['require','exports','module'],function(require, exports, module) {
 
     /**
      * Collection to map keyboard codes in plain english
@@ -14909,7 +14909,7 @@ define('famous/src/utilities/KeyCodes',['require','exports','module'],function(r
 // TODO fix func-style
 /*eslint func-style: [0, "declaration"] */
 
-define('famous/src/utilities/Timer',['require','exports','module','../core/Engine'],function(require, exports, module) {
+define('famous/utilities/Timer',['require','exports','module','../core/Engine'],function(require, exports, module) {
     /**
      * An internal library to reproduce javascript time-based scheduling.
      *   Using standard javascript setTimeout methods can have a negative performance impact
@@ -15111,7 +15111,7 @@ define('famous/src/utilities/Timer',['require','exports','module','../core/Engin
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/ContextualView',['require','exports','module','../core/Entity','../core/Transform','../core/EventHandler','../core/OptionsManager'],function(require, exports, module) {
+define('famous/views/ContextualView',['require','exports','module','../core/Entity','../core/Transform','../core/EventHandler','../core/OptionsManager'],function(require, exports, module) {
     var Entity = require('../core/Entity');
     var Transform = require('../core/Transform');
     var EventHandler = require('../core/EventHandler');
@@ -15196,7 +15196,7 @@ define('famous/src/views/ContextualView',['require','exports','module','../core/
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/SequentialLayout',['require','exports','module','../core/OptionsManager','../core/Transform','../core/ViewSequence','../utilities/Utility'],function(require, exports, module) {
+define('famous/views/SequentialLayout',['require','exports','module','../core/OptionsManager','../core/Transform','../core/ViewSequence','../utilities/Utility'],function(require, exports, module) {
     var OptionsManager = require('../core/OptionsManager');
     var Transform = require('../core/Transform');
     var ViewSequence = require('../core/ViewSequence');
@@ -15217,7 +15217,7 @@ define('famous/src/views/SequentialLayout',['require','exports','module','../cor
         this._size = null;
         this._outputFunction = SequentialLayout.DEFAULT_OUTPUT_FUNCTION;
 
-        this.options = Object.create(this.constructor.DEFAULT_OPTIONS);
+        this.options = Utility.clone(this.constructor.DEFAULT_OPTIONS || SequentialLayout.DEFAULT_OPTIONS);
         this.optionsManager = new OptionsManager(this.options);
 
         if (options) this.setOptions(options);
@@ -15341,7 +15341,7 @@ define('famous/src/views/SequentialLayout',['require','exports','module','../cor
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/Deck',['require','exports','module','../core/Transform','../core/OptionsManager','../transitions/Transitionable','../utilities/Utility','./SequentialLayout'],function(require, exports, module) {
+define('famous/views/Deck',['require','exports','module','../core/Transform','../core/OptionsManager','../transitions/Transitionable','../utilities/Utility','./SequentialLayout'],function(require, exports, module) {
     var Transform = require('../core/Transform');
     var OptionsManager = require('../core/OptionsManager');
     var Transitionable = require('../transitions/Transitionable');
@@ -15485,7 +15485,7 @@ define('famous/src/views/Deck',['require','exports','module','../core/Transform'
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/DrawerLayout',['require','exports','module','../core/RenderNode','../core/Transform','../core/OptionsManager','../transitions/Transitionable','../core/EventHandler'],function(require, exports, module) {
+define('famous/views/DrawerLayout',['require','exports','module','../core/RenderNode','../core/Transform','../core/OptionsManager','../transitions/Transitionable','../core/EventHandler'],function(require, exports, module) {
     var RenderNode = require('../core/RenderNode');
     var Transform = require('../core/Transform');
     var OptionsManager = require('../core/OptionsManager');
@@ -15798,7 +15798,7 @@ define('famous/src/views/DrawerLayout',['require','exports','module','../core/Re
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/RenderController',['require','exports','module','../core/Modifier','../core/RenderNode','../core/Transform','../transitions/Transitionable','../core/View'],function(require, exports, module) {
+define('famous/views/RenderController',['require','exports','module','../core/Modifier','../core/RenderNode','../core/Transform','../transitions/Transitionable','../core/View'],function(require, exports, module) {
     var Modifier = require('../core/Modifier');
     var RenderNode = require('../core/RenderNode');
     var Transform = require('../core/Transform');
@@ -16101,7 +16101,7 @@ define('famous/src/views/RenderController',['require','exports','module','../cor
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/EdgeSwapper',['require','exports','module','../transitions/CachedMap','../core/Entity','../core/EventHandler','../core/Transform','./RenderController'],function(require, exports, module) {
+define('famous/views/EdgeSwapper',['require','exports','module','../transitions/CachedMap','../core/Entity','../core/EventHandler','../core/Transform','./RenderController'],function(require, exports, module) {
     var CachedMap = require('../transitions/CachedMap');
     var Entity = require('../core/Entity');
     var EventHandler = require('../core/EventHandler');
@@ -16208,7 +16208,7 @@ define('famous/src/views/EdgeSwapper',['require','exports','module','../transiti
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/FlexibleLayout',['require','exports','module','../core/Entity','../core/Transform','../core/OptionsManager','../core/EventHandler','../transitions/Transitionable'],function(require, exports, module) {
+define('famous/views/FlexibleLayout',['require','exports','module','../core/Entity','../core/Transform','../core/OptionsManager','../core/EventHandler','../transitions/Transitionable'],function(require, exports, module) {
     var Entity = require('../core/Entity');
     var Transform = require('../core/Transform');
     var OptionsManager = require('../core/OptionsManager');
@@ -16438,7 +16438,7 @@ define('famous/src/views/FlexibleLayout',['require','exports','module','../core/
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/Flipper',['require','exports','module','../core/Transform','../transitions/Transitionable','../core/RenderNode','../core/OptionsManager'],function(require, exports, module) {
+define('famous/views/Flipper',['require','exports','module','../core/Transform','../transitions/Transitionable','../core/RenderNode','../core/OptionsManager'],function(require, exports, module) {
     var Transform = require('../core/Transform');
     var Transitionable = require('../transitions/Transitionable');
     var RenderNode = require('../core/RenderNode');
@@ -16588,7 +16588,7 @@ define('famous/src/views/Flipper',['require','exports','module','../core/Transfo
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/GridLayout',['require','exports','module','../core/Entity','../core/RenderNode','../core/Transform','../core/ViewSequence','../core/EventHandler','../core/Modifier','../core/OptionsManager','../transitions/Transitionable','../transitions/TransitionableTransform'],function(require, exports, module) {
+define('famous/views/GridLayout',['require','exports','module','../core/Entity','../core/RenderNode','../core/Transform','../core/ViewSequence','../core/EventHandler','../core/Modifier','../core/OptionsManager','../transitions/Transitionable','../transitions/TransitionableTransform'],function(require, exports, module) {
     var Entity = require('../core/Entity');
     var RenderNode = require('../core/RenderNode');
     var Transform = require('../core/Transform');
@@ -16807,7 +16807,7 @@ define('famous/src/views/GridLayout',['require','exports','module','../core/Enti
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/HeaderFooterLayout',['require','exports','module','../core/Entity','../core/RenderNode','../core/Transform','../core/OptionsManager'],function(require, exports, module) {
+define('famous/views/HeaderFooterLayout',['require','exports','module','../core/Entity','../core/RenderNode','../core/Transform','../core/OptionsManager'],function(require, exports, module) {
     var Entity = require('../core/Entity');
     var RenderNode = require('../core/RenderNode');
     var Transform = require('../core/Transform');
@@ -16954,7 +16954,7 @@ define('famous/src/views/HeaderFooterLayout',['require','exports','module','../c
     module.exports = HeaderFooterLayout;
 });
 
-define('famous/src/views/Lightbox',['require','exports','module','../core/Transform','../core/Modifier','../core/RenderNode','../utilities/Utility','../core/OptionsManager','../transitions/Transitionable','../transitions/TransitionableTransform'],function(require, exports, module) {
+define('famous/views/Lightbox',['require','exports','module','../core/Transform','../core/Modifier','../core/RenderNode','../utilities/Utility','../core/OptionsManager','../transitions/Transitionable','../transitions/TransitionableTransform'],function(require, exports, module) {
     var Transform = require('../core/Transform');
     var Modifier = require('../core/Modifier');
     var RenderNode = require('../core/RenderNode');
@@ -17144,7 +17144,7 @@ define('famous/src/views/Lightbox',['require','exports','module','../core/Transf
     module.exports = Lightbox;
 });
 
-define('famous/src/views/Scroller',['require','exports','module','../core/Entity','../core/Group','../core/OptionsManager','../core/Transform','../utilities/Utility','../core/ViewSequence','../core/EventHandler'],function(require, exports, module) {
+define('famous/views/Scroller',['require','exports','module','../core/Entity','../core/Group','../core/OptionsManager','../core/Transform','../utilities/Utility','../core/ViewSequence','../core/EventHandler'],function(require, exports, module) {
     var Entity = require('../core/Entity');
     var Group = require('../core/Group');
     var OptionsManager = require('../core/OptionsManager');
@@ -17464,7 +17464,7 @@ define('famous/src/views/Scroller',['require','exports','module','../core/Entity
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/Scrollview',['require','exports','module','../physics/PhysicsEngine','../physics/bodies/Particle','../physics/forces/Drag','../physics/forces/Spring','../core/EventHandler','../core/OptionsManager','../core/ViewSequence','../views/Scroller','../utilities/Utility','../inputs/GenericSync','../inputs/ScrollSync','../inputs/TouchSync'],function(require, exports, module) {
+define('famous/views/Scrollview',['require','exports','module','../physics/PhysicsEngine','../physics/bodies/Particle','../physics/forces/Drag','../physics/forces/Spring','../core/EventHandler','../core/OptionsManager','../core/ViewSequence','../views/Scroller','../utilities/Utility','../inputs/GenericSync','../inputs/ScrollSync','../inputs/TouchSync'],function(require, exports, module) {
     var PhysicsEngine = require('../physics/PhysicsEngine');
     var Particle = require('../physics/bodies/Particle');
     var Drag = require('../physics/forces/Drag');
@@ -18123,7 +18123,7 @@ define('famous/src/views/Scrollview',['require','exports','module','../physics/P
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/views/ScrollContainer',['require','exports','module','../surfaces/ContainerSurface','../core/EventHandler','./Scrollview','../utilities/Utility','../core/OptionsManager'],function(require, exports, module) {
+define('famous/views/ScrollContainer',['require','exports','module','../surfaces/ContainerSurface','../core/EventHandler','./Scrollview','../utilities/Utility','../core/OptionsManager'],function(require, exports, module) {
     var ContainerSurface = require('../surfaces/ContainerSurface');
     var EventHandler = require('../core/EventHandler');
     var Scrollview = require('./Scrollview');
@@ -18224,7 +18224,7 @@ define('famous/src/views/ScrollContainer',['require','exports','module','../surf
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/widgets/NavigationBar',['require','exports','module','../core/Scene','../core/Surface','../core/Transform','../core/View'],function(require, exports, module) {
+define('famous/widgets/NavigationBar',['require','exports','module','../core/Scene','../core/Surface','../core/Transform','../core/View'],function(require, exports, module) {
     var Scene = require('../core/Scene');
     var Surface = require('../core/Surface');
     var Transform = require('../core/Transform');
@@ -18367,7 +18367,7 @@ define('famous/src/widgets/NavigationBar',['require','exports','module','../core
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/widgets/Slider',['require','exports','module','../core/Surface','../surfaces/CanvasSurface','../core/Transform','../core/EventHandler','../math/Utilities','../core/OptionsManager','../inputs/MouseSync','../inputs/TouchSync','../inputs/GenericSync'],function(require, exports, module) {
+define('famous/widgets/Slider',['require','exports','module','../core/Surface','../surfaces/CanvasSurface','../core/Transform','../core/EventHandler','../math/Utilities','../core/OptionsManager','../inputs/MouseSync','../inputs/TouchSync','../inputs/GenericSync'],function(require, exports, module) {
     var Surface = require('../core/Surface');
     var CanvasSurface = require('../surfaces/CanvasSurface');
     var Transform = require('../core/Transform');
@@ -18504,7 +18504,7 @@ define('famous/src/widgets/Slider',['require','exports','module','../core/Surfac
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/widgets/ToggleButton',['require','exports','module','../core/Surface','../core/EventHandler','../views/RenderController'],function(require, exports, module) {
+define('famous/widgets/ToggleButton',['require','exports','module','../core/Surface','../core/EventHandler','../views/RenderController'],function(require, exports, module) {
     var Surface = require('../core/Surface');
     var EventHandler = require('../core/EventHandler');
     var RenderController = require('../views/RenderController');
@@ -18664,7 +18664,7 @@ define('famous/src/widgets/ToggleButton',['require','exports','module','../core/
  * @copyright Famous Industries, Inc. 2014
  */
 
-define('famous/src/widgets/TabBar',['require','exports','module','../utilities/Utility','../core/View','../views/GridLayout','./ToggleButton'],function(require, exports, module) {
+define('famous/widgets/TabBar',['require','exports','module','../utilities/Utility','../core/View','../views/GridLayout','./ToggleButton'],function(require, exports, module) {
     var Utility = require('../utilities/Utility');
     var View = require('../core/View');
     var GridLayout = require('../views/GridLayout');

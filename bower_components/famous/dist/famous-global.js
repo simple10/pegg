@@ -4327,8 +4327,8 @@ module.exports = {
   Group: require('./Group'),
   Modifier: require('./Modifier'),
   OptionsManager: require('./OptionsManager'),
-  Scene: require('./Scene'),
   RenderNode: require('./RenderNode'),
+  Scene: require('./Scene'),
   SpecParser: require('./SpecParser'),
   Surface: require('./Surface'),
   Transform: require('./Transform'),
@@ -4531,24 +4531,24 @@ EventMapper.prototype.trigger = EventMapper.prototype.emit;
 module.exports = EventMapper;
 },{"../core/EventHandler":7}],22:[function(require,module,exports){
 module.exports = {
-  EventFilter: require('./EventFilter'),
   EventArbiter: require('./EventArbiter'),
+  EventFilter: require('./EventFilter'),
   EventMapper: require('./EventMapper')
 };
 
 },{"./EventArbiter":19,"./EventFilter":20,"./EventMapper":21}],23:[function(require,module,exports){
 module.exports = {
-  core: require('./core'),
   events: require('./events'),
-  inputs: require('./inputs'),
-  physics: require('./physics'),
-  modifiers: require('./modifiers'),
+  core: require('./core'),
   math: require('./math'),
-  transitions: require('./transitions'),
+  inputs: require('./inputs'),
+  modifiers: require('./modifiers'),
+  physics: require('./physics'),
   surfaces: require('./surfaces'),
+  transitions: require('./transitions'),
   utilities: require('./utilities'),
-  widgets: require('./widgets'),
-  views: require('./views')
+  views: require('./views'),
+  widgets: require('./widgets')
 };
 
 },{"./core":18,"./events":22,"./inputs":36,"./math":42,"./modifiers":47,"./physics":71,"./surfaces":82,"./transitions":92,"./utilities":96,"./views":111,"./widgets":116}],24:[function(require,module,exports){
@@ -5004,7 +5004,7 @@ function _handleMove(event) {
         nextDelta = [scale * diffX, scale * diffY];
         nextVel = [
             scale * (this._position[0] - this._positionHistory[0].position[0]) / diffTime,
-            scale * (this._position[0] - this._positionHistory[0].position[1]) / diffTime
+            scale * (this._position[1] - this._positionHistory[0].position[1]) / diffTime
         ];
         this._position[0] += nextDelta[0];
         this._position[1] += nextDelta[1];
@@ -7968,8 +7968,8 @@ module.exports = StateModifier;
 },{"../core/Modifier":9,"../core/Transform":15,"../transitions/Transitionable":88,"../transitions/TransitionableTransform":89}],47:[function(require,module,exports){
 module.exports = {
   Draggable: require('./Draggable'),
-  Fader: require('./Fader'),
   ModifierChain: require('./ModifierChain'),
+  Fader: require('./Fader'),
   StateModifier: require('./StateModifier')
 };
 
@@ -12450,12 +12450,12 @@ var Surface = require('../core/Surface');
  * @param {boolean} [options.autoplay] autoplay
  */
 function VideoSurface(options) {
+    Surface.apply(this, arguments);
     this._videoUrl = undefined;
     this.options = Object.create(VideoSurface.DEFAULT_OPTIONS);
     if (options) this.setOptions(options);
-
-    Surface.apply(this, arguments);
 }
+
 VideoSurface.prototype = Object.create(Surface.prototype);
 VideoSurface.prototype.constructor = VideoSurface;
 
@@ -12531,8 +12531,8 @@ module.exports = {
   ImageSurface: require('./ImageSurface'),
   InputSurface: require('./InputSurface'),
   SubmitInputSurface: require('./SubmitInputSurface'),
-  TextareaSurface: require('./TextareaSurface'),
-  VideoSurface: require('./VideoSurface')
+  VideoSurface: require('./VideoSurface'),
+  TextareaSurface: require('./TextareaSurface')
 };
 
 },{"./CanvasSurface":74,"./ContainerSurface":75,"./FormContainerSurface":76,"./ImageSurface":77,"./InputSurface":78,"./SubmitInputSurface":79,"./TextareaSurface":80,"./VideoSurface":81}],83:[function(require,module,exports){
@@ -18081,7 +18081,7 @@ function SequentialLayout(options) {
     this._size = null;
     this._outputFunction = SequentialLayout.DEFAULT_OUTPUT_FUNCTION;
 
-    this.options = Object.create(this.constructor.DEFAULT_OPTIONS);
+    this.options = Utility.clone(this.constructor.DEFAULT_OPTIONS || SequentialLayout.DEFAULT_OPTIONS);
     this.optionsManager = new OptionsManager(this.options);
 
     if (options) this.setOptions(options);

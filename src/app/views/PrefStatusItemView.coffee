@@ -136,8 +136,10 @@ class PrefStatusItemView extends View
       @_choices[i].setContent choice.text
       @_choices[i].setSize [Utils.getViewportWidth()-60, true]
       fraction = choice.count / @_total
+      fraction = 0 unless isFinite fraction
       width = (Utils.getViewportWidth()-60) * fraction + 3
       @_percentages[i].bar.setSize [ width, 40 ]
+      # TODO: wrap any output of numbers in a helper util to prevent unwanted NaN, Infinity, etc. output
       @_percentages[i].text.setContent "#{Math.round fraction * 100}%"
       if fraction < 0.25
         @_percentages[i].textMod.setTransform Transform.translate width + 30, null, null
