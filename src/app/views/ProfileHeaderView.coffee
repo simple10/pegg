@@ -35,6 +35,9 @@ class ProfileHeaderView extends View
     @backing = new Surface
       size: [@options.width, @options.height]
       classes: ['profileHeader', 'profileHeader__backing']
+      properties:
+        background: "url('#{@options.avatar}')"
+        backgroundSize: '100%'
 
     # @picContainer = new ContainerSurface
     #   size: [@options.width, @options.height]
@@ -60,23 +63,23 @@ class ProfileHeaderView extends View
       align: [0.5, 0]
       origin: [0.5, 1]
 
-    @bio = new Surface
-      size: [@options.width - 50, 25]
-      classes: ['profileHeader', 'profile__bio__box']
-      content: @options.bio
-      properties:
-        textAlign: 'center'
-        color: 'white'
-    bioMod = new StateModifier
-      align: [0.5, 0.95]
-      origin: [0.5, 1]
+#    @bio = new Surface
+#      size: [@options.width - 50, 25]
+#      classes: ['profileHeader', 'profile__bio__box']
+#      content: @options.bio
+#      properties:
+#        textAlign: 'center'
+#        color: 'white'
+#    bioMod = new StateModifier
+#      align: [0.5, 0.95]
+#      origin: [0.5, 1]
 
     logout = new Surface
-      size: [ 200 , 50 ]
+      size: [ 200 , 40 ]
       content: 'Logout'
       classes: ['profileHeader', 'profile__logout']
     logoutMod = new StateModifier
-      align: [0.5, 0.95]
+      align: [0.5, 1]
       origin: [0.5, 1]
     logout.on 'click', ->
       UserStore.logout()
@@ -87,9 +90,9 @@ class ProfileHeaderView extends View
     # @picContainer.add @pic
     # node.add(picMod).add @picContainer
     node.add @backing
-    node.add(picMod).add @pic
+#    node.add(picMod).add @pic
     node.add(nameMod).add @name
-    node.add(bioMod).add @bio
+#    node.add(bioMod).add @bio
     node.add(logoutMod).add logout
 
     nameMod.setTransform Transform.translate(0, 160, 0), {duration: 500, easing: Easing.outCubic}
@@ -98,7 +101,8 @@ class ProfileHeaderView extends View
     @setOptions({
       avatar: url
     })
-    @pic.setContent url
+    @backing.setProperties
+      background: "url('#{url}')"
 
   setFirstname: (name) ->
     @setOptions({
