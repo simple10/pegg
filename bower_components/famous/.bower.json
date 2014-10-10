@@ -87,7 +87,7 @@
     "tag": "0.3.0",
     "commit": "b63994b1b1dd83e5094fec11109c9d8bc2e31e2e"
   },
-  "_source": "https://github.com/Famous/famous.git",
-  "_target": "0.3.0",
-  "_originalSource": "git+https://github.com/Famous/famous.git"
+  "_source": "git://github.com/Famous/famous.git",
+  "_target": "^0.3.0",
+  "_originalSource": "famous"
 }
