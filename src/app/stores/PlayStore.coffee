@@ -250,7 +250,7 @@ class PlayStore extends EventHandler
         @getCurrentPage().card.comments.unshift res
         @_saveCommentActivity comment, peggeeId, cardId
 
-  _mood: (moodText, moodId, moodUrl) ->
+  _setMood: (moodText, moodId, moodUrl) ->
     console.log "moodId: " + moodId
     @_mood = { text: moodText, id: moodId, url: moodUrl }
     @_loadMoodGame moodId
@@ -322,7 +322,7 @@ AppDispatcher.register (payload) ->
     when Constants.actions.CARD_COMMENT
       play._comment action.comment, action.cardId, action.peggeeId
     when Constants.actions.PICK_MOOD
-      play._mood action.moodText, action.moodId, action.moodUrl
+      play._setMood action.moodText, action.moodId, action.moodUrl
     when Constants.actions.BADGES_VIEWED
       play._badgesViewed(action.badges)
 

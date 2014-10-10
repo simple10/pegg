@@ -214,7 +214,7 @@ class CardView extends View
     @frontQuestion.setContent @card.question
     @flip() if @currentSide is 1
 
-    @choicesView.load @card.choices
+    @choicesView.load @card.choices, @card.answer
     @choicesView.on 'choice', @pickAnswer
 
   toggleChoices: =>
@@ -236,18 +236,14 @@ class CardView extends View
       @choiceShowing = true
 
 
-  pickAnswer: (i) =>
-    choice = @card.choices[i]
+  pickAnswer: (id) =>
+    choice = @card.choices[id]
     if @card.answer?
       @_eventOutput.emit 'pegg',
         peggeeId: @card.peggeeId
         id: @card.id
         choiceId: choice.id
         answerId: @card.answer.id
-      if @card.answer.id is choice.id
-        @choiceWin choice, i
-      else
-        @choiceFail choice, i
     else
       @_eventOutput.emit 'pref',
         id: @card.id
@@ -257,12 +253,6 @@ class CardView extends View
       @loadAnswer choice.plug, choice.text
       @addImageRenderer.show @addImageButton
       @flip()
-
-  choiceFail: (choice, i) =>
-    @choicesView.fail choice, i
-
-  choiceWin: (choice, i) =>
-    @choicesView.win choice, i
 
   flip: =>
     @currentSide = if @currentSide is 1 then 0 else 1

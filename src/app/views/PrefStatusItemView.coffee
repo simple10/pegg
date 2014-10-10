@@ -124,11 +124,16 @@ class PrefStatusItemView extends View
   load: (data) =>
     @_question.setContent data.question
     @_total = data.total
+    if !@_total?
+      @_total = 1
 
     console.log data
     i = 0
-    for id, choice of data.choices
-      @_choices[i].setContent choice.choiceText
+    for own id, choice of data.choices
+      if !choice.count?
+        choice.count = 0
+
+      @_choices[i].setContent choice.text
       @_choices[i].setSize [Utils.getViewportWidth()-60, true]
       fraction = choice.count / @_total
       width = (Utils.getViewportWidth()-60) * fraction + 3

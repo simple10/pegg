@@ -1,4 +1,5 @@
 require './scss/card.scss'
+_ = require('Parse')._
 
 View = require 'famous/src/core/View'
 ScrollContainer = require 'famous/src/views/ScrollContainer'
@@ -28,11 +29,10 @@ class ChoicesView extends View
     @scrollView.sequenceFrom @choices
     @add(@scrollMod).add @scrollView
 
-  load: (choices) ->
+  load: (choices, answer) ->
     @clearChoices()
 
-    i=0
-    for choice in choices
+    for own id, choice of choices
       choiceText = choice.text
       if choiceText
 #        if choiceText.length > 30
@@ -45,15 +45,22 @@ class ChoicesView extends View
 #          color = 'dark'
         @options.choice.choiceText = choiceText
         choiceView = new ChoiceView @options.choice
-        choiceView.on 'click', ((i) ->
-          @_eventOutput.emit 'choice', i
-        ).bind @, i
-        choiceView.on 'choice:doneShowingStatus', ((i) ->
-          @_eventOutput.emit 'choice:doneShowingStatus', i
-        ).bind @, i
+        winOrFail = null
+        if answer?
+          if answer.id is id
+            winOrFail = 'win'
+          else
+            winOrFail = 'fail'
+        choiceView.on 'click', ((id, winOrFail, choiceView) ->
+          @_eventOutput.emit 'choice', id
+          if winOrFail?
+            choiceView.showStatusMsg winOrFail
+        ).bind @, id, winOrFail, choiceView
+        choiceView.on 'choice:doneShowingStatus', ((id) ->
+          @_eventOutput.emit 'choice:doneShowingStatus', id
+        ).bind @, id
         @choices.push choiceView
         choiceView.pipe @scrollView
-        i++
 
     #newChoice = new Surface
     #  size: [ @options.width - 50, @options.height ]
@@ -71,15 +78,6 @@ class ChoicesView extends View
 #  hideChoices: () ->
 #    for choiceView in @choices
 #      choiceView.state.setTransform Transform.translate(0,0,-3)
-
-  fail: (choice, i) ->
-    choiceView = @choices[i]
-    choiceView.showStatusMsg('fail')
-
-  win: (choice, i) ->
-    choiceView = @choices[i]
-    choiceView.showStatusMsg('win')
-
 
 
 module.exports = ChoicesView

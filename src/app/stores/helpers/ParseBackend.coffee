@@ -223,17 +223,18 @@ class ParseBackend
     prefCount.set 'card', card
     prefCount.set 'choice', choice
     
-    @getPrefCount choiceId, (res) =>
-      # if it already exists... update it
-      if res
-        count = res.get 'count'
-        count = count + 1
-        res.set 'count', count
-        res.save()
-      # otherwise create a new object and save
-      else 
-        prefCount.set 'count', 1
-        prefCount.save()
+    @getPrefCount choiceId
+      .then (res) ->
+        # if it already exists... update it
+        if res
+          count = res.get 'count'
+          count = count + 1
+          res.set 'count', count
+          res.save()
+        # otherwise create a new object and save
+        else
+          prefCount.set 'count', 1
+          prefCount.save()
 
 
   savePoints: (peggerId, peggeeId, points) ->
@@ -450,7 +451,7 @@ class ParseBackend
     choiceQuery.equalTo 'card', card
     choiceQuery.find()
       .then (results) =>
-        choices = []
+        choices = {}
         for choice in results
           text = choice.get 'text'
           plug = choice.get 'plug'
@@ -458,7 +459,7 @@ class ParseBackend
           thumb = choice.get 'plugThumb'
           if thumb? then thumb = thumb.S3
           if text isnt ''
-            choices.push
+            choices[choice.id] =
               id: choice.id
               text: text
               plug: plug
@@ -598,17 +599,12 @@ class ParseBackend
 #    catQuery.equalTo 'type', 'mood'
     catQuery.find()
 
-  getPrefCount: (choiceId, cb) ->
+  getPrefCount: (choiceId) ->
     choice = new Parse.Object 'Choice'
     choice.set 'id', choiceId
     prefCountQuery = new Parse.Query PrefCounts
     prefCountQuery.equalTo 'choice', choice
-    prefCountQuery.first
-      success: (result) =>
-        cb result
-      error: (error) =>
-        console.log "Error: " + error.code + " " + error.message
-        cb null
+    prefCountQuery.first()
 
 
   getPrefPopularities: (cards) ->
@@ -625,25 +621,16 @@ class ParseBackend
     prefCountsQuery.include 'choice'
     prefCountsQuery.find()
       .then (results) =>
-        cards = {}
-        for res in results
-          choice = res.get 'choice'
-          count = res.get 'count'
-          card = res.get 'card'
-          if !cards[card.id]?
-            cards[card.id] = {
-              question: card.get 'question'
-              choices: {}
-              total: 0
-            }
-          cards[card.id].choices[choice.id] = {
-            choiceText: choice.get 'text'
-            count: count
-          }
-          cards[card.id].total += count
+        if results?
+          for res in results
+            choice = res.get 'choice'
+            count = res.get 'count'
+            card = res.get 'card'
+            cards[card.id].choices[choice.id].count = count
+            cards[card.id].total += count
         cards
 
-  getPrefImages: (userId, filter, cb) ->
+  getPrefImages: (userId, filter) ->
     user = new Parse.Object 'User'
     user.set 'id',  userId
     prefImagesQuery = new Parse.Query Pref
@@ -653,27 +640,29 @@ class ParseBackend
     if filter is 'recent'
       prefImagesQuery.addDescending 'updatedAt'
 
-    prefImagesQuery.find
-      success: (results) =>
-        images = []
+    prefImagesQuery.find()
+      .then (results) =>
+        images = {}
 
         # prep the data for output
         for res in results
           plug = res.get 'plug'
           card = res.get 'card'
-          if plug then images.push { cardId: card.id, imageUrl: plug, userId: userId }
+          if plug
+            images[card.id] =
+              cardId: card.id
+              imageUrl: plug
+              userId: userId
         
         # filter by popular if necessary
         if filter is 'popular'
-          @getPrefCounts images, (counts) =>
-            images.sort (a, b) ->
-              counts[b.cardId].total - counts[a.cardId].total
-            cb images
+          @getPrefPopularities images
+            .then (counts) =>
+              images.sort (a, b) ->
+                counts[b.cardId].total - counts[a.cardId].total
+              images
         else
-          cb images
-      error: (error) =>
-        console.log "Error: " + error.code + " " + error.message
-        cb null
+          images
 
   getProfileActivity: (userId, filter, cb) ->
     activities = []
