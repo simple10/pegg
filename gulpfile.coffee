@@ -1,7 +1,7 @@
 # See example gulpfile.js for file system development build:
 # https://github.com/webpack/webpack-with-common-libs/blob/master/gulpfile.js
 
-enableGzip = false
+enableGzip = true
 
 # TODO: install gulp-plumber
 gulp = require 'gulp'
@@ -115,7 +115,7 @@ gulp.task 'webpack-dev-server', (callback) ->
 ############################################################
 gulp.task 'build', ['webpack:build', 'copy', 'cloud'], ->
   if enableGzip
-    gulp.src gzipFiles, cwd: conf.dist
+    gulp.src conf.gzipFiles, cwd: conf.dist
     .pipe gzip()
     .pipe gulp.dest conf.dist
 
