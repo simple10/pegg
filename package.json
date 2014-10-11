@@ -46,6 +46,7 @@
     "gulp-plumber": "^0.6.2",
     "gulp-util": "^2.2",
     "gulp-watch": "^0.6.5",
+    "html-webpack-plugin": "^1.1.0",
     "imports-loader": "^0.6.3",
     "istanbul": "^0.2.10",
     "karma": "^0.12.16",
@@ -59,13 +60,13 @@
     "mocha-loader": "^0.6.4",
     "node-sass": "^0.7.0",
     "open": "^0.0.5",
+    "rewire": "^2.1.0",
     "sass-loader": "^0.0",
     "script-loader": "^0.5",
     "sinon": "^1.10.0",
     "sinon-chai": "^2.5.0",
     "style-loader": "^0.6",
     "webpack": "^1.0",
-    "webpack-dev-server": "^1.2",
-    "rewire": "^2.1.0"
+    "webpack-dev-server": "^1.2"
   }
 }

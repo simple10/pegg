@@ -4,6 +4,7 @@
 # https://github.com/webpack/example-app/blob/master/webpack.config.js
 
 webpack = require 'webpack'
+HtmlWebpackPlugin = require 'html-webpack-plugin'
 path = require 'path'
 
 # webpack-dev-server options used in gulpfile
@@ -90,4 +91,6 @@ module.exports =
 
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(true)
+    new HtmlWebpackPlugin
+      template: 'src/assets/index.html.tpl'
   ]
