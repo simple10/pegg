@@ -92,5 +92,8 @@ module.exports =
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(true)
     new HtmlWebpackPlugin
+      # webpack-dev-server is service index.html directly.
+      # Not sure how to easily modify this behavior to serve the compiled index.html.tpl;
+      # so for now just maintain separate index.html and index.html.tpl
       template: 'src/assets/index.html.tpl'
   ]
