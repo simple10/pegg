@@ -198,19 +198,12 @@ class ParseBackend
     prefQuery = new Parse.Query Pref
     prefQuery.equalTo 'user', peggee
     prefQuery.equalTo 'card', card
-    promise = Parse.Promise()
-    prefQuery.first
-      success: (result) =>
+    prefQuery.first()
+      .then (result) =>
         result.set 'plug', full
         result.set 'plugThumb', thumb
         result.save()
-          .then ->
-            promise.resolve()
-          .fail (error) ->
-            promise.reject(error)
-      error: (error) ->
-        promise.reject(error)
-    promise
+
 
   # used to display popularity of choices
   savePrefCount: (cardId, choiceId) ->

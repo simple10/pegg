@@ -86,10 +86,10 @@ module.exports = {
     size: [43, 48]
     classes: ['card__back__addImage']
     content: 'images/add-image.png'
-    origin: [0.5, 1]
-    align: [0.5, 1]
+    origin: [0.5, 0.5]
+    align: [0.5, 0.5]
     transform: Transform.multiply(
-      Transform.translate 0, -80, 2
+      Transform.translate 0, height - 160, 1
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI

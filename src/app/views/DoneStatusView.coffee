@@ -34,12 +34,25 @@ class DoneStatusView extends View
 #    @add(picMod).add pic
     title = new Surface
       classes: ['status__done__title']
-      size: [Utils.getViewportWidth()-20, 200]
-      content: 'All Done!<br/>Play again?'
+      size: [Utils.getViewportWidth()-20, 100]
+      content: 'Round Complete.'
     titleMod = new StateModifier
       align: [0.5, 0.28]
       origin: [0.5, 0]
     @add(titleMod).add title
+
+    @okButton = new Surface
+      content: 'Play Again!'
+      classes: ["status__done__button", "status__done__button--blue"]
+      properties:
+        lineHeight: '50px'
+    @okButtonMod = new StateModifier
+      size: [Utils.getViewportWidth() - 50, 50]
+#      transform:
+    @okButton.on 'click', =>
+      PlayActions.load()
+    @add(@okButtonMod).add @okButton
+
 
 #    next = new ImageSurface
 #      content: 'images/continue_big_text.png'

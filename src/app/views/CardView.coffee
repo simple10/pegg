@@ -127,8 +127,8 @@ class CardView extends View
       content: @layout.addImage.content
       classes: @layout.addImage.classes
     addImageMod = new StateModifier
-      origin: @layout.addImage.origin
-      align: @layout.addImage.align
+#      origin: @layout.addImage.origin
+#      align: @layout.addImage.align
       transform: @layout.addImage.transform
     @addImageRenderer = new RenderController
     imagePickView = new ImagePickView()
@@ -138,9 +138,10 @@ class CardView extends View
         @backImage.setContent results.fullS3
         @_eventOutput.emit 'plug',
           id: @card.id
-          full: results.key
-          thumb: results.thumb.key
+          full: results.fullS3
+          thumb: results.thumb.S3
       )
+    @addImageRenderer.hide @addImageButton
     @mainNode.add imagePickView
     @mainNode.add(addImageMod).add(@addImageRenderer)
 

@@ -14,10 +14,10 @@ class ImagePickView extends View
 
   pick: (cb) ->
     if filepicker?
-      filepicker.pickAndStore mimetype: "image/*", {path: '/uploaded/'}, (InkBlobs) ->
+      filepicker.pickAndStore mimetype: "image/*", {path: '/orig/'}, (InkBlobs) ->
         result = InkBlobs[0]
         result.fullS3 = Config.s3.bucket + InkBlobs[0].key
-        filepicker.convert InkBlobs[0], { width: 100, height: 100, fit: 'clip', format: 'jpg'} , { path: '/processed/' }, (thumbBlob) =>
+        filepicker.convert InkBlobs[0], { width: 100, height: 100, fit: 'clip', format: 'jpg'} , { path: '/thumb/' }, (thumbBlob) =>
           thumbBlob.s3 = Config.s3.bucket + thumbBlob.key
           result.thumb = thumbBlob
           cb(result)
