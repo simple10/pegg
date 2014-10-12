@@ -64,7 +64,7 @@ class PlayCardView extends View
 
   initViews: ->
 
-    ## CARDS ##
+    ## CARD ##
     @cardView = new CardView
     @cardViewMod = new Modifier
       align: =>
@@ -95,7 +95,7 @@ class PlayCardView extends View
       origin: @layout.newComment.origin
     @add(@newCommentMod).add @newComment
     @newComment.on 'submit', (comment) =>
-      @newComment.setValue ''
+      @newComment.clear()
       @saveComment comment
 
     @numComments = new Surface
@@ -195,8 +195,7 @@ class PlayCardView extends View
   load: (card) =>
     @card = card
     @cardView.loadCard card, 'play'
-    if card.comments?
-      @loadComments()
+    @loadComments()
 
   loadComments: =>
     @commentsView.load @card.comments
@@ -238,12 +237,14 @@ class PlayCardView extends View
 #    @rc.hide(@commentsView)
 
   saveComment: (comment) ->
-    # FIXME need cardId, peggeeID
-    PlayActions.comment(comment, @card.id, @card.peggeeId)
+    PlayActions.comment comment, @card.id, @card.peggeeId
     newComment =
       userImg: UserStore.getAvatar 'type=square'
       text: comment
-    @card.comments.unshift newComment
+    if @card.comments? and @card.comments.length > 0
+      @card.comments.unshift newComment
+    else
+      @card.comments = [newComment]
     @loadComments()
 
   collapseComments: =>

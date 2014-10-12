@@ -23,9 +23,10 @@ config =
   facebook:
     appId: '1410524409215955'
 #    redirectUrl: 'http://192.168.1.7:8080'
+    redirectUrl: 'http://192.168.1.190:8080'
 #    redirectUrl: 'http://172.20.10.3:8080'
 #    redirectUrl: 'http://localhost:8080'
-    redirectUrl: 'http://www.pegg.us'
+#    redirectUrl: 'http://www.pegg.us'
     expirationDays: 30
 
   aviary:

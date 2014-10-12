@@ -18,11 +18,7 @@ class PlayStore extends EventHandler
   _size: 4
   _mood: {}
   _peggee: {}
-  # _cardSet = {}
-  # _playerId = ""
-  # _play = data[0]   # the cards to play
-  # _status = data[1]   # the status screen to display
-  _badge = {}
+  _badge: {}
 
   _loadMoodGame: ->
     MessageActions.loading 'game'
@@ -255,7 +251,7 @@ class PlayStore extends EventHandler
     DB.saveComment comment, cardId, peggeeId, UserStore.getUser().id, UserStore.getAvatar()
       .fail @_failHandler
       .done (res) =>
-        @getCurrentPage().card.comments.unshift res
+#        @getCurrentPage().card.comments.unshift res
         @_saveCommentActivity comment, peggeeId, cardId
 
   _setMood: (moodText, moodId, moodUrl) ->

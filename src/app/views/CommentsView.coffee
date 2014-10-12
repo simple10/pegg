@@ -41,13 +41,14 @@ class CommentsView extends View
     surfaces = []
     @comments.sequenceFrom surfaces
     @i = 0
-    while @i < data.length
-      @addCommentText.setContent ''
-      comment = new CommentItemView(data[@i], size: [@options.width, @options.height])
-      comment.pipe @comments
-      surfaces.push comment
-      @i++
-    if data.length is 0
+    if data? and data.length > 0
+      while @i < data.length
+        @addCommentText.setContent ''
+        comment = new CommentItemView(data[@i], size: [@options.width, @options.height])
+        comment.pipe @comments
+        surfaces.push comment
+        @i++
+    else
       @addCommentText.setContent 'Don\'t be a weeniecorn, say something!'
 
   getCount: ->

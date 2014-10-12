@@ -53,7 +53,7 @@ module.exports = {
 #      hide: Transform.translate 0,0, -1000
     back:
       transform: Transform.multiply(
-        Transform.translate(0, 78, 2)
+        Transform.translate(0, 78, 3)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
@@ -66,7 +66,7 @@ module.exports = {
 #    maxWidth: width - 60
     classes: ['card__back__image']
     transform:  Transform.multiply(
-      Transform.translate(0, 200, 3)
+      Transform.translate(0, 200, 2)
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI
@@ -76,7 +76,7 @@ module.exports = {
     size: [width - 60, 100]
     classes: ['card__back__text']
     transform: Transform.multiply(
-      Transform.translate(0, 105, 3)
+      Transform.translate(0, 105, 2)
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI
@@ -89,7 +89,7 @@ module.exports = {
     origin: [0.5, 1]
     align: [0.5, 1]
     transform: Transform.multiply(
-      Transform.translate 0, -80, 3
+      Transform.translate 0, -80, 2
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI

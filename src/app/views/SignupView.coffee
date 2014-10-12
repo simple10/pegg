@@ -67,7 +67,7 @@ class SignupView extends View
     @add(markMod).add markSurface
 
     Utils.animateAll logoMod, @layout.logo.states
-    Utils.animateAll markMod, @layout.mark.states
+#    Utils.animateAll markMod, @layout.mark.states
 
     @initSignUp()
 
@@ -85,7 +85,7 @@ class SignupView extends View
 #    @add(signupTextMod).add signupText
     @signupInput = new InputView
       size: @layout.signupInput.size
-      placeholder: 'Enter your email'
+      placeholder: 'Email...'
       classes: @layout.signupInput.classes
     @signupInputMod = new StateModifier
       origin: @layout.signupInput.origin
@@ -117,7 +117,7 @@ class SignupView extends View
 
   onSubmit: =>
     email = @signupInput.getValue()
-    @signupInput.setValue ""
+    @signupInput.setValue "Email..."
     UserActions.subscribe email
 
   showMessage: =>

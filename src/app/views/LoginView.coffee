@@ -81,17 +81,25 @@ class LoginView extends View
 #      size: [68, 60]
 #      content: 'Login'
 #      classes: ['login__text--header']
-#    privacyText = new Surface
-#      size: [Utils.getViewportWidth(), 10]
-#      content: 'Psst... Pegg respects people and their data.'
-#      classes: ['login__text--message']
+    privacyText = new Surface
+      size: @layout.message.size
+      content: 'Psst... we won\'t ever sell your data.' +
+      '<br/>We only store your email, contacts,' +
+      '<br/>and awesome sauce.'
+#      'First, connect your social network.<br/> Or go pegg yourself someplace else... ;)'
+      classes: @layout.message.classes
+    privacyTextMod = new StateModifier
+      align: @layout.message.align
+      origin: @layout.message.origin
 #    loginTextMod = new StateModifier
 #      align: [0.5,0.5]
 #      origin: [0.5,0.5]
 #      opacity: 0
 #    node = @add loginTextMod
 #    node.add loginText
-#    node.add privacyText
+    @add(privacyTextMod).add privacyText
+
+    Utils.animateAll privacyTextMod, @layout.message.states
 
 
 # Causes inexplicable flutter near end of animation:

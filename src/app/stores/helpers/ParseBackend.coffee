@@ -295,6 +295,7 @@ class ParseBackend
         for pref in results
           cards[pref.id] = {
             id: pref.id
+            peggeeId: user.id
             firstName: user.get 'first_name'
             pic: user.get 'avatar_url'
             question: pref.get 'question'

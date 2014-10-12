@@ -25,19 +25,19 @@ module.exports =
     size: [150, 70]
     classes: ['login__mark']
     align: [0.5, 0.5]
-    origin: [0.5, 0]
-    states: [
-      {
-        delay: 35
-#        scale: [1.3,1.3,0]
-        transition: {duration: 300, curve: Easing.outExpo}
-      }
-      {
-        delay: 55
-#        scale: [1,1,0]
-        transition: {duration: 300, curve: Easing.outExpo}
-      }
-    ]
+    origin: [0.5, 0.5]
+#    states: [
+#      {
+#        delay: 35
+##        scale: [1.3,1.3,0]
+#        transition: {duration: 300, curve: Easing.outExpo}
+#      }
+#      {
+#        delay: 55
+##        scale: [1,1,0]
+#        transition: {duration: 300, curve: Easing.outExpo}
+#      }
+#    ]
 
   signupText:
     size: [300, 50]

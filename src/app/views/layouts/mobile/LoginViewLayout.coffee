@@ -24,22 +24,22 @@ module.exports =
   mark:
     size: [130, null]
     classes: ['login__mark']
-    align: [0.5, 1]
-    origin: [0.5, 0]
-    states: [
-      {
-        delay: 35
-        align: [0.5, 0.5]
-        origin: [0.5, 0.5]
-        transition: {duration: 500, curve: Easing.inOutBack}
-      }
-      {
-        delay: 100
-        align: [0.5, 0.4]
-        origin: [0.5, 0]
-        transition: {duration: 500, curve: Easing.outBounce}
-      }
-    ]
+    align: [0.5, 0.4]
+    origin: [0.5, 0.5]
+#    states: [
+#      {
+#        delay: 35
+#        align: [0.5, 0.4]
+#        origin: [0.5, 0.5]
+#        transition: {duration: 500, curve: Easing.inOutBack}
+#      }
+#      {
+#        delay: 100
+#        align: [0.5, 0.5]
+#        origin: [0.5, 0.5]
+#        transition: {duration: 500, curve: Easing.outBounce}
+#      }
+#    ]
   text:
     size: [130, null]
     classes: ['login__text--header']
@@ -48,14 +48,33 @@ module.exports =
     states: [
       {
         delay: 35
-        align: [0.5, 0.5]
+        align: [0.5, 0.4]
+        origin: [0.5, 0.5]
+        transition: {duration: 500, curve: Easing.inOutBack}
+      }
+#      {
+#        delay: 50
+#        align: [0.5, 0.4]
+#        origin: [0.5, 0]
+#        transition: {duration: 500, curve: Easing.outBounce}
+#      }
+    ]
+  message:
+    size: [Utils.getViewportWidth()-40, 50]
+    classes: ['login__text--message']
+    align: [0.5, 0]
+    origin: [0.5, 1]
+    states: [
+      {
+        delay: 35
+        align: [0.5, 0.4]
         origin: [0.5, 0.5]
         transition: {duration: 500, curve: Easing.inOutBack}
       }
       {
         delay: 50
-        align: [0.5, 0.4]
-        origin: [0.5, 0]
+        align: [0.5, 0.6]
+        origin: [0.5, 0.5]
         transition: {duration: 500, curve: Easing.outBounce}
       }
     ]

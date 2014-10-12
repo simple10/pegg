@@ -21,7 +21,7 @@ class InputView extends View
     @textInput = new InputSurface
       size: @options.size
       placeholder: @options.placeholder
-      classes: ["#{@options.cssPrefix}"]
+      classes: ["#{@options.cssPrefix}", "#{@options.classes}"]
     @textInputMod = new StateModifier
     @add(@textInputMod).add @textInput
 
@@ -62,5 +62,6 @@ class InputView extends View
 
   clear: () =>
     @textInput.setValue ""
+    @.textInput._currentTarget.value = ""
 
 module.exports = InputView
