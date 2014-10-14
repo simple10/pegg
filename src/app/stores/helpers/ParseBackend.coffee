@@ -618,6 +618,8 @@ class ParseBackend
             choice = res.get 'choice'
             count = res.get 'count'
             card = res.get 'card'
+            if !cards[card.id].total?
+              cards[card.id].total = 0
             cards[card.id].choices[choice.id].count = count
             cards[card.id].total += count
         cards

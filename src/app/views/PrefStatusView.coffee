@@ -59,10 +59,12 @@ class PrefStatusView extends View
     @titleNode = new RenderNode
     @_title = new Surface
       classes: ['status__pref__title']
-      size: [Utils.getViewportWidth() - 60, 200]
-      content: 'Good choice! <br/> Here\'s what other people picked'
+      size: [Utils.getViewportWidth() - 60, 100]
+      content: 'Choice Rank'
+      properties:
+        lineHeight: '100px'
     titleMod = new StateModifier
-      align: [0.5, 0.1]
+      align: [0.5, 0]
       origin: [0.5, 0]
     @titleNode.add(titleMod).add @_title
     @_title.pipe @itemsScrollView

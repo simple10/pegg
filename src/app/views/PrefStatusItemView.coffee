@@ -78,7 +78,7 @@ class PrefStatusItemView extends View
     renderNodeMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
-      size: [undefined, 40]
+      size: [undefined, 30]
     percentageNode = new RenderNode renderNodeMod
     percentageBar = new Surface
       classes: classes
@@ -90,12 +90,12 @@ class PrefStatusItemView extends View
     percentageBarMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
-      size: [3, 40]
+      size: [3, 30]
       transform: Transform.translate 30, null, null
     percentageTextMod = new StateModifier
       align: [0, 0]
       origin: [0, 0]
-      size: [null, 40]
+      size: [null, 30]
       transform: Transform.translate 30, null, null
     percentageNode.add(percentageBarMod).add percentageBar
     percentageNode.add(percentageTextMod).add percentageText
@@ -108,7 +108,7 @@ class PrefStatusItemView extends View
 
     # CHOICE TEXT
     choiceNode = new RenderNode
-      size: [Utils.getViewportWidth()-60, 40]
+      size: [Utils.getViewportWidth()-60, 30]
     choice = new Surface
       classes: ['status__pref__choice']
       size: [Utils.getViewportWidth()-60, true]
@@ -138,7 +138,7 @@ class PrefStatusItemView extends View
       fraction = choice.count / @_total
       fraction = 0 unless isFinite fraction
       width = (Utils.getViewportWidth()-60) * fraction + 3
-      @_percentages[i].bar.setSize [ width, 40 ]
+      @_percentages[i].bar.setSize [ width, 30 ]
       # TODO: wrap any output of numbers in a helper util to prevent unwanted NaN, Infinity, etc. output
       @_percentages[i].text.setContent "#{Math.round fraction * 100}%"
       if fraction < 0.25
