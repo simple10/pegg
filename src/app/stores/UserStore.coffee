@@ -1,13 +1,17 @@
+DB = require 'stores/helpers/ParseBackend'
+
+# Famo.us
 EventEmitter = require 'famous/src/core/EventEmitter'
-Constants = require 'constants/PeggConstants'
+
+# Pegg
 AppDispatcher = require 'dispatchers/AppDispatcher'
+Config = require('Config').public
+Constants = require 'constants/PeggConstants'
+Cookies = require 'lib/Cookies'
+MessageActions = require 'actions/MessageActions'
+NavActions = require 'actions/NavActions'
 Parse = require 'Parse'
 Utils = require 'lib/Utils'
-Cookies = require 'lib/Cookies'
-Config = require('Config').public
-
-DB = require 'stores/helpers/ParseBackend'
-NavActions = require 'actions/NavActions'
 
 class UserStore extends EventEmitter
   _subscribed: false
@@ -86,6 +90,7 @@ class UserStore extends EventEmitter
         return
 
   load: (filter) ->
+    MessageActions.loading 'profile_activity'
     filter = filter || null
 #    DB.getPrefImages @getUser().id, filter, (images) =>
 #      @_images = images
@@ -95,6 +100,7 @@ class UserStore extends EventEmitter
       @_activity = activity
       @emit Constants.stores.PROFILE_ACTIVITY_CHANGE
       @emit Constants.stores.CHANGE
+      MessageActions.doneLoading 'profile_activity'
 
   logout: ->
     FB.logout()
