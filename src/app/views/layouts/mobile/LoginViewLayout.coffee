@@ -60,7 +60,7 @@ module.exports =
 #      }
     ]
   message:
-    size: [Utils.getViewportWidth()-40, 50]
+    size: [Utils.getViewportWidth()-20, 50]
     classes: ['login__text--message']
     align: [0.5, 0]
     origin: [0.5, 1]
@@ -73,7 +73,7 @@ module.exports =
       }
       {
         delay: 50
-        align: [0.5, 0.6]
+        align: [0.5, 0.55]
         origin: [0.5, 0.5]
         transition: {duration: 500, curve: Easing.outBounce}
       }
