@@ -7,7 +7,6 @@ StateModifier = require 'famous/src/modifiers/StateModifier'
 ImageSurface = require 'famous/src/surfaces/ImageSurface'
 ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
 NavActions = require 'actions/NavActions'
-SingleCardActions = require 'actions/SingleCardActions'
 Utils = require 'lib/Utils'
 
 class ActivityItemView extends View

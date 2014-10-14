@@ -345,11 +345,11 @@ class ParseBackend
           }
         if results? then cards else null
 
-  getCard: (cardId, cb) ->
+  getCard: (cardId) ->
     cardQuery = new Parse.Query Card
     cardQuery.equalTo 'objectId', cardId
-    cardQuery.first
-      success: (card) =>
+    cardQuery.first()
+      .then (card) =>
         if card?
           cardObj = {
             id: card.id
@@ -357,12 +357,9 @@ class ParseBackend
             hasPreffed: card.get 'hasPreffed'
             choices: []
           }
-          cb cardObj
+          cardObj
         else
-          cb null
-      error: (error) ->
-        console.log "Error fetching card: " + error.code + " " + error.message
-        cb null
+          null
 
   getPrefCard: (cardId, peggeeId) ->
     peggee = new Parse.Object 'User'

@@ -44,8 +44,8 @@ class AppStateStore extends EventEmitter
 
   _loadCard: (cardId, peggeeId, referrer) ->
 #    console.log cardId, peggeeId
-    Parse.history.navigate "#{@_currentPageID}/#{cardId}/#{peggeeId}", trigger: false
     @_currentPageID = 'card'
+    Parse.history.navigate "#{@_currentPageID}/#{cardId}/#{peggeeId}", trigger: false
     peggeeUrlSegment = if peggeeId? then "/#{peggeeId}" else ""
     console.log "#{@_currentPageID}/#{cardId}#{peggeeUrlSegment}"
     SingleCardActions.load cardId, peggeeId, referrer

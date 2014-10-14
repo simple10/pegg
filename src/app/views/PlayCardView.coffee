@@ -1,32 +1,34 @@
 require './scss/play.scss'
 
-View = require 'famous/src/core/View'
-Modifier = require 'famous/src/core/Modifier'
-StateModifier = require 'famous/src/modifiers/StateModifier'
+# Famo.us
 ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
-ImageSurface = require 'famous/src/surfaces/ImageSurface'
-Utility = require 'famous/src/utilities/Utility'
-Surface = require 'famous/src/core/Surface'
-Transform = require 'famous/src/core/Transform'
+Easing = require 'famous/src/transitions/Easing'
 GenericSync = require 'famous/src/inputs/GenericSync'
+ImageSurface = require 'famous/src/surfaces/ImageSurface'
+Modifier = require 'famous/src/core/Modifier'
 MouseSync = require 'famous/src/inputs/MouseSync'
-TouchSync = require 'famous/src/inputs/TouchSync'
+RenderController = require 'famous/src/views/RenderController'
+StateModifier = require 'famous/src/modifiers/StateModifier'
+Surface = require 'famous/src/core/Surface'
 Timer = require 'famous/src/utilities/Timer'
+TouchSync = require 'famous/src/inputs/TouchSync'
+Transform = require 'famous/src/core/Transform'
 Transitionable = require 'famous/src/transitions/Transitionable'
-Utils = require 'lib/Utils'
-Constants = require 'constants/PeggConstants'
-PlayStore = require 'stores/PlayStore'
-PlayActions = require 'actions/PlayActions'
+Utility = require 'famous/src/utilities/Utility'
+View = require 'famous/src/core/View'
 
+# Pegg
 CardView = require 'views/CardView'
 CommentsView = require 'views/CommentsView'
+Constants = require 'constants/PeggConstants'
 InputView = require 'views/InputView'
-PlayNavView = require 'views/PlayNavView'
 LayoutManager = require 'views/layouts/LayoutManager'
+PlayActions = require 'actions/PlayActions'
+PlayNavView = require 'views/PlayNavView'
+PlayStore = require 'stores/PlayStore'
+SingleCardStore = require 'stores/SingleCardStore'
 UserStore = require 'stores/UserStore'
-
-RenderController = require 'famous/src/views/RenderController'
-Easing = require 'famous/src/transitions/Easing'
+Utils = require 'lib/Utils'
 
 class PlayCardView extends View
 
@@ -50,8 +52,10 @@ class PlayCardView extends View
   initListeners: ->
     PlayStore.on Constants.stores.PREF_SAVED, @cardPref
     PlayStore.on Constants.stores.CARD_FAIL, @cardFail
-    PlayStore.on Constants.stores.CARD_WIN, (points) =>
-      @cardWin points
+    PlayStore.on Constants.stores.CARD_WIN, @cardWin
+    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
+    SingleCardStore.on Constants.stores.CARD_WIN, @cardWin
+    SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
     @cardView.on 'comment', =>
       @collapseComments()
     @cardView.on 'pegg', (payload) =>
@@ -74,14 +78,27 @@ class PlayCardView extends View
     @add(@cardViewMod).add @cardView
 
     ## NAV ##
-    @navView = new PlayNavView
-    @navView._eventOutput.on 'click', (data) =>
+    @navRc = new RenderController
+    @add @navRc
+
+    ## PLAY NAV ##
+    @playNavView = new PlayNavView
+    @playNavView._eventOutput.on 'click', (data) =>
       if data is 'prevPage'
         @prevPage()
       else if data is 'nextPage'
         @nextPage()
-    @add(@navView)
-    @navView.hideRightArrow()
+    @navRc.show @playNavView
+    @playNavView.hideRightArrow()
+
+    ## SINGLE CARD NAV ##
+    @singleCardNavView = new PlayNavView
+    @singleCardNavView._eventOutput.on 'click', (data) =>
+      if data is 'prevPage'
+        @prevPage()
+      else if data is 'nextPage'
+        @nextPage()
+    @singleCardNavView.hideRightArrow()
 
     ## COMMENTS ##
     @commentsView = new CommentsView
@@ -191,8 +208,25 @@ class PlayCardView extends View
       isMovingY = false
     ).bind(@)
 
+  loadSingleCard: =>
+    card = SingleCardStore.getCard()
+    @navRc.hide @playNavView
+    @load card
+    if SingleCardStore.getReferrer()?
+      @navRc.show @singleCardNavView
+      @singleCardNavView.showNav()
+      @singleCardNavView.setOptions {
+        'cardType': 'review'
+      }
+      @showComments()
+    else
+      @navRc.hide @singleCardNavView
+      @singleCardNavView.hideNav()
+      @hideComments()
 
   load: (card) =>
+    @navRc.hide @singleCardNavView
+    @navRc.show @playNavView
     @card = card
     @cardView.loadCard card, 'play'
     @loadComments()
@@ -203,7 +237,7 @@ class PlayCardView extends View
 
   nextPage: =>
     PlayActions.nextPage()
-    @navView.hideRightArrow()
+    @playNavView.hideRightArrow()
     @hideComments()
 
   prevPage: =>
@@ -211,7 +245,7 @@ class PlayCardView extends View
 
   cardPref: =>
     @showComments()
-    @navView.showRightArrow()
+    @playNavView.showRightArrow()
 
   cardFail: =>
     #@message.setClasses ['card__message__fail']
@@ -220,7 +254,7 @@ class PlayCardView extends View
   cardWin: (points) =>
     @showPoints points
     @showComments()
-    @navView.showRightArrow()
+    @playNavView.showRightArrow()
 
   showPoints: (points) =>
     console.log "points: #{points}"
@@ -249,7 +283,7 @@ class PlayCardView extends View
 
   collapseComments: =>
     @rc.hide(@commentsView)
-    @navView.showNav()
+    @playNavView.showNav()
     # slide the cards down to their starting position
     @cardYPos.set(0, @layout.cards.states[0].transition)
     # slide the comments down to their starting position
@@ -259,7 +293,7 @@ class PlayCardView extends View
 
   expandComments: =>
     @rc.show(@commentsView)
-    @navView.hideNav()
+    @playNavView.hideNav()
     maxCardYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
     # move the cards up
     @cardYPos.set(maxCardYPos, @layout.cards.states[1].transition)
@@ -268,6 +302,8 @@ class PlayCardView extends View
     @._commentsIsExpanded = true
     @newComment.setAlign @layout.newComment.states[1].align
 
+  requireLogin: =>
+    MessageActions.show 'app__login_required'
 
   _translateToAlign: (delta, axis) =>
     if axis is 'Y'

@@ -32,11 +32,7 @@ module.exports =
     USER_LOAD: null
     USER_LOGIN: null
     USER_LOGOUT: null
-    SINGLE_CARD_COMMENT: null
     SINGLE_CARD_LOAD: null
-    SINGLE_CARD_PEGG: null
-    SINGLE_CARD_PREF: null
-    SINGLE_CARD_PLUG: null
 
   stores: Utils.keyMirror
     # Generic

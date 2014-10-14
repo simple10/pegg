@@ -1,19 +1,20 @@
 # Famo.us
-View = require 'famous/src/core/View'
-Transform = require 'famous/src/core/Transform'
-Lightbox = require 'famous/src/views/Lightbox'
 Easing = require 'famous/src/transitions/Easing'
+Lightbox = require 'famous/src/views/Lightbox'
+Transform = require 'famous/src/core/Transform'
+View = require 'famous/src/core/View'
 
 # Pegg
 Constants = require 'constants/PeggConstants'
-PlayStore = require 'stores/PlayStore'
+DoneStatusView = require 'views/DoneStatusView'
+PeggStatusView = require 'views/PeggStatusView'
+PickMoodView = require 'views/PickMoodView'
+PlayBadgesView = require 'views/PlayBadgesView'
 PlayCardView = require 'views/PlayCardView'
 PlayStatusView = require 'views/PlayStatusView'
-PlayBadgesView = require 'views/PlayBadgesView'
-PickMoodView = require 'views/PickMoodView'
-PeggStatusView = require 'views/PeggStatusView'
+PlayStore = require 'stores/PlayStore'
 PrefStatusView = require 'views/PrefStatusView'
-DoneStatusView = require 'views/DoneStatusView'
+SingleCardStore = require 'stores/SingleCardStore'
 Utils = require 'lib/Utils'
 
 class PlayView extends View
@@ -27,6 +28,7 @@ class PlayView extends View
     PlayStore.on Constants.stores.PAGE_CHANGE, @loadPage
     PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadge
     PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods
+    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
 
   initViews: ->
 
@@ -68,6 +70,11 @@ class PlayView extends View
   loadBadge: =>
     @badgesView.load PlayStore.getBadge()
     @lightbox.show @badgesView
+
+  loadSingleCard: =>
+    card = SingleCardStore.getCard()
+    @playCardView.loadSingleCard card
+    @lightbox.show @playCardView
 
   loadPage: =>
     page = PlayStore.getCurrentPage()
