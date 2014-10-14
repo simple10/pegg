@@ -18,7 +18,7 @@ class ImagePickView extends View
         result = InkBlobs[0]
         result.fullS3 = Config.s3.bucket + InkBlobs[0].key
         filepicker.convert InkBlobs[0], { width: 100, height: 100, fit: 'clip', format: 'jpg'} , { path: '/thumb/' }, (thumbBlob) =>
-          thumbBlob.s3 = Config.s3.bucket + thumbBlob.key
+          thumbBlob.S3 = Config.s3.bucket + thumbBlob.key
           result.thumb = thumbBlob
           cb(result)
 
