@@ -53,7 +53,7 @@ class PlayCardView extends View
     PlayStore.on Constants.stores.PREF_SAVED, @cardPref
     PlayStore.on Constants.stores.CARD_FAIL, @cardFail
     PlayStore.on Constants.stores.CARD_WIN, @cardWin
-    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
+    # SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
     SingleCardStore.on Constants.stores.CARD_WIN, @cardWin
     SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
     @cardView.on 'comment', =>
@@ -208,28 +208,30 @@ class PlayCardView extends View
       isMovingY = false
     ).bind(@)
 
-  loadSingleCard: =>
-    card = SingleCardStore.getCard()
+  loadSingleCard: (card) =>
     @navRc.hide @playNavView
-    @load card
-    if SingleCardStore.getReferrer()?
+    if card.referrer?
       @navRc.show @singleCardNavView
       @singleCardNavView.showNav()
       @singleCardNavView.setOptions {
-        'cardType': 'review'
+        'cardType': card.type
       }
-      @showComments()
+      # @showComments()
     else
       @navRc.hide @singleCardNavView
       @singleCardNavView.hideNav()
-      @hideComments()
+      # @hideComments()
+    @_load card
+
+  _load: (card) =>
+    @card = card
+    @cardView.loadCard card
+    @loadComments()
 
   load: (card) =>
     @navRc.hide @singleCardNavView
     @navRc.show @playNavView
-    @card = card
-    @cardView.loadCard card, 'play'
-    @loadComments()
+    @_load card
 
   loadComments: =>
     @commentsView.load @card.comments

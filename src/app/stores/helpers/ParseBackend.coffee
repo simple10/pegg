@@ -355,7 +355,6 @@ class ParseBackend
             id: card.id
             question: card.get 'question'
             hasPreffed: card.get 'hasPreffed'
-            choices: []
           }
           cardObj
         else
