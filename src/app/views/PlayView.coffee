@@ -14,7 +14,6 @@ PlayCardView = require 'views/PlayCardView'
 PlayStatusView = require 'views/PlayStatusView'
 PlayStore = require 'stores/PlayStore'
 PrefStatusView = require 'views/PrefStatusView'
-SingleCardStore = require 'stores/SingleCardStore'
 Utils = require 'lib/Utils'
 
 class PlayView extends View
@@ -28,7 +27,6 @@ class PlayView extends View
     PlayStore.on Constants.stores.PAGE_CHANGE, @loadPage
     PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadge
     PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods
-    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
 
   initViews: ->
 
@@ -70,11 +68,6 @@ class PlayView extends View
   loadBadge: =>
     @badgesView.load PlayStore.getBadge()
     @lightbox.show @badgesView
-
-  loadSingleCard: =>
-    card = SingleCardStore.getCard()
-    @playCardView.loadSingleCard card
-    @lightbox.show @playCardView
 
   loadPage: =>
     page = PlayStore.getCurrentPage()

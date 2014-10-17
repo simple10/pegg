@@ -7,6 +7,7 @@ EventHandler = require 'famous/src/core/EventHandler'
 # Pegg
 AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require 'constants/PeggConstants'
+UserStore = require 'stores/UserStore'
 
 class CardStore extends EventHandler
   _fails: 0
@@ -111,6 +112,8 @@ class CardStore extends EventHandler
       when 'win' then return "Good job!"
       when 'fail' then return "Boo."
 
+card = new CardStore
+
 # Register callback with AppDispatcher to be notified of events
 AppDispatcher.register (payload) ->
   action = payload.action
@@ -118,12 +121,12 @@ AppDispatcher.register (payload) ->
   # Pay attention to events relevant to PlayStore
   switch action.actionType
     when Constants.actions.PEGG_SUBMIT
-      play._pegg action.peggeeId, action.card, action.choice, action.answer
+      card._pegg action.peggeeId, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
-      play._pref action.card, action.choice, action.plug, action.thumb
+      card._pref action.card, action.choice, action.plug, action.thumb
     when Constants.actions.PLUG_IMAGE
-      play._plug action.card, action.full, action.thumb
+      card._plug action.card, action.full, action.thumb
     when Constants.actions.CARD_COMMENT
-      play._comment action.comment, action.cardId, action.peggeeId
+      card._comment action.comment, action.cardId, action.peggeeId
 
 module.exports = CardStore

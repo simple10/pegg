@@ -208,9 +208,10 @@ class PlayCardView extends View
       isMovingY = false
     ).bind(@)
 
-  loadSingleCard: (card) =>
+  loadSingleCard: (card, referrer) =>
     @navRc.hide @playNavView
-    if card.referrer?
+    @playNavView.hideNav()
+    if referrer?
       @navRc.show @singleCardNavView
       @singleCardNavView.showNav()
       @singleCardNavView.setOptions {

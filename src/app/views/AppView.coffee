@@ -43,6 +43,7 @@ PlayView = require 'views/PlayView'
 ProfileView = require 'views/ProfileView'
 SettingsView = require 'views/SettingsView'
 TabMenuView = require 'views/TabMenuView'
+PlayCardView = require 'views/PlayCardView'
 
 
 #Actions
@@ -78,6 +79,7 @@ class AppView extends View
     SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
     MessageStore.on Constants.stores.SHOW_MESSAGE, @showMessage
     MessageStore.on Constants.stores.HIDE_MESSAGE, @hideMessage
+    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
 
   initLayout: ->
     @layout = new HeaderFooterLayout
@@ -118,6 +120,7 @@ class AppView extends View
     @pages.profile = new ProfileView
     @pages.login = new LoginView
     @pages.home = new HomeView
+    @pages.card = new PlayCardView
     @togglePage()
 
   initViewManager: ->
@@ -158,6 +161,12 @@ class AppView extends View
 
   requireLogin: =>
     @showPage @getPage 'login'
+
+  loadSingleCard: =>
+    card = SingleCardStore.getCard()
+    referrer = SingleCardStore.getReferrer()
+    @pages.card.loadSingleCard card, referrer
+    @lightbox.show @pages.card
 
   onScroll: =>
     if @tabsOpen
