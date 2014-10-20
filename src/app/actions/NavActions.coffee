@@ -2,6 +2,11 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require('constants/PeggConstants').actions
 
 NavActions =
+  goTo: (path) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.BACK
+      path: path
+
   login: (referrer) ->
     AppDispatcher.handleViewAction
       actionType: Constants.LOGIN

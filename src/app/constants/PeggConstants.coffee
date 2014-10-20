@@ -33,6 +33,7 @@ module.exports =
     USER_LOGIN: null
     USER_LOGOUT: null
     SINGLE_CARD_LOAD: null
+    BACK: null
 
   stores: Utils.keyMirror
     # Generic

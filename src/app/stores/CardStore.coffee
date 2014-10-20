@@ -66,7 +66,7 @@ class CardStore extends EventHandler
         @emit Constants.stores.PLUG_SAVED
 
   _failHandler: (error) ->
-    console.err "ERROR:", error
+    console.error "ERROR:", error
 
   _comment: (comment, cardId, peggeeId) ->
     console.log "comment: #{comment}  peggee: #{peggeeId}  card: #{cardId}"

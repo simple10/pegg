@@ -12,6 +12,8 @@ Constants = require 'constants/PeggConstants'
 PlayStore = require 'stores/PlayStore'
 LayoutManager = require 'views/layouts/LayoutManager'
 ProgressBarView = require 'views/ProgressBarView'
+SingleCardStore = require 'stores/SingleCardStore'
+NavActions = require 'actions/NavActions'
 
 class PlayNavView extends View
 
@@ -29,8 +31,10 @@ class PlayNavView extends View
     @initListeners()
 
   initListeners: ->
-    PlayStore.on Constants.stores.GAME_LOADED, @loadNav
+    PlayStore.on Constants.stores.GAME_LOADED, @loadPlayNav
     PlayStore.on Constants.stores.PAGE_CHANGE, @updateNav
+    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCardNav
+
 
   initSurfaces: =>
     ## Main View Modifier ##
@@ -84,7 +88,7 @@ class PlayNavView extends View
 
     # Attach modifiers and surfaces to the view
     @node = @add @mainMod
-#    @node.add(@leftArrowMod).add @leftArrow
+    @node.add(@leftArrowMod).add @leftArrow
     @node.add(@rightArrowMod).add @rightArrow
     @node.add(@titleMod).add @title
     @node.add(@moodImageMod).add @moodImage
@@ -92,8 +96,6 @@ class PlayNavView extends View
 
 
   initEvents: =>
-    @leftArrow.on 'click', =>
-      @_eventOutput.emit('click', 'prevPage')
 
     @rightArrow.on 'click', =>
       @_eventOutput.emit('click', 'nextPage')
@@ -107,29 +109,52 @@ class PlayNavView extends View
 #      @showRightArrow()
 #      @showLeftArrow()
 
-  showNav: =>
-    Utils.animate @mainMod, @layout.wrapper.states[0]
-
   hideNav: =>
-    Utils.animate @mainMod, @layout.wrapper.states[1]
+    Utils.animate @mainMod, @layout.hide
 
-  loadNav: =>
+  showNav: =>
+    Utils.animate @mainMod, @layout.show
+
+  showSingleCardNav: =>
+    Utils.animate @mainMod, @layout.show
+    Utils.animate @progressBarMod, @layout.hide
+    Utils.animate @moodImageMod, @layout.hide
+    if @_referrer?
+      Utils.animate @leftArrowMod, @layout.show
+
+  showPlayNav: =>
+    Utils.animate @mainMod, @layout.show
+    Utils.animate @progressBarMod, @layout.show
+    Utils.animate @moodImageMod, @layout.show
+    Utils.animate @leftArrowMod, @layout.hide
+    Utils.animate @rightArrowMod, @layout.hide
+
+  loadSingleCardNav: =>
+    cardTitle = SingleCardStore.getCard()
+    @_referrer = SingleCardStore.getReferrer()
+    if @_referrer?
+      @leftArrow.on 'click', =>
+        NavActions.goTo @_referrer
+
+    console.log "Card:", cardTitle
+
+  loadPlayNav: =>
     # change mood icon
     gameState = PlayStore.getGameState()
     @moodImage.setContent gameState.mood.url
     @progressBar.reset gameState.size
 
   showLeftArrow: =>
-    Utils.animate @leftArrowMod, @layout.leftArrow.states[0]
+    Utils.animate @leftArrowMod, @layout.show
 
   hideLeftArrow: =>
-    Utils.animate @leftArrowMod, @layout.leftArrow.states[1]
+    Utils.animate @leftArrowMod, @layout.hide
 
   showRightArrow: =>
-    Utils.animate @rightArrowMod, @layout.rightArrow.states[0]
+    Utils.animate @rightArrowMod, @layout.show
 
   hideRightArrow: =>
-    Utils.animate @rightArrowMod, @layout.rightArrow.states[1]
+    Utils.animate @rightArrowMod, @layout.hide
 
   updateNav: =>
     gameState = PlayStore.getGameState()

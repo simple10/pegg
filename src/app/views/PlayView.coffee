@@ -73,7 +73,6 @@ class PlayView extends View
     page = PlayStore.getCurrentPage()
     switch page.type
       when 'card'
-        @playCardView.load page.card
         @lightbox.show @playCardView
       when 'topPeggers'
         @peggStatus.load page.stats

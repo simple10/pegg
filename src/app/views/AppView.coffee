@@ -79,7 +79,7 @@ class AppView extends View
     SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
     MessageStore.on Constants.stores.SHOW_MESSAGE, @showMessage
     MessageStore.on Constants.stores.HIDE_MESSAGE, @hideMessage
-    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
+    SingleCardStore.on Constants.stores.CARD_CHANGE, @showSingleCard
 
   initLayout: ->
     @layout = new HeaderFooterLayout
@@ -150,6 +150,9 @@ class AppView extends View
   getPage: (pageID) ->
     @pages[pageID]
 
+  showSingleCard: =>
+    @showPage @getPage 'card'
+
   togglePage: =>
     pageID = AppStateStore.getCurrentPageID()
     if !UserStore.getLoggedIn() and pageID isnt 'card'
@@ -161,12 +164,6 @@ class AppView extends View
 
   requireLogin: =>
     @showPage @getPage 'login'
-
-  loadSingleCard: =>
-    card = SingleCardStore.getCard()
-    referrer = SingleCardStore.getReferrer()
-    @pages.card.loadSingleCard card, referrer
-    @lightbox.show @pages.card
 
   onScroll: =>
     if @tabsOpen

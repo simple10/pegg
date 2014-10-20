@@ -27,7 +27,9 @@ PlayActions = require 'actions/PlayActions'
 PlayNavView = require 'views/PlayNavView'
 PlayStore = require 'stores/PlayStore'
 SingleCardStore = require 'stores/SingleCardStore'
+AppStateStore = require 'stores/AppStateStore'
 UserStore = require 'stores/UserStore'
+CardStore = require 'stores/CardStore'
 Utils = require 'lib/Utils'
 
 class PlayCardView extends View
@@ -50,12 +52,15 @@ class PlayCardView extends View
     @initGestures()
 
   initListeners: ->
+    PlayStore.on Constants.stores.PAGE_CHANGE, @loadPlay
     PlayStore.on Constants.stores.PREF_SAVED, @cardPref
-    PlayStore.on Constants.stores.CARD_FAIL, @cardFail
-    PlayStore.on Constants.stores.CARD_WIN, @cardWin
-    # SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
+    CardStore.on Constants.stores.CARD_FAIL, @cardFail
+    CardStore.on Constants.stores.CARD_WIN, @cardWin
     SingleCardStore.on Constants.stores.CARD_WIN, @cardWin
+    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
     SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
+#    AppStateStore.on Constants.stores.MENU_CHANGE, @
+
     @cardView.on 'comment', =>
       @collapseComments()
     @cardView.on 'pegg', (payload) =>
@@ -67,7 +72,6 @@ class PlayCardView extends View
     @cardView.pipe @
 
   initViews: ->
-
     ## CARD ##
     @cardView = new CardView
     @cardViewMod = new Modifier
@@ -77,28 +81,10 @@ class PlayCardView extends View
       origin: @layout.cards.origin
     @add(@cardViewMod).add @cardView
 
-    ## NAV ##
-    @navRc = new RenderController
-    @add @navRc
-
     ## PLAY NAV ##
     @playNavView = new PlayNavView
-    @playNavView._eventOutput.on 'click', (data) =>
-      if data is 'prevPage'
-        @prevPage()
-      else if data is 'nextPage'
-        @nextPage()
-    @navRc.show @playNavView
+    @add @playNavView
     @playNavView.hideRightArrow()
-
-    ## SINGLE CARD NAV ##
-    @singleCardNavView = new PlayNavView
-    @singleCardNavView._eventOutput.on 'click', (data) =>
-      if data is 'prevPage'
-        @prevPage()
-      else if data is 'nextPage'
-        @nextPage()
-    @singleCardNavView.hideRightArrow()
 
     ## COMMENTS ##
     @commentsView = new CommentsView
@@ -130,8 +116,6 @@ class PlayCardView extends View
     @rc = new RenderController
       inTransition:  { duration: 500, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
-#    @rc.inTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
-#    @rc.outTransformFrom -> Transform.translate 0, Utils.getViewportHeight(), 0
     @rc.hide(@commentsView)
     @rcMod = new StateModifier
       align: @layout.comments.align
@@ -148,7 +132,6 @@ class PlayCardView extends View
       origin: @layout.points.origin
       transform: @layout.points.transform
     @add(@pointsMod).add @points
-
 
   initGestures: ->
     GenericSync.register mouse: MouseSync
@@ -208,31 +191,30 @@ class PlayCardView extends View
       isMovingY = false
     ).bind(@)
 
-  loadSingleCard: (card, referrer) =>
-    @navRc.hide @playNavView
-    @playNavView.hideNav()
-    if referrer?
-      @navRc.show @singleCardNavView
-      @singleCardNavView.showNav()
-      @singleCardNavView.setOptions {
-        'cardType': card.type
-      }
-      # @showComments()
-    else
-      @navRc.hide @singleCardNavView
-      @singleCardNavView.hideNav()
-      # @hideComments()
-    @_load card
+  loadSingleCard: =>
+    @playNavView.showSingleCardNav()
+    @_load SingleCardStore.getCard()
+# MAYBE: set options??
+#   @playNavView.setOptions {
+#     'cardType': card.type
+#   }
+#    if referrer?
+#      @playNavView.showLeftArrow()
+    @showComments()
+#    else
+#      @playNavView.hideLeftArrow()
+#      @hideComments()
 
   _load: (card) =>
     @card = card
-    @cardView.loadCard card
+    @cardView.loadCard @card
     @loadComments()
 
-  load: (card) =>
-    @navRc.hide @singleCardNavView
-    @navRc.show @playNavView
-    @_load card
+  loadPlay: =>
+    page = PlayStore.getCurrentPage()
+    if page.type is 'card'
+      @playNavView.showPlayNav()
+      @_load page.card
 
   loadComments: =>
     @commentsView.load @card.comments
@@ -257,6 +239,7 @@ class PlayCardView extends View
   cardWin: (points) =>
     @showPoints points
     @showComments()
+    debugger
     @playNavView.showRightArrow()
 
   showPoints: (points) =>
