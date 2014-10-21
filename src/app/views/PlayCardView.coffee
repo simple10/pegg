@@ -18,8 +18,6 @@ Utility = require 'famous/src/utilities/Utility'
 View = require 'famous/src/core/View'
 
 # Pegg
-AppStateStore = require 'stores/AppStateStore'
-CardStore = require('stores/CardStore').singleton
 CardView = require 'views/CardView'
 CommentsView = require 'views/CommentsView'
 Constants = require 'constants/PeggConstants'
@@ -29,7 +27,9 @@ PlayActions = require 'actions/PlayActions'
 PlayNavView = require 'views/PlayNavView'
 PlayStore = require 'stores/PlayStore'
 SingleCardStore = require 'stores/SingleCardStore'
+AppStateStore = require 'stores/AppStateStore'
 UserStore = require 'stores/UserStore'
+CardStore = require 'stores/CardStore'
 Utils = require 'lib/Utils'
 
 class PlayCardView extends View
