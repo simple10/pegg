@@ -129,4 +129,4 @@ AppDispatcher.register (payload) ->
     when Constants.actions.CARD_COMMENT
       card._comment action.comment, action.cardId, action.peggeeId
 
-module.exports = CardStore
+module.exports = { class: CardStore, singleton: card }

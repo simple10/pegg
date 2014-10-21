@@ -4,7 +4,7 @@ _ = Parse._
 
 # Pegg
 AppDispatcher = require 'dispatchers/AppDispatcher'
-CardStore = require 'stores/CardStore'
+CardStore = require('stores/CardStore').class
 Constants = require 'constants/PeggConstants'
 MessageActions = require 'actions/MessageActions'
 UserStore = require 'stores/UserStore'
