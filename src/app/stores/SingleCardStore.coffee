@@ -138,8 +138,12 @@ class SingleCardStore extends CardStore
   _doReview: () ->
     console.log "SingleCardStore :: _doReview called"
     @_card.type = 'review'
-    MessageActions.doneLoading 'card'
-    @emit Constants.stores.CARD_CHANGE
+    cards = {}
+    cards[@_card.id] = @_card
+    @_loadAncillaryDatums(cards)
+      .then =>
+        MessageActions.doneLoading 'card'
+        @emit Constants.stores.CARD_CHANGE
 
   _doDeny: () ->
     console.log "SingleCardStore :: _doDeny called"
