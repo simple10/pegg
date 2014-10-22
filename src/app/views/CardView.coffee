@@ -30,6 +30,7 @@ class CardView extends View
 #    options = _.defaults options, @constructor.DEFAULT_OPTIONS
     super options
 
+    @preventFlip = false
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'CardView'
 
@@ -256,19 +257,20 @@ class CardView extends View
       @flip()
 
   flip: =>
-    @currentSide = if @currentSide is 1 then 0 else 1
+    unless @preventFlip
+      @currentSide = if @currentSide is 1 then 0 else 1
 
-    @rc.hide @choicesView
+      @rc.hide @choicesView
 
-    @state.setTransform(
-      Transform.rotateY Math.PI * @currentSide
-      @layout.card.transition
-    )
-#    hideShow = if @currentSide is 1 then @layout.card.front.hide else @layout.card.front.show
-#    @frontProfilePicMod.setTransform hideShow
-#    @frontQuestionMod.setTransform hideShow
-#    @choicesMod.setTransform hideShow
-    @_eventOutput.emit 'card:flipped', @
+      @state.setTransform(
+        Transform.rotateY Math.PI * @currentSide
+        @layout.card.transition
+      )
+      # hideShow = if @currentSide is 1 then @layout.card.front.hide else @layout.card.front.show
+      # @frontProfilePicMod.setTransform hideShow
+      # @frontQuestionMod.setTransform hideShow
+      # @choicesMod.setTransform hideShow
+      @_eventOutput.emit 'card:flipped', @
 
   loadAnswer: (image, text) =>
     @backImage.setContent image

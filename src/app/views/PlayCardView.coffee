@@ -146,6 +146,7 @@ class PlayCardView extends View
 
     minVelocity = 0.5
     minDelta = 100
+    maxDelta = 200
 
     @sync = new GenericSync ['mouse', 'touch']
 
@@ -159,6 +160,7 @@ class PlayCardView extends View
 
     @sync.on 'start', (data) =>
       startPos = @cardYPos.get()
+      @cardView.preventFlip = true
 
     @sync.on 'update', ((data) ->
       dy = data.delta[1]
@@ -178,22 +180,32 @@ class PlayCardView extends View
     @sync.on 'end', ((data) ->
       # figure out if we need to show/hide the comments if moving along the Y axis
       if isMovingY
+        # don't let it flip now, but clear preventFlip for the next time
+        setTimeout =>
+          @cardView.preventFlip = false
+        , 300
         # retrieve the Y velocity
         velocity = data.velocity[1]
         # calculate the total position change
         delta = startPos - @cardYPos.get()
-        # swiping/dragging up and crossed pos and vel threshold
+        # swiping/dragging up and crossed min pos and vel threshold
         if delta > minDelta && Math.abs(velocity) > minVelocity
           @expandComments()
-          # swiping/dragging down and crossed pos and vel threshold
+        # swiping/dragging down and crossed min pos and vel threshold
         else if delta < -minDelta && Math.abs(velocity) > minVelocity
           @collapseComments()
-          # otherwise threshold not met, so return to original position
+        # swiping/dragging up and crossed max pos threshold
+        else if delta > maxDelta
+          @expandComments()
+        # swiping/dragging down and crossed max pos threshold
+        else if delta < -maxDelta
+          @collapseComments()
+        # otherwise threshold not met, so return to original position
         else if delta
-          if !@_commentsIsExpanded
-            @collapseComments()
-          else
-            @expandComments()
+          if !@_commentsIsExpanded then @collapseComments() else @expandComments()
+      else if @cardYPos.get() is 0
+        # let it flip
+        @cardView.preventFlip = false
       # reset axis movement flags
       isMovingY = false
     ).bind(@)
