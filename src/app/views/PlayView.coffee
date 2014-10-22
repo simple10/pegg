@@ -35,6 +35,7 @@ class PlayView extends View
 
     ## CARDS VIEW ##
     @playCardView = new PlayCardView
+      context: 'play'
 
     ## BADGES VIEW ##
     @badgesView = new PlayBadgesView

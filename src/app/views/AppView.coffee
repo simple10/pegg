@@ -121,6 +121,7 @@ class AppView extends View
     @pages.login = new LoginView
     @pages.home = new HomeView
     @pages.card = new PlayCardView
+      context: 'single_card'
     @togglePage()
 
   initViewManager: ->

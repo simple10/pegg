@@ -183,6 +183,19 @@ AppDispatcher.register (payload) ->
       singleCard._setReferrer action.referrer
       singleCard._fetchCard action.card, action.peggee
       singleCard._fetchComments action.card, action.peggee if action.peggee?
+    when Constants.actions.SINGLE_CARD_NEXT_PAGE
+      singleCard._next()
+    when Constants.actions.SINGLE_CARD_PREV_PAGE
+      singleCard._prev()
+    when Constants.actions.SINGLE_CARD_PEGG_SUBMIT
+      singleCard._pegg action.peggeeId, action.card, action.choice, action.answer
+    when Constants.actions.SINGLE_CARD_PREF_SUBMIT
+      singleCard._pref action.card, action.choice, action.plug, action.thumb
+    when Constants.actions.SINGLE_CARD_PLUG_IMAGE
+      singleCard._plug action.card, action.full, action.thumb
+    when Constants.actions.SINGLE_CARD_CARD_COMMENT
+      singleCard._comment action.comment, action.cardId, action.peggeeId
+
 
 
 module.exports = singleCard

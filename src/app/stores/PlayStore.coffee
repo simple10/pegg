@@ -225,5 +225,14 @@ AppDispatcher.register (payload) ->
       play._setMood action.moodText, action.moodId, action.moodUrl
     when Constants.actions.BADGES_VIEWED
       play._badgesViewed(action.badges)
+    when Constants.actions.PEGG_SUBMIT
+      play._pegg action.peggeeId, action.card, action.choice, action.answer
+    when Constants.actions.PREF_SUBMIT
+      play._pref action.card, action.choice, action.plug, action.thumb
+    when Constants.actions.PLUG_IMAGE
+      play._plug action.card, action.full, action.thumb
+    when Constants.actions.CARD_COMMENT
+      play._comment action.comment, action.cardId, action.peggeeId
+
 
 module.exports = play

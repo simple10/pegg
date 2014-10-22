@@ -26,6 +26,7 @@ LayoutManager = require 'views/layouts/LayoutManager'
 PlayActions = require 'actions/PlayActions'
 PlayNavView = require 'views/PlayNavView'
 PlayStore = require 'stores/PlayStore'
+SingleCardActions = require 'actions/SingleCardActions'
 SingleCardStore = require 'stores/SingleCardStore'
 AppStateStore = require 'stores/AppStateStore'
 UserStore = require 'stores/UserStore'
@@ -36,6 +37,13 @@ class PlayCardView extends View
 
   constructor: (options) ->
     super options
+
+    if options.context is 'play'
+      @_store = PlayStore
+      @_actions = PlayActions
+    else if options.context is 'single_card'
+      @_store = SingleCardStore
+      @_actions = SingleCardActions
 
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'PlayView'
@@ -52,23 +60,22 @@ class PlayCardView extends View
     @initGestures()
 
   initListeners: ->
-    PlayStore.on Constants.stores.PAGE_CHANGE, @loadPlay
-    PlayStore.on Constants.stores.PREF_SAVED, @cardPref
-    CardStore.on Constants.stores.CARD_FAIL, @cardFail
-    CardStore.on Constants.stores.CARD_WIN, @cardWin
-    SingleCardStore.on Constants.stores.CARD_WIN, @cardWin
-    SingleCardStore.on Constants.stores.CARD_CHANGE, @loadSingleCard
-    SingleCardStore.on Constants.stores.REQUIRE_LOGIN, @requireLogin
+    @_store.on Constants.stores.CARD_CHANGE, @loadSingleCard
+    @_store.on Constants.stores.CARD_FAIL, @cardFail
+    @_store.on Constants.stores.CARD_WIN, @cardWin
+    @_store.on Constants.stores.PAGE_CHANGE, @loadPlay
+    @_store.on Constants.stores.PREF_SAVED, @cardPref
+    @_store.on Constants.stores.REQUIRE_LOGIN, @requireLogin
 #    AppStateStore.on Constants.stores.MENU_CHANGE, @
 
     @cardView.on 'comment', =>
       @collapseComments()
     @cardView.on 'pegg', (payload) =>
-      PlayActions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
+      @_actions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
     @cardView.on 'pref', (payload) =>
-      PlayActions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
+      @_actions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
     @cardView.on 'plug', (payload) =>
-      PlayActions.plug payload.id, payload.full, payload.thumb
+      @_actions.plug payload.id, payload.full, payload.thumb
     @cardView.pipe @
 
   initViews: ->
@@ -193,7 +200,7 @@ class PlayCardView extends View
 
   loadSingleCard: =>
     @playNavView.showSingleCardNav()
-    @_load SingleCardStore.getCard()
+    @_load @_store.getCard()
 # MAYBE: set options??
 #   @playNavView.setOptions {
 #     'cardType': card.type
@@ -211,7 +218,7 @@ class PlayCardView extends View
     @loadComments()
 
   loadPlay: =>
-    page = PlayStore.getCurrentPage()
+    page = @_store.getCurrentPage()
     if page.type is 'card'
       @playNavView.showPlayNav()
       @_load page.card
@@ -221,12 +228,12 @@ class PlayCardView extends View
     @numComments.setContent "#{@commentsView.getCount()} comments."
 
   nextPage: =>
-    PlayActions.nextPage()
+    @_actions.nextPage()
     @playNavView.hideRightArrow()
     @hideComments()
 
   prevPage: =>
-    PlayActions.prevPage()
+    @_actions.prevPage()
 
   cardPref: =>
     @showComments()
@@ -234,7 +241,7 @@ class PlayCardView extends View
 
   cardFail: =>
     #@message.setClasses ['card__message__fail']
-    #@message.setContent PlayStore.getMessage('fail')
+    #@message.setContent @_store.getMessage('fail')
 
   cardWin: (points) =>
     @showPoints points
@@ -257,7 +264,7 @@ class PlayCardView extends View
 #    @rc.hide(@commentsView)
 
   saveComment: (comment) ->
-    PlayActions.comment comment, @card.id, @card.peggeeId
+    @_actions.comment comment, @card.id, @card.peggeeId
     newComment =
       userImg: UserStore.getAvatar 'type=square'
       text: comment

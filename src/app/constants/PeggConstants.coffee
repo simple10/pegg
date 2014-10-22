@@ -6,17 +6,18 @@ module.exports =
     ADD_CATEGORIES: null
     ADD_QUESTION: null
     AUTH: null
+    BACK: null
     BADGES_VIEWED: null
     CARD_COMMENT: null
     CARD_SELECT: null
     FILTER_PREFS: null
+    LOADING_DONE: null
+    LOADING_START: null
     LOAD_ACTIVITY: null
+    LOAD_APP: null
     LOAD_CARD: null
     LOAD_CATEGORIES: null
-    LOAD_APP: null
     LOAD_LINK: null
-    LOADING_START: null
-    LOADING_DONE: null
     LOGIN: null
     LOGOUT: null
     MENU_SELECT: null
@@ -28,12 +29,17 @@ module.exports =
     PREF_SUBMIT: null
     PREV_PAGE: null
     SHOW_MESSAGE: null
+    SINGLE_CARD_CARD_COMMENT: null
+    SINGLE_CARD_LOAD: null
+    SINGLE_CARD_NEXT_PAGE: null
+    SINGLE_CARD_PEGG_SUBMIT: null
+    SINGLE_CARD_PLUG_IMAGE: null
+    SINGLE_CARD_PREF_SUBMIT: null
+    SINGLE_CARD_PREV_PAGE: null
     SUBSCRIBER_SUBMIT: null
     USER_LOAD: null
     USER_LOGIN: null
     USER_LOGOUT: null
-    SINGLE_CARD_LOAD: null
-    BACK: null
 
   stores: Utils.keyMirror
     # Generic
