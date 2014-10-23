@@ -61,18 +61,10 @@ module.exports =
     size: [Utils.getViewportWidth() - 50, 40]
     origin: [0.5, 0]
     align: [0.5, 0.94]
-    states: [
-      {
-        delay: 0
-        opacity: 1
-        transition: {duration: 500, curve: Easing.inQuad}
-      }
-      {
-        delay: 0
-        opacity: 0
-        transition: {duration: 500, curve: Easing.inQuad}
-      }
-    ]
+    show:
+      transition: {duration: 500, curve: Easing.inQuad}
+    hide:
+      transition: {duration: 500, curve: Easing.inQuad}
   newComment:
     size: [Utils.getViewportWidth() - 50, 40]
     origin: [0.5, 0]

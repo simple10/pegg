@@ -45,6 +45,8 @@ class PlayCardView extends View
       @_store = SingleCardStore
       @_actions = SingleCardActions
 
+    @commentable = false
+
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'PlayView'
 
@@ -112,13 +114,16 @@ class PlayCardView extends View
       size: @layout.numComments.size
       content: "x comments..."
       classes: ['comments__text', 'comments__num']
-    @numCommentsMod = new StateModifier
+    numCommentsMod = new StateModifier
       align: @layout.numComments.align
       origin: @layout.numComments.origin
-    @add(@numCommentsMod).add @numComments
+    @numCommentsRc = new RenderController
+      inTransition:  @layout.numComments.show.transition
+      outTransition: @layout.numComments.hide.transition
+    @add(numCommentsMod).add @numCommentsRc
     @numComments.on 'click', =>
-      @expandComments()
-    @hideComments()
+      @expandComments() if @commentable
+    @hideNumComments()
 
     @rc = new RenderController
       inTransition:  { duration: 500, curve: Easing.outCubic }
@@ -151,7 +156,7 @@ class PlayCardView extends View
     @sync = new GenericSync ['mouse', 'touch']
 
     @_eventInput.on 'card:flipped', (card) =>
-      @collapseComments() if @_commentsIsExpanded
+      @collapseComments() if @_commentsExpanded
 
     @_eventInput.pipe @sync
 
@@ -163,18 +168,19 @@ class PlayCardView extends View
       @cardView.preventFlip = true
 
     @sync.on 'update', ((data) ->
-      dy = data.delta[1]
-      if !isMovingY
-        if Math.abs(dy) > 0
-          isMovingY = true
-      if isMovingY
-        currentPosition = @cardYPos.get()
-        #        console.log 'currentPosition', currentPosition
-        # calculate the max Y offset to prevent the user from being able
-        # to drag the card past this point
-        max = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
-        pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
-        @cardYPos.set(-pos)
+      if @commentable
+        dy = data.delta[1]
+        if !isMovingY
+          if Math.abs(dy) > 0
+            isMovingY = true
+        if isMovingY
+          currentPosition = @cardYPos.get()
+          #        console.log 'currentPosition', currentPosition
+          # calculate the max Y offset to prevent the user from being able
+          # to drag the card past this point
+          max = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
+          pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
+          @cardYPos.set(-pos)
     ).bind(@)
 
     @sync.on 'end', ((data) ->
@@ -202,7 +208,7 @@ class PlayCardView extends View
           @collapseComments()
         # otherwise threshold not met, so return to original position
         else if delta
-          if !@_commentsIsExpanded then @collapseComments() else @expandComments()
+          if !@_commentsExpanded then @collapseComments() else @expandComments()
       else if @cardYPos.get() is 0
         # let it flip
         @cardView.preventFlip = false
@@ -212,22 +218,28 @@ class PlayCardView extends View
 
   loadSingleCard: =>
     @playNavView.showSingleCardNav()
-    @_load @_store.getCard()
+    card = @_store.getCard()
+    @_load card
 # MAYBE: set options??
 #   @playNavView.setOptions {
 #     'cardType': card.type
 #   }
 #    if referrer?
 #      @playNavView.showLeftArrow()
-    @showComments()
 #    else
 #      @playNavView.hideLeftArrow()
-#      @hideComments()
+#      @hideNumComments()
 
   _load: (card) =>
     @card = card
-    @cardView.loadCard @card
-    @loadComments()
+    @cardView.loadCard card
+    if card.type is 'deny'
+      @hideNumComments()
+    else if card.type is 'review'
+      @loadComments()
+      @showNumComments()
+    else
+      @loadComments()
 
   loadPlay: =>
     page = @_store.getCurrentPage()
@@ -242,13 +254,13 @@ class PlayCardView extends View
   nextPage: =>
     @_actions.nextPage()
     @playNavView.hideRightArrow()
-    @hideComments()
+    @hideNumComments()
 
   prevPage: =>
     @_actions.prevPage()
 
   cardPref: =>
-    @showComments()
+    @showNumComments()
     @playNavView.showRightArrow()
 
   cardFail: =>
@@ -257,21 +269,24 @@ class PlayCardView extends View
 
   cardWin: (points) =>
     @showPoints points
-    @showComments()
-    debugger
+    @showNumComments()
     @playNavView.showRightArrow()
 
   showPoints: (points) =>
-    console.log "points: #{points}"
+    # console.log "points: #{points}"
     @points.setContent "+#{points}"
     Utils.animateAll @pointsMod, @layout.points.states
 
-  showComments: =>
-    Utils.animate @numCommentsMod, @layout.numComments.states[0]
+  showNumComments: =>
+    # console.log "show number of comments"
+    @commentable = true
+    @numCommentsRc.show @numComments
 #    @rc.show(@commentsView)
 
-  hideComments: =>
-    Utils.animate @numCommentsMod, @layout.numComments.states[1]
+  hideNumComments: =>
+    # console.log "hide number of comments"
+    @commentable = false
+    @numCommentsRc.hide @numComments
 #    @newComment.setAlign @layout.newComment.states[0].align
 #    @rc.hide(@commentsView)
 
@@ -287,24 +302,26 @@ class PlayCardView extends View
     @loadComments()
 
   collapseComments: =>
+    # console.log "collapse comments"
     @rc.hide(@commentsView)
     @playNavView.showNav()
     # slide the cards down to their starting position
     @cardYPos.set(0, @layout.cards.states[0].transition)
     # slide the comments down to their starting position
-    Utils.animate @numCommentsMod, @layout.numComments.states[0]
-    @._commentsIsExpanded = false
+    @numCommentsRc.show @numComments
+    @_commentsExpanded = false
     @newComment.setAlign @layout.newComment.states[0].align
 
   expandComments: =>
+    # console.log "expand comments"
     @rc.show(@commentsView)
     @playNavView.hideNav()
     maxCardYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
     # move the cards up
     @cardYPos.set(maxCardYPos, @layout.cards.states[1].transition)
     # slide the comments up
-    Utils.animate @numCommentsMod, @layout.numComments.states[1]
-    @._commentsIsExpanded = true
+    @numCommentsRc.hide @numComments
+    @_commentsExpanded = true
     @newComment.setAlign @layout.newComment.states[1].align
 
   requireLogin: =>

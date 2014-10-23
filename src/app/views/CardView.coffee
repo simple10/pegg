@@ -205,8 +205,6 @@ class CardView extends View
       @loadAnswer @card.answer.plug, null
     else
       @front.on 'click', @toggleChoices
-      @back.on 'click', =>
-        @_eventOutput.emit 'comment', @
       @frontProfilePic.on 'click', @toggleChoices
       @frontQuestion.on 'click', @toggleChoices
       @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
