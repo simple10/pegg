@@ -22,6 +22,7 @@ class InputView extends View
       size: @options.size
       placeholder: @options.placeholder
       classes: ["#{@options.cssPrefix}", "#{@options.classes}"]
+      properties: @options.properties
     @textInputMod = new StateModifier
     @add(@textInputMod).add @textInput
 

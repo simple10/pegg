@@ -8,6 +8,7 @@ ImageSurface = require 'famous/src/surfaces/ImageSurface'
 Modifier = require 'famous/src/core/Modifier'
 MouseSync = require 'famous/src/inputs/MouseSync'
 RenderController = require 'famous/src/views/RenderController'
+RenderNode = require 'famous/src/core/RenderNode'
 StateModifier = require 'famous/src/modifiers/StateModifier'
 Surface = require 'famous/src/core/Surface'
 Timer = require 'famous/src/utilities/Timer'
@@ -83,12 +84,12 @@ class PlayCardView extends View
   initViews: ->
     ## CARD ##
     @cardView = new CardView
-    @cardViewMod = new Modifier
+    cardViewMod = new Modifier
       align: =>
         yAlign = @_translateToAlign @cardYPos.get(), 'Y'
         [@layout.cards.align[0], @layout.cards.align[1] + yAlign]
       origin: @layout.cards.origin
-    @add(@cardViewMod).add @cardView
+    @add(cardViewMod).add @cardView
 
     ## PLAY NAV ##
     @playNavView = new PlayNavView
@@ -97,42 +98,41 @@ class PlayCardView extends View
 
     ## COMMENTS ##
     @commentsView = new CommentsView
-    @newComment = new InputView
-      size: @layout.newComment.size
-      placeholder: "Enter a comment..."
-      align: @layout.newComment.states[1].align
-      origin: @layout.newComment.origin
-    @newCommentMod = new StateModifier
-      align: @layout.newComment.align
-      origin: @layout.newComment.origin
-    @add(@newCommentMod).add @newComment
-    @newComment.on 'submit', (comment) =>
-      @newComment.clear()
-      @saveComment comment
+    @commentsViewRc = new RenderController
+      inTransition:  { duration: 500, curve: Easing.outCubic }
+      outTransition: { duration: 350, curve: Easing.outCubic }
+    commentsViewMod = new StateModifier
+      align: @layout.comments.align
+      origin: @layout.comments.origin
+    @add(commentsViewMod).add @commentsViewRc
 
     @numComments = new Surface
       size: @layout.numComments.size
       content: "x comments..."
       classes: ['comments__text', 'comments__num']
+    @numCommentsRc = new RenderController
+        inTransition: @layout.numComments.inTransition
+        outTransition: @layout.numComments.outTransition
+        overlap: false
     numCommentsMod = new StateModifier
       align: @layout.numComments.align
       origin: @layout.numComments.origin
-    @numCommentsRc = new RenderController
-      inTransition:  @layout.numComments.show.transition
-      outTransition: @layout.numComments.hide.transition
     @add(numCommentsMod).add @numCommentsRc
     @numComments.on 'click', =>
       @expandComments() if @commentable
     @hideNumComments()
 
-    @rc = new RenderController
-      inTransition:  { duration: 500, curve: Easing.outCubic }
-      outTransition: { duration: 350, curve: Easing.outCubic }
-    @rc.hide(@commentsView)
-    @rcMod = new StateModifier
-      align: @layout.comments.align
-      origin: @layout.comments.origin
-    @add(@rcMod).add @rc
+    @newComment = new InputView
+      properties:
+        zIndex: -1
+      size: @layout.newComment.size
+      placeholder: "Enter a comment..."
+    @newCommentNode = new RenderNode new StateModifier
+      transform: @layout.newComment.transform
+    @newCommentNode.add @newComment
+    @newComment.on 'submit', (comment) =>
+      @newComment.clear()
+      @saveComment comment
 
 
     ## POINTS ##
@@ -150,8 +150,10 @@ class PlayCardView extends View
     GenericSync.register touch: TouchSync
 
     minVelocity = 0.5
-    minDelta = 100
-    maxDelta = 200
+    # minDelta = 10
+    deltaWithVelocityThreshold = 60
+    deltaWithoutVelocityThreshold = 200
+    maxPosition = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
 
     @sync = new GenericSync ['mouse', 'touch']
 
@@ -178,8 +180,7 @@ class PlayCardView extends View
           #        console.log 'currentPosition', currentPosition
           # calculate the max Y offset to prevent the user from being able
           # to drag the card past this point
-          max = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
-          pos = Math.min Math.abs(max), Math.abs(currentPosition + dy)
+          pos = Math.min Math.abs(maxPosition), Math.abs(currentPosition + dy)
           @cardYPos.set(-pos)
     ).bind(@)
 
@@ -194,17 +195,23 @@ class PlayCardView extends View
         velocity = data.velocity[1]
         # calculate the total position change
         delta = startPos - @cardYPos.get()
+        # # a tap when card is at the bottom, allowing for some unintentional movement
+        # if 0 < delta < minDelta
+        #   @cardView.preventFlip = false
+        # # a tap when card is at the top, allowing for some unintentional movement
+        # else if 0 > delta > -minDelta
+        #   @collapseComments()
         # swiping/dragging up and crossed min pos and vel threshold
-        if delta > minDelta && Math.abs(velocity) > minVelocity
+        if delta > deltaWithVelocityThreshold && Math.abs(velocity) > minVelocity
           @expandComments()
         # swiping/dragging down and crossed min pos and vel threshold
-        else if delta < -minDelta && Math.abs(velocity) > minVelocity
+        else if delta < -deltaWithVelocityThreshold && Math.abs(velocity) > minVelocity
           @collapseComments()
         # swiping/dragging up and crossed max pos threshold
-        else if delta > maxDelta
+        else if delta > deltaWithoutVelocityThreshold
           @expandComments()
         # swiping/dragging down and crossed max pos threshold
-        else if delta < -maxDelta
+        else if delta < -deltaWithoutVelocityThreshold
           @collapseComments()
         # otherwise threshold not met, so return to original position
         else if delta
@@ -281,14 +288,12 @@ class PlayCardView extends View
     # console.log "show number of comments"
     @commentable = true
     @numCommentsRc.show @numComments
-#    @rc.show(@commentsView)
 
   hideNumComments: =>
     # console.log "hide number of comments"
     @commentable = false
     @numCommentsRc.hide @numComments
 #    @newComment.setAlign @layout.newComment.states[0].align
-#    @rc.hide(@commentsView)
 
   saveComment: (comment) ->
     @_actions.comment comment, @card.id, @card.peggeeId
@@ -303,26 +308,24 @@ class PlayCardView extends View
 
   collapseComments: =>
     # console.log "collapse comments"
-    @rc.hide(@commentsView)
+    @commentsViewRc.hide @commentsView
     @playNavView.showNav()
     # slide the cards down to their starting position
     @cardYPos.set(0, @layout.cards.states[0].transition)
     # slide the comments down to their starting position
     @numCommentsRc.show @numComments
     @_commentsExpanded = false
-    @newComment.setAlign @layout.newComment.states[0].align
 
   expandComments: =>
     # console.log "expand comments"
-    @rc.show(@commentsView)
+    @commentsViewRc.show @commentsView
     @playNavView.hideNav()
     maxCardYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
     # move the cards up
     @cardYPos.set(maxCardYPos, @layout.cards.states[1].transition)
     # slide the comments up
-    @numCommentsRc.hide @numComments
+    @numCommentsRc.show @newCommentNode
     @_commentsExpanded = true
-    @newComment.setAlign @layout.newComment.states[1].align
 
   requireLogin: =>
     MessageActions.show 'app__login_required'
