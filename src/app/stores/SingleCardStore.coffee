@@ -1,23 +1,27 @@
-EventEmitter = require 'famous/src/core/EventEmitter'
-Constants = require 'constants/PeggConstants'
-AppDispatcher = require 'dispatchers/AppDispatcher'
-UserStore = require 'stores/UserStore'
 DB = require 'stores/helpers/ParseBackend'
-_ = require('Parse')._
+Parse = require 'Parse'
+_ = Parse._
 
+# Pegg
+AppDispatcher = require 'dispatchers/AppDispatcher'
+CardStore = require 'stores/CardStore'
+Constants = require 'constants/PeggConstants'
+MessageActions = require 'actions/MessageActions'
+UserStore = require 'stores/UserStore'
 
-class SingleCardStore extends EventEmitter
+class SingleCardStore extends CardStore
   _card: null
-  _comments: []
-  _message: ''
-  _fail: 0
   _referrer: null
   _peggeeId: null
+  _hasPreffed: null
+  _loggedIn: null
+  _userId: null
 
   _setReferrer: (path) ->
     @_referrer = path
 
   _fetchCard: (cardId, peggeeId) ->
+    MessageActions.loading 'card'
     @_loggedIn = UserStore.getLoggedIn()
     @_userId = UserStore.getUser().id if @_loggedIn
 
@@ -27,33 +31,34 @@ class SingleCardStore extends EventEmitter
     else
       @_peggeeId = peggeeId
 
-    DB.getCard(cardId, (card) =>
-      @_card = card
+    DB.getCard cardId
+      .fail @_failHandler
+      .then (card) =>
+        @_card = card
 
-      # determine whether the peggee has preffed the card
-      @_hasPreffed = false
-      if @_card? and @_card.hasPreffed?
-        @_hasPreffed = _.contains(@_card.hasPreffed, @_peggeeId)
+        # determine whether the peggee has preffed the card
+        @_hasPreffed = false
+        if @_card? and @_card.hasPreffed?
+          @_hasPreffed = _.contains(@_card.hasPreffed, @_peggeeId)
 
-      if @_hasPreffed
-        @_fetchPrefCard()
-      else
-        @_setCardState()
-    )
+        if @_hasPreffed
+          @_fetchPrefCard()
+        else
+          @_setCardState()
 
   _fetchPrefCard: () =>
-    console.log "_fetchPrefCard :: card: ", @_card
-    console.log "_fetchPrefCard :: peggeeId: ", @_peggeeId
-    DB.getPrefCard(@_card.id, @_peggeeId, (prefCard) =>
-      @_card = prefCard
+    # console.log "_fetchPrefCard :: card: ", @_card
+    # console.log "_fetchPrefCard :: peggeeId: ", @_peggeeId
+    DB.getPrefCard @_card.id, @_peggeeId
+      .then (prefCard) =>
+        @_card = prefCard
 
-      # determine whether the logged in user has pegged the peggee's card
-      @_hasPegged = false
-      if @_card? and @_card.hasPegged? and @_loggedIn
-        @_hasPegged = _.contains(@_card.hasPegged, @_userId)
+        # determine whether the logged in user has pegged the peggee's card
+        @_hasPegged = false
+        if @_card? and @_card.hasPegged? and @_loggedIn
+          @_hasPegged = _.contains(@_card.hasPegged, @_userId)
 
-      @_setCardState()
-    )
+        @_setCardState()
 
   _setCardState: () =>
     # display different card states depending on:
@@ -107,25 +112,38 @@ class SingleCardStore extends EventEmitter
       @_doPref()
 
     else
-      #XXX default ???
+      @_doDeny()
 
   _doPegg: () ->
     console.log "SingleCardStore :: _doPegg called"
     @_card.type = 'play'
-    @_fetchChoices()
-    @emit Constants.stores.CARD_CHANGE
+    cards = {}
+    cards[@_card.id] = @_card
+    @_loadAncillaryDatums(cards)
+      .then =>
+        MessageActions.doneLoading 'card'
+        @emit Constants.stores.CARD_CHANGE
 
   _doPref: () ->
     console.log "SingleCardStore :: _doPref called"
     @_card.type = 'play'
     @_card.pic = UserStore.getAvatar()
-    @_fetchChoices()
-    @emit Constants.stores.CARD_CHANGE
+    cards = {}
+    cards[@_card.id] = @_card
+    @_loadAncillaryDatums(cards)
+      .then =>
+        MessageActions.doneLoading 'card'
+        @emit Constants.stores.CARD_CHANGE
 
   _doReview: () ->
     console.log "SingleCardStore :: _doReview called"
     @_card.type = 'review'
-    @emit Constants.stores.CARD_CHANGE
+    cards = {}
+    cards[@_card.id] = @_card
+    @_loadAncillaryDatums(cards)
+      .then =>
+        MessageActions.doneLoading 'card'
+        @emit Constants.stores.CARD_CHANGE
 
   _doDeny: () ->
     console.log "SingleCardStore :: _doDeny called"
@@ -136,115 +154,24 @@ class SingleCardStore extends EventEmitter
         plug: '/images/access_denied_plug.jpg'
       type: 'deny'
     }
+    MessageActions.doneLoading 'card'
     @emit Constants.stores.CARD_CHANGE
 
   _doRequireLogin: () ->
     console.log "SingleCardStore :: _doRequireLogin called"
+    MessageActions.doneLoading 'card'
     @emit Constants.stores.REQUIRE_LOGIN
 
-  _fetchChoices: () ->
-    @_card.choices.length = 0
-    DB.getChoices(@_card.id
-      (choices) =>
-        for choice in choices
-          text = choice.get 'text'
-          image = choice.get 'image'
-          # only add choices that are not blank
-          if text isnt ''
-            # image isnt '' and
-            @_card.choices.push
-              id: choice.id
-              text: text
-              image: image
-        @emit Constants.stores.CHOICES_CHANGE,
-          cardId: @_card.id
-          choices: @_card.choices
-    )
-
-  _fetchComments: (cardId, peggeeId) ->
-    DB.getComments(cardId, peggeeId, (comments) =>
-      if comments?
-        @_comments = comments
-        @emit Constants.stores.COMMENTS_CHANGE
-    )
-
-  _comment: (comment) ->
-    console.log "review comment: #{comment}  peggee: #{@_peggeeId}  user: #{UserStore.getUser().id}  card: #{@_card.id}"
-    DB.saveComment(
-      comment
-      @_card.id
-      @_peggeeId
-      UserStore.getUser().id
-      UserStore.getAvatar 'type=square'
-      (res) =>
-        @_comments.unshift res
-        @emit Constants.stores.COMMENTS_CHANGE
-    )
-
-  _plug: (cardId, full, thumb) ->
-    console.log "save Plug: card: " + cardId + " image: " + url
-    userId = UserStore.getUser().id
-
-    DB.savePlug(cardId, full, thumb, userId, (res)=>
-      # TODO: catch save fail
-      #if res?
-      @emit Constants.stores.PLUG_SAVED
-    )
-
-  _pegg: (peggeeId, cardId, choiceId, answerId) ->
-    console.log "save Pegg: card: " + cardId + " choice: " + choiceId
-    userId = UserStore.getUser().id
-
-    # save answered status
+  _pegg: ->
+    super(arguments...)
     @_card.answered = true
 
-    # Save pegg
-    DB.savePegg(peggeeId, cardId, choiceId, answerId, userId, (res)->
-      # TODO: catch save fail
-      #if res?
-    )
-
-    # Save points
-    if choiceId is answerId
-      points = 10 - 3 * @_fail
-      DB.savePoints(userId, peggeeId, points, (res)->
-        # TODO: catch save fail
-        #if res?
-      )
-      @_fail = 0
-      @emit Constants.stores.CARD_WIN, points
-
-    else
-      @_fail++
-      @emit Constants.stores.CARD_FAIL
-
-  _pref: (cardId, choiceId, plugUrl) ->
-    console.log "save Pref: card: " + cardId + " choice: " + choiceId
-    userId = UserStore.getUser().id
-
-    # save answered status
+  _pref: ->
+    super(arguments...)
     @_card.answered = true
-
-    DB.savePref(cardId, choiceId, plugUrl, userId, (res)=>
-      # TODO: catch save fail
-      if res?
-        console.log res
-    )
-
-    DB.savePrefCount(cardId, choiceId, (res)=>
-      if res?
-        console.log res
-      @emit Constants.stores.PREF_SAVED
-    )
 
   getCard: ->
     @_card
-
-  getComments: ->
-    @_comments
-
-  getMessage: ->
-    @_message
 
   getReferrer: ->
     @_referrer
@@ -260,14 +187,19 @@ AppDispatcher.register (payload) ->
       singleCard._setReferrer action.referrer
       singleCard._fetchCard action.card, action.peggee
       singleCard._fetchComments action.card, action.peggee if action.peggee?
-    when Constants.actions.SINGLE_CARD_COMMENT
-      singleCard._comment action.comment
-    when Constants.actions.SINGLE_CARD_PLUG
+    when Constants.actions.SINGLE_CARD_NEXT_PAGE
+      singleCard._next()
+    when Constants.actions.SINGLE_CARD_PREV_PAGE
+      singleCard._prev()
+    when Constants.actions.SINGLE_CARD_PEGG_SUBMIT
+      singleCard._pegg action.peggeeId, action.card, action.choice, action.answer
+    when Constants.actions.SINGLE_CARD_PREF_SUBMIT
+      singleCard._pref action.card, action.choice, action.plug, action.thumb
+    when Constants.actions.SINGLE_CARD_PLUG_IMAGE
       singleCard._plug action.card, action.full, action.thumb
-    when Constants.actions.SINGLE_CARD_PEGG
-      singleCard._pegg action.peggee, action.card, action.choice, action.answer
-    when Constants.actions.SINGLE_CARD_PREF
-      singleCard._pref action.card, action.choice, action.plug
+    when Constants.actions.SINGLE_CARD_CARD_COMMENT
+      singleCard._comment action.comment, action.cardId, action.peggeeId
+
 
 
 module.exports = singleCard

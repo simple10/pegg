@@ -22,16 +22,21 @@ class InputView extends View
       size: @options.size
       placeholder: @options.placeholder
       classes: ["#{@options.cssPrefix}", "#{@options.classes}"]
+      properties: @options.properties
     @textInputMod = new StateModifier
     @add(@textInputMod).add @textInput
 
     @textInput.on 'click', =>
       @onInputFocus()
     @textInput.on 'keypress', (e) =>
-      if e.keyCode is 13
-        @onInputBlur()
-        @_eventOutput.emit 'submit', e.currentTarget.value
-        @textInput.setValue e.currentTarget.value
+      switch e.keyCode
+        when 13 #enter
+          @onInputBlur()
+          if e.currentTarget.value
+            @_eventOutput.emit 'submit', e.currentTarget.value
+            @textInput.setValue e.currentTarget.value
+        when 27 #escape FIXME
+          @onInputBlur()
 
   onInputFocus: =>
     @textInput.focus()

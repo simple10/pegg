@@ -1,19 +1,19 @@
 # Famo.us
-View = require 'famous/src/core/View'
-Transform = require 'famous/src/core/Transform'
-Lightbox = require 'famous/src/views/Lightbox'
 Easing = require 'famous/src/transitions/Easing'
+Lightbox = require 'famous/src/views/Lightbox'
+Transform = require 'famous/src/core/Transform'
+View = require 'famous/src/core/View'
 
 # Pegg
 Constants = require 'constants/PeggConstants'
-PlayStore = require 'stores/PlayStore'
+DoneStatusView = require 'views/DoneStatusView'
+PeggStatusView = require 'views/PeggStatusView'
+PickMoodView = require 'views/PickMoodView'
+PlayBadgesView = require 'views/PlayBadgesView'
 PlayCardView = require 'views/PlayCardView'
 PlayStatusView = require 'views/PlayStatusView'
-PlayBadgesView = require 'views/PlayBadgesView'
-PickMoodView = require 'views/PickMoodView'
-PeggStatusView = require 'views/PeggStatusView'
+PlayStore = require 'stores/PlayStore'
 PrefStatusView = require 'views/PrefStatusView'
-DoneStatusView = require 'views/DoneStatusView'
 Utils = require 'lib/Utils'
 
 class PlayView extends View
@@ -35,6 +35,7 @@ class PlayView extends View
 
     ## CARDS VIEW ##
     @playCardView = new PlayCardView
+      context: 'play'
 
     ## BADGES VIEW ##
     @badgesView = new PlayBadgesView
@@ -73,7 +74,6 @@ class PlayView extends View
     page = PlayStore.getCurrentPage()
     switch page.type
       when 'card'
-        @playCardView.load page.card
         @lightbox.show @playCardView
       when 'topPeggers'
         @peggStatus.load page.stats

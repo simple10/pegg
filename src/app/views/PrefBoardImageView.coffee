@@ -1,11 +1,8 @@
 View = require 'famous/src/core/View'
 StateModifier = require 'famous/src/modifiers/StateModifier'
-Surface = require 'famous/src/core/Surface'
 ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
 ImageSurface = require 'famous/src/surfaces/ImageSurface'
-Transform = require 'famous/src/core/Transform'
 NavActions = require 'actions/NavActions'
-SingleCardActions = require 'actions/SingleCardActions'
 
 Utils = require 'lib/Utils'
 

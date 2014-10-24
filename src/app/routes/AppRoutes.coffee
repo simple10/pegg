@@ -1,6 +1,5 @@
 Parse = require 'Parse'
 NavActions = require 'actions/NavActions'
-SingleCardActions = require 'actions/SingleCardActions'
 UserActions = require 'actions/UserActions'
 
 #define router class

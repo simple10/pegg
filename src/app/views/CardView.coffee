@@ -30,6 +30,7 @@ class CardView extends View
 #    options = _.defaults options, @constructor.DEFAULT_OPTIONS
     super options
 
+    @preventFlip = false
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'CardView'
 
@@ -134,7 +135,7 @@ class CardView extends View
     imagePickView = new ImagePickView()
     @addImageButton.on 'click', =>
       imagePickView.pick( (results) =>
-        console.log JSON.stringify(results)
+        # console.log JSON.stringify(results)
         @backImage.setContent results.fullS3
         @_eventOutput.emit 'plug',
           id: @card.id
@@ -179,14 +180,14 @@ class CardView extends View
     # reset card elements positioning
     @toggleChoices() if @choiceShowing
 
-  loadCard: (card, type) ->
+  loadCard: (card) ->
     @clearCard()
     @card = card
 
     if @card.answer?
       @loadAnswer @card.answer.plug, @card.answer.text
 
-    if type is 'review' or type is 'deny'
+    if card.type is 'review' or card.type is 'deny'
       @front.on 'click', @flip
       @back.on 'click', @flip
       @frontProfilePic.on 'click', @flip
@@ -194,18 +195,16 @@ class CardView extends View
       @backImage.on 'click', @flip
       @backText.on 'click', @flip
 
-    if type is 'review'
+    if card.type is 'review'
       @loadAnswer @card.answer.plug, @card.answer.text
       @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
       if card.peggeeId is UserStore.getUser().id
         @addImageRenderer.show @addImageButton
-    else if type is 'deny'
+    else if card.type is 'deny'
       @frontProfilePic.setContent "#{@card.pic}"
       @loadAnswer @card.answer.plug, null
     else
       @front.on 'click', @toggleChoices
-      @back.on 'click', =>
-        @_eventOutput.emit 'comment', @
       @frontProfilePic.on 'click', @toggleChoices
       @frontQuestion.on 'click', @toggleChoices
       @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
@@ -256,19 +255,20 @@ class CardView extends View
       @flip()
 
   flip: =>
-    @currentSide = if @currentSide is 1 then 0 else 1
+    unless @preventFlip
+      @currentSide = if @currentSide is 1 then 0 else 1
 
-    @rc.hide @choicesView
+      @rc.hide @choicesView
 
-    @state.setTransform(
-      Transform.rotateY Math.PI * @currentSide
-      @layout.card.transition
-    )
-#    hideShow = if @currentSide is 1 then @layout.card.front.hide else @layout.card.front.show
-#    @frontProfilePicMod.setTransform hideShow
-#    @frontQuestionMod.setTransform hideShow
-#    @choicesMod.setTransform hideShow
-    @_eventOutput.emit 'card:flipped', @
+      @state.setTransform(
+        Transform.rotateY Math.PI * @currentSide
+        @layout.card.transition
+      )
+      # hideShow = if @currentSide is 1 then @layout.card.front.hide else @layout.card.front.show
+      # @frontProfilePicMod.setTransform hideShow
+      # @frontQuestionMod.setTransform hideShow
+      # @choicesMod.setTransform hideShow
+      @_eventOutput.emit 'card:flipped', @
 
   loadAnswer: (image, text) =>
     @backImage.setContent image

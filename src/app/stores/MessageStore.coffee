@@ -13,13 +13,18 @@ class MessageStore extends EventEmitter
   _messages:
     tutorial__first_unpreffed_card: "Yo! This is a new question for you. Answer about yourself so friends can pegg you."
     tutorial__first_pegg_card: "Time to rally! Tap each card to answer questions about your friends."
+    app__login_required: "Please log in to view this card"
 
   _show: (type) ->
-    DB.getUserSetting "show:#{type}", UserStore.getUser().id, true
-      .then (showMessage) =>
-        if showMessage
-          @emit Constants.stores.SHOW_MESSAGE, type: type, message: @_messages[type]
-          @_dismiss type
+    switch type
+      when 'app__login_required'
+        @emit Constants.stores.SHOW_MESSAGE, type: type, message: @_messages[type]
+      else
+        DB.getUserSetting "show:#{type}", UserStore.getUser().id, true
+          .then (showMessage) =>
+            if showMessage
+              @emit Constants.stores.SHOW_MESSAGE, type: type, message: @_messages[type]
+              @_dismiss type
 
   _dismiss: (type) ->
     DB.saveUserSetting "show:#{type}", false, UserStore.getUser().id

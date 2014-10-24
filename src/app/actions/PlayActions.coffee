@@ -31,16 +31,6 @@ PlayActions =
       full: full
       thumb: thumb
 
-  rate: (rating) ->
-    AppDispatcher.handleViewAction
-      actionType: Constants.CARD_RATE
-      rating: rating
-
-  pass: (card) ->
-    AppDispatcher.handleViewAction
-      actionType: Constants.CARD_PASS
-      card: card
-
   mood: (moodText, moodId, moodUrl) ->
     AppDispatcher.handleViewAction
       actionType: Constants.PICK_MOOD
