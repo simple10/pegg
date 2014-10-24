@@ -6,7 +6,6 @@ module.exports =
     ADD_CATEGORIES: null
     ADD_QUESTION: null
     AUTH: null
-    BACK: null
     BADGES_VIEWED: null
     CARD_COMMENT: null
     CARD_SELECT: null

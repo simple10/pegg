@@ -24,6 +24,8 @@ CommentsView = require 'views/CommentsView'
 Constants = require 'constants/PeggConstants'
 InputView = require 'views/InputView'
 LayoutManager = require 'views/layouts/LayoutManager'
+MessageActions = require 'actions/MessageActions'
+NavActions = require 'actions/NavActions'
 PlayActions = require 'actions/PlayActions'
 PlayNavView = require 'views/PlayNavView'
 PlayStore = require 'stores/PlayStore'
@@ -94,6 +96,13 @@ class PlayCardView extends View
     ## PLAY NAV ##
     @playNavView = new PlayNavView
     @add @playNavView
+    @playNavView._eventOutput.on 'click', (data) =>
+      if data is 'prevPage'
+        @prevPage()
+      else if data is 'nextPage'
+        @nextPage()
+      else if data is 'back'
+        NavActions.selectMenuItem @_referrer
     @playNavView.hideRightArrow()
 
     ## COMMENTS ##
@@ -123,8 +132,6 @@ class PlayCardView extends View
     @hideNumComments()
 
     @newComment = new InputView
-      properties:
-        zIndex: -1
       size: @layout.newComment.size
       placeholder: "Enter a comment..."
     @newCommentNode = new RenderNode new StateModifier

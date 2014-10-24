@@ -13,7 +13,6 @@ PlayStore = require 'stores/PlayStore'
 LayoutManager = require 'views/layouts/LayoutManager'
 ProgressBarView = require 'views/ProgressBarView'
 SingleCardStore = require 'stores/SingleCardStore'
-NavActions = require 'actions/NavActions'
 
 class PlayNavView extends View
 
@@ -96,7 +95,6 @@ class PlayNavView extends View
 
 
   initEvents: =>
-
     @rightArrow.on 'click', =>
       @_eventOutput.emit('click', 'nextPage')
 
@@ -131,12 +129,14 @@ class PlayNavView extends View
 
   loadSingleCardNav: =>
     cardTitle = SingleCardStore.getCard()
+    # console.log "Card:", cardTitle
     @_referrer = SingleCardStore.getReferrer()
     if @_referrer?
+      @showLeftArrow()
       @leftArrow.on 'click', =>
-        NavActions.goTo @_referrer
-
-    console.log "Card:", cardTitle
+        @_eventOutput.emit('click', 'back')
+    else
+      @hideLeftArrow()
 
   loadPlayNav: =>
     # change mood icon
