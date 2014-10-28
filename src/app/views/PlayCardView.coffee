@@ -41,10 +41,11 @@ class PlayCardView extends View
   constructor: (options) ->
     super options
 
-    if options.context is 'play'
+    @_context = options.context
+    if @_context is 'play'
       @_store = PlayStore
       @_actions = PlayActions
-    else if options.context is 'single_card'
+    else if @_context is 'single_card'
       @_store = SingleCardStore
       @_actions = SingleCardActions
 
@@ -275,7 +276,7 @@ class PlayCardView extends View
 
   cardPref: =>
     @showNumComments()
-    @playNavView.showRightArrow()
+    @playNavView.showRightArrow() if @_context is 'play'
 
   cardFail: =>
     #@message.setClasses ['card__message__fail']
@@ -284,7 +285,7 @@ class PlayCardView extends View
   cardWin: (points) =>
     @showPoints points
     @showNumComments()
-    @playNavView.showRightArrow()
+    @playNavView.showRightArrow() if @_context is 'play'
 
   showPoints: (points) =>
     # console.log "points: #{points}"

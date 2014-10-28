@@ -143,22 +143,24 @@ class ParseBackend
         if results? then comments else null
 
 
-  savePegg: (peggeeId, cardId, choiceId, answerId, userId) ->
-    # INSERT into Pegg table a row with current user's pegg
+  # INSERT into Pegg table a row with user's pegg
+  #
+  # @return a Parse.Promise that resolves with the new Pegg record
+  savePegg: (peggeeId, cardId, guessId, answerId, userId) ->
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     pegger = new Parse.Object 'User'
     pegger.set 'id',  userId
-    newPeggAcl = new Parse.ACL pegger
-    newPeggAcl.setRoleReadAccess "#{userId}_Friends", true
     peggee = new Parse.Object 'User'
     peggee.set 'id',  peggeeId
-    choice = new Parse.Object 'Choice'
-    choice.set 'id', choiceId
+    guess = new Parse.Object 'Choice'
+    guess.set 'id', guessId
     answer = new Parse.Object 'Choice'
     answer.set 'id', answerId
+    newPeggAcl = new Parse.ACL pegger
+    newPeggAcl.setRoleReadAccess "#{userId}_Friends", true
     newPegg = new Parse.Object 'Pegg'
-    newPegg.set 'guess', choice
+    newPegg.set 'guess', guess
     newPegg.set 'answer', answer
     newPegg.set 'card', card
     newPegg.set 'user', pegger
@@ -166,31 +168,47 @@ class ParseBackend
     newPegg.set 'peggee', peggee
     newPegg.save()
 
-  savePref: (cardId, choiceId, plug, thumb, userId, moodId) ->
-    # INSERT into Pref table a row with user's choice
+  # INSERT into or UPDATE Pref table with user's choice
+  #
+  # @return a Parse.Promise that resolves with the new or updated Pref record
+  savePref: (cardId, answerId, plug, thumb, userId, moodId) ->
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     preffer = new Parse.Object 'User'
     preffer.set 'id',  userId
     mood = new Parse.Object 'Category'
     mood.set 'id', moodId
-    newPrefAcl = new Parse.ACL preffer
-    newPrefAcl.setRoleReadAccess "#{userId}_Friends", true
-    # newPrefAcl.setPublicReadAccess true
     answer = new Parse.Object 'Choice'
-    answer.set 'id', choiceId
-    newPref = new Parse.Object 'Pref'
-    newPref.set 'answer', answer
-    newPref.set 'card', card
-    newPref.set 'plug', plug
-    newPref.set 'plugThumb', thumb
-    newPref.set 'user', preffer
-    newPref.set 'mood', mood
-    newPref.set 'ACL', newPrefAcl
-    newPref.save()
+    answer.set 'id', answerId
+    prefQuery = new Parse.Query 'Pref'
+    prefQuery.equalTo 'card', card
+    prefQuery.equalTo 'user', preffer
+    prefQuery.first()
+      .then (result) =>
+        if result?
+          result.set 'answer', answer
+          result.set 'plug', plug
+          result.set 'plugThumb', thumb
+          result.set 'mood', mood
+          result.save()
+        else
+          newPrefAcl = new Parse.ACL preffer
+          newPrefAcl.setRoleReadAccess "#{userId}_Friends", true
+          # newPrefAcl.setPublicReadAccess true
+          newPref = new Parse.Object 'Pref'
+          newPref.set 'answer', answer
+          newPref.set 'card', card
+          newPref.set 'plug', plug
+          newPref.set 'plugThumb', thumb
+          newPref.set 'user', preffer
+          newPref.set 'mood', mood
+          newPref.set 'ACL', newPrefAcl
+          newPref.save()
 
+  # UPDATE Pref table with user's new image
+  #
+  # @return a Parse.Promise that resolves with the updated Pref record
   savePlug: (cardId, full, thumb, peggeeId) ->
-    # UPDATE Pref table with user's new image
     card = new Parse.Object 'Card'
     card.set 'id', cardId
     peggee = new Parse.Object 'User'
@@ -205,7 +223,9 @@ class ParseBackend
         result.save()
 
 
-  # used to display popularity of choices
+  # Save a count of prefs for a given card/choice. Used to display popularity of choices.
+  #
+  # @return a Parse.Promise that resolves with the new or updated PrefCounts record
   savePrefCount: (cardId, choiceId) ->
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -229,13 +249,15 @@ class ParseBackend
           prefCount.save()
 
 
+  # UPDATE points row with new points
+  #
+  # @return a Parse.Promise that resolves with the new or updated Points record
   savePoints: (peggerId, peggeeId, points) ->
-    # UPDATE points row with new points
-    pointsQuery = new Parse.Query 'Points'
     pegger = new Parse.Object 'User'
     pegger.set 'id',  peggerId
     peggee = new Parse.Object 'User'
     peggee.set 'id',  peggeeId
+    pointsQuery = new Parse.Query 'Points'
     pointsQuery.equalTo 'pegger', pegger
     pointsQuery.equalTo 'peggee', peggee
     pointsQuery.first()
@@ -259,8 +281,10 @@ class ParseBackend
           newPoints.save()
         points
 
+  # INSERT into Mood table a row with user's mood
+  #
+  # @return a Parse.Promise that resolves with the new Category record
   saveMood: (moodId, userId) ->
-    # INSERT into Mood table a row with user's mood
     mood = new Parse.Object 'Category'
     mood.set 'id', moodId
     user = new Parse.Object 'User'
@@ -304,9 +328,8 @@ class ParseBackend
         console.log "Error fetching categories: " + error.code + " " + error.message
         cb null
 
+  # Gets unpegged preferences: cards the user answers about a friend
   getPeggCards: (num, user, moodId, peggeeId) ->
-    # Gets unpegged preferences: cards the user answers about a friend
-
     prefUser = new Parse.Object 'User'
     prefUser.set 'id', user.id
     peggeeUser = new Parse.Object 'User'
@@ -371,6 +394,7 @@ class ParseBackend
     prefQuery.include 'answer'
     prefQuery.equalTo 'user', peggee
     prefQuery.equalTo 'card', card
+    prefQuery.ascending 'createdAt'
     prefQuery.first()
       .then (pref) =>
         if pref?
