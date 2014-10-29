@@ -45,13 +45,15 @@ class UserStore extends EventEmitter
   _loginParse: (authData) ->
     Parse.FacebookUtils.logIn authData,
       success: (user) =>
-        FB.api("/me", "get", (res) =>
+        FB.api("me?fields=first_name,last_name,gender,age_range", "get", (res) =>
+          debugger
           user.save
             avatar_url: "https://graph.facebook.com/#{user.get('authData').facebook.id}/picture"
             first_name: res.first_name
             last_name: res.last_name
             gender: res.gender
             facebook_id: res.id
+            age_range: res.age_range
           ,
             wait: false
             error: ->
