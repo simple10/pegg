@@ -96,7 +96,10 @@ class PeggStatusView extends View
     itemViews.push @picNode
     itemViews.push @titleNode
 
-#    if data? and data.stats? and data.stats.length > 0
+
+# if data? and data.stats? and data.stats.length > 0
+# Moved check on null to PlayStore, shouldn't add this view to game if stats are null
+
     peggee = stats[0].peggee
     title.setContent "#{peggee.get 'first_name'} #{peggee.get 'last_name'}'s <br/>Top Peggers:"
     pic.setContent "#{peggee.get 'avatar_url'}?height=150&type=normal&width=150"

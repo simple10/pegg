@@ -81,14 +81,17 @@ class PlayStore extends CardStore
     if arguments.length is 2
       for own cardId, prefCard of prefCards
         @_game.push {type: 'card', card: prefCard}                                # pref card
-        @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]}   # pref popularity
+        if prefPopularities[cardId]?
+          @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]} # pref popularity
     else
       for own cardId, peggCard of peggCards
         peggeeId = peggCard.peggeeId
         @_game.push {type: 'card', card: peggCard}                                # pegg card
-        @_game.push {type: 'topPeggers', stats: topPeggers[peggeeId]}             # top peggers
+        if topPeggers[peggeeId]?
+          @_game.push {type: 'topPeggers', stats: topPeggers[peggeeId]}           # top peggers
         if prefCards[cardId]?
           @_game.push {type: 'card', card: prefCards[cardId]}                     # pref card
+        if prefPopularities[cardId]?
           @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]} # pref popularity
 
     @_game.push {type: 'done'} # done screen
