@@ -41,14 +41,15 @@ class PlayCardView extends View
   constructor: (options) ->
     super options
 
-    if options.context is 'play'
+    @_context = options.context
+    if @_context is 'play'
       @_store = PlayStore
       @_actions = PlayActions
-    else if options.context is 'single_card'
+    else if @_context is 'single_card'
       @_store = SingleCardStore
       @_actions = SingleCardActions
 
-    @commentable = false
+    @_commentable = false
 
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'PlayView'
@@ -58,7 +59,6 @@ class PlayCardView extends View
 
     # create transitionable with initial value of 0
     @cardYPos = new Transitionable(0)
-    @cardXAlign = new Transitionable(0)
 
     @initViews()
     @initListeners()
@@ -128,7 +128,7 @@ class PlayCardView extends View
       origin: @layout.numComments.origin
     @add(numCommentsMod).add @numCommentsRc
     @numComments.on 'click', =>
-      @expandComments() if @commentable
+      @expandComments() if @_commentable
     @hideNumComments()
 
     @newComment = new InputView
@@ -156,11 +156,11 @@ class PlayCardView extends View
     GenericSync.register mouse: MouseSync
     GenericSync.register touch: TouchSync
 
-    minVelocity = 0.5
     # minDelta = 10
-    deltaWithVelocityThreshold = 60
-    deltaWithoutVelocityThreshold = 200
-    maxPosition = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
+    minVelocity = 0.5
+    deltaYWithVelocityThreshold = 60
+    deltaYWithoutVelocityThreshold = 200
+    maxYPosition = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
 
     @sync = new GenericSync ['mouse', 'touch']
 
@@ -169,29 +169,43 @@ class PlayCardView extends View
 
     @_eventInput.pipe @sync
 
+    isMovingX = false
     isMovingY = false
-    startPos = 0
+    startYPos = 0
+    dx = dy = 0
 
     @sync.on 'start', (data) =>
-      startPos = @cardYPos.get()
+      startYPos = @cardYPos.get()
       @cardView.preventFlip = true
 
     @sync.on 'update', ((data) ->
-      if @commentable
-        dy = data.delta[1]
-        if !isMovingY
-          if Math.abs(dy) > 0
-            isMovingY = true
-        if isMovingY
-          currentPosition = @cardYPos.get()
-          #        console.log 'currentPosition', currentPosition
-          # calculate the max Y offset to prevent the user from being able
-          # to drag the card past this point
-          pos = Math.min Math.abs(maxPosition), Math.abs(currentPosition + dy)
-          @cardYPos.set(-pos)
+      dx = data.delta[0]
+      dy = data.delta[1]
+
+      if @_commentable and Math.abs(dy) > 0 and Math.abs(dy) > Math.abs(dx)
+        isMovingX = false
+        isMovingY = true
+        currentPosition = @cardYPos.get()
+        # calculate the max Y offset to prevent the user from being able
+        # to drag the card past this point
+        yPos = Math.min Math.abs(maxYPosition), Math.abs(currentPosition + dy)
+        @cardYPos.set(-yPos)
+      else if @_context is 'play' and Math.abs(dx) > 0 and Math.abs(dx) > Math.abs(dy)
+        isMovingX = true
+        isMovingY = false
+      else
+        isMovingX = false
+        isMovingY = false
+
     ).bind(@)
 
     @sync.on 'end', ((data) ->
+      if isMovingX
+        if dx < 0
+          @nextPage()
+        else if dx > 0
+          @prevPage()
+
       # figure out if we need to show/hide the comments if moving along the Y axis
       if isMovingY
         # don't let it flip now, but clear preventFlip for the next time
@@ -201,32 +215,36 @@ class PlayCardView extends View
         # retrieve the Y velocity
         velocity = data.velocity[1]
         # calculate the total position change
-        delta = startPos - @cardYPos.get()
+        dy = startYPos - @cardYPos.get()
         # # a tap when card is at the bottom, allowing for some unintentional movement
-        # if 0 < delta < minDelta
+        # if 0 < dy < minDelta
         #   @cardView.preventFlip = false
         # # a tap when card is at the top, allowing for some unintentional movement
-        # else if 0 > delta > -minDelta
+        # else if 0 > dy > -minDelta
         #   @collapseComments()
         # swiping/dragging up and crossed min pos and vel threshold
-        if delta > deltaWithVelocityThreshold && Math.abs(velocity) > minVelocity
+        if dy > deltaYWithVelocityThreshold && Math.abs(velocity) > minVelocity
           @expandComments()
         # swiping/dragging down and crossed min pos and vel threshold
-        else if delta < -deltaWithVelocityThreshold && Math.abs(velocity) > minVelocity
+        else if dy < -deltaYWithVelocityThreshold && Math.abs(velocity) > minVelocity
           @collapseComments()
         # swiping/dragging up and crossed max pos threshold
-        else if delta > deltaWithoutVelocityThreshold
+        else if dy > deltaYWithoutVelocityThreshold
           @expandComments()
         # swiping/dragging down and crossed max pos threshold
-        else if delta < -deltaWithoutVelocityThreshold
+        else if dy < -deltaYWithoutVelocityThreshold
           @collapseComments()
         # otherwise threshold not met, so return to original position
-        else if delta
+        else if dy
           if !@_commentsExpanded then @collapseComments() else @expandComments()
       else if @cardYPos.get() is 0
         # let it flip
         @cardView.preventFlip = false
+      else
+        @collapseComments()
+
       # reset axis movement flags
+      isMovingX = false
       isMovingY = false
     ).bind(@)
 
@@ -275,7 +293,7 @@ class PlayCardView extends View
 
   cardPref: =>
     @showNumComments()
-    @playNavView.showRightArrow()
+    @playNavView.showRightArrow() if @_context is 'play'
 
   cardFail: =>
     #@message.setClasses ['card__message__fail']
@@ -284,7 +302,7 @@ class PlayCardView extends View
   cardWin: (points) =>
     @showPoints points
     @showNumComments()
-    @playNavView.showRightArrow()
+    @playNavView.showRightArrow() if @_context is 'play'
 
   showPoints: (points) =>
     # console.log "points: #{points}"
@@ -293,12 +311,12 @@ class PlayCardView extends View
 
   showNumComments: =>
     # console.log "show number of comments"
-    @commentable = true
+    @_commentable = true
     @numCommentsRc.show @numComments
 
   hideNumComments: =>
     # console.log "hide number of comments"
-    @commentable = false
+    @_commentable = false
     @numCommentsRc.hide @numComments
 #    @newComment.setAlign @layout.newComment.states[0].align
 
