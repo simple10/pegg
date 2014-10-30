@@ -40,20 +40,20 @@ class InputView extends View
 
   onInputFocus: =>
     @textInput.focus()
-    @textInput.setClasses ["#{@options.cssPrefix}--big"]
-    @textInput.setSize [Utils.getViewportWidth(), Utils.getViewportHeight()/2 + 50]
-    @textInputMod.setAlign [0.5, 0]
-    @textInputMod.setOrigin [0.5, 0]
+    # @textInput.setClasses ["#{@options.cssPrefix}--big"]
+    # @textInput.setSize [Utils.getViewportWidth(), Utils.getViewportHeight()/2 + 50]
+    # @textInputMod.setAlign [0.5, 0]
+    # @textInputMod.setOrigin [0.5, 0]
     #@textInputMod.setTransform Transform.translate(0, -Utils.getViewportHeight(), 0), @options.transition
 
   onInputBlur: =>
     @textInput.blur()
-    @textInput.setClasses ["#{@options.cssPrefix}"]
-    @textInput.setSize @options.size
-    @textInputMod.setAlign @options.align
-    @textInputMod.setOrigin @options.origin
-    if @options.transform?
-      @textInputMod.setTransform @options.transform
+    # @textInput.setClasses ["#{@options.cssPrefix}"]
+    # @textInput.setSize @options.size
+    # @textInputMod.setAlign @options.align
+    # @textInputMod.setOrigin @options.origin
+    # if @options.transform?
+    #   @textInputMod.setTransform @options.transform
     #@textInputMod.setTransform Transform.translate(0, -Utils.getViewportHeight()/2 + 120, 0), @options.transition
 
   setAlign: (align) =>

@@ -59,6 +59,7 @@ class PlayCardView extends View
 
     # create transitionable with initial value of 0
     @cardYPos = new Transitionable(0)
+    @cardXPos = new Transitionable(0)
 
     @initViews()
     @initListeners()
@@ -89,7 +90,8 @@ class PlayCardView extends View
     cardViewMod = new Modifier
       align: =>
         yAlign = @_translateToAlign @cardYPos.get(), 'Y'
-        [@layout.cards.align[0], @layout.cards.align[1] + yAlign]
+        xAlign = @_translateToAlign @cardXPos.get(), 'X'
+        [@layout.cards.align[0] + xAlign, @layout.cards.align[1] + yAlign]
       origin: @layout.cards.origin
     @add(cardViewMod).add @cardView
 
@@ -156,12 +158,6 @@ class PlayCardView extends View
     GenericSync.register mouse: MouseSync
     GenericSync.register touch: TouchSync
 
-    # minDelta = 10
-    minVelocity = 0.5
-    deltaYWithVelocityThreshold = 60
-    deltaYWithoutVelocityThreshold = 200
-    maxYPosition = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
-
     @sync = new GenericSync ['mouse', 'touch']
 
     @_eventInput.on 'card:flipped', (card) =>
@@ -169,74 +165,123 @@ class PlayCardView extends View
 
     @_eventInput.pipe @sync
 
-    isMovingX = false
-    isMovingY = false
-    startYPos = 0
-    dx = dy = 0
+    minDelta = 10
+    minVelocity = 0.5
+    deltaWithVelocityThreshold = 60
+    deltaWithoutVelocityThreshold = 200
+    topYPosition = Utils.getViewportHeight() * @layout.cards.states[1].align[1]
+    bottomYPosition = 0
+    lockedToAxis = null
+    hasMovedX = hasMovedY = false
+    x = y = 0
 
     @sync.on 'start', (data) =>
-      startYPos = @cardYPos.get()
       @cardView.preventFlip = true
 
-    @sync.on 'update', ((data) ->
-      dx = data.delta[0]
-      dy = data.delta[1]
-
-      if @_commentable and Math.abs(dy) > 0 and Math.abs(dy) > Math.abs(dx)
-        isMovingX = false
-        isMovingY = true
-        currentPosition = @cardYPos.get()
-        # calculate the max Y offset to prevent the user from being able
-        # to drag the card past this point
-        yPos = Math.min Math.abs(maxYPosition), Math.abs(currentPosition + dy)
-        @cardYPos.set(-yPos)
-      else if @_context is 'play' and Math.abs(dx) > 0 and Math.abs(dx) > Math.abs(dy)
-        isMovingX = true
-        isMovingY = false
+    @sync.on 'update', (data) =>
+      x = data.position[0]
+      y = data.position[1]
+      if Math.abs(y) > Math.abs(x)
+        primaryDirection = 'Y'
       else
-        isMovingX = false
-        isMovingY = false
+        primaryDirection = 'X'
 
-    ).bind(@)
+      if not lockedToAxis
+        if primaryDirection is 'Y' and Math.abs(y) > minDelta
+          console.log 'locked to axis Y'
+          lockedToAxis = 'Y'
+        else if primaryDirection is 'X' and Math.abs(x) > minDelta
+          console.log 'locked to axis X'
+          lockedToAxis = 'X'
 
-    @sync.on 'end', ((data) ->
-      if isMovingX
-        if dx < 0
-          @nextPage()
-        else if dx > 0
-          @prevPage()
+      if @_commentable and Math.abs(y) > 0 and lockedToAxis isnt 'X'
+        hasMovedY = true
+        hasMovedX = false
+        # calculate the max Y offset to prevent the user from being able to drag the card past this point
+        yPosition = y
+        if not @_commentsExpanded # starting from original position
+          if y > bottomYPosition
+            yPosition = bottomYPosition
+          else if y < topYPosition
+            yPosition = topYPosition
+        else # starting from comments expanded position, so everything's upside down
+          console.log y, bottomYPosition, topYPosition
+          if y < bottomYPosition
+            yPosition = -topYPosition
+          else if y > -topYPosition
+            yPosition = bottomYPosition
+        @cardYPos.set(yPosition)
+        @snapToOrigin 'X'
+
+      if @_context is 'play' and Math.abs(x) > 0 and lockedToAxis isnt 'Y'
+        hasMovedX = true
+        hasMovedY = false
+        @cardXPos.set(x)
+        @snapToOrigin 'Y'
+
+    @sync.on 'end', (data) =>
+      # retrieve the velocity
+      xVelocity = data.velocity[0]
+      yVelocity = data.velocity[1]
+      # retrieve the total position change
+      x = data.position[0]
+      y = data.position[1]
+
+      if hasMovedX
+        crossedXThreshold = false
+
+        # swiping/dragging up and crossed min pos and vel threshold
+        if Math.abs(x) > deltaWithVelocityThreshold && Math.abs(xVelocity) > minVelocity
+          crossedXThreshold = true
+        # swiping/dragging up and crossed max pos threshold
+        else if Math.abs(x) > deltaWithoutVelocityThreshold
+          crossedXThreshold = true
+        # otherwise threshold not met, so return to original position
+        else if Math.abs(x)
+          @snapToOrigin 'X'
+
+        if crossedXThreshold
+          if x < 0
+            @nextPage()
+          else if x > 0
+            @prevPage()
+      else
+        @snapToOrigin 'X'
 
       # figure out if we need to show/hide the comments if moving along the Y axis
-      if isMovingY
+      if hasMovedY
         # don't let it flip now, but clear preventFlip for the next time
         setTimeout =>
           @cardView.preventFlip = false
         , 300
-        # retrieve the Y velocity
-        velocity = data.velocity[1]
-        # calculate the total position change
-        dy = startYPos - @cardYPos.get()
         # # a tap when card is at the bottom, allowing for some unintentional movement
-        # if 0 < dy < minDelta
+        # if 0 < y < minDelta
         #   @cardView.preventFlip = false
         # # a tap when card is at the top, allowing for some unintentional movement
-        # else if 0 > dy > -minDelta
+        # else if 0 > y > -minDelta
         #   @collapseComments()
+        crossedYThreshold = false
         # swiping/dragging up and crossed min pos and vel threshold
-        if dy > deltaYWithVelocityThreshold && Math.abs(velocity) > minVelocity
-          @expandComments()
-        # swiping/dragging down and crossed min pos and vel threshold
-        else if dy < -deltaYWithVelocityThreshold && Math.abs(velocity) > minVelocity
-          @collapseComments()
+        if Math.abs(y) > deltaWithVelocityThreshold && Math.abs(yVelocity) > minVelocity
+          console.log "delta with velocity threshold crossed"
+          crossedYThreshold = true
         # swiping/dragging up and crossed max pos threshold
-        else if dy > deltaYWithoutVelocityThreshold
-          @expandComments()
-        # swiping/dragging down and crossed max pos threshold
-        else if dy < -deltaYWithoutVelocityThreshold
-          @collapseComments()
+        else if Math.abs(y) > deltaWithoutVelocityThreshold
+          console.log "delta without velocity threshold crossed"
+          crossedYThreshold = true
         # otherwise threshold not met, so return to original position
-        else if dy
+        else if Math.abs(y)
+          console.log "threshold not crossed"
           if !@_commentsExpanded then @collapseComments() else @expandComments()
+        else
+          console.log "WTF! y: ", y
+
+        if crossedYThreshold
+          if y > 0
+            @collapseComments()
+          else if y < 0
+            @expandComments()
+
       else if @cardYPos.get() is 0
         # let it flip
         @cardView.preventFlip = false
@@ -244,9 +289,10 @@ class PlayCardView extends View
         @collapseComments()
 
       # reset axis movement flags
-      isMovingX = false
-      isMovingY = false
-    ).bind(@)
+      hasMovedX = false
+      hasMovedY = false
+      lockedToAxis = null
+      @snapToOrigin 'X'
 
   loadSingleCard: =>
     @playNavView.showSingleCardNav()
@@ -336,7 +382,7 @@ class PlayCardView extends View
     @commentsViewRc.hide @commentsView
     @playNavView.showNav()
     # slide the cards down to their starting position
-    @cardYPos.set(0, @layout.cards.states[0].transition)
+    @snapToOrigin 'Y'
     # slide the comments down to their starting position
     @numCommentsRc.show @numComments
     @_commentsExpanded = false
@@ -351,6 +397,14 @@ class PlayCardView extends View
     # slide the comments up
     @numCommentsRc.show @newCommentNode
     @_commentsExpanded = true
+
+  snapToOrigin: (axis) =>
+    # slide the cards back to their starting position
+    switch axis
+      when 'Y'
+        @cardYPos.set(0, @layout.cards.states[0].transition)
+      when 'X'
+        @cardXPos.set(0, @layout.cards.states[0].transition)
 
   requireLogin: =>
     MessageActions.show 'app__login_required'
