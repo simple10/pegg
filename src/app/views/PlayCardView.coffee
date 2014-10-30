@@ -188,10 +188,8 @@ class PlayCardView extends View
 
       if not lockedToAxis
         if primaryDirection is 'Y' and Math.abs(y) > minDelta
-          console.log 'locked to axis Y'
           lockedToAxis = 'Y'
         else if primaryDirection is 'X' and Math.abs(x) > minDelta
-          console.log 'locked to axis X'
           lockedToAxis = 'X'
 
       if @_commentable and Math.abs(y) > 0 and lockedToAxis isnt 'X'
@@ -204,12 +202,12 @@ class PlayCardView extends View
             yPosition = bottomYPosition
           else if y < topYPosition
             yPosition = topYPosition
-        else # starting from comments expanded position, so everything's upside down
-          console.log y, bottomYPosition, topYPosition
-          if y < bottomYPosition
-            yPosition = -topYPosition
-          else if y > -topYPosition
+        else # starting from comments expanded position, so need to offset it
+          yPosition = y + topYPosition
+          if yPosition > bottomYPosition
             yPosition = bottomYPosition
+          else if yPosition < topYPosition
+            yPosition = topYPosition
         @cardYPos.set(yPosition)
         @snapToOrigin 'X'
 
@@ -263,18 +261,13 @@ class PlayCardView extends View
         crossedYThreshold = false
         # swiping/dragging up and crossed min pos and vel threshold
         if Math.abs(y) > deltaWithVelocityThreshold && Math.abs(yVelocity) > minVelocity
-          console.log "delta with velocity threshold crossed"
           crossedYThreshold = true
         # swiping/dragging up and crossed max pos threshold
         else if Math.abs(y) > deltaWithoutVelocityThreshold
-          console.log "delta without velocity threshold crossed"
           crossedYThreshold = true
         # otherwise threshold not met, so return to original position
         else if Math.abs(y)
-          console.log "threshold not crossed"
           if !@_commentsExpanded then @collapseComments() else @expandComments()
-        else
-          console.log "WTF! y: ", y
 
         if crossedYThreshold
           if y > 0
@@ -351,17 +344,14 @@ class PlayCardView extends View
     @playNavView.showRightArrow() if @_context is 'play'
 
   showPoints: (points) =>
-    # console.log "points: #{points}"
     @points.setContent "+#{points}"
     Utils.animateAll @pointsMod, @layout.points.states
 
   showNumComments: =>
-    # console.log "show number of comments"
     @_commentable = true
     @numCommentsRc.show @numComments
 
   hideNumComments: =>
-    # console.log "hide number of comments"
     @_commentable = false
     @numCommentsRc.hide @numComments
 #    @newComment.setAlign @layout.newComment.states[0].align
@@ -378,7 +368,6 @@ class PlayCardView extends View
     @loadComments()
 
   collapseComments: =>
-    # console.log "collapse comments"
     @commentsViewRc.hide @commentsView
     @playNavView.showNav()
     # slide the cards down to their starting position
@@ -388,7 +377,6 @@ class PlayCardView extends View
     @_commentsExpanded = false
 
   expandComments: =>
-    # console.log "expand comments"
     @commentsViewRc.show @commentsView
     @playNavView.hideNav()
     maxCardYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
