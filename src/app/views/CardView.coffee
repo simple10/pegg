@@ -106,7 +106,7 @@ class CardView extends View
     @rc.show @choicesView
     @choiceShowing = true
     @choicesView.on 'choice:doneShowingStatus', =>
-      Timer.setTimeout @toggleChoices, @layout.card.transition.duration
+#      Timer.setTimeout @toggleChoices, @layout.card.transition.duration
       @flip()
 
   initAnswer: ->
@@ -239,6 +239,7 @@ class CardView extends View
       @front.removeListener 'click', @toggleChoices
       @frontProfilePic.removeListener 'click', @toggleChoices
       @frontQuestion.removeListener 'click', @toggleChoices
+#      @rc.hide @choicesView
       @_eventOutput.emit 'pegg',
         peggeeId: @card.peggeeId
         id: @card.id
@@ -252,12 +253,13 @@ class CardView extends View
         thumb: choice.thumb
       @loadAnswer choice.plug, choice.text
       @addImageRenderer.show @addImageButton
+#      @rc.hide @choicesView
       @flip()
 
   flip: =>
     @currentSide = if @currentSide is 1 then 0 else 1
     @flipTransition.set(@currentSide, @layout.card.transition)
-    @rc.hide @choicesView
+#    @rc.hide @choicesView
     # hideShow = if @currentSide is 1 then @layout.card.front.hide else @layout.card.front.show
     # @frontProfilePicMod.setTransform hideShow
     # @frontQuestionMod.setTransform hideShow
