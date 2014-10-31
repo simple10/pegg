@@ -13,7 +13,7 @@ module.exports =
     LOADING_DONE: null
     LOADING_START: null
     LOAD_ACTIVITY: null
-    LOAD_APP: null
+    LOAD_MOOD: null
     LOAD_CARD: null
     LOAD_CATEGORIES: null
     LOAD_LINK: null

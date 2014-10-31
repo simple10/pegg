@@ -13,6 +13,7 @@ PlayStore = require 'stores/PlayStore'
 LayoutManager = require 'views/layouts/LayoutManager'
 ProgressBarView = require 'views/ProgressBarView'
 SingleCardStore = require 'stores/SingleCardStore'
+PlayActions = require 'actions/PlayActions'
 
 class PlayNavView extends View
 
@@ -59,6 +60,8 @@ class PlayNavView extends View
     @moodImageMod = new StateModifier
       align: @layout.moodImage.align
       origin: @layout.moodImage.origin
+    @moodImage.on 'click', ->
+      PlayActions.load()
 
     ## PROGRESS BAR ##
     @progressBar = new ProgressBarView
@@ -158,7 +161,7 @@ class PlayNavView extends View
 
   updateNav: =>
     gameState = PlayStore.getGameState()
-    @title.setContent gameState.title
+    @title.setContent gameState.mood.text
     @progressBar.increment(1)
 
 module.exports = PlayNavView

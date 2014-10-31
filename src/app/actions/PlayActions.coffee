@@ -2,11 +2,9 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 Constants = require('constants/PeggConstants').actions
 
 PlayActions =
-  load: (flow, script) ->
+  load: () ->
     AppDispatcher.handleViewAction
-      actionType: Constants.LOAD_APP
-      flow: flow
-      script: script
+      actionType: Constants.LOAD_MOOD
 
   pref: (card, choice, plug, thumb) ->
     AppDispatcher.handleViewAction
