@@ -37,7 +37,7 @@ module.exports = {
       delay: 0
       transform: Transform.multiply(
         Transform.scale .5, .5, 1
-        Transform.translate -210, 200, 3
+        Transform.translate -(width / 6) * 4 , height / 3 , 3
       )
 #      align: [0.1, 0.18]
 #      origin: [0, 0]
