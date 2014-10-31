@@ -57,7 +57,7 @@ class ChoicesView extends View
             choiceView.showStatusMsg winOrFail
         ).bind @, id, winOrFail, choiceView
         choiceView.on 'choice:doneShowingStatus', ((id) ->
-          @_eventOutput.emit 'choice:doneShowingStatus', id
+          @_eventOutput.emit 'choice:doneShowingStatus'
         ).bind @, id
         @choices.push choiceView
         choiceView.pipe @scrollView

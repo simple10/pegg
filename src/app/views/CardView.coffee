@@ -23,6 +23,7 @@ ImagePickView = require 'views/ImagePickView'
 LayoutManager = require 'views/layouts/LayoutManager'
 UserStore = require 'stores/UserStore'
 Utils = require 'lib/Utils'
+Transitionable = require 'famous/src/transitions/Transitionable'
 
 class CardView extends View
 
@@ -30,7 +31,6 @@ class CardView extends View
 #    options = _.defaults options, @constructor.DEFAULT_OPTIONS
     super options
 
-    @preventFlip = false
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'CardView'
 
@@ -41,9 +41,15 @@ class CardView extends View
     @initGestures()
 
   initCard: ->
-    @state = new StateModifier
+    @flipRadians = 1
+
+    @flipTransition = new Transitionable(0)
+    @state = new Modifier
       origin: @layout.card.origin
-      # align is dynamically set by parent view
+      transform: =>
+        Transform.rotateY Math.PI * @flipTransition.get()
+
+    # align is dynamically set by parent view
 #      align: @layout.card.align
     @mainNode = @add @state
     ## Front Card
@@ -166,14 +172,8 @@ class CardView extends View
     @addImageRenderer.hide @addImageButton
 
     # clear event listeners
-    @back.removeListener 'click', @flip
-    @backImage.removeListener 'click', @flip
-    @backText.removeListener 'click', @flip
-    @front.removeListener 'click', @flip
     @front.removeListener 'click', @toggleChoices
-    @frontProfilePic.removeListener 'click', @flip
     @frontProfilePic.removeListener 'click', @toggleChoices
-    @frontQuestion.removeListener 'click', @flip
     @frontQuestion.removeListener 'click', @toggleChoices
     @choicesView.removeListener 'choice', @pickAnswer
 
@@ -186,14 +186,6 @@ class CardView extends View
 
     if @card.answer?
       @loadAnswer @card.answer.plug, @card.answer.text
-
-    if card.type is 'review' or card.type is 'deny'
-      @front.on 'click', @flip
-      @back.on 'click', @flip
-      @frontProfilePic.on 'click', @flip
-      @frontQuestion.on 'click', @flip
-      @backImage.on 'click', @flip
-      @backText.on 'click', @flip
 
     if card.type is 'review'
       @loadAnswer @card.answer.plug, @card.answer.text
@@ -212,7 +204,10 @@ class CardView extends View
     if @card.question.length > 90
       @layout.question.classes = ["#{@layout.question.big.classes}--medium"]
     @frontQuestion.setContent @card.question
-    @flip() if @currentSide is 1
+    if @currentSide is 1
+      @flip()
+    else
+      @currentSide = 0
 
     @choicesView.load @card.choices, @card.answer
     @choicesView.on 'choice', @pickAnswer
@@ -255,20 +250,14 @@ class CardView extends View
       @flip()
 
   flip: =>
-    unless @preventFlip
-      @currentSide = if @currentSide is 1 then 0 else 1
-
-      @rc.hide @choicesView
-
-      @state.setTransform(
-        Transform.rotateY Math.PI * @currentSide
-        @layout.card.transition
-      )
-      # hideShow = if @currentSide is 1 then @layout.card.front.hide else @layout.card.front.show
-      # @frontProfilePicMod.setTransform hideShow
-      # @frontQuestionMod.setTransform hideShow
-      # @choicesMod.setTransform hideShow
-      @_eventOutput.emit 'card:flipped', @
+    @currentSide = if @currentSide is 1 then 0 else 1
+    @flipTransition.set(@currentSide, @layout.card.transition)
+    @rc.hide @choicesView
+    # hideShow = if @currentSide is 1 then @layout.card.front.hide else @layout.card.front.show
+    # @frontProfilePicMod.setTransform hideShow
+    # @frontQuestionMod.setTransform hideShow
+    # @choicesMod.setTransform hideShow
+    @_eventOutput.emit 'card:flipped', @
 
   loadAnswer: (image, text) =>
     @backImage.setContent image

@@ -50,6 +50,7 @@ class PlayCardView extends View
       @_actions = SingleCardActions
 
     @_commentable = false
+    @_flippable = false
 
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'PlayView'
@@ -78,8 +79,10 @@ class PlayCardView extends View
       @collapseComments()
     @cardView.on 'pegg', (payload) =>
       @_actions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
+      @_flippable = true
     @cardView.on 'pref', (payload) =>
       @_actions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
+      @_flippable = true
     @cardView.on 'plug', (payload) =>
       @_actions.plug payload.id, payload.full, payload.thumb
     @cardView.pipe @
@@ -172,11 +175,12 @@ class PlayCardView extends View
     topYPosition = Utils.getViewportHeight() * @layout.cards.states[1].align[1]
     bottomYPosition = 0
     lockedToAxis = null
-    hasMovedX = hasMovedY = false
-    x = y = 0
+    hasMovedX = false
+    hasMovedY = false
+    x = 0
+    y = 0
 
     @sync.on 'start', (data) =>
-      @cardView.preventFlip = true
 
     @sync.on 'update', (data) =>
       x = data.position[0]
@@ -208,13 +212,24 @@ class PlayCardView extends View
             yPosition = bottomYPosition
           else if yPosition < topYPosition
             yPosition = topYPosition
-        @cardYPos.set(yPosition)
+        @cardYPos.set yPosition
         @snapToOrigin 'X'
 
-      if @_context is 'play' and Math.abs(x) > 0 and lockedToAxis isnt 'Y'
+      if @_context is 'play' and Math.abs(x) > 0 and lockedToAxis isnt 'Y' and not @_commentsExpanded
         hasMovedX = true
         hasMovedY = false
-        @cardXPos.set(x)
+        if @_flippable
+          radians = ( -x / Utils.getViewportWidth() ) * 2
+          radians += @cardView.currentSide
+          if radians > 1
+            radians = 1
+            @cardXPos.set x if @cardView.currentSide is 1
+          else if radians < 0
+            radians = 0
+            @cardXPos.set x if @cardView.currentSide is 0
+          @cardView.flipTransition.set -radians
+        else
+          @cardXPos.set x
         @snapToOrigin 'Y'
 
     @sync.on 'end', (data) =>
@@ -236,28 +251,31 @@ class PlayCardView extends View
           crossedXThreshold = true
         # otherwise threshold not met, so return to original position
         else if Math.abs(x)
+          @cardView.flipTransition.set -@cardView.currentSide, @cardView.layout.card.transition
           @snapToOrigin 'X'
 
         if crossedXThreshold
           if x < 0
-            @nextPage()
+            if @_flippable and @cardView.currentSide is 0
+              @cardView.flipTransition.set -1, @cardView.layout.card.transition
+              @cardView.currentSide = 1
+            else
+              offscreenLeft = -Utils.getViewportWidth()
+              @cardXPos.set(offscreenLeft, @layout.cards.states[1].transition)
+              @nextPage()
           else if x > 0
-            @prevPage()
+            if @_flippable and @cardView.currentSide is 1
+              @cardView.flipTransition.set 0, @cardView.layout.card.transition
+              @cardView.currentSide = 0
+            else
+              offscreenRight = Utils.getViewportWidth()
+              @cardXPos.set(offscreenRight, @layout.cards.states[1].transition)
+              @prevPage()
       else
         @snapToOrigin 'X'
 
       # figure out if we need to show/hide the comments if moving along the Y axis
       if hasMovedY
-        # don't let it flip now, but clear preventFlip for the next time
-        setTimeout =>
-          @cardView.preventFlip = false
-        , 300
-        # # a tap when card is at the bottom, allowing for some unintentional movement
-        # if 0 < y < minDelta
-        #   @cardView.preventFlip = false
-        # # a tap when card is at the top, allowing for some unintentional movement
-        # else if 0 > y > -minDelta
-        #   @collapseComments()
         crossedYThreshold = false
         # swiping/dragging up and crossed min pos and vel threshold
         if Math.abs(y) > deltaWithVelocityThreshold && Math.abs(yVelocity) > minVelocity
@@ -267,7 +285,7 @@ class PlayCardView extends View
           crossedYThreshold = true
         # otherwise threshold not met, so return to original position
         else if Math.abs(y)
-          if !@_commentsExpanded then @collapseComments() else @expandComments()
+          if @_commentsExpanded then @expandComments() else @collapseComments()
 
         if crossedYThreshold
           if y > 0
@@ -275,17 +293,10 @@ class PlayCardView extends View
           else if y < 0
             @expandComments()
 
-      else if @cardYPos.get() is 0
-        # let it flip
-        @cardView.preventFlip = false
-      else
-        @collapseComments()
-
       # reset axis movement flags
       hasMovedX = false
       hasMovedY = false
       lockedToAxis = null
-      @snapToOrigin 'X'
 
   loadSingleCard: =>
     @playNavView.showSingleCardNav()
@@ -302,13 +313,17 @@ class PlayCardView extends View
 #      @hideNumComments()
 
   _load: (card) =>
+    @_flippable = false
+    @snapToOrigin 'X'
     @card = card
     @cardView.loadCard card
     if card.type is 'deny'
       @hideNumComments()
+      @_flippable = true
     else if card.type is 'review'
       @loadComments()
       @showNumComments()
+      @_flippable = true
     else
       @loadComments()
 
@@ -379,9 +394,9 @@ class PlayCardView extends View
   expandComments: =>
     @commentsViewRc.show @commentsView
     @playNavView.hideNav()
-    maxCardYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
+    topYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
     # move the cards up
-    @cardYPos.set(maxCardYPos, @layout.cards.states[1].transition)
+    @cardYPos.set(topYPos, @layout.cards.states[1].transition)
     # slide the comments up
     @numCommentsRc.show @newCommentNode
     @_commentsExpanded = true
