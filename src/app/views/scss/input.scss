@@ -19,3 +19,12 @@
   width: 100%;
   z-index: 10;
 }
+
+.input__text--dark {
+  background-color: $darkblue;
+}
+
+.input__text--white {
+  background-color: $white;
+  color: $black;
+}
