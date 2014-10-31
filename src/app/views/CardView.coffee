@@ -105,7 +105,9 @@ class CardView extends View
     @mainNode.add(@choicesMod).add @rc
     @rc.show @choicesView
     @choiceShowing = true
-    @choicesView.on 'choice:doneShowingStatus', @flip
+    @choicesView.on 'choice:doneShowingStatus', =>
+      Timer.setTimeout @toggleChoices, @layout.card.transition.duration
+      @flip()
 
   initAnswer: ->
     @backImage = new ImageSurface
@@ -234,6 +236,9 @@ class CardView extends View
   pickAnswer: (id) =>
     choice = @card.choices[id]
     if @card.answer?
+      @front.removeListener 'click', @toggleChoices
+      @frontProfilePic.removeListener 'click', @toggleChoices
+      @frontQuestion.removeListener 'click', @toggleChoices
       @_eventOutput.emit 'pegg',
         peggeeId: @card.peggeeId
         id: @card.id

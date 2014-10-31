@@ -47,6 +47,10 @@
   text-align: center;
 }
 
+.card__front__option.highlight {
+  background-color: $rainbow-yellow;
+}
+
 .card__front__option .outerContainer {
   display: table;
   overflow: hidden;

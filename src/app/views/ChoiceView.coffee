@@ -55,7 +55,7 @@ class ChoiceView extends View
 
       if status is 'win'
         Timer.setTimeout(() =>
-          @_eventOutput.emit('choice:doneShowingStatus');
+          @_eventOutput.emit('choice:doneShowingStatus')
         , 500)
     )
 
@@ -69,6 +69,8 @@ class ChoiceView extends View
       @state.setTransform Transform.translate(0,0,-10)
     )
 
+  highlight: =>
+    @front.backing.addClass "highlight"
 
 ## Flipper Front View
 

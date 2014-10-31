@@ -55,6 +55,8 @@ class ChoicesView extends View
           @_eventOutput.emit 'choice', id
           if winOrFail?
             choiceView.showStatusMsg winOrFail
+          else
+            choiceView.highlight()
         ).bind @, id, winOrFail, choiceView
         choiceView.on 'choice:doneShowingStatus', ((id) ->
           @_eventOutput.emit 'choice:doneShowingStatus'
