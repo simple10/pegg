@@ -20,94 +20,80 @@ Easing = require 'famous/src/transitions/Easing'
 # Facebook
 Facebook = require 'Facebook'
 
-# Views
+# Pegg
 AppView = require 'views/AppView'
 FpsMeter = require 'views/FpsMeterView'
 LoginView = require 'views/LoginView'
 SignupView = require 'views/SignupView'
-
-# Stores
 UserStore = require 'stores/UserStore'
 AppStateStore = require 'stores/AppStateStore'
-
-# Actions
 PlayActions = require 'actions/PlayActions'
 ActivityActions = require 'actions/ActivityActions'
 UserActions = require 'actions/UserActions'
 CardActions = require 'actions/CardActions'
-
-# Constants
 Constants = require 'constants/PeggConstants'
-
-# Routes
 Routes = require 'routes/AppRoutes'
-
 GameScript = require('config/game').scripts.cosmic_unicorn
-
 Utils = require 'lib/Utils'
 
-Transitionable = require 'famous/src/transitions/Transitionable'
-SpringTransition = require 'famous/src/transitions/SpringTransition'
-#WallTransition = require 'famous/src/transitions/WallTransition'
-#SnapTransition = require 'famous/src/transitions/SnapTransition'
-Transitionable.registerMethod 'spring', SpringTransition
+
 
 # Chrome maxes out at 60 FPS
 Engine.setFPSCap 60
 
 
-if Utils.getViewportWidth() > 400
-  div = document.createElement 'div'
-  div.className = 'device'
-  iframe = document.createElement 'iframe'
-  iframe.src = '/index.html'
-  iframe.className = 'iframe'
-  div.appendChild iframe
-  document.body.appendChild div
-else
+#if Utils.getViewportWidth() > 400
+#  div = document.createElement 'div'
+#  div.className = 'device'
+#  iframe = document.createElement 'iframe'
+#  iframe.src = '/index.html'
+#  iframe.className = 'iframe'
+#  div.appendChild iframe
+#  document.body.appendChild div
+#else
   # Create the main context
-  mainContext = Engine.createContext()
+mainContext = Engine.createContext()
 
-  # Set perspective for 3D effects
-  # Lower values make effects more pronounced and extreme
-  mainContext.setPerspective 2000
+# Set perspective for 3D effects
+# Lower values make effects more pronounced and extreme
+mainContext.setPerspective 2000
 
-  appView = new AppView
-  loginView = new LoginView
-  signupView = new SignupView
-  lightbox = new Lightbox
-  #  inOpacity: 1
-  #  outOpacity: 0
-    inOrigin: [1, -1]
-    outOrigin: [0, -1]
-    showOrigin: [0.5, 0.5]
-    inTransform: Transform.thenMove(Transform.rotateX(0), [0, -window.innerHeight, 0])
-    outTransform: Transform.thenMove(Transform.rotateZ(0), [0, window.innerHeight, 0])
-    inTransition: { duration: 500, curve: Easing.outCubic }
-    outTransition: { duration: 350, curve: Easing.outCubic }
-  mainContext.add lightbox
+appView = new AppView
+loginView = new LoginView
+signupView = new SignupView
+lightbox = new Lightbox
+#  inOpacity: 1
+#  outOpacity: 0
+  inOrigin: [1, -1]
+  outOrigin: [0, -1]
+  showOrigin: [0.5, 0.5]
+  inTransform: Transform.thenMove(Transform.rotateX(0), [0, -window.innerHeight, 0])
+  outTransform: Transform.thenMove(Transform.rotateZ(0), [0, window.innerHeight, 0])
+  inTransition: { duration: 500, curve: Easing.outCubic }
+  outTransition: { duration: 350, curve: Easing.outCubic }
+mainContext.add lightbox
 
-  #Wait a couple cycles for Famo.us to boot up, smoother animations
-  Timer.after (->
-    pickView()
-  ), 20
+#Wait a couple cycles for Famo.us to boot up, smoother animations
+Timer.after (->
+  pickView()
+), 20
 
-  pickView = ->
-    if UserStore.getLoggedIn()
-      lightbox.show appView
-      PlayActions.load()
-      ActivityActions.load 1
-      CardActions.loadCategories()
-    else if  AppStateStore.getCurrentPageID() is 'card'
-      lightbox.show appView
-    else if AppStateStore.getCurrentPageID() is 'login'
-      lightbox.show loginView
-    else
-      lightbox.show signupView
-    return
+pickView = ->
+  if UserStore.getLoggedIn()
+    lightbox.show appView
+    PlayActions.load()
+    ActivityActions.load 1
+    CardActions.loadCategories()
+  else if  AppStateStore.getCurrentPageID() is 'card'
+    lightbox.show appView
+  else if AppStateStore.getCurrentPageID() is 'login'
+    lightbox.show loginView
+  else
+    lightbox.show signupView
+  return
 
-  AppStateStore.on Constants.stores.LOGIN_CHANGE, pickView
-  UserStore.on Constants.stores.LOGIN_CHANGE, pickView
+AppStateStore.on Constants.stores.LOGIN_CHANGE, pickView
+UserStore.on Constants.stores.LOGIN_CHANGE, pickView
 
 #  mainContext.add new FpsMeter
 
