@@ -218,7 +218,7 @@ AppDispatcher.register (payload) ->
 
   # Pay attention to events relevant to PlayStore
   switch action.actionType
-    when Constants.actions.LOAD_APP
+    when Constants.actions.LOAD_MOOD
       play._fetchMoods()
     when Constants.actions.NEXT_PAGE
       play._next()
