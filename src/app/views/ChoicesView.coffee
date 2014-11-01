@@ -29,6 +29,15 @@ class ChoicesView extends View
     @scrollView.sequenceFrom @choices
     @add(@scrollMod).add @scrollView
 
+    @on 'choice', @highlightChoice
+
+  highlightChoice: (highlightId) ->
+    for choiceView in @choices
+      if choiceView.id is highlightId
+        choiceView.highlight true
+      else
+        choiceView.highlight false
+
   load: (choices, answer) ->
     @clearChoices()
 
@@ -43,8 +52,8 @@ class ChoicesView extends View
 #          color = 'light'
 #        else
 #          color = 'dark'
-        @options.choice.choiceText = choiceText
-        choiceView = new ChoiceView @options.choice
+        options = _.extend {choiceText, id}, @options.choice
+        choiceView = new ChoiceView options
         winOrFail = null
         if answer?
           if answer.id is id
@@ -55,8 +64,6 @@ class ChoicesView extends View
           @_eventOutput.emit 'choice', id
           if winOrFail?
             choiceView.showStatusMsg winOrFail
-          else
-            choiceView.highlight()
         ).bind @, id, winOrFail, choiceView
         choiceView.on 'choice:doneShowingStatus', ((id) ->
           @_eventOutput.emit 'choice:doneShowingStatus'

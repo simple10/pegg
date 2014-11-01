@@ -18,6 +18,7 @@ class ChoiceView extends View
 
   constructor: () ->
     super
+    @id = @options.id
     @state = new StateModifier
       size: @options.size
     @mainNode = @add @state
@@ -48,16 +49,15 @@ class ChoiceView extends View
   # @param status {string} either 'fail' or 'win'
   showStatusMsg: (status) =>
     @back.update(status)
-    @flipper.flip(undefined, () =>
+    @flipper.flip undefined, =>
 
       if status is 'fail'
         Timer.setTimeout @remove, 500
 
       if status is 'win'
-        Timer.setTimeout(() =>
-          @_eventOutput.emit('choice:doneShowingStatus')
-        , 500)
-    )
+        Timer.setTimeout =>
+          @_eventOutput.emit 'choice:doneShowingStatus'
+        , 500
 
   remove: () =>
     transition = 
@@ -69,8 +69,11 @@ class ChoiceView extends View
       @state.setTransform Transform.translate(0,0,-10)
     )
 
-  highlight: =>
-    @front.backing.addClass "highlight"
+  highlight: (really) =>
+    if really
+      @front.backing.addClass "highlight"
+    else
+      @front.backing.removeClass "highlight"
 
 ## Flipper Front View
 

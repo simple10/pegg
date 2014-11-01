@@ -254,6 +254,7 @@ class CardView extends View
       @loadAnswer choice.plug, choice.text
       @addImageRenderer.show @addImageButton
 #      @rc.hide @choicesView
+#      Timer.setTimeout @toggleChoices, @layout.card.transition.duration
       @flip()
 
   flip: =>
