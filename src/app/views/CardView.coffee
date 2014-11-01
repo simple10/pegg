@@ -259,7 +259,7 @@ class CardView extends View
 
   flip: =>
     @currentSide = if @currentSide is 1 then 0 else 1
-    @flipTransition.set(@currentSide, @layout.card.transition)
+    @flipTransition.set(-@currentSide, @layout.card.transition)
 #    @rc.hide @choicesView
     # hideShow = if @currentSide is 1 then @layout.card.front.hide else @layout.card.front.show
     # @frontProfilePicMod.setTransform hideShow
