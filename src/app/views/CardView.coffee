@@ -105,7 +105,7 @@ class CardView extends View
     @mainNode.add(@choicesMod).add @rc
     @rc.show @choicesView
     @choiceShowing = true
-    @choicesView.on 'choice:doneShowingStatus', =>
+    @choicesView.on 'choice:win', =>
 #      Timer.setTimeout @toggleChoices, @layout.card.transition.duration
       @flip()
 

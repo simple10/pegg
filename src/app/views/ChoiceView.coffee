@@ -20,6 +20,7 @@ class ChoiceView extends View
     super
     @id = @options.id
     @highlightable = @options.highlightable
+    @disabled = false
     @state = new StateModifier
       size: @options.size
     @mainNode = @add @state
@@ -55,8 +56,14 @@ class ChoiceView extends View
 
       if status is 'win'
         Timer.setTimeout =>
-          @_eventOutput.emit 'choice:doneShowingStatus'
+          @_eventOutput.emit 'choice:win'
         , 500
+      else if status is 'fail'
+        @disable()
+
+  disable: =>
+    @disabled = true
+    @front.state.setOpacity 0.4
 
   highlight: (really) =>
     if really and @highlightable

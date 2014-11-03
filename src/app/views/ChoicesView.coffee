@@ -62,12 +62,13 @@ class ChoicesView extends View
           else
             winOrFail = 'fail'
         choiceView.on 'click', ((id, winOrFail, choiceView) ->
-          @_eventOutput.emit 'choice', id
-          if winOrFail?
-            choiceView.showStatusMsg winOrFail
+          unless choiceView.disabled
+            @_eventOutput.emit 'choice', id
+            if winOrFail?
+              choiceView.showStatusMsg winOrFail
         ).bind @, id, winOrFail, choiceView
-        choiceView.on 'choice:doneShowingStatus', ((id) ->
-          @_eventOutput.emit 'choice:doneShowingStatus'
+        choiceView.on 'choice:win', ((id) ->
+          @_eventOutput.emit 'choice:win'
         ).bind @, id
         @choices.push choiceView
         choiceView.pipe @scrollView
