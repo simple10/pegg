@@ -211,7 +211,7 @@ class CardView extends View
     else
       @currentSide = 0
 
-    @choicesView.load @card.choices, @card.answer
+    @choicesView.load @card
     @choicesView.on 'choice', @pickAnswer
 
   toggleChoices: =>

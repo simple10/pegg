@@ -19,6 +19,7 @@ class ChoiceView extends View
   constructor: () ->
     super
     @id = @options.id
+    @highlightable = @options.highlightable
     @state = new StateModifier
       size: @options.size
     @mainNode = @add @state
@@ -31,7 +32,6 @@ class ChoiceView extends View
     @createBack()
     @flipper = new Flipper
       direction: Flipper.DIRECTION_Y
-    
     @flipper.setFront(@front)
     @flipper.setBack(@back)
 
@@ -51,26 +51,15 @@ class ChoiceView extends View
     @back.update(status)
     @flipper.flip undefined, =>
 
-      if status is 'fail'
-        Timer.setTimeout @remove, 500
+      Timer.setTimeout @flipper.flip.bind(@flipper), 700
 
       if status is 'win'
         Timer.setTimeout =>
           @_eventOutput.emit 'choice:doneShowingStatus'
         , 500
 
-  remove: () =>
-    transition = 
-      curve: 'linear'
-      duration: 300
-
-    @state.setOpacity(0.001, transition)
-    @state.setSize([@options.size[0], 0], transition, () =>
-      @state.setTransform Transform.translate(0,0,-10)
-    )
-
   highlight: (really) =>
-    if really
+    if really and @highlightable
       @front.backing.addClass "highlight"
     else
       @front.backing.removeClass "highlight"
