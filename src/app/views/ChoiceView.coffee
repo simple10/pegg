@@ -49,21 +49,19 @@ class ChoiceView extends View
 
   # @param status {string} either 'fail' or 'win'
   showStatusMsg: (status) =>
+    @disable()
     @back.update(status)
     @flipper.flip undefined, =>
-
-      Timer.setTimeout @flipper.flip.bind(@flipper), 700
-
-      if status is 'win'
-        Timer.setTimeout =>
+      Timer.setTimeout =>
+        @flipper.flip undefined
+        if status is 'win'
           @_eventOutput.emit 'choice:win'
-        , 500
-      else if status is 'fail'
-        @disable()
+        else if status is 'fail'
+          @front.state.setOpacity 0.4
+      , 700
 
   disable: =>
     @disabled = true
-    @front.state.setOpacity 0.4
 
   highlight: (really) =>
     if really and @highlightable
