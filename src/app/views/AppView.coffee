@@ -5,17 +5,18 @@
 # CSS
 require './scss/app.scss'
 
-View = require 'famous/src/core/View'
-Utility = require 'famous/src/utilities/Utility'
+# Famous
+Easing = require 'famous/src/transitions/Easing'
 HeaderFooterLayout = require 'famous/src/views/HeaderFooterLayout'
+Lightbox = require 'famous/src/views/Lightbox'
+Modifier = require 'famous/src/core/Modifier'
+RenderController = require 'famous/src/views/RenderController'
+StateModifier = require 'famous/src/modifiers/StateModifier'
 Surface = require 'famous/src/core/Surface'
 Transform = require 'famous/src/core/Transform'
 Transitionable  = require 'famous/src/transitions/Transitionable'
-Modifier = require 'famous/src/core/Modifier'
-StateModifier = require 'famous/src/modifiers/StateModifier'
-Lightbox = require 'famous/src/views/Lightbox'
-Easing = require 'famous/src/transitions/Easing'
-RenderController = require 'famous/src/views/RenderController'
+Utility = require 'famous/src/utilities/Utility'
+View = require 'famous/src/core/View'
 
 # Helpers
 Utils = require 'lib/Utils'
@@ -23,9 +24,9 @@ Constants = require 'constants/PeggConstants'
 
 # Stores
 AppStateStore = require 'stores/AppStateStore'
-UserStore = require 'stores/UserStore'
 MessageStore = require 'stores/MessageStore'
 SingleCardStore = require 'stores/SingleCardStore'
+UserStore = require 'stores/UserStore'
 
 # Menu
 Menu = require 'constants/menu'
@@ -39,16 +40,15 @@ LoginView = require 'views/LoginView'
 MessageView = require 'views/MessageView'
 NewCardView = require 'views/NewCardView'
 PeggBoxView = require 'views/PeggBoxView'
+PlayCardView = require 'views/PlayCardView'
 PlayView = require 'views/PlayView'
 ProfileView = require 'views/ProfileView'
 SettingsView = require 'views/SettingsView'
 TabMenuView = require 'views/TabMenuView'
-PlayCardView = require 'views/PlayCardView'
 
 
 #Actions
 NavActions = require 'actions/NavActions'
-AppStateStore = require 'stores/AppStateStore'
 UserActions = require 'actions/UserActions'
 
 

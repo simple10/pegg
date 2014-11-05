@@ -147,18 +147,18 @@ class PlayCardView extends View
       @saveComment comment
 
     ## NEW CARD ##
-    @newCardView = new ImageSurface
+    @newCardButton = new ImageSurface
       size: @layout.newCard.size
       content: @layout.newCard.content
       classes: @layout.newCard.classes
-    @newCardViewRc = new RenderController
+    @newCardButtonRc = new RenderController
       inTransition:  @layout.newCard.inTransition
       outTransition: @layout.newCard.outTransition
-    newCardViewMod = new StateModifier
+    newCardButtonMod = new StateModifier
       align: @layout.newCard.align
       origin: @layout.newCard.origin
       transform: @layout.newCard.transform
-    @add(newCardViewMod).add @newCardViewRc
+    @add(newCardButtonMod).add @newCardButtonRc
 
     ## POINTS ##
     @points = new Surface
@@ -443,13 +443,13 @@ class PlayCardView extends View
     @_commentsExpanded = true
 
   collapseNewCard: =>
-    @newCardViewRc.hide @newCardView
+    @newCardButtonRc.hide @newCardButton
     # slide the card up to its starting position
     @snapToOrigin 'Y'
     @_newCardExpanded = false
 
   expandNewCard: =>
-    @newCardViewRc.show @newCardView
+    @newCardButtonRc.show @newCardButton
     bottomYPos = @layout.cards.states[2].align[1] * Utils.getViewportHeight()
     # move the card down to new card position
     @cardYPos.set(bottomYPos, @layout.cards.states[2].transition)
