@@ -151,6 +151,8 @@ class PlayCardView extends View
       size: @layout.newCard.size
       content: @layout.newCard.content
       classes: @layout.newCard.classes
+    @newCardButton.on 'click', ->
+      NavActions.selectMenuItem 'create'
     @newCardButtonRc = new RenderController
       inTransition:  @layout.newCard.inTransition
       outTransition: @layout.newCard.outTransition
