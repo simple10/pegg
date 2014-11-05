@@ -12,7 +12,7 @@ module.exports = {
       size: [width - 50, 150]
       classes: ['card__front__question']
       transform: Transform.translate 0, 210, 3
-      transition: {duration: 300, curve: Easing.outQuad}
+      transition: {duration: 200, curve: Easing.outQuad}
     small:
       delay: 0
       size: [width - 120, 75]
@@ -20,7 +20,7 @@ module.exports = {
       transform: Transform.translate 30, 100, 3
 #      origin: [0, 0]
 #      align: [0.3, 0.18]
-      transition: {duration: 300, curve: Easing.outQuad}
+      transition: {duration: 200, curve: Easing.outQuad}
   profilePic:
     size: [100, 100]
     big:
@@ -107,6 +107,8 @@ module.exports = {
       origin: [0.5, 0.5]
       innerWidth: width - width * .2
       height: 60
+    inTransition:  { duration: 350, curve: Easing.outCubic }
+    outTransition: { duration: 350, curve: Easing.outCubic }
   answerPic:
     borderRadius: 10
     size: [width - width * .1, height - height * .25]

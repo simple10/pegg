@@ -38,10 +38,10 @@ class ChoicesView extends View
       else
         choiceView.highlight false
 
-  load: (choices, answer) ->
+  load: (card) ->
     @clearChoices()
 
-    for own id, choice of choices
+    for own id, choice of card.choices
       choiceText = choice.text
       if choiceText
 #        if choiceText.length > 30
@@ -52,21 +52,23 @@ class ChoicesView extends View
 #          color = 'light'
 #        else
 #          color = 'dark'
-        options = _.extend {choiceText, id}, @options.choice
+        highlightable = if card.answer? then false else true
+        options = _.extend {id, choiceText, highlightable}, @options.choice
         choiceView = new ChoiceView options
         winOrFail = null
-        if answer?
-          if answer.id is id
+        if card.answer?
+          if card.answer.id is id
             winOrFail = 'win'
           else
             winOrFail = 'fail'
         choiceView.on 'click', ((id, winOrFail, choiceView) ->
-          @_eventOutput.emit 'choice', id
-          if winOrFail?
-            choiceView.showStatusMsg winOrFail
+          unless choiceView.disabled
+            @_eventOutput.emit 'choice', id
+            if winOrFail?
+              choiceView.showStatusMsg winOrFail
         ).bind @, id, winOrFail, choiceView
-        choiceView.on 'choice:doneShowingStatus', ((id) ->
-          @_eventOutput.emit 'choice:doneShowingStatus'
+        choiceView.on 'choice:win', ((id) ->
+          @_eventOutput.emit 'choice:win'
         ).bind @, id
         @choices.push choiceView
         choiceView.pipe @scrollView
