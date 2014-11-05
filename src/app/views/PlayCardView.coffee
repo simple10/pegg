@@ -323,9 +323,10 @@ class PlayCardView extends View
             @expandComments()
           else if @_newCardExpanded and movingUp
             @expandNewCard()
+          else
+            @snapToOrigin 'Y'
 
         if crossedYThreshold
-          console.log "crossed Y threshold"
           if movingDown
             if @_commentsExpanded
               @collapseComments()
