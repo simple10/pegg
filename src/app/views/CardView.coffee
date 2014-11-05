@@ -166,6 +166,7 @@ class CardView extends View
     @back.pipe @_eventOutput
     @backImage.pipe @_eventOutput
     @backText.pipe @_eventOutput
+    @choicesView.pipe @_eventOutput
 
   clearCard: () ->
     # clear content
