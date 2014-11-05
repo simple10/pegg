@@ -79,12 +79,13 @@ class PlayCardView extends View
       @collapseComments()
     @cardView.on 'pegg', (payload) =>
       @_actions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
-      @_flippable = true
     @cardView.on 'pref', (payload) =>
       @_actions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
       @_flippable = true
     @cardView.on 'plug', (payload) =>
       @_actions.plug payload.id, payload.full, payload.thumb
+    @cardView.on 'win', (payload) =>
+      @_flippable = true
     @cardView.pipe @
 
   initViews: ->
