@@ -113,8 +113,8 @@ class PlayCardView extends View
     ## COMMENTS ##
     @commentsView = new CommentsView
     @commentsViewRc = new RenderController
-      inTransition:  { duration: 500, curve: Easing.outCubic }
-      outTransition: { duration: 350, curve: Easing.outCubic }
+      inTransition:  @layout.comments.inTransition
+      outTransition: @layout.comments.outTransition
     commentsViewMod = new StateModifier
       align: @layout.comments.align
       origin: @layout.comments.origin
@@ -125,9 +125,9 @@ class PlayCardView extends View
       content: "x comments..."
       classes: ['comments__text', 'comments__num']
     @numCommentsRc = new RenderController
-        inTransition: @layout.numComments.inTransition
-        outTransition: @layout.numComments.outTransition
-        overlap: false
+      inTransition: @layout.numComments.inTransition
+      outTransition: @layout.numComments.outTransition
+      overlap: false
     numCommentsMod = new StateModifier
       align: @layout.numComments.align
       origin: @layout.numComments.origin
@@ -146,6 +146,19 @@ class PlayCardView extends View
       @newComment.clear()
       @saveComment comment
 
+    ## NEW CARD ##
+    @newCardView = new ImageSurface
+      size: @layout.newCard.size
+      content: @layout.newCard.content
+      classes: @layout.newCard.classes
+    @newCardViewRc = new RenderController
+      inTransition:  @layout.newCard.inTransition
+      outTransition: @layout.newCard.outTransition
+    newCardViewMod = new StateModifier
+      align: @layout.newCard.align
+      origin: @layout.newCard.origin
+      transform: @layout.newCard.transform
+    @add(newCardViewMod).add @newCardViewRc
 
     ## POINTS ##
     @points = new Surface
@@ -165,6 +178,7 @@ class PlayCardView extends View
 
     @_eventInput.on 'card:flipped', (card) =>
       @collapseComments() if @_commentsExpanded
+      @collapseNewCard() if @_newCardExpanded
 
     @_eventInput.pipe @sync
 
@@ -173,7 +187,8 @@ class PlayCardView extends View
     deltaWithVelocityThreshold = 60
     deltaWithoutVelocityThreshold = 200
     topYPosition = Utils.getViewportHeight() * @layout.cards.states[1].align[1]
-    bottomYPosition = 0
+    bottomYPosition = Utils.getViewportHeight() * @layout.cards.states[2].align[1]
+    originalYPosition = 0
     lockedToAxis = null
     hasMovedX = false
     hasMovedY = false
@@ -196,26 +211,40 @@ class PlayCardView extends View
         else if primaryDirection is 'X' and Math.abs(x) > minDelta
           lockedToAxis = 'X'
 
-      if @_commentable and Math.abs(y) > 0 and lockedToAxis isnt 'X'
+      if Math.abs(y) > 0 and lockedToAxis isnt 'X'
         hasMovedY = true
         hasMovedX = false
         # calculate the max Y offset to prevent the user from being able to drag the card past this point
         yPosition = y
-        if not @_commentsExpanded # starting from original position
+        if @_commentsExpanded
+          # starting from comments expanded position, so need to offset it
+          yPosition = y + topYPosition
+          # can't move down past original position
+          if yPosition > originalYPosition
+            yPosition = originalYPosition
+          # can't move up anymore
+          else if yPosition < topYPosition
+            yPosition = topYPosition
+        else if @_newCardExpanded
+          # starting from new card position, so need to offset it
+          yPosition = y + bottomYPosition
+          # can't move up past original position
+          if yPosition < originalYPosition
+            yPosition = originalYPosition
+          # can't move down anymore
+          else if yPosition > bottomYPosition
+            yPosition = bottomYPosition
+        else # starting from original position
           if y > bottomYPosition
             yPosition = bottomYPosition
+          else if not @_commentable and y < originalYPosition
+            yPosition = originalYPosition
           else if y < topYPosition
-            yPosition = topYPosition
-        else # starting from comments expanded position, so need to offset it
-          yPosition = y + topYPosition
-          if yPosition > bottomYPosition
-            yPosition = bottomYPosition
-          else if yPosition < topYPosition
             yPosition = topYPosition
         @cardYPos.set yPosition
         @snapToOrigin 'X'
 
-      if @_context is 'play' and Math.abs(x) > 0 and lockedToAxis isnt 'Y' and not @_commentsExpanded
+      if @_context is 'play' and Math.abs(x) > 0 and lockedToAxis isnt 'Y' and not (@_commentsExpanded or @_newCardExpanded)
         hasMovedX = true
         hasMovedY = false
         if @_flippable
@@ -239,6 +268,8 @@ class PlayCardView extends View
       # retrieve the total position change
       x = data.position[0]
       y = data.position[1]
+      movingDown = y > 0
+      movingUp   = y < 0
 
       if hasMovedX
         crossedXThreshold = false
@@ -277,21 +308,31 @@ class PlayCardView extends View
       # figure out if we need to show/hide the comments if moving along the Y axis
       if hasMovedY
         crossedYThreshold = false
-        # swiping/dragging up and crossed min pos and vel threshold
+        # swiping/dragging up/down and crossed min pos and vel threshold
         if Math.abs(y) > deltaWithVelocityThreshold && Math.abs(yVelocity) > minVelocity
           crossedYThreshold = true
-        # swiping/dragging up and crossed max pos threshold
+        # swiping/dragging up/down and crossed max pos threshold
         else if Math.abs(y) > deltaWithoutVelocityThreshold
           crossedYThreshold = true
-        # otherwise threshold not met, so return to original position
         else if Math.abs(y)
-          if @_commentsExpanded then @expandComments() else @collapseComments()
+          # otherwise threshold not met, so return to original position
+          if @_commentsExpanded and movingDown
+            @expandComments()
+          else if @_newCardExpanded and movingUp
+            @expandNewCard()
 
         if crossedYThreshold
-          if y > 0
-            @collapseComments()
-          else if y < 0
-            @expandComments()
+          console.log "crossed Y threshold"
+          if movingDown
+            if @_commentsExpanded
+              @collapseComments()
+            else
+              @expandNewCard()
+          else if movingUp
+            if @_newCardExpanded
+              @collapseNewCard()
+            else if @_commentable
+              @expandComments()
 
       # reset axis movement flags
       hasMovedX = false
@@ -385,7 +426,7 @@ class PlayCardView extends View
   collapseComments: =>
     @commentsViewRc.hide @commentsView
     @playNavView.showNav()
-    # slide the cards down to their starting position
+    # slide the card down to their starting position
     @snapToOrigin 'Y'
     # slide the comments down to their starting position
     @numCommentsRc.show @numComments
@@ -395,11 +436,24 @@ class PlayCardView extends View
     @commentsViewRc.show @commentsView
     @playNavView.hideNav()
     topYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
-    # move the cards up
+    # move the card up to comments showing position
     @cardYPos.set(topYPos, @layout.cards.states[1].transition)
     # slide the comments up
     @numCommentsRc.show @newCommentNode
     @_commentsExpanded = true
+
+  collapseNewCard: =>
+    @newCardViewRc.hide @newCardView
+    # slide the card up to its starting position
+    @snapToOrigin 'Y'
+    @_newCardExpanded = false
+
+  expandNewCard: =>
+    @newCardViewRc.show @newCardView
+    bottomYPos = @layout.cards.states[2].align[1] * Utils.getViewportHeight()
+    # move the card down to new card position
+    @cardYPos.set(bottomYPos, @layout.cards.states[2].transition)
+    @_newCardExpanded = true
 
   snapToOrigin: (axis) =>
     # slide the cards back to their starting position

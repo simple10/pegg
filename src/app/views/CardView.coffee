@@ -96,14 +96,14 @@ class CardView extends View
 #      align: @layout.choices.align
       transform: @layout.choices.show
 
-    @rc = new RenderController
-      inTransition:  { duration: 500, curve: Easing.outCubic }
-      outTransition: { duration: 350, curve: Easing.outCubic }
+    @choicesViewRc = new RenderController
+      inTransition:  @layout.choices.inTransition
+      outTransition: @layout.choices.outTransition
 # example usage of inTransformFrom:
-#    @rc.inTransformFrom (t) ->
+#    @choicesViewRc.inTransformFrom (t) ->
 #      Transform.translate 0, Utils.getViewportHeight() * t, 0
-    @mainNode.add(@choicesMod).add @rc
-    @rc.show @choicesView
+    @mainNode.add(@choicesMod).add @choicesViewRc
+    @choicesViewRc.show @choicesView
     @choiceShowing = true
     @choicesView.on 'choice:win', =>
 #      Timer.setTimeout @toggleChoices, @layout.card.transition.duration
@@ -220,7 +220,7 @@ class CardView extends View
       @frontQuestion.setSize @layout.question.big.size
       Utils.animate(@frontQuestionMod, @layout.question.big)
       Utils.animate(@frontProfilePicMod, @layout.profilePic.big)
-      @rc.hide(@choicesView)
+      @choicesViewRc.hide(@choicesView)
       @_eventOutput.emit 'choices:hidden', @
       @choiceShowing = false
     else
@@ -228,7 +228,7 @@ class CardView extends View
       @frontQuestion.setSize @layout.question.small.size
       Utils.animate(@frontQuestionMod, @layout.question.small)
       Utils.animate(@frontProfilePicMod, @layout.profilePic.small)
-      @rc.show(@choicesView)
+      @choicesViewRc.show(@choicesView)
       @_eventOutput.emit 'choices:showing', @
       @choiceShowing = true
 
@@ -239,7 +239,7 @@ class CardView extends View
       @front.removeListener 'click', @toggleChoices
       @frontProfilePic.removeListener 'click', @toggleChoices
       @frontQuestion.removeListener 'click', @toggleChoices
-#      @rc.hide @choicesView
+#      @choicesViewRc.hide @choicesView
       @_eventOutput.emit 'pegg',
         peggeeId: @card.peggeeId
         id: @card.id
@@ -253,14 +253,14 @@ class CardView extends View
         thumb: choice.thumb
       @loadAnswer choice.plug, choice.text
       @addImageRenderer.show @addImageButton
-#      @rc.hide @choicesView
+#      @choicesViewRc.hide @choicesView
 #      Timer.setTimeout @toggleChoices, @layout.card.transition.duration
       @flip()
 
   flip: =>
     @currentSide = if @currentSide is 1 then 0 else 1
     @flipTransition.set(-@currentSide, @layout.card.transition)
-#    @rc.hide @choicesView
+#    @choicesViewRc.hide @choicesView
     # hideShow = if @currentSide is 1 then @layout.card.front.hide else @layout.card.front.show
     # @frontProfilePicMod.setTransform hideShow
     # @frontQuestionMod.setTransform hideShow

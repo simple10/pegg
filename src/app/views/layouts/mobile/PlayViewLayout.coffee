@@ -21,6 +21,13 @@ module.exports =
         transition: {duration: 500, curve: Easing.outQuad}
       }
 
+      # new card state
+      {
+        delay: 0
+        align: [0.5, 0.6]
+        transition: {duration: 500, curve: Easing.outQuad}
+      }
+
       # end state
       {
         delay: 0
@@ -38,6 +45,8 @@ module.exports =
   comments:
     origin: [0.5, 0]
     align: [0.5, 0.35]
+    inTransition:  { duration: 500, curve: Easing.outCubic }
+    outTransition: { duration: 350, curve: Easing.outCubic }
 #    states: [
 #      {
 #        delay: 0
@@ -66,6 +75,15 @@ module.exports =
   newComment:
     size: [Utils.getViewportWidth() - 50, 40]
     transform: Transform.translate 0, -20, 0
+  newCard:
+    size: [43, 48]
+    classes: ['play__newCard']
+    content: 'images/add-image.png'
+    origin: [0.5, 0.5]
+    align: [0.5, 0.5]
+    inTransition: { duration: 500, curve: Easing.outCubic }
+    outTransition: { duration: 350, curve: Easing.outCubic }
+    transform: Transform.translate null, null, -10
   status:
     origin: [0.5, 0]
     align: [0.5, 1]
