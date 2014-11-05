@@ -138,15 +138,18 @@ class PlayStore extends CardStore
     @_showCurrentPage()
 
   _showCurrentPage: ->
-    page = @getCurrentPage()
-    if page.type is 'card'
-      if page.card.peggeeId? and page.card.peggeeId isnt UserStore.getUser().id
-        @_title = "Pegg #{page.card.firstName}!"
-        MessageActions.show 'tutorial__first_pegg_card'
-      else
-        @_title = "Pegg yourself!"
-        MessageActions.show 'tutorial__first_unpreffed_card'
-    @emit Constants.stores.PAGE_CHANGE
+    if @_currentPage is -1
+      @emit Constants.stores.MOODS_LOADED
+    else
+      page = @getCurrentPage()
+      if page.type is 'card'
+        if page.card.peggeeId? and page.card.peggeeId isnt UserStore.getUser().id
+          @_title = "Pegg #{page.card.firstName}!"
+          MessageActions.show 'tutorial__first_pegg_card'
+        else
+          @_title = "Pegg yourself!"
+          MessageActions.show 'tutorial__first_unpreffed_card'
+      @emit Constants.stores.PAGE_CHANGE
 
   _pref: (cardId, choiceId, plug, thumb) ->
     console.log "save Pref: card: " + cardId + " choice: " + choiceId
