@@ -27,6 +27,7 @@ class ChoicesView extends View
       align: @options.align
       origin: @options.origin
     @scrollView.sequenceFrom @choices
+    @scrollView.pipe @_eventOutput
     @add(@scrollMod).add @scrollView
 
     @on 'choice', @highlightChoice

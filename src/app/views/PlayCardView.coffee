@@ -79,12 +79,13 @@ class PlayCardView extends View
       @collapseComments()
     @cardView.on 'pegg', (payload) =>
       @_actions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
-      @_flippable = true
     @cardView.on 'pref', (payload) =>
       @_actions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
       @_flippable = true
     @cardView.on 'plug', (payload) =>
       @_actions.plug payload.id, payload.full, payload.thumb
+    @cardView.on 'win', (payload) =>
+      @_flippable = true
     @cardView.pipe @
 
   initViews: ->
@@ -147,18 +148,20 @@ class PlayCardView extends View
       @saveComment comment
 
     ## NEW CARD ##
-    @newCardView = new ImageSurface
+    @newCardButton = new ImageSurface
       size: @layout.newCard.size
       content: @layout.newCard.content
       classes: @layout.newCard.classes
-    @newCardViewRc = new RenderController
+    @newCardButton.on 'click', ->
+      NavActions.selectMenuItem 'create'
+    @newCardButtonRc = new RenderController
       inTransition:  @layout.newCard.inTransition
       outTransition: @layout.newCard.outTransition
-    newCardViewMod = new StateModifier
+    newCardButtonMod = new StateModifier
       align: @layout.newCard.align
       origin: @layout.newCard.origin
       transform: @layout.newCard.transform
-    @add(newCardViewMod).add @newCardViewRc
+    @add(newCardButtonMod).add @newCardButtonRc
 
     ## POINTS ##
     @points = new Surface
@@ -320,9 +323,10 @@ class PlayCardView extends View
             @expandComments()
           else if @_newCardExpanded and movingUp
             @expandNewCard()
+          else
+            @snapToOrigin 'Y'
 
         if crossedYThreshold
-          console.log "crossed Y threshold"
           if movingDown
             if @_commentsExpanded
               @collapseComments()
@@ -443,13 +447,13 @@ class PlayCardView extends View
     @_commentsExpanded = true
 
   collapseNewCard: =>
-    @newCardViewRc.hide @newCardView
+    @newCardButtonRc.hide @newCardButton
     # slide the card up to its starting position
     @snapToOrigin 'Y'
     @_newCardExpanded = false
 
   expandNewCard: =>
-    @newCardViewRc.show @newCardView
+    @newCardButtonRc.show @newCardButton
     bottomYPos = @layout.cards.states[2].align[1] * Utils.getViewportHeight()
     # move the card down to new card position
     @cardYPos.set(bottomYPos, @layout.cards.states[2].transition)

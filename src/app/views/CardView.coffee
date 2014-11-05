@@ -105,6 +105,10 @@ class CardView extends View
     @choicesViewRc.show @choicesView
     @choiceShowing = true
     @choicesView.on 'choice:win', =>
+      @_eventOutput.emit 'win',
+        peggeeId: @card.peggeeId
+        id: @card.id
+        answerId: @card.answer.id
 #      Timer.setTimeout @toggleChoices, @layout.card.transition.duration
       @flip()
 
@@ -162,6 +166,7 @@ class CardView extends View
     @back.pipe @_eventOutput
     @backImage.pipe @_eventOutput
     @backText.pipe @_eventOutput
+    @choicesView.pipe @_eventOutput
 
   clearCard: () ->
     # clear content
