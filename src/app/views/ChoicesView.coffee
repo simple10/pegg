@@ -62,15 +62,17 @@ class ChoicesView extends View
             winOrFail = 'win'
           else
             winOrFail = 'fail'
-        choiceView.on 'click', ((id, winOrFail, choiceView) ->
+        choiceView.on 'click', do (id, winOrFail, choiceView) => =>
           unless choiceView.disabled
             @_eventOutput.emit 'choice', id
             if winOrFail?
               choiceView.showStatusMsg winOrFail
-        ).bind @, id, winOrFail, choiceView
-        choiceView.on 'choice:win', ((id) ->
+        choiceView.on 'choice:win', (id) =>
           @_eventOutput.emit 'choice:win'
-        ).bind @, id
+          # disable all choices
+          for choiceView in @choices
+            choiceView.disable()
+            choiceView.front.state.setOpacity 0.4 unless choiceView.id is id
         @choices.push choiceView
         choiceView.pipe @scrollView
 

@@ -55,7 +55,8 @@ class ChoiceView extends View
       Timer.setTimeout =>
         @flipper.flip undefined
         if status is 'win'
-          @_eventOutput.emit 'choice:win'
+          @front.backing.addClass "win"
+          @_eventOutput.emit 'choice:win', @id
         else if status is 'fail'
           @front.state.setOpacity 0.4
       , 700
