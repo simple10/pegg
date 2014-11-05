@@ -97,7 +97,7 @@ class CardView extends View
       transform: @layout.choices.show
 
     @rc = new RenderController
-      inTransition:  { duration: 500, curve: Easing.outCubic }
+      inTransition:  { duration: 350, curve: Easing.outCubic }
       outTransition: { duration: 350, curve: Easing.outCubic }
 # example usage of inTransformFrom:
 #    @rc.inTransformFrom (t) ->
