@@ -7,6 +7,7 @@ AppDispatcher = require 'dispatchers/AppDispatcher'
 CardStore = require 'stores/CardStore'
 Constants = require 'constants/PeggConstants'
 MessageActions = require 'actions/MessageActions'
+NavActions = require 'actions/NavActions'
 UserStore = require 'stores/UserStore'
 
 class SingleCardStore extends CardStore
@@ -169,6 +170,11 @@ class SingleCardStore extends CardStore
   _pref: ->
     super(arguments...)
     @_card.answered = true
+
+  _next: ->
+
+  _prev: ->
+    NavActions.selectMenuItem @_referrer
 
   getCard: ->
     @_card

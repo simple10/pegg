@@ -49,8 +49,11 @@ class PlayCardView extends View
       @_store = SingleCardStore
       @_actions = SingleCardActions
 
-    @_commentable = false
-    @_flippable = false
+    @_canComment    = false
+    @_canCreateCard = false
+    @_canFlip       = false
+    @_canGoForward  = false
+    @_canGoBack     = false
 
     @layoutManager = new LayoutManager()
     @layout = @layoutManager.getViewLayout 'PlayView'
@@ -81,11 +84,11 @@ class PlayCardView extends View
       @_actions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
     @cardView.on 'pref', (payload) =>
       @_actions.pref payload.id, payload.choiceId, payload.plug, payload.thumb
-      @_flippable = true
+      @_canFlip = true
     @cardView.on 'plug', (payload) =>
       @_actions.plug payload.id, payload.full, payload.thumb
     @cardView.on 'win', (payload) =>
-      @_flippable = true
+      @_canFlip = true
     @cardView.pipe @
 
   initViews: ->
@@ -134,7 +137,7 @@ class PlayCardView extends View
       origin: @layout.numComments.origin
     @add(numCommentsMod).add @numCommentsRc
     @numComments.on 'click', =>
-      @expandComments() if @_commentable
+      @expandComments() if @_canComment
     @hideNumComments()
 
     @newComment = new InputView
@@ -194,7 +197,7 @@ class PlayCardView extends View
     topYPosition = Utils.getViewportHeight() * @layout.cards.states[1].align[1]    # pixels
     bottomYPosition = Utils.getViewportHeight() * @layout.cards.states[2].align[1] # pixels
     originalYPosition = 0                                                          # pixels
-    lockedToAxis = null
+    lockedAxis = null
     hasMovedX = false
     hasMovedY = false
     flipping = false
@@ -206,18 +209,22 @@ class PlayCardView extends View
     @sync.on 'update', (data) =>
       x = data.position[0]
       y = data.position[1]
+
+      # establish primary direction of movement
       if Math.abs(y) > Math.abs(x)
         primaryDirection = 'Y'
       else
         primaryDirection = 'X'
 
-      if not lockedToAxis
+      # lock travel on one axis
+      if not lockedAxis
         if primaryDirection is 'Y' and Math.abs(y) > minDelta
-          lockedToAxis = 'Y'
+          lockedAxis = 'Y'
         else if primaryDirection is 'X' and Math.abs(x) > minDelta
-          lockedToAxis = 'X'
+          lockedAxis = 'X'
 
-      if Math.abs(y) > 0 and lockedToAxis isnt 'X'
+      # up/down movement
+      if Math.abs(y) > 0 and lockedAxis isnt 'X'
         hasMovedY = true
         hasMovedX = false
         # calculate the max Y offset to prevent the user from being able to drag the card past this point
@@ -243,30 +250,33 @@ class PlayCardView extends View
         else # starting from original position
           if y > bottomYPosition
             yPosition = bottomYPosition
-          else if not @_commentable and y < originalYPosition
+          else if not @_canComment and y < originalYPosition
+            yPosition = originalYPosition
+          else if not @_canCreateCard and y > originalYPosition
             yPosition = originalYPosition
           else if y < topYPosition
             yPosition = topYPosition
         @cardYPos.set yPosition
         @snapToOrigin 'X'
 
-      if @_context is 'play' and Math.abs(x) > 0 and lockedToAxis isnt 'Y' and not (@_commentsExpanded or @_newCardExpanded)
+      # left/right movement
+      if Math.abs(x) > 0 and lockedAxis isnt 'Y' and not (@_commentsExpanded or @_newCardExpanded)
         hasMovedX = true
         hasMovedY = false
-        if @_flippable
+        if @_canFlip
           flipping = true
           radians = ( -x / Utils.getViewportWidth() ) * 2
           radians += @cardView.currentSide
           if radians > 1
             radians = 1
             # not actually flipping, drag instead
-            if @cardView.currentSide is 1
+            if @cardView.currentSide is 1 and @_canGoForward
               @cardXPos.set x
               flipping = false
           else if radians < 0
             radians = 0
             # not actually flipping, drag instead
-            if @cardView.currentSide is 0
+            if @cardView.currentSide is 0 and @_canGoBack
               @cardXPos.set x
               flipping = false
           @cardView.flipTransition.set -radians
@@ -318,7 +328,7 @@ class PlayCardView extends View
             if flipping and @cardView.currentSide is 0
               @cardView.flipTransition.set -1, @cardView.layout.card.transition
               @cardView.currentSide = 1
-            else
+            else if @_canGoForward
               offscreenLeft = -Utils.getViewportWidth()
               @cardXPos.set(offscreenLeft, @layout.cards.states[1].transition)
               @nextPage()
@@ -326,7 +336,7 @@ class PlayCardView extends View
             if flipping and @cardView.currentSide is 1
               @cardView.flipTransition.set 0, @cardView.layout.card.transition
               @cardView.currentSide = 0
-            else
+            else if @_canGoBack
               offscreenRight = Utils.getViewportWidth()
               @cardXPos.set(offscreenRight, @layout.cards.states[1].transition)
               @prevPage()
@@ -355,50 +365,51 @@ class PlayCardView extends View
           if movingDown
             if @_commentsExpanded
               @collapseComments()
-            else
+            else if @_canCreateCard
               @expandNewCard()
           else if movingUp
             if @_newCardExpanded
               @collapseNewCard()
-            else if @_commentable
+            else if @_canComment
               @expandComments()
 
       # reset movement flags
       hasMovedX = false
       hasMovedY = false
-      lockedToAxis = null
+      lockedAxis = null
       flipping = false
 
   loadSingleCard: =>
+    @_referrer = SingleCardStore.getReferrer()
+    @_canGoForward = false
+    @_canGoBack = if @_referrer? then true else false
     @playNavView.showSingleCardNav()
     card = @_store.getCard()
     @_load card
-# MAYBE: set options??
-#   @playNavView.setOptions {
-#     'cardType': card.type
-#   }
-#    if referrer?
-#      @playNavView.showLeftArrow()
-#    else
-#      @playNavView.hideLeftArrow()
-#      @hideNumComments()
 
   _load: (card) =>
-    @_flippable = false
+    @_canFlip       = false
+    @_canComment    = false
+    @_canCreateCard = true
     @snapToOrigin 'X'
     @card = card
     @cardView.loadCard card
     if card.type is 'deny'
       @hideNumComments()
-      @_flippable = true
+      @_canFlip = true
+      @_canComment = false
+      @_canCreateCard = false
     else if card.type is 'review'
       @loadComments()
       @showNumComments()
-      @_flippable = true
+      @_canFlip = true
+      @_canComment = true
     else
       @loadComments()
 
   loadPlay: =>
+    @_canGoForward = true
+    @_canGoBack    = true
     page = @_store.getCurrentPage()
     if page.type is 'card'
       @playNavView.showPlayNav()
@@ -418,6 +429,7 @@ class PlayCardView extends View
 
   cardPref: =>
     @showNumComments()
+    @_canComment = true
     @playNavView.showRightArrow() if @_context is 'play'
 
   cardFail: =>
@@ -427,6 +439,7 @@ class PlayCardView extends View
   cardWin: (points) =>
     @showPoints points
     @showNumComments()
+    @_canComment = true
     @playNavView.showRightArrow() if @_context is 'play'
 
   showPoints: (points) =>
@@ -434,11 +447,10 @@ class PlayCardView extends View
     Utils.animateAll @pointsMod, @layout.points.states
 
   showNumComments: =>
-    @_commentable = true
     @numCommentsRc.show @numComments
 
   hideNumComments: =>
-    @_commentable = false
+    @_canComment = false
     @numCommentsRc.hide @numComments
 #    @newComment.setAlign @layout.newComment.states[0].align
 
