@@ -3,6 +3,15 @@ Transform = require 'famous/src/core/Transform'
 Utils = require 'lib/Utils'
 
 module.exports =
+  progress:
+    size: [Utils.getViewportWidth(), 5]
+    origin: [0.5, 0]
+    align: [0.5, 0]
+    active:
+      classes: ['progressBar__active']
+    inTransition:  { duration: 500, curve: Easing.outCubic }
+    outTransition: { duration: 350, curve: Easing.outCubic }
+
   cards:
     align: [0.5, 0]
     origin: [0, 0]

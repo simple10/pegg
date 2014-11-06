@@ -1,12 +1,15 @@
 # Famo.us
 Easing = require 'famous/src/transitions/Easing'
 Lightbox = require 'famous/src/views/Lightbox'
+RenderController = require 'famous/src/views/RenderController'
+StateModifier = require 'famous/src/modifiers/StateModifier'
 Transform = require 'famous/src/core/Transform'
 View = require 'famous/src/core/View'
 
 # Pegg
 Constants = require 'constants/PeggConstants'
 DoneStatusView = require 'views/DoneStatusView'
+LayoutManager = require 'views/layouts/LayoutManager'
 PeggStatusView = require 'views/PeggStatusView'
 PickMoodView = require 'views/PickMoodView'
 PlayBadgesView = require 'views/PlayBadgesView'
@@ -14,12 +17,15 @@ PlayCardView = require 'views/PlayCardView'
 PlayStatusView = require 'views/PlayStatusView'
 PlayStore = require 'stores/PlayStore'
 PrefStatusView = require 'views/PrefStatusView'
+ProgressBarView = require 'views/ProgressBarView'
 Utils = require 'lib/Utils'
 
 class PlayView extends View
 
   constructor: (options) ->
     super options
+    layoutManager = new LayoutManager()
+    @layout = layoutManager.getViewLayout 'PlayView'
     @initViews()
     @initListeners()
 
@@ -27,8 +33,19 @@ class PlayView extends View
     PlayStore.on Constants.stores.PAGE_CHANGE, @loadPage
     PlayStore.on Constants.stores.BADGE_CHANGE, @loadBadge
     PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods
+    PlayStore.on Constants.stores.GAME_LOADED, @loadGame
 
   initViews: ->
+
+    ## PROGRESS BAR ##
+    @progressBar = new ProgressBarView
+    @progressBarRc = new RenderController
+      inTransition:  @layout.progress.inTransition
+      outTransition: @layout.progress.outTransition
+    progressBarMod = new StateModifier
+      align: @layout.progress.align
+      origin: @layout.progress.origin
+    @add(progressBarMod).add @progressBarRc
 
     ## MOOD STATUS ##
     @pickMood = new PickMoodView
@@ -62,7 +79,13 @@ class PlayView extends View
       outTransition: { duration: 350, curve: Easing.outCubic }
     @add @lightbox
 
+  loadGame: =>
+    @progressBarRc.show @progressBar
+    gameState = PlayStore.getGameState()
+    @progressBar.reset gameState.size
+
   loadMoods: =>
+    @progressBarRc.hide @progressBar
     @pickMood.load PlayStore.getMoods()
     @lightbox.show @pickMood
 
@@ -72,6 +95,8 @@ class PlayView extends View
 
   loadPage: =>
     page = PlayStore.getCurrentPage()
+    position = PlayStore.getCurrentPosition() + 1
+    @progressBar.setPosition position
     switch page.type
       when 'card'
         @lightbox.show @playCardView

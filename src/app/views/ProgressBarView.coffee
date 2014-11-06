@@ -16,56 +16,37 @@ class ProgressBarView extends View
 
   constructor: (options) ->
     super options
-    @last = 0
 
     @layoutManager = new LayoutManager()
-    @layout = @layoutManager.getViewLayout 'PlayNavView'
+    @layout = @layoutManager.getViewLayout 'PlayView'
 
     @init()
 
   reset: (steps) =>
     @steps = steps
-    @last = 0
-    @activeBar.setSize [@last, @layout.progress.bar.size[1]]
-    @percentage.setContent '0%'
+    @activeBar.setSize [4, @layout.progress.size[1]]
 
   init: ->
-    container = new ContainerSurface
-      size: @layout.progress.size
-
     @activeBar = new ImageSurface
       content: 'images/progress_active.png'
-      classes: @layout.progress.bar.active.classes
+      classes: @layout.progress.active.classes
     @activeBarMod = new StateModifier
-      align: @layout.progress.bar.align
-      origin: @layout.progress.bar.origin
-    container.add(@activeBarMod).add @activeBar
+      align: @layout.progress.align
+      origin: @layout.progress.origin
+    @add(@activeBarMod).add @activeBar
 
     inactiveBar = new ImageSurface
       content: 'images/progress_inactive.png'
-      size: @layout.progress.bar.size
+      size: @layout.progress.size
     inactiveBarMod = new StateModifier
-      align: @layout.progress.bar.align
-      origin: @layout.progress.bar.origin
-    container.add(inactiveBarMod).add inactiveBar
+      align: @layout.progress.align
+      origin: @layout.progress.origin
+    @add(inactiveBarMod).add inactiveBar
 
-    @percentage = new Surface
-      size: @layout.progress.percentage.size
-      classes:  @layout.progress.percentage.classes
-    percentageMod = new StateModifier
-      align:  @layout.progress.percentage.align
-      origin:  @layout.progress.percentage.origin
-      transform:  @layout.progress.percentage.transform
-    @add(percentageMod).add @percentage
-
-    @add container
-
-  increment: (x) =>
+  setPosition: (x) =>
     size = @layout.progress.size[0]
     step = size / @steps
-    next = @last + step * x
-    @activeBar.setSize [next, @layout.progress.bar.size[1]]
-    @percentage.setContent "#{Math.floor(next/size*100)}%"
-    @last = next
+    next = x * step
+    @activeBar.setSize [next, @layout.progress.size[1]]
 
 module.exports = ProgressBarView

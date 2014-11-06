@@ -10,7 +10,7 @@ MessageActions = require 'actions/MessageActions'
 UserStore = require 'stores/UserStore'
 
 class PlayStore extends CardStore
-  _currentPage: -1
+  _currentPosition: -1
   _game: null
   _size: 4
   _mood: {}
@@ -33,7 +33,7 @@ class PlayStore extends CardStore
 
   _loadGame: (cards) ->
     @_game = []
-    @_currentPage = -1
+    @_currentPosition = -1
     dataLoaded = []
 
     console.log "peggCards: ", cards
@@ -51,9 +51,9 @@ class PlayStore extends CardStore
           prefCards[cardId] = @_peggToPref peggCard
 
       dataLoaded.push Parse.Promise.as prefCards
-      dataLoaded.push DB.getPrefPopularities prefCards
+      # dataLoaded.push DB.getPrefPopularities prefCards
       dataLoaded.push Parse.Promise.as peggCards
-      dataLoaded.push DB.getTopPeggers peggeeIds
+      # dataLoaded.push DB.getTopPeggers peggeeIds
 
       Parse.Promise.when dataLoaded
         .then @_sortGame
@@ -77,22 +77,25 @@ class PlayStore extends CardStore
               @emit Constants.stores.GAME_LOADED
               @_next()
 
-  _sortGame: (prefCards, prefPopularities, peggCards, topPeggers) =>
-    if arguments.length is 2
+  # _sortGame: (prefCards, prefPopularities, peggCards, topPeggers) =>
+  _sortGame: (prefCards, peggCards) =>
+    # no peggCards, just prefCards
+    if arguments.length is 1
       for own cardId, prefCard of prefCards
         @_game.push {type: 'card', card: prefCard}                                # pref card
-        if prefPopularities[cardId]?
-          @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]} # pref popularity
+        # if prefPopularities[cardId]?
+        #   @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]} # pref popularity
+    # peggCards and prefCards, so interleave them with prefCards after their corresponding peggCard
     else
       for own cardId, peggCard of peggCards
         peggeeId = peggCard.peggeeId
         @_game.push {type: 'card', card: peggCard}                                # pegg card
-        if topPeggers[peggeeId]?
-          @_game.push {type: 'topPeggers', stats: topPeggers[peggeeId]}           # top peggers
+        # if topPeggers[peggeeId]?
+        #   @_game.push {type: 'topPeggers', stats: topPeggers[peggeeId]}           # top peggers
         if prefCards[cardId]?
           @_game.push {type: 'card', card: prefCards[cardId]}                     # pref card
-        if prefPopularities[cardId]?
-          @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]} # pref popularity
+        # if prefPopularities[cardId]?
+        #   @_game.push {type: 'prefPopularities', stats: prefPopularities[cardId]} # pref popularity
 
     @_game.push {type: 'done'} # done screen
 
@@ -129,16 +132,16 @@ class PlayStore extends CardStore
     @_fetchNewBadge UserStore.getUser().id
       .then (isBadge) =>
         if !isBadge
-          @_currentPage++
+          @_currentPosition++
           @_fails = 0
           @_showCurrentPage()
 
   _prev: ->
-    @_currentPage--
+    @_currentPosition--
     @_showCurrentPage()
 
   _showCurrentPage: ->
-    if @_currentPage is -1
+    if @_currentPosition is -1
       @emit Constants.stores.MOODS_LOADED
     else
       page = @getCurrentPage()
@@ -203,7 +206,10 @@ class PlayStore extends CardStore
         @emit Constants.stores.MOODS_LOADED
 
   getCurrentPage: ->
-    @_game[@_currentPage]
+    @_game[@_currentPosition]
+
+  getCurrentPosition: ->
+    @_currentPosition
 
   getMoods: ->
     @_moods
@@ -214,7 +220,7 @@ class PlayStore extends CardStore
   getGameState: ->
     mood: @_mood
     title: @_title
-    position: @_currentPage
+    position: @_currentPosition
     size: @_game.length
 
 play = new PlayStore

@@ -19,6 +19,8 @@ Utility = require 'famous/src/utilities/Utility'
 View = require 'famous/src/core/View'
 
 # Pegg
+AppStateStore = require 'stores/AppStateStore'
+CardStore = require 'stores/CardStore'
 CardView = require 'views/CardView'
 CommentsView = require 'views/CommentsView'
 Constants = require 'constants/PeggConstants'
@@ -27,13 +29,10 @@ LayoutManager = require 'views/layouts/LayoutManager'
 MessageActions = require 'actions/MessageActions'
 NavActions = require 'actions/NavActions'
 PlayActions = require 'actions/PlayActions'
-PlayNavView = require 'views/PlayNavView'
 PlayStore = require 'stores/PlayStore'
 SingleCardActions = require 'actions/SingleCardActions'
 SingleCardStore = require 'stores/SingleCardStore'
-AppStateStore = require 'stores/AppStateStore'
 UserStore = require 'stores/UserStore'
-CardStore = require 'stores/CardStore'
 Utils = require 'lib/Utils'
 
 class PlayCardView extends View
@@ -101,18 +100,6 @@ class PlayCardView extends View
         [@layout.cards.align[0] + xAlign, @layout.cards.align[1] + yAlign]
       origin: @layout.cards.origin
     @add(cardViewMod).add @cardView
-
-    ## PLAY NAV ##
-    @playNavView = new PlayNavView
-    @add @playNavView
-    @playNavView._eventOutput.on 'click', (data) =>
-      if data is 'prevPage'
-        @prevPage()
-      else if data is 'nextPage'
-        @nextPage()
-      else if data is 'back'
-        NavActions.selectMenuItem @_referrer
-    @playNavView.hideRightArrow()
 
     ## COMMENTS ##
     @commentsView = new CommentsView
@@ -401,9 +388,15 @@ class PlayCardView extends View
     @_referrer = SingleCardStore.getReferrer()
     @_canGoForward = false
     @_canGoBack = if @_referrer? then true else false
-    @playNavView.showSingleCardNav()
     card = @_store.getCard()
     @_load card
+
+  loadPlay: =>
+    @_canGoForward = true
+    @_canGoBack    = true
+    page = @_store.getCurrentPage()
+    if page.type is 'card'
+      @_load page.card
 
   _load: (card) =>
     @_canFlip       = false
@@ -425,21 +418,12 @@ class PlayCardView extends View
     else
       @loadComments()
 
-  loadPlay: =>
-    @_canGoForward = true
-    @_canGoBack    = true
-    page = @_store.getCurrentPage()
-    if page.type is 'card'
-      @playNavView.showPlayNav()
-      @_load page.card
-
   loadComments: =>
     @commentsView.load @card.comments
     @numComments.setContent "#{@commentsView.getCount()} comments."
 
   nextPage: =>
     @_actions.nextPage()
-    @playNavView.hideRightArrow()
     @hideNumComments()
 
   prevPage: =>
@@ -448,7 +432,6 @@ class PlayCardView extends View
   cardPref: =>
     @showNumComments()
     @_canComment = true
-    @playNavView.showRightArrow() if @_context is 'play'
 
   cardFail: =>
     #@message.setClasses ['card__message__fail']
@@ -458,7 +441,6 @@ class PlayCardView extends View
     @showPoints points
     @showNumComments()
     @_canComment = true
-    @playNavView.showRightArrow() if @_context is 'play'
 
   showPoints: (points) =>
     @points.setContent "+#{points}"
@@ -485,7 +467,6 @@ class PlayCardView extends View
 
   collapseComments: =>
     @commentsViewRc.hide @commentsView
-    @playNavView.showNav()
     # slide the card down to their starting position
     @snapToOrigin 'Y'
     # slide the comments down to their starting position
@@ -494,7 +475,6 @@ class PlayCardView extends View
 
   expandComments: =>
     @commentsViewRc.show @commentsView
-    @playNavView.hideNav()
     topYPos = @layout.cards.states[1].align[1] * Utils.getViewportHeight()
     # move the card up to comments showing position
     @cardYPos.set(topYPos, @layout.cards.states[1].transition)
