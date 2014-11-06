@@ -204,6 +204,10 @@ class PlayCardView extends View
     x = 0
     y = 0
 
+    easeIn = (time, initialValue, changeInValue, duration) ->
+      time /= duration
+      changeInValue * time*time*time + initialValue
+
     @sync.on 'start', (data) =>
 
     @sync.on 'update', (data) =>
@@ -268,17 +272,25 @@ class PlayCardView extends View
           radians = ( -x / Utils.getViewportWidth() ) * 2
           radians += @cardView.currentSide
           if radians > 1
-            radians = 1
             # not actually flipping, drag instead
             if @cardView.currentSide is 1 and @_canGoForward
               @cardXPos.set x
               flipping = false
+              radians = 1
+            # can't drag, so give some springy feedback
+            else
+              easy = easeIn(radians, 1, 1, 4)
+              radians = Math.min easy, 1.2
           else if radians < 0
-            radians = 0
             # not actually flipping, drag instead
             if @cardView.currentSide is 0 and @_canGoBack
               @cardXPos.set x
               flipping = false
+              radians = 0
+            # can't drag, so give some springy feedback
+            else
+              easy = -easeIn(1 - radians, 0, 1, 4)
+              radians = Math.max easy, -0.2
           @cardView.flipTransition.set -radians
         else
           @cardXPos.set x
@@ -332,6 +344,9 @@ class PlayCardView extends View
               offscreenLeft = -Utils.getViewportWidth()
               @cardXPos.set(offscreenLeft, @layout.cards.states[1].transition)
               @nextPage()
+            else
+              # return to original position
+              @cardView.flipTransition.set -@cardView.currentSide, @cardView.layout.card.transition
           else if movingRight
             if flipping and @cardView.currentSide is 1
               @cardView.flipTransition.set 0, @cardView.layout.card.transition
@@ -340,6 +355,9 @@ class PlayCardView extends View
               offscreenRight = Utils.getViewportWidth()
               @cardXPos.set(offscreenRight, @layout.cards.states[1].transition)
               @prevPage()
+            else
+              # return to original position
+              @cardView.flipTransition.set -@cardView.currentSide, @cardView.layout.card.transition
       else
         @snapToOrigin 'X'
 
