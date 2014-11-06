@@ -1,4 +1,5 @@
 require './scss/play.scss'
+_ = require('Parse')._
 
 # Famo.us
 ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
@@ -34,6 +35,7 @@ SingleCardActions = require 'actions/SingleCardActions'
 SingleCardStore = require 'stores/SingleCardStore'
 UserStore = require 'stores/UserStore'
 Utils = require 'lib/Utils'
+
 
 class PlayCardView extends View
 
@@ -329,7 +331,7 @@ class PlayCardView extends View
               @cardView.currentSide = 1
             else if @_canGoForward
               offscreenLeft = -Utils.getViewportWidth()
-              @cardXPos.set(offscreenLeft, @layout.cards.states[1].transition)
+              @cardXPos.set(offscreenLeft, @layout.cards.states[0].transition)
               @nextPage()
             else
               # return to original position
@@ -340,7 +342,7 @@ class PlayCardView extends View
               @cardView.currentSide = 0
             else if @_canGoBack
               offscreenRight = Utils.getViewportWidth()
-              @cardXPos.set(offscreenRight, @layout.cards.states[1].transition)
+              @cardXPos.set(offscreenRight, @layout.cards.states[0].transition)
               @prevPage()
             else
               # return to original position
@@ -402,7 +404,7 @@ class PlayCardView extends View
     @_canFlip       = false
     @_canComment    = false
     @_canCreateCard = true
-    @snapToOrigin 'X'
+#    @snapToOrigin 'X', 0
     @card = card
     @cardView.loadCard card
     if card.type is 'deny'
@@ -423,10 +425,12 @@ class PlayCardView extends View
     @numComments.setContent "#{@commentsView.getCount()} comments."
 
   nextPage: =>
+    @_eventOutput.emit 'forward'
     @_actions.nextPage()
     @hideNumComments()
 
   prevPage: =>
+    @_eventOutput.emit 'back'
     @_actions.prevPage()
 
   cardPref: =>
@@ -495,13 +499,15 @@ class PlayCardView extends View
     @cardYPos.set(bottomYPos, @layout.cards.states[2].transition)
     @_newCardExpanded = true
 
-  snapToOrigin: (axis) =>
+  snapToOrigin: (axis, duration) =>
     # slide the cards back to their starting position
+    transition = _.extend {}, @layout.cards.states[0].transition
+    transition.duration = duration if duration?
     switch axis
       when 'Y'
-        @cardYPos.set(0, @layout.cards.states[0].transition)
+        @cardYPos.set(0, transition)
       when 'X'
-        @cardXPos.set(0, @layout.cards.states[0].transition)
+        @cardXPos.set(0, transition)
 
   requireLogin: =>
     MessageActions.show 'app__login_required'

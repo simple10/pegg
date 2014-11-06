@@ -20,7 +20,7 @@ module.exports =
       {
         delay: 0
         align: [0.5, 0.5]
-        transition: {duration: 500, curve: Easing.outQuad}
+        transition: {duration: 250, curve: Easing.outQuad}
       }
 
       # comments showing state
@@ -99,7 +99,7 @@ module.exports =
     size: [Utils.getViewportWidth(), ]
     states: [
 
-      # start state 
+      # start state
       {
         delay: 0
         align: [2, 0]

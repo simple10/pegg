@@ -35,6 +35,9 @@ class PlayView extends View
     PlayStore.on Constants.stores.MOODS_LOADED, @loadMoods
     PlayStore.on Constants.stores.GAME_LOADED, @loadGame
 
+    @playCardView.on 'back', @backTransition
+    @playCardView.on 'forward', @forwardTransition
+
   initViews: ->
 
     ## PROGRESS BAR ##
@@ -66,18 +69,29 @@ class PlayView extends View
     ## DONE STATUS ##
     @doneStatus = new DoneStatusView
 
-    viewportWidth = Utils.getViewportWidth()
     @lightbox = new Lightbox
 #      inOpacity: 1
 #      outOpacity: 0
-      inOrigin: [0, 0]
-      outOrigin: [1, 0]
+#      inOrigin: [0, 0]
+#      outOrigin: [1, 0]
       showOrigin: [0.5, 0.5]
-      inTransform: Transform.translate viewportWidth, 0, -300
-      outTransform: Transform.translate -viewportWidth, 0, -1000
       inTransition: { duration: 500, curve: Easing.outCubic }
-      outTransition: { duration: 350, curve: Easing.outCubic }
+      outTransition: { duration: 500, curve: Easing.outCubic }
+      overlap: true
     @add @lightbox
+    @forwardTransition()
+
+  backTransition: =>
+    viewportWidth = Utils.getViewportWidth()
+    @lightbox.setOptions
+      inTransform: Transform.translate -viewportWidth, 0, null
+      outTransform: Transform.translate viewportWidth, 0, null
+
+  forwardTransition: =>
+    viewportWidth = Utils.getViewportWidth()
+    @lightbox.setOptions
+      inTransform: Transform.translate viewportWidth, 0, null
+      outTransform: Transform.translate -viewportWidth, 0, null
 
   loadGame: =>
     @progressBarRc.show @progressBar
@@ -85,9 +99,10 @@ class PlayView extends View
     @progressBar.reset gameState.size
 
   loadMoods: =>
+    @backTransition()
     @progressBarRc.hide @progressBar
     @pickMood.load PlayStore.getMoods()
-    @lightbox.show @pickMood
+    @lightbox.show @pickMood, @forwardTransition
 
   loadBadge: =>
     @badgesView.load PlayStore.getBadge()
@@ -99,7 +114,9 @@ class PlayView extends View
     @progressBar.setPosition position
     switch page.type
       when 'card'
-        @lightbox.show @playCardView
+        @lightbox.hide null, =>
+          @playCardView.snapToOrigin 'X', 0
+          @lightbox.show @playCardView
       when 'topPeggers'
         @peggStatus.load page.stats
         @lightbox.show @peggStatus
