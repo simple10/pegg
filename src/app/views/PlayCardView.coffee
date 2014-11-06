@@ -185,16 +185,19 @@ class PlayCardView extends View
 
     @_eventInput.pipe @sync
 
-    minDelta = 10
     minVelocity = 0.5
-    deltaWithVelocityThreshold = 60
-    deltaWithoutVelocityThreshold = 200
-    topYPosition = Utils.getViewportHeight() * @layout.cards.states[1].align[1]
-    bottomYPosition = Utils.getViewportHeight() * @layout.cards.states[2].align[1]
-    originalYPosition = 0
+    minDelta = 10                                                                  # pixels
+    deltaWithVelocityThreshold = 60                                                # pixels
+    deltaWithoutVelocityThreshold = 200                                            # pixels
+    flipWithVelocityThreshold = 0.25                                               # radians
+    flipWithoutVelocityThreshold = 0.51                                            # radians
+    topYPosition = Utils.getViewportHeight() * @layout.cards.states[1].align[1]    # pixels
+    bottomYPosition = Utils.getViewportHeight() * @layout.cards.states[2].align[1] # pixels
+    originalYPosition = 0                                                          # pixels
     lockedToAxis = null
     hasMovedX = false
     hasMovedY = false
+    flipping = false
     x = 0
     y = 0
 
@@ -251,14 +254,21 @@ class PlayCardView extends View
         hasMovedX = true
         hasMovedY = false
         if @_flippable
+          flipping = true
           radians = ( -x / Utils.getViewportWidth() ) * 2
           radians += @cardView.currentSide
           if radians > 1
             radians = 1
-            @cardXPos.set x if @cardView.currentSide is 1
+            # not actually flipping, drag instead
+            if @cardView.currentSide is 1
+              @cardXPos.set x
+              flipping = false
           else if radians < 0
             radians = 0
-            @cardXPos.set x if @cardView.currentSide is 0
+            # not actually flipping, drag instead
+            if @cardView.currentSide is 0
+              @cardXPos.set x
+              flipping = false
           @cardView.flipTransition.set -radians
         else
           @cardXPos.set x
@@ -271,34 +281,49 @@ class PlayCardView extends View
       # retrieve the total position change
       x = data.position[0]
       y = data.position[1]
-      movingDown = y > 0
-      movingUp   = y < 0
+      movingDown  = y > 0
+      movingUp    = y < 0
+      movingLeft  = x < 0
+      movingRight = x > 0
+      radians = ( -x / Utils.getViewportWidth() ) * 2
 
       if hasMovedX
+        # establish whether we've crossed threshold
         crossedXThreshold = false
+        if flipping
+          # flipping left/right and crossed min pos and vel threshold
+          if Math.abs(radians) > flipWithVelocityThreshold && Math.abs(xVelocity) > minVelocity
+            crossedXThreshold = true
+          # flipping left/right and crossed max pos threshold
+          else if Math.abs(radians) > flipWithoutVelocityThreshold
+            crossedXThreshold = true
+          # otherwise threshold not met, so return to original position
+          else
+            @cardView.flipTransition.set -@cardView.currentSide, @cardView.layout.card.transition
+        else
+          # swiping/dragging left/right and crossed min pos and vel threshold
+          if Math.abs(x) > deltaWithVelocityThreshold && Math.abs(xVelocity) > minVelocity
+            crossedXThreshold = true
+          # swiping/dragging left/right and crossed max pos threshold
+          else if Math.abs(x) > deltaWithoutVelocityThreshold
+            crossedXThreshold = true
+          # otherwise threshold not met, so return to original position
+          else
+            @snapToOrigin 'X'
 
-        # swiping/dragging up and crossed min pos and vel threshold
-        if Math.abs(x) > deltaWithVelocityThreshold && Math.abs(xVelocity) > minVelocity
-          crossedXThreshold = true
-        # swiping/dragging up and crossed max pos threshold
-        else if Math.abs(x) > deltaWithoutVelocityThreshold
-          crossedXThreshold = true
-        # otherwise threshold not met, so return to original position
-        else if Math.abs(x)
-          @cardView.flipTransition.set -@cardView.currentSide, @cardView.layout.card.transition
-          @snapToOrigin 'X'
-
+        # if we've crossed the threshold then we want to finish flipping or dragging
+        # the card, and if dragging, go to next/prev page
         if crossedXThreshold
-          if x < 0
-            if @_flippable and @cardView.currentSide is 0
+          if movingLeft
+            if flipping and @cardView.currentSide is 0
               @cardView.flipTransition.set -1, @cardView.layout.card.transition
               @cardView.currentSide = 1
             else
               offscreenLeft = -Utils.getViewportWidth()
               @cardXPos.set(offscreenLeft, @layout.cards.states[1].transition)
               @nextPage()
-          else if x > 0
-            if @_flippable and @cardView.currentSide is 1
+          else if movingRight
+            if flipping and @cardView.currentSide is 1
               @cardView.flipTransition.set 0, @cardView.layout.card.transition
               @cardView.currentSide = 0
             else
@@ -338,10 +363,11 @@ class PlayCardView extends View
             else if @_commentable
               @expandComments()
 
-      # reset axis movement flags
+      # reset movement flags
       hasMovedX = false
       hasMovedY = false
       lockedToAxis = null
+      flipping = false
 
   loadSingleCard: =>
     @playNavView.showSingleCardNav()
