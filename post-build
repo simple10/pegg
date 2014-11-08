@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd dist
+BUNDLE_FILE=`ls -1 bundle*.js`
+sed -r -i "s~src=\"/bundle\.js\"~src=\"/$BUNDLE_FILE\"~" index.html
+sed -r -i 's~redirectUrl:"http://[^"]*"~redirectUrl:"http://www.pegg.us"~' $BUNDLE_FILE
