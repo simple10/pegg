@@ -107,8 +107,8 @@ module.exports = {
       origin: [0.5, 0.5]
       innerWidth: width - width * .2
       height: 60
-    inTransition:  { duration: 350, curve: Easing.outCubic }
-    outTransition: { duration: 350, curve: Easing.outCubic }
+    inTransition:  { duration: 50, curve: Easing.outCubic }
+    outTransition: { duration: 50, curve: Easing.outCubic }
   answerPic:
     borderRadius: 10
     size: [width - width * .1, height - height * .25]

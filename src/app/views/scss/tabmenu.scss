@@ -9,12 +9,11 @@
   cursor: pointer;
   text-align: left;
   background-color: $white;
-  z-index: 100;
 }
-.tabmenu__item--profile {
+.tabmenu__item--me {
   background-color: $rainbow-blue;
 }
-.tabmenu__item--home {
+.tabmenu__item--us {
   background-color: $rainbow-red;
 }
 .tabmenu__item--play {
@@ -28,4 +27,6 @@
 }
 .tabmenu__item__title {
   text-align: center;
+  color: $white;
+  text-transform: uppercase;
 }

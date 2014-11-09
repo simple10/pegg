@@ -10,7 +10,7 @@ AppRouter = Parse.Router.extend(
     "activity": "activity"
     "create": "create"
     "settings": "settings"
-    "profile": "profile"
+    "me": "profile"
     "card/:card": "card"
     "card/:card/:peggee": "card"
     ":code": "auth"
@@ -25,8 +25,8 @@ AppRouter = Parse.Router.extend(
   activity: () ->
     NavActions.selectMenuItem 'activity'
 
-  profile: () ->
-    NavActions.selectMenuItem 'profile'
+  me: () ->
+    NavActions.selectMenuItem 'me'
 
   settings: () ->
     NavActions.selectMenuItem 'settings'

@@ -36,7 +36,7 @@ class AppStateStore extends EventEmitter
     else if pageID is 'activity'
       ActivityActions.load 0
       @emit Constants.stores.MENU_CHANGE
-    else if pageID is 'profile'
+    else if pageID is 'me'
       UserActions.load() # load user pref images
       @emit Constants.stores.MENU_CHANGE
     else

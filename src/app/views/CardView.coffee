@@ -96,7 +96,7 @@ class CardView extends View
 #      align: @layout.choices.align
       transform: @layout.choices.show
     @choicesViewRc = new RenderController
-      inTransition:  @layout.choices.inTransition
+      inTransition: @layout.choices.inTransition
       outTransition: @layout.choices.outTransition
 # example usage of inTransformFrom:
 #    @choicesViewRc.inTransformFrom (t) ->

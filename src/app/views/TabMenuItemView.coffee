@@ -6,6 +6,7 @@ StateModifier = require 'famous/src/modifiers/StateModifier'
 Transform = require 'famous/src/core/Transform'
 ImageSurface = require 'famous/src/surfaces/ImageSurface'
 NavActions = require 'actions/NavActions'
+Modifier = require 'famous/src/core/Modifier'
 
 class TabMenuItemView extends View
   @DEFAULT_OPTIONS:
@@ -16,21 +17,23 @@ class TabMenuItemView extends View
     iconUrl: 'images/mark_tiny.png'
     title: 'pegg'
     color: 'white'
-    iconSize: 50
+    iconSize: 40
 
   constructor: ->
     super
     @createBackground()
-#    @createIcon()
-#    @createTitle()
+    @createIcon()
+    @createTitle()
 
   createBackground: ->
     @background = new Surface
       size: [@options.width, @options.height]
       #size: [null, null]
-      classes: ['tabmenu__item', "tabmenu__item--#{@options.pageID}"]
-    @backgroundMod = new StateModifier
-#      opacity: .3
+      classes: ['tabmenu__item']
+#      , "tabmenu__item--#{@options.pageID}"
+    @backgroundMod = new Modifier
+      transform: Transform.translate 0, 0, 11
+      opacity: .3
     @add(@backgroundMod).add @background
     @background.on 'click', =>
       @menuSelect()
@@ -41,29 +44,33 @@ class TabMenuItemView extends View
       size: [@options.iconSize, @options.iconSize]
       content: @options.iconUrl
       properties: @options.properties
-    @iconState = new StateModifier
-      #origin: [0.5, 0.5]
-      #align: [0.5, 0.5]
-      transform: Transform.translate 17, 10, null
+    @iconState = new Modifier
+#      origin: [0.5, 0.5]
+#      align: [0.5, 0.5]
+      transform: Transform.translate 10, 10, 10
     @add(@iconState).add @icon
     @icon.on 'click', =>
       @menuSelect()
+#    @iconState.setTransform Transform.translate null, @options.height / 5, 10
 
   createTitle: ->
     @title = new Surface
       size: [@options.width, @options.height]
       content: @options.title
       classes: ['tabmenu__item__title']
-    @titleState = new StateModifier
-      transform: Transform.translate 0, @options.height/2, null
+    @titleState = new Modifier
+      transform: Transform.translate 20, 20, 10
     @add(@titleState).add @title
+    @title.on 'click', =>
+      @menuSelect()
 
   getID: ->
     @options.pageID
 
   menuSelect: ->
     NavActions.selectMenuItem @getID()
-    @background.setClasses ['tabmenu__item', "tabmenu__item--#{@options.pageID}"]
-    @backgroundMod.setOpacity 1
+    @background.setClasses ['tabmenu__item']
+#    , "tabmenu__item--#{@options.pageID}"
+#    @backgroundMod.setOpacity .3
 
 module.exports = TabMenuItemView
