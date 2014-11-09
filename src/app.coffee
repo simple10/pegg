@@ -36,7 +36,8 @@ Routes = require 'routes/AppRoutes'
 GameScript = require('config/game').scripts.cosmic_unicorn
 Utils = require 'lib/Utils'
 
-
+loading = document.getElementById('loading')
+loading.parentNode.removeChild(loading)
 
 # Chrome maxes out at 60 FPS
 Engine.setFPSCap 60
