@@ -62,7 +62,8 @@ class CardView extends View
     ## Back Card
     @back = new ImageSurface
       size: @layout.card.size
-      content: 'images/Card.svg'
+      content: 'images/Card_Blue.png'
+      classes: ['card__back__svg']
     backMod = new Modifier
       transform: @layout.card.back.transform
     @mainNode.add(backMod).add @back
@@ -117,7 +118,7 @@ class CardView extends View
       size: @layout.answerImage.size
       classes: @layout.answerImage.classes
       properties:
-        borderRadius: "#{@layout.answerImage.borderRadius}px"
+#        borderRadius: "#{@layout.answerImage.borderRadius}px"
         maxHeight: "#{@layout.answerImage.maxHeight}px"
 #        maxWidth: "#{@layout.answerImage.maxWidth}px"
     @backImage.on 'click', =>
@@ -130,6 +131,9 @@ class CardView extends View
     @backText = new Surface
       size: @layout.answerText.size
       classes: @layout.answerText.classes
+      properties:
+        fontSize: '23px'
+      #TODO: make font variable based on answer image height, text length, and screen size...
     @backTextModifier = new StateModifier
       transform: @layout.answerText.transform
     @mainNode.add(@backTextModifier).add @backText

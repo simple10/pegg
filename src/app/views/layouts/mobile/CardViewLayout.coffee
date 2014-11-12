@@ -11,13 +11,13 @@ module.exports = {
       delay: 0
       size: [width - 50, 150]
       classes: ['card__front__question']
-      transform: Transform.translate 0, 210, 3
+      transform: Transform.translate 0, 230, 3
       transition: {duration: 200, curve: Easing.outQuad}
     small:
       delay: 0
       size: [width - 120, 75]
       classes: ['card__front__question--small']
-      transform: Transform.translate 30, 100, 3
+      transform: Transform.translate 30, 80, 3
 #      origin: [0, 0]
 #      align: [0.3, 0.18]
       transition: {duration: 200, curve: Easing.outQuad}
@@ -37,7 +37,7 @@ module.exports = {
       delay: 0
       transform: Transform.multiply(
         Transform.scale .5, .5, 1
-        Transform.translate -(width / 6) * 4 , height / 3 , 3
+        Transform.translate -(width / 6) * 4 , height / 4 , 3
       )
 #      align: [0.1, 0.18]
 #      origin: [0, 0]
@@ -46,21 +46,21 @@ module.exports = {
   card:
     origin: [0.5, 0]
     align: [0.5, 0]
-    size: [width - 20, height - 180]
+    size: [width - 20, height - 150]
     transition: {duration: 1000, curve: Easing.outQuad}
     front:
-      transform: Transform.translate 0, 78, null
+      transform: Transform.translate 0, 55, null
 #      hide: Transform.translate 0,0, -1000
     back:
       transform: Transform.multiply(
-        Transform.translate(0, 78, 3)
+        Transform.translate(0, 55, 3)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
         )
       )
   answerImage:
-    size: [width - 60, null]
+    size: [width - 23, null]
     borderRadius: 10
     maxHeight: width - width * .1 - 100
 #    maxWidth: width - 60
@@ -76,7 +76,7 @@ module.exports = {
     size: [width - 60, 100]
     classes: ['card__back__text']
     transform: Transform.multiply(
-      Transform.translate(0, 105, 2)
+      Transform.translate(0, 75, 2)
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI

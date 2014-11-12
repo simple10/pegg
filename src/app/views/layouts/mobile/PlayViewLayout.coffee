@@ -4,7 +4,7 @@ Utils = require 'lib/Utils'
 
 module.exports =
   progress:
-    size: [Utils.getViewportWidth(), 5]
+    size: [Utils.getViewportWidth(), 10]
     origin: [0.5, 0]
     align: [0.5, 0]
     active:
