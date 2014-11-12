@@ -85,11 +85,11 @@ module.exports =
     size: [Utils.getViewportWidth() - 50, 40]
     transform: Transform.translate 0, -20, 0
   newCard:
-    size: [43, 48]
+    size: [Utils.getViewportWidth() - 100, Utils.getViewportWidth() - 100]
     classes: ['play__newCard']
-    content: 'images/add-image.png'
+    content: 'images/newcard-button.svg'
     origin: [0.5, 0.5]
-    align: [0.5, 0.5]
+    align: [0.5, 0.35]
     inTransition: { duration: 500, curve: Easing.outCubic }
     outTransition: { duration: 350, curve: Easing.outCubic }
     transform: Transform.translate null, null, -10

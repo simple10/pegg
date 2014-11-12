@@ -81,6 +81,8 @@ class PlayCardView extends View
 
     @cardView.on 'comment', =>
       @collapseComments()
+    @cardView.on 'showComments', =>
+      @expandComments()
     @cardView.on 'pegg', (payload) =>
       @_actions.pegg payload.peggeeId, payload.id, payload.choiceId, payload.answerId
     @cardView.on 'pref', (payload) =>

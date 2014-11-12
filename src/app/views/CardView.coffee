@@ -161,6 +161,25 @@ class CardView extends View
     @mainNode.add imagePickView
     @mainNode.add(addImageMod).add(@addImageRenderer)
 
+    @commentButton = new ImageSurface
+      size: @layout.commentButton.size
+      content: @layout.commentButton.content
+      classes: @layout.commentButton.classes
+    commentButtonMod = new StateModifier
+      transform: @layout.commentButton.transform
+    @commentButton.on 'click', =>
+      @_eventOutput.emit 'showComments'
+    @mainNode.add(commentButtonMod).add @commentButton
+
+    @commentText = new Surface
+      size: @layout.commentText.size
+      classes: @layout.commentText.classes
+    commentTextMod = new StateModifier
+      transform: @layout.commentText.transform
+    @commentText.on 'click', =>
+      @_eventOutput.emit 'showComments'
+    @mainNode.add(commentTextMod).add @commentText
+
   # Doesn't respond to gestures, just makes sure that the events
   # get to the right place
   initGestures: ->
@@ -218,6 +237,8 @@ class CardView extends View
       @flip()
     else
       @currentSide = 0
+
+    @commentText.setContent "(#{card.comments.length})"
 
     @choicesView.load @card
     @choicesView.on 'choice', @pickAnswer

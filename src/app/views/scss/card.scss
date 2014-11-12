@@ -134,6 +134,14 @@
   z-index: 5;
 }
 
+.card__back__commentButton {
+  z-index: 6;
+}
+
+.card__back__commentText {
+  z-index: 6;
+}
+
 .card__shim {
   @extend .backface-visible;
   background-color: $black;

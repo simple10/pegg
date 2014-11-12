@@ -95,6 +95,27 @@ module.exports = {
         Transform.rotateX Math.PI
       )
     )
+  commentButton:
+    size: [35, 35]
+    classes: ['card__back__commentButton']
+    content: 'images/comment-icon.svg'
+    transform: Transform.multiply(
+      Transform.translate width - 250, height - 150, 1
+      Transform.multiply(
+        Transform.rotateZ Math.PI
+        Transform.rotateX Math.PI
+      )
+    )
+  commentText:
+    size: [35, 35]
+    classes: ['card__back__commentText']
+    transform: Transform.multiply(
+      Transform.translate width - 290, height - 145, 1
+      Transform.multiply(
+        Transform.rotateZ Math.PI
+        Transform.rotateX Math.PI
+      )
+    )
   choices:
     size: [width - width * .1, height - 300]
 #    align: [null, 0.5]
