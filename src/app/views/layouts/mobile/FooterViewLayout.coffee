@@ -3,7 +3,7 @@ Transform = require 'famous/src/core/Transform'
 Utils = require 'lib/Utils'
 
 module.exports =
-  height: 60
+  height: 55
   width: Utils.getViewportWidth() - 60
   staggerDelay: 35
   transition:

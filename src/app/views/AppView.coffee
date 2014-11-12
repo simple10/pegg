@@ -117,9 +117,9 @@ class AppView extends View
     @pages.create = new NewCardView
     @pages.settings = new SettingsView
     @pages.activity = new ActivityView
-    @pages.profile = new ProfileView
+    @pages.me = new ProfileView
     @pages.login = new LoginView
-    @pages.home = new HomeView
+    @pages.us = new HomeView
     @pages.card = new PlayCardView
       context: 'single_card'
     @togglePage()
