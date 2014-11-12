@@ -42,7 +42,7 @@ NewCardView = require 'views/NewCardView'
 PeggBoxView = require 'views/PeggBoxView'
 PlayCardView = require 'views/PlayCardView'
 PlayView = require 'views/PlayView'
-ProfileView = require 'views/ProfileView'
+MeView = require 'views/MeView'
 SettingsView = require 'views/SettingsView'
 TabMenuView = require 'views/TabMenuView'
 
@@ -117,7 +117,7 @@ class AppView extends View
     @pages.create = new NewCardView
     @pages.settings = new SettingsView
     @pages.activity = new ActivityView
-    @pages.me = new ProfileView
+    @pages.me = new MeView
     @pages.login = new LoginView
     @pages.us = new HomeView
     @pages.card = new PlayCardView

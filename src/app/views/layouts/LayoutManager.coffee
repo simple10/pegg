@@ -11,6 +11,7 @@ mobile = {
   CardViewLayout: require 'views/layouts/mobile/CardViewLayout'
   FooterViewLayout: require 'views/layouts/mobile/FooterViewLayout'
   MessageViewLayout: require 'views/layouts/mobile/MessageViewLayout'
+  MeViewLayout: require 'views/layouts/mobile/MeViewLayout'
 }
 
 desktop = {}
