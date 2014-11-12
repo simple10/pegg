@@ -57,7 +57,7 @@ class AppStateStore extends EventEmitter
     Parse.history.navigate @_currentPageID, trigger: false
 
   _login: (referrer) ->
-    @_currentPageID = 'home'
+    @_currentPageID = 'play'
 #    referrer or
 #    Parse.history.navigate @_currentPageID, true
     @emit Constants.stores.MENU_CHANGE

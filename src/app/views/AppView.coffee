@@ -35,6 +35,7 @@ Menu = require 'constants/menu'
 ActivityView = require 'views/ActivityView'
 HeaderView = require 'views/HeaderView'
 HomeView = require 'views/HomeView'
+UsView = require 'views/UsView'
 LayoutManager = require 'views/layouts/LayoutManager'
 LoginView = require 'views/LoginView'
 MessageView = require 'views/MessageView'
@@ -96,7 +97,7 @@ class AppView extends View
   initHeader: ->
     @header = new HeaderView height: 50
     @header.on 'toggleMenu', =>
-      NavActions.selectMenuItem('home')
+      NavActions.selectMenuItem('us')
     @header
 
   initFooter: ->
@@ -119,7 +120,7 @@ class AppView extends View
     @pages.activity = new ActivityView
     @pages.me = new MeView
     @pages.login = new LoginView
-    @pages.us = new HomeView
+    @pages.us = new UsView
     @pages.card = new PlayCardView
       context: 'single_card'
     @togglePage()
