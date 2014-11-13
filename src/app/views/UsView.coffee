@@ -1,7 +1,7 @@
 # Famo.us
 ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
 RenderController = require 'famous/src/views/RenderController'
-# RenderNode = require 'famous/src/core/RenderNode'
+RenderNode = require 'famous/src/core/RenderNode'
 Scrollview = require 'famous/src/views/Scrollview'
 StateModifier = require 'famous/src/modifiers/StateModifier'
 Surface = require 'famous/src/core/Surface'
@@ -12,46 +12,45 @@ View = require 'famous/src/core/View'
 
 # Pegg
 Utils = require 'lib/Utils'
+ActivityView = require 'views/ActivityView'
 
 class UsView extends View
-  _insightScrollviewItems: []
-  _titleScrollviewItems: []
 
   constructor: (options) ->
     super options
-    @init()
+    @initRenderables()
+    @initGestures()
 
-  init: ->
-    titleWidth  = Utils.getViewportWidth()
-    titleHeight = Utils.getViewportHeight() / 4
-    bodyWidth   = Utils.getViewportWidth()
-    bodyHeight  = Utils.getViewportHeight() * 3 / 4
+  initRenderables: ->
+    @titleWidth  = Utils.getViewportWidth() * 4 / 5
+    @titleHeight = Utils.getViewportHeight() / 6
+    @bodyWidth   = Utils.getViewportWidth()
+    @bodyHeight  = Utils.getViewportHeight() * 5 / 6
+    @ratio = @titleWidth / @bodyWidth
 
-    # TITLES
+    ## TITLES ##
+    _titlesScrollviewItems = []
     @titlesScrollview = new Scrollview
       direction: Utility.Direction.X
       paginated: true
-      margin: titleWidth
-    @titlesScrollview.sequenceFrom @_titleScrollviewItems
+    @titlesScrollview.sequenceFrom _titlesScrollviewItems
     titlesScrollviewMod = new StateModifier
-      size: [titleWidth, titleHeight]
-      origin: [0.5, 0.0]
-      align: [0.5, 0.0]
-      transform: Transform.translate null, null, 3
+      size: [@titleWidth, @titleHeight]
+      origin: [0.0, 0.0]
+      align: [0.0, 0.0]
+      transform: Transform.translate null, null, 2
     @add(titlesScrollviewMod).add @titlesScrollview
 
     titlesBackground = new Surface
-      properties:
-        backgroundColor: 'red'
     titlesBackground.pipe @titlesScrollview
     titlesBackgroundMod = new StateModifier
-      size: [titleWidth, titleHeight]
-      origin: [0.5, 0.0]
-      align: [0.5, 0.0]
-      transform: Transform.translate null, null, 2
+      size: [@bodyWidth, @titleHeight]
+      origin: [0.0, 0.0]
+      align: [0.0, 0.0]
+      transform: Transform.translate null, null, 3
     @add(titlesBackgroundMod).add titlesBackground
 
-    for title in ['Insights', 'Activities', 'Lorem Ipsum']
+    for title in ['Insights', 'Activities']
       titleSurface = new Surface
         size: [undefined, true]
         content: title
@@ -60,28 +59,31 @@ class UsView extends View
           fontSize: '26pt'
           textTransform: 'uppercase'
       titleContainer = new ContainerSurface
-        size: [undefined, undefined]
+        size: [@titleWidth, @titleHeight]
       titleMod = new StateModifier
         origin: [0.0, 1.0]
         align: [0.0, 1.0]
-        transform: Transform.translate null, 200, 3
       # titleSurface.mod = titleMod
       titleSurface.pipe @titlesScrollview
-      @_titleScrollviewItems.push titleContainer.add(titleMod).add(titleSurface)
+      titleContainer.add(titleMod).add(titleSurface)
+      _titlesScrollviewItems.push titleContainer
 
-    # INSIGHTS
-    @insightsScrollview = new Scrollview
+    ## INSIGHTS ##
+    _insightsScrollviewItems = []
+    insightsScrollview = new Scrollview
       direction: Utility.Direction.Y
       paginated: true
-    @insightsScrollview.sequenceFrom @_insightScrollviewItems
     insightsScrollviewMod = new StateModifier
-      size: [bodyWidth, bodyHeight]
-      align: [0.5, 1.0]
-      origin: [0.5, 1.0]
-    @add(insightsScrollviewMod).add @insightsScrollview
+      size: [@bodyWidth, @bodyHeight]
+      origin: [0.0, 0.0]
+      align: [0.0, 0.0]
+    insightsScrollview.sequenceFrom _insightsScrollviewItems
+    insightsRenderNode = new RenderNode()
+      .add(insightsScrollviewMod).add(insightsScrollview)
 
     for i in [1..3]
       surface = new Surface
+        size: [@bodyWidth, @bodyHeight]
         content: "Insight ##{i}"
         properties:
           textAlign: 'center'
@@ -89,7 +91,79 @@ class UsView extends View
           fontSize: '20pt'
           textTransform: 'uppercase'
           paddingTop: '2em'
-      surface.pipe @insightsScrollview
-      @_insightScrollviewItems.push surface
+      surface.pipe insightsScrollview
+      # surface.pipe @titlesScrollview
+      _insightsScrollviewItems.push surface
+
+    ## SECTIONS ##
+    sections = [
+      { title: 'Insights View', renderable: insightsRenderNode }
+      { title: 'Activities View', renderable: null }
+      # { title: 'Lorem Ipsum View', renderable: null }
+      # { title: 'blah blah', renderable: null }
+    ]
+    @sectionsContainer = new ContainerSurface
+      size: [@bodyWidth * sections.length, @bodyHeight]
+      properties:
+        overflow: 'hidden'
+    @sectionsContainerMod = new StateModifier
+      align: [0.0, 0.0]
+      origin: [0.0, 0.0]
+      transform: Transform.translate 0, @titleHeight, 0
+    @add(@sectionsContainerMod).add @sectionsContainer
+    @sectionsContainer.pipe @titlesScrollview
+
+    for view, i in sections
+      mod = new StateModifier
+        origin: [0, 0]
+        align: [i/sections.length, 0]
+      if view.renderable?
+        @sectionsContainer.add(mod).add view.renderable
+      else
+        surface = new Surface
+          size: [@bodyWidth, @bodyHeight]
+          content: view.title
+          properties:
+            textAlign: 'center'
+            color: 'white'
+            fontSize: '20pt'
+            textTransform: 'uppercase'
+            paddingTop: '2em'
+        @sectionsContainer.add(mod).add surface
+
+    ## ACTIVITY ##
+    # _sectionsScrollviewItems: []
+    # @activityView = new ActivityView
+    # @_sectionsScrollviewItems.push @activityView
+    # @activityView.pipe @titlesScrollview
+
+  initGestures: ->
+    # @titlesScrollview.sync.on 'end', =>
+    #   console.log @
+
+    update = =>
+      translation = -@titlesScrollview.getAbsolutePosition() / @ratio
+      @sectionsContainerMod.setTransform Transform.translate translation, @titleHeight, 0
+
+    @titlesScrollview.sync.on 'update', update
+
+    @titlesScrollview._particle.on 'update', update
+
+    #   offset = @titlesScrollview._scroller.getCumulativeSize(@titlesScrollview.getCurrentIndex())[0]
+    #   position = @titlesScrollview._particle.getPosition1D()
+    #   console.log offset, position
+    #   @sectionsScrollview._particle.setPosition1D offset + position
+
+    # @titlesScrollview.on 'settle', =>
+    #   page = @titlesScrollview.getCurrentIndex()
+    #   # console.log "going to page: ", page
+    #   @sectionsScrollview.goToNextPage()
+
+    # @titlesScrollview._eventOutput.on 'pageChange', (payload) =>
+    #   console.log "page change", payload
+    #   if payload.direction is -1
+    #     @sectionsScrollview.goToPreviousPage()
+    #   else if payload.direction is 1
+    #     @sectionsScrollview.goToNextPage()
 
 module.exports = UsView
