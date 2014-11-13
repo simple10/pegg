@@ -11,16 +11,16 @@
   text-transform: uppercase;
   font-weight: bold;
   font-size: 12px;
-  z-index: 0;
+  /* z-index: 0; */
 }
 
 .progressBar__active{
   font-size: 14px;
-  z-index: 1;
+  /* z-index: 1; */
 }
 
 .play__newCard {
-  z-index: -10;
+  /* z-index: -10; */
 }
 
 .card__title {
@@ -39,5 +39,5 @@
   font-size: 45px;
   padding-top: 10px;
   text-align: center;
-  z-index: 10;
+  /* z-index: 10; */
 }

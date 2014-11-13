@@ -13,7 +13,7 @@
   text-transform: uppercase;
   font-size: 19px;
   color: $white;
-  z-index: 100;
+  /* z-index: 100; */
 }
 
 .profile__logout {
@@ -23,7 +23,7 @@
   color: $white;
   font-weight: bold;
   cursor: pointer;
-  z-index: 100;
+  /* z-index: 100; */
 }
 
 .peggBoardHeader__bg {
@@ -31,7 +31,7 @@
 }
 
 .peggBoardHeader__button {
-  z-index: 1;
+  /* z-index: 1; */
 }
 
 .profile__activity__item {

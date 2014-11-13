@@ -28,7 +28,7 @@ class CommentsView extends View
       size: [@options.width, @options.height]
       properties:
         overflow: 'hidden'
-        zIndex: -1
+        # zIndex: -1
     @comments = new Scrollview
     @container.add @comments
     @addCommentText = new Surface

@@ -2,12 +2,12 @@
 
 .bandmenu__background {
   background-color: $darkblue;
-  z-index: 10;
+  /* z-index: 10; */
 }
 .bandmenu__item {
   cursor: pointer;
   text-align: left;
-  z-index: 20;
+  /* z-index: 20; */
 }
 .bandmenu__item--play {
   background-color: $rainbow-red;
@@ -40,5 +40,5 @@
 }
 
 .bandmenu__item__logo {
-  z-index: 100;
+  /* z-index: 100; */
 }

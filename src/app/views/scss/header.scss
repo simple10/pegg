@@ -8,7 +8,7 @@
 }
 
 .header__background {
-  z-index: 100;
+  /* z-index: 100; */
   background-color: $rainbow-red;
 }
 
@@ -56,9 +56,9 @@
 
 .header__logo {
   cursor: pointer;
-  z-index: 101
+  /* z-index: 101 */
 }
 
 .header__profilePic {
-  z-index: 101
+  /* z-index: 101 */
 }

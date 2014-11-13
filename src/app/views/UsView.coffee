@@ -32,11 +32,6 @@ class UsView extends View
       direction: Utility.Direction.X
       paginated: true
       margin: titleWidth
-    # horrible horrible hack because z translation is busted
-    @titlesScrollview._scroller.group.setOptions(
-      properties:
-        zIndex: 3
-    )
     @titlesScrollview.sequenceFrom @_titleScrollviewItems
     titlesScrollviewMod = new StateModifier
       size: [titleWidth, titleHeight]
@@ -48,7 +43,6 @@ class UsView extends View
     titlesBackground = new Surface
       properties:
         backgroundColor: 'red'
-        zIndex: 2
     titlesBackground.pipe @titlesScrollview
     titlesBackgroundMod = new StateModifier
       size: [titleWidth, titleHeight]
