@@ -358,7 +358,7 @@ define(function(require, exports, module) {
         var nodeSize = _nodeSizeForDirection.call(this, this._node);
         var nextNode = this._node.getNext();
 
-        while (offset + position >= nodeSize && nextNode) {
+         while (offset + position >= nodeSize && nextNode) {
             offset -= nodeSize;
             this._scroller.sequenceFrom(nextNode);
             this._node = nextNode;

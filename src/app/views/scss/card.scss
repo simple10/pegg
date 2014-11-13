@@ -138,8 +138,25 @@
   /* z-index: 6; */
 }
 
-.card__back__commentText {
-  /* z-index: 6; */
+.card__back__commentCount {
+  color: $darkblue;
+}
+
+.card__back__heartCount {
+  color: $darkblue;
+}
+
+.card__back__heartButton {
+}
+
+.card__back__shareCount {
+  color: $darkblue;
+}
+
+.card__back__shareButton {
+}
+
+.card__back__moreButton {
 }
 
 .card__shim {

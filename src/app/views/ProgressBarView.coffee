@@ -33,6 +33,7 @@ class ProgressBarView extends View
     @activeBarMod = new StateModifier
       align: @layout.progress.align
       origin: @layout.progress.origin
+      transform: @layout.progress.active.transform
     @add(@activeBarMod).add @activeBar
 
     inactiveBar = new ImageSurface
@@ -41,6 +42,7 @@ class ProgressBarView extends View
     inactiveBarMod = new StateModifier
       align: @layout.progress.align
       origin: @layout.progress.origin
+      transform: @layout.progress.transform
     @add(inactiveBarMod).add inactiveBar
 
   setPosition: (x) =>

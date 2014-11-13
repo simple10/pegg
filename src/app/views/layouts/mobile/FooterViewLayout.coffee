@@ -9,4 +9,5 @@ module.exports =
   transition:
     duration: 300
     curve: 'easeOut'
+  transform: Transform.translate 0, 0, 0
 

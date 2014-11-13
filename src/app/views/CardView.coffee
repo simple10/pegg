@@ -138,28 +138,29 @@ class CardView extends View
       transform: @layout.answerText.transform
     @mainNode.add(@backTextModifier).add @backText
 
-    @addImageButton = new ImageSurface
-      size: @layout.addImage.size
-      content: @layout.addImage.content
-      classes: @layout.addImage.classes
-    addImageMod = new StateModifier
-#      origin: @layout.addImage.origin
-#      align: @layout.addImage.align
-      transform: @layout.addImage.transform
-    @addImageRenderer = new RenderController
-    imagePickView = new ImagePickView()
-    @addImageButton.on 'click', =>
-      imagePickView.pick( (results) =>
-        # console.log JSON.stringify(results)
-        @backImage.setContent results.fullS3
-        @_eventOutput.emit 'plug',
-          id: @card.id
-          full: results.fullS3
-          thumb: results.thumb.S3
-      )
-    @addImageRenderer.hide @addImageButton
-    @mainNode.add imagePickView
-    @mainNode.add(addImageMod).add(@addImageRenderer)
+    # TODO: where do we put the addImage button?
+#    @addImageButton = new ImageSurface
+#      size: @layout.addImage.size
+#      content: @layout.addImage.content
+#      classes: @layout.addImage.classes
+#    addImageMod = new StateModifier
+##      origin: @layout.addImage.origin
+##      align: @layout.addImage.align
+#      transform: @layout.addImage.transform
+#    @addImageRenderer = new RenderController
+#    imagePickView = new ImagePickView()
+#    @addImageButton.on 'click', =>
+#      imagePickView.pick( (results) =>
+#        # console.log JSON.stringify(results)
+#        @backImage.setContent results.fullS3
+#        @_eventOutput.emit 'plug',
+#          id: @card.id
+#          full: results.fullS3
+#          thumb: results.thumb.S3
+#      )
+#    @addImageRenderer.hide @addImageButton
+#    @mainNode.add imagePickView
+#    @mainNode.add(addImageMod).add(@addImageRenderer)
 
     @commentButton = new ImageSurface
       size: @layout.commentButton.size
@@ -171,14 +172,62 @@ class CardView extends View
       @_eventOutput.emit 'showComments'
     @mainNode.add(commentButtonMod).add @commentButton
 
-    @commentText = new Surface
-      size: @layout.commentText.size
-      classes: @layout.commentText.classes
-    commentTextMod = new StateModifier
-      transform: @layout.commentText.transform
-    @commentText.on 'click', =>
+    @commentCount = new Surface
+      size: @layout.commentCount.size
+      classes: @layout.commentCount.classes
+    commentCountMod = new StateModifier
+      transform: @layout.commentCount.transform
+    @commentCount.on 'click', =>
       @_eventOutput.emit 'showComments'
-    @mainNode.add(commentTextMod).add @commentText
+    @mainNode.add(commentCountMod).add @commentCount
+
+    @heartButton = new ImageSurface
+      size: @layout.heartButton.size
+      content: @layout.heartButton.content
+      classes: @layout.heartButton.classes
+    heartButtonMod = new StateModifier
+      transform: @layout.heartButton.transform
+    @heartButton.on 'click', =>
+      @_eventOutput.emit 'showComments'
+    @mainNode.add(heartButtonMod).add @heartButton
+
+    @heartCount = new Surface
+      size: @layout.heartCount.size
+      classes: @layout.heartCount.classes
+    heartCountMod = new StateModifier
+      transform: @layout.heartCount.transform
+    @heartCount.on 'click', =>
+      @_eventOutput.emit 'showComments'
+    @mainNode.add(heartCountMod).add @heartCount
+
+    @shareButton = new ImageSurface
+      size: @layout.shareButton.size
+      content: @layout.shareButton.content
+      classes: @layout.shareButton.classes
+    shareButtonMod = new StateModifier
+      transform: @layout.shareButton.transform
+    @shareButton.on 'click', =>
+      @_eventOutput.emit 'showComments'
+    @mainNode.add(shareButtonMod).add @shareButton
+
+    @shareCount = new Surface
+      size: @layout.shareCount.size
+      classes: @layout.shareCount.classes
+    shareCountMod = new StateModifier
+      transform: @layout.shareCount.transform
+    @shareCount.on 'click', =>
+      @_eventOutput.emit 'showComments'
+    @mainNode.add(shareCountMod).add @shareCount
+
+    @moreButton = new ImageSurface
+      size: @layout.moreButton.size
+      content: @layout.moreButton.content
+      classes: @layout.moreButton.classes
+    moreButtonMod = new StateModifier
+      transform: @layout.moreButton.transform
+    @moreButton.on 'click', =>
+      @_eventOutput.emit 'showComments'
+    @mainNode.add(moreButtonMod).add @moreButton
 
   # Doesn't respond to gestures, just makes sure that the events
   # get to the right place
@@ -198,7 +247,7 @@ class CardView extends View
     @choicesView.clearChoices()
     @frontProfilePic.setContent ""
     @frontQuestion.setContent ""
-    @addImageRenderer.hide @addImageButton
+#    @addImageRenderer.hide @addImageButton
 
     # clear event listeners
     @front.removeListener 'click', @toggleChoices
@@ -219,8 +268,8 @@ class CardView extends View
     if card.type is 'review'
       @loadAnswer @card.answer.plug, @card.answer.text
       @frontProfilePic.setContent "#{@card.pic}/?height=100&type=normal&width=100"
-      if card.peggeeId is UserStore.getUser().id
-        @addImageRenderer.show @addImageButton
+#      if card.peggeeId is UserStore.getUser().id
+#        @addImageRenderer.show @addImageButton
     else if card.type is 'deny'
       @frontProfilePic.setContent "#{@card.pic}"
       @loadAnswer @card.answer.plug, null
@@ -238,7 +287,11 @@ class CardView extends View
     else
       @currentSide = 0
 
-    @commentText.setContent "(#{card.comments.length})"
+    @commentCount.setContent "(#{card.comments.length})"
+    @heartCount.setContent "(0)"
+    #TODO: heart count should be saved into parse on Card (or Pegg?)
+    @shareCount.setContent "(0)"
+    #TODO: share count should be saved into parse on Card (or Pegg?)
 
     @choicesView.load @card
     @choicesView.on 'choice', @pickAnswer
@@ -281,7 +334,7 @@ class CardView extends View
         plug: choice.plug
         thumb: choice.thumb
       @loadAnswer choice.plug, choice.text
-      @addImageRenderer.show @addImageButton
+#      @addImageRenderer.show @addImageButton
 #      @choicesViewRc.hide @choicesView
 #      Timer.setTimeout @toggleChoices, @layout.card.transition.duration
       @flip()

@@ -49,11 +49,11 @@ module.exports = {
     size: [width - 20, height - 150]
     transition: {duration: 1000, curve: Easing.outQuad}
     front:
-      transform: Transform.translate 0, 55, null
+      transform: Transform.translate 0, 55, 2
 #      hide: Transform.translate 0,0, -1000
     back:
       transform: Transform.multiply(
-        Transform.translate(0, 55, 3)
+        Transform.translate(0, 55, -2)
         Transform.multiply(
           Transform.rotateZ Math.PI
           Transform.rotateX Math.PI
@@ -66,7 +66,7 @@ module.exports = {
 #    maxWidth: width - 60
     classes: ['card__back__image']
     transform:  Transform.multiply(
-      Transform.translate(0, 200, 2)
+      Transform.translate(0, 200, -3)
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI
@@ -76,7 +76,7 @@ module.exports = {
     size: [width - 60, 100]
     classes: ['card__back__text']
     transform: Transform.multiply(
-      Transform.translate(0, 75, 2)
+      Transform.translate(0, 75, -3)
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI
@@ -100,17 +100,70 @@ module.exports = {
     classes: ['card__back__commentButton']
     content: 'images/comment-icon.svg'
     transform: Transform.multiply(
-      Transform.translate width - 250, height - 150, 1
+      Transform.translate width / 2.5, height - 150, -3
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI
       )
     )
-  commentText:
+  commentCount:
     size: [35, 35]
-    classes: ['card__back__commentText']
+    classes: ['card__back__commentCount']
     transform: Transform.multiply(
-      Transform.translate width - 290, height - 145, 1
+      Transform.translate width / 2.5 - 40, height - 145, -3
+      Transform.multiply(
+        Transform.rotateZ Math.PI
+        Transform.rotateX Math.PI
+      )
+    )
+  heartButton:
+    size: [35, 35]
+    classes: ['card__back__heartButton']
+    content: 'images/heart-icon.svg'
+    transform: Transform.multiply(
+      Transform.translate width / 7, height - 150, -3
+      Transform.multiply(
+        Transform.rotateZ Math.PI
+        Transform.rotateX Math.PI
+      )
+    )
+  heartCount:
+    size: [35, 35]
+    classes: ['card__back__heartCount']
+    transform: Transform.multiply(
+      Transform.translate width / 7 - 40, height - 145, -3
+      Transform.multiply(
+        Transform.rotateZ Math.PI
+        Transform.rotateX Math.PI
+      )
+    )
+  shareButton:
+    size: [35, 35]
+    classes: ['card__back__shareButton']
+    content: 'images/share-icon.svg'
+    transform: Transform.multiply(
+      Transform.translate -(width / 7), height - 150, -3
+      Transform.multiply(
+        Transform.rotateZ Math.PI
+        Transform.rotateX Math.PI
+      )
+    )
+  shareCount:
+    size: [35, 35]
+    classes: ['card__back__shareCount']
+    transform: Transform.multiply(
+      Transform.translate -(width / 7 + 35), height - 145, -3
+      Transform.multiply(
+        Transform.rotateZ Math.PI
+        Transform.rotateX Math.PI
+      )
+    )
+  moreButton:
+    size: [35, 35]
+    classes: ['card__back__moreButton']
+    content: 'images/more-icon.svg'
+    transform: Transform.multiply(
+      Transform.translate -(width / 2.5), height - 150, -3
       Transform.multiply(
         Transform.rotateZ Math.PI
         Transform.rotateX Math.PI
@@ -120,7 +173,7 @@ module.exports = {
     size: [width - width * .1, height - 300]
 #    align: [null, 0.5]
 #    origin: [undefined, 0.5]
-    show: Transform.translate 0, 180, null
+    show: Transform.translate 0, 180, 3
     hide: Transform.translate 0, 180, 3
     choice:
       size: [width - width * .1, 65]

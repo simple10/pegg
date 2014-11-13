@@ -79,7 +79,7 @@ class TabMenuView extends View
     i = 0
     while i < @tabModifiers.length
       Timer.setTimeout ((i) ->
-        @tabModifiers[i].setTransform Transform.translate(0, 0, null), transition
+        @tabModifiers[i].setTransform @layout.transform, transition
         return
       ).bind(this, i), i * delay
       i++

@@ -7,8 +7,10 @@ module.exports =
     size: [Utils.getViewportWidth(), 10]
     origin: [0.5, 0]
     align: [0.5, 0]
+    transform: Transform.translate null, null, 0
     active:
       classes: ['progressBar__active']
+      transform: Transform.translate null, null, 1
     inTransition:  { duration: 500, curve: Easing.outCubic }
     outTransition: { duration: 350, curve: Easing.outCubic }
 

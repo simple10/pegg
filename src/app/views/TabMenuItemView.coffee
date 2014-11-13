@@ -32,7 +32,7 @@ class TabMenuItemView extends View
       classes: ['tabmenu__item']
 #      , "tabmenu__item--#{@options.pageID}"
     @backgroundMod = new Modifier
-      transform: Transform.translate 0, 0, 11
+      transform: Transform.translate 0, 0, null
       opacity: .3
     @add(@backgroundMod).add @background
     @background.on 'click', =>
@@ -47,7 +47,7 @@ class TabMenuItemView extends View
     @iconState = new Modifier
 #      origin: [0.5, 0.5]
 #      align: [0.5, 0.5]
-      transform: Transform.translate 10, 10, 10
+      transform: Transform.translate 10, 10, 1
     @add(@iconState).add @icon
     @icon.on 'click', =>
       @menuSelect()
@@ -59,7 +59,7 @@ class TabMenuItemView extends View
       content: @options.title
       classes: ['tabmenu__item__title']
     @titleState = new Modifier
-      transform: Transform.translate 20, 20, 10
+      transform: Transform.translate 20, 20, 1
     @add(@titleState).add @title
     @title.on 'click', =>
       @menuSelect()
