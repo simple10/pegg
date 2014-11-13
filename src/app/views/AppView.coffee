@@ -35,7 +35,7 @@ Menu = require 'constants/menu'
 ActivityView = require 'views/ActivityView'
 HeaderView = require 'views/HeaderView'
 HomeView = require 'views/HomeView'
-UsView = require 'views/UsView'
+WeView = require 'views/WeView'
 LayoutManager = require 'views/layouts/LayoutManager'
 LoginView = require 'views/LoginView'
 MessageView = require 'views/MessageView'
@@ -120,7 +120,7 @@ class AppView extends View
     @pages.activity = new ActivityView
     @pages.me = new MeView
     @pages.login = new LoginView
-    @pages.us = new UsView
+    @pages.we = new WeView
     @pages.card = new PlayCardView
       context: 'single_card'
     @togglePage()

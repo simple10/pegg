@@ -15,7 +15,7 @@
 EventEmitter = require 'famous/src/core/EventEmitter'
 Constants = require 'constants/PeggConstants'
 AppDispatcher = require 'dispatchers/AppDispatcher'
-ActivityActions = require 'actions/ActivityActions'
+WeActions = require 'actions/WeActions'
 UserActions = require 'actions/UserActions'
 SingleCardActions = require 'actions/SingleCardActions'
 
@@ -33,11 +33,11 @@ class AppStateStore extends EventEmitter
     Parse.history.navigate pageID, trigger: false
     if pageID is 'login' or pageID is 'signup'
       @emit Constants.stores.LOGIN_CHANGE
-    else if pageID is 'activity'
-      ActivityActions.load 0
-      @emit Constants.stores.MENU_CHANGE
     else if pageID is 'me'
       UserActions.load() # load user pref images
+      @emit Constants.stores.MENU_CHANGE
+    else if pageID is 'we'
+      WeActions.loadActivity 0
       @emit Constants.stores.MENU_CHANGE
     else
       @emit Constants.stores.MENU_CHANGE

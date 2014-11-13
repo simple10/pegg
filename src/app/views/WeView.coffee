@@ -13,8 +13,9 @@ View = require 'famous/src/core/View'
 # Pegg
 Utils = require 'lib/Utils'
 ActivityView = require 'views/ActivityView'
+InsightsView = require 'views/InsightsView'
 
-class UsView extends View
+class WeView extends View
 
   constructor: (options) ->
     super options
@@ -69,36 +70,37 @@ class UsView extends View
       _titlesScrollviewItems.push titleContainer
 
     ## INSIGHTS ##
-    _insightsScrollviewItems = []
-    insightsScrollview = new Scrollview
+    _activityScrollviewItems = []
+    activityScrollview = new Scrollview
       direction: Utility.Direction.Y
       paginated: true
-    insightsScrollviewMod = new StateModifier
+    activityScrollviewMod = new StateModifier
       size: [@bodyWidth, @bodyHeight]
       origin: [0.0, 0.0]
       align: [0.0, 0.0]
-    insightsScrollview.sequenceFrom _insightsScrollviewItems
-    insightsRenderNode = new RenderNode()
-      .add(insightsScrollviewMod).add(insightsScrollview)
+    activityScrollview.sequenceFrom _activityScrollviewItems
+    activityRenderNode = new RenderNode().add(activityScrollviewMod).add(activityScrollview)
 
     for i in [1..3]
       surface = new Surface
         size: [@bodyWidth, @bodyHeight]
-        content: "Insight ##{i}"
+        content: "Activity ##{i}"
         properties:
           textAlign: 'center'
           color: 'white'
           fontSize: '20pt'
           textTransform: 'uppercase'
           paddingTop: '2em'
-      surface.pipe insightsScrollview
-      # surface.pipe @titlesScrollview
-      _insightsScrollviewItems.push surface
+      surface.pipe activityScrollview
+      _activityScrollviewItems.push surface
+
+
+    insightsView = new InsightsView()
 
     ## SECTIONS ##
     sections = [
-      { title: 'Insights View', renderable: insightsRenderNode }
-      { title: 'Activities View', renderable: null }
+      { title: 'Who knows me the best?', renderable: insightsView }
+      { title: 'Activities View', renderable: activityRenderNode }
       # { title: 'Lorem Ipsum View', renderable: null }
       # { title: 'blah blah', renderable: null }
     ]
@@ -166,4 +168,4 @@ class UsView extends View
     #   else if payload.direction is 1
     #     @sectionsScrollview.goToNextPage()
 
-module.exports = UsView
+module.exports = WeView

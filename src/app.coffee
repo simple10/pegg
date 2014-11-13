@@ -28,7 +28,7 @@ SignupView = require 'views/SignupView'
 UserStore = require 'stores/UserStore'
 AppStateStore = require 'stores/AppStateStore'
 PlayActions = require 'actions/PlayActions'
-ActivityActions = require 'actions/ActivityActions'
+WeActions = require 'actions/WeActions'
 UserActions = require 'actions/UserActions'
 CardActions = require 'actions/CardActions'
 Constants = require 'constants/PeggConstants'
@@ -83,7 +83,8 @@ pickView = ->
   if UserStore.getLoggedIn()
     lightbox.show appView
     PlayActions.load()
-    ActivityActions.load 1
+    WeActions.loadInsights UserStore.getUser().id
+    WeActions.loadActivity 1
     CardActions.loadCategories()
   else if  AppStateStore.getCurrentPageID() is 'card'
     lightbox.show appView

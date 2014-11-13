@@ -5,7 +5,7 @@ ContainerSurface = require 'famous/src/surfaces/ContainerSurface'
 Scrollview = require 'famous/src/views/Scrollview'
 Surface = require 'famous/src/core/Surface'
 ActivityItemView = require 'views/ActivityItemView'
-ActivityStore = require 'stores/ActivityStore'
+WeStore = require 'stores/WeStore'
 Constants = require 'constants/PeggConstants'
 Utils = require 'lib/Utils'
 ImageSurface = require 'famous/src/surfaces/ImageSurface'
@@ -22,7 +22,7 @@ class ActivityView extends View
     @initSurfaces()
 
   initListeners: ->
-    ActivityStore.on Constants.stores.ACTIVITY_CHANGE, @loadActivity
+    WeStore.on Constants.stores.ACTIVITY_CHANGE, @loadActivity
 
   initSurfaces: ->
     ## LEFT ARROW ##
@@ -72,7 +72,7 @@ class ActivityView extends View
 
   loadActivity:  =>
     @activities.length = 0
-    @items = ActivityStore.getActivity()
+    @items = WeStore.getActivity()
     for item in @items
       itemView = new ActivityItemView item
       itemView.on 'scroll', =>

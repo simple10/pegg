@@ -6,8 +6,9 @@ DB = require 'stores/helpers/ParseBackend'
 
 
 
-class ActivityStore extends EventEmitter
+class WeStore extends EventEmitter
   _activity: []
+  _insights: []
 
   _fetchActivities: (page) ->
     userId = UserStore.getUser().id
@@ -17,10 +18,20 @@ class ActivityStore extends EventEmitter
         @emit Constants.stores.ACTIVITY_CHANGE
     )
 
+  _fetchTopPeggers: (peggeeId) ->
+    DB.getTopPeggers peggeeId
+      .then (results) =>
+        if results?
+          @_insights = results
+          @emit Constants.stores.INSIGHTS_LOADED
+
   getActivity: ->
     @_activity
 
-activity = new ActivityStore
+  getInsights: ->
+    @_insights
+
+weStore = new WeStore
 
 
 # Register callback with AppDispatcher to be notified of events
@@ -29,8 +40,10 @@ AppDispatcher.register (payload) ->
 
   # Pay attention to events relevant to PeggBoxStore
   switch action.actionType
+    when Constants.actions.LOAD_INSIGHTS
+      weStore._fetchTopPeggers action.peggeeId
     when Constants.actions.LOAD_ACTIVITY
-      activity._fetchActivities action.page
+      weStore._fetchActivities action.pageId
 
 
-module.exports = activity
+module.exports = weStore

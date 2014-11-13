@@ -580,16 +580,16 @@ class ParseBackend
         else
           null
 
-  getTopPeggers: (peggeeIds) ->
+  getTopPeggers: (peggeeId) ->
     peggees = []
-    for peggeeId in peggeeIds
-      peggeeObj = new Parse.Object 'User'
-      peggeeObj.set 'id', peggeeId
-      peggees.push peggeeObj
+#    for peggeeId in peggeeIds
+    peggeeObj = new Parse.Object 'User'
+    peggeeObj.set 'id', peggeeId
+#    peggees.push peggeeObj
 
     pointsQuery = new Parse.Query Points
     pointsQuery.descending 'points'
-    pointsQuery.containedIn 'peggee', peggees
+    pointsQuery.equalTo 'peggee', peggeeObj
     pointsQuery.include 'pegger'
     pointsQuery.include 'peggee'
     pointsQuery.find()
