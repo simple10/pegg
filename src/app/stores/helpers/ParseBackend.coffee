@@ -581,7 +581,7 @@ class ParseBackend
           null
 
   getTopPeggers: (peggeeId) ->
-    peggees = []
+#    peggees = []
 #    for peggeeId in peggeeIds
     peggeeObj = new Parse.Object 'User'
     peggeeObj.set 'id', peggeeId
@@ -594,11 +594,10 @@ class ParseBackend
     pointsQuery.include 'peggee'
     pointsQuery.find()
       .then (results) =>
-        scores = {}
+        scores = []
         for score in results
           peggee = score.get 'peggee'
-          scores[peggee.id] ?= []
-          scores[peggee.id].push {
+          scores.push {
             peggee: peggee
             pegger: score.get 'pegger'
             points: score.get 'points'
@@ -667,7 +666,7 @@ class ParseBackend
               cardId: card.id
               imageUrl: plug
               userId: userId
-        
+
         # filter by popular if necessary
         if filter is 'popular'
           @getPrefPopularities images

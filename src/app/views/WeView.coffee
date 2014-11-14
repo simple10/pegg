@@ -69,7 +69,7 @@ class WeView extends View
       titleContainer.add(titleMod).add(titleSurface)
       _titlesScrollviewItems.push titleContainer
 
-    ## INSIGHTS ##
+    ## Activity ##
     _activityScrollviewItems = []
     activityScrollview = new Scrollview
       direction: Utility.Direction.Y
