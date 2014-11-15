@@ -21,6 +21,11 @@ Walls = require "famous/src/physics/constraints/Walls"
 Circle = require "famous/src/physics/bodies/Circle"
 Body = require "famous/src/physics/bodies/Body"
 Repulsion = require "famous/src/physics/forces/Repulsion"
+Drag = require "famous/src/physics/forces/Drag"
+Spring = require "famous/src/physics/forces/Spring"
+GenericSync = require 'famous/src/inputs/GenericSync'
+MouseSync = require 'famous/src/inputs/MouseSync'
+TouchSync = require 'famous/src/inputs/TouchSync'
 
 # Pegg
 Constants = require 'constants/PeggConstants'
@@ -34,9 +39,14 @@ class InsightsView extends View
 
     @physics = new PhysicsEngine()
 
+    @initEvents()
     @initListeners()
     @initRenderables()
     @initGravity()
+    console.log "InsightsView constructed"
+
+  initEvents: ->
+    GenericSync.register 'mouse': MouseSync, 'touch': TouchSync
 
   initListeners: ->
     WeStore.on Constants.stores.INSIGHTS_LOADED, @load
@@ -51,12 +61,12 @@ class InsightsView extends View
 
   initGravity: ->
     @well = new Body
-      mass: 10
+      mass: 100
       position: [0, 0, 0]
-#      position: [Utils.getViewportWidth()/2, Utils.getViewportHeight()/2, 0]
+     # position: [Utils.getViewportWidth()/2, Utils.getViewportHeight()/2, 0]
     @gravity = new Repulsion
       strength: -100
-      decayFunction: Repulsion.DECAY_FUNCTIONS.LINEAR
+      # decayFunction: Repulsion.DECAY_FUNCTIONS.INVERSE
 
     @container.add @well
     @physics.addBody @well
@@ -66,23 +76,40 @@ class InsightsView extends View
     surface = new ImageSurface
       size: [50, 50]
       content: image
+      classes: ['ball']
       properties:
         borderRadius: '25px'
 
     modifier = new Modifier
-      align: [0.5, 0.5]
+      align: [Math.random() * 0.5 + 0.25, Math.random() * 0.5 + 0.25]
       origin: [0.5, 0.5]
       transform: ->
         circle.getTransform()
 
+    sync = new GenericSync ['mouse', 'touch']
+    surface.pipe sync
+
+    sync.on 'start', (data) =>
+      @_eventOutput.emit 'start'
+
+    sync.on 'update', (data) =>
+      circle.position.x += data.delta[0]
+      circle.position.y += data.delta[1]
+
+    sync.on 'end', (data) =>
+      @_eventOutput.emit 'end'
+
     circle: circle
     modifier: modifier
     surface: surface
+    sync: sync
 
   createWalls: ->
     # A wall with no options set assumes you want four walls,
     # one for each of the screen edges.
-    new Walls {}
+    new Walls
+      restitution: [0.001, 0.001, 0.001, 0.001]
+      slop: [0, 0, 0, 0]
 
   load: =>
     console.log 'InsightsView.load...'
@@ -96,7 +123,6 @@ class InsightsView extends View
       walls = @createWalls()
       walls.options.sides = walls.components     # Patch for bug in Walls module.
       walls.sides = walls.components             # Patch for bug in Walls module.
-      walls.options.restitution = 0.1
 
       for insight in insights
         ball = @createBall insight.pegger.get('avatar_url')
@@ -104,14 +130,25 @@ class InsightsView extends View
         circles.push ball.circle
         @container.add(ball.modifier).add ball.surface
         @physics.addBody ball.circle
+        @physics.attach walls, ball.circle
+        # @physics.attach @gravity, ball.circle, @well
 
       for ball in balls
-        repulsion = new Repulsion
-          strength: 0.0005
-        @physics.attach walls, ball.circle
-        @physics.attach @gravity, ball.circle, @well
-        @physics.attach repulsion, circles, ball.circle
+        repulsion = new Repulsion strength: -0.5
+        spring = new Spring
+          anchor: @well
+          strength: 10,
+          dampingRatio: 0.4,
+          # forceFunction: Spring.FORCE_FUNCTIONS.FENE,
+          length: 100
+        drag = new Drag strength: 0.0001, forceFunction: Drag.FORCE_FUNCTIONS.QUADRATIC
+        friction = new Drag strength: 0.01, forceFunction: Drag.FORCE_FUNCTIONS.LINEAR
+        # @physics.attach repulsion, circles, ball.circle
+        # @physics.attach [drag, friction], ball.circle
+        # @physics.attach friction, ball.circle
+        # @physics.attach drag, ball.circle
+        @physics.attach spring, circles, ball.circle
         ball.circle.applyForce new Vector(Math.random() * 0.0005, Math.random() * 0.0005, 0)
-
+        # ball.circle.applyForce new Vector(0, 0, 0)
 
 module.exports = InsightsView

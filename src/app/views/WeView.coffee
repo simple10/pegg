@@ -115,6 +115,11 @@ class WeView extends View
     @add(@sectionsContainerMod).add @sectionsContainer
     @sectionsContainer.pipe @titlesScrollview
 
+    insightsView.on 'start', =>
+      @sectionsContainer.unpipe @titlesScrollview
+    insightsView.on 'end', =>
+      @sectionsContainer.pipe @titlesScrollview
+
     for view, i in sections
       mod = new StateModifier
         origin: [0, 0]
