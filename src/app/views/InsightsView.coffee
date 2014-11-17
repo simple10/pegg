@@ -81,7 +81,7 @@ class InsightsView extends View
         borderRadius: '25px'
 
     modifier = new Modifier
-#      align: [Math.random() * 0.5 + 0.25, Math.random() * 0.5 + 0.25]
+      align: [Math.random() * 0.5 + 0.25, Math.random() * 0.5 + 0.25]
       origin: [0.5, 0.5]
       transform: ->
         circle.getTransform()
@@ -135,7 +135,7 @@ class InsightsView extends View
       for ball in balls
         repulsion = new Repulsion strength: -0.5
         spring = new Spring
-#          anchor: @well
+          anchor: @well
           strength: 10,
           dampingRatio: 0.4,
           # forceFunction: Spring.FORCE_FUNCTIONS.FENE,
@@ -146,7 +146,7 @@ class InsightsView extends View
         # @physics.attach [drag, friction], ball.circle
         # @physics.attach friction, ball.circle
         # @physics.attach drag, ball.circle
-        @physics.attach spring, circles, ball.circle
+        # @physics.attach spring, circles, ball.circle
         ball.circle.applyForce new Vector(Math.random() * 0.0005, Math.random() * 0.0005, 0)
         # ball.circle.applyForce new Vector(0, 0, 0)
 
