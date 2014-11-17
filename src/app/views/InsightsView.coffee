@@ -81,7 +81,7 @@ class InsightsView extends View
         borderRadius: '25px'
 
     modifier = new Modifier
-      align: [Math.random() * 0.5 + 0.25, Math.random() * 0.5 + 0.25]
+#      align: [Math.random() * 0.5 + 0.25, Math.random() * 0.5 + 0.25]
       origin: [0.5, 0.5]
       transform: ->
         circle.getTransform()
@@ -116,7 +116,6 @@ class InsightsView extends View
 
     insights = WeStore.getInsights()
     if insights?
-
       balls = []
       circles = []
 
@@ -136,7 +135,7 @@ class InsightsView extends View
       for ball in balls
         repulsion = new Repulsion strength: -0.5
         spring = new Spring
-          anchor: @well
+#          anchor: @well
           strength: 10,
           dampingRatio: 0.4,
           # forceFunction: Spring.FORCE_FUNCTIONS.FENE,

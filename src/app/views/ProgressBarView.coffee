@@ -28,7 +28,7 @@ class ProgressBarView extends View
 
   init: ->
     @activeBar = new ImageSurface
-      content: 'images/progress_active.png'
+      content: 'images/progress_active2.png'
       classes: @layout.progress.active.classes
     @activeBarMod = new StateModifier
       align: @layout.progress.align

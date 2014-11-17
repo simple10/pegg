@@ -62,7 +62,7 @@ class CardView extends View
     ## Back Card
     @back = new ImageSurface
       size: @layout.card.size
-      content: 'images/Card_Blue.png'
+      content: 'images/Card-Blue.svg'
       classes: ['card__back__svg']
     backMod = new Modifier
       transform: @layout.card.back.transform
