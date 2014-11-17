@@ -12,25 +12,32 @@ Utility = require 'famous/src/utilities/Utility'
 View = require 'famous/src/core/View'
 
 # Pegg
-Utils = require 'lib/Utils'
 ActivityView = require 'views/ActivityView'
 InsightsView = require 'views/InsightsView'
+LayoutManager = require 'views/layouts/LayoutManager'
+Utils = require 'lib/Utils'
 
 class WeView extends View
 
   constructor: (options) ->
     super options
+
+    @layoutManager = new LayoutManager()
+    @footerLayout = @layoutManager.getViewLayout 'FooterView'
+
     @initRenderables()
     @initGestures()
 
   initRenderables: ->
+    containerHeight = Utils.getViewportHeight() - @footerLayout.height
+    containerWidth = Utils.getViewportWidth()
     titleWidthRatio = 2 / 3
-    titleHeightRatio = 1 / 4.8
+    titleHeightRatio = 1 / 4
     bodyHeightRatio = 1 - titleHeightRatio
-    @titleWidth  = Utils.getViewportWidth() * titleWidthRatio
-    @titleHeight = Utils.getViewportHeight() * titleHeightRatio
-    @bodyWidth   = Utils.getViewportWidth()
-    @bodyHeight  = Utils.getViewportHeight() * bodyHeightRatio
+    @titleWidth  = containerWidth * titleWidthRatio
+    @titleHeight = containerHeight * titleHeightRatio
+    @bodyWidth   = containerWidth
+    @bodyHeight  = containerHeight  * bodyHeightRatio
     @ratio = @titleWidth / @bodyWidth
 
     ## TITLES ##
@@ -41,21 +48,22 @@ class WeView extends View
     @titlesScrollview.sequenceFrom @_titlesScrollviewItems
     titlesScrollviewMod = new StateModifier
       size: [@titleWidth, @titleHeight]
+      # proportions: [titleWidthRatio, titleHeightRatio]
       origin: [0.0, 0.0]
       align: [0.0, 0.0]
-      transform: Transform.translate null, null, 2
     @add(titlesScrollviewMod).add @titlesScrollview
 
     titlesBackground = new Surface
     titlesBackground.pipe @titlesScrollview
     titlesBackgroundMod = new StateModifier
       size: [@bodyWidth, @titleHeight]
+      # proportions: [1, titleHeightRatio]
       origin: [0.0, 0.0]
       align: [0.0, 0.0]
-      transform: Transform.translate null, null, 3
+      transform: Transform.translate null, null, 1
     @add(titlesBackgroundMod).add titlesBackground
 
-    margin = 0.06
+    marginX = 0.06
 
     rainbowSurface = new ImageSurface
       size: [70, 70]
@@ -66,9 +74,11 @@ class WeView extends View
     @add(rainbowSurfaceMod).add(rainbowSurface)
 
     hrSurface = new Surface
-      size: [Utils.getViewportWidth() * ( 1 - margin * 2), Utils.getViewportWidth() * margin]
+      size: [Utils.getViewportWidth() * ( 1 - marginX * 2), 0]
+      # proportions: [1 - ( marginX * 2 ), 0.01]
       properties:
         borderBottom: '1px solid white'
+    hrSurface.pipe @titlesScrollview
     hrSurfaceMod = new StateModifier
       origin: [0.5, 0]
       align: [0.5, titleHeightRatio]
@@ -85,11 +95,13 @@ class WeView extends View
           textTransform: 'uppercase'
       titleContainer = new ContainerSurface
         size: [@titleWidth, @titleHeight]
+        # proportions: [titleWidthRatio, titleHeightRatio]
       titleMod = new StateModifier
         origin: [0.0, 1.0]
-        align: [margin, 1.0]
-      # titleSurface.mod = titleMod
+        align: [marginX, 0.93]
+        transform: Transform.translate null, null, 2
       titleSurface.pipe @titlesScrollview
+      titleContainer.pipe @titlesScrollview
       titleContainer.add(titleMod).add(titleSurface)
       titleContainer.titleSurface = titleSurface
       titleContainer.titleMod = titleMod
@@ -99,13 +111,16 @@ class WeView extends View
         @titlesScrollview.goToPage(page)
       @_titlesScrollviewItems.push titleContainer
 
-    ## Activity ##
+    ## SECTIONS ##
+
+    ## --> Activity ##
     _activityScrollviewItems = []
     activityScrollview = new Scrollview
       direction: Utility.Direction.Y
       paginated: true
     activityScrollviewMod = new StateModifier
       size: [@bodyWidth, @bodyHeight]
+      # proportions: [1, bodyHeightRatio]
       origin: [0.0, 0.0]
       align: [0.0, 0.0]
     activityScrollview.sequenceFrom _activityScrollviewItems
@@ -114,6 +129,7 @@ class WeView extends View
     for i in [1..3]
       surface = new Surface
         size: [@bodyWidth, @bodyHeight]
+        # proportions: [1, bodyHeightRatio]
         content: "Activity ##{i}"
         properties:
           textAlign: 'center'
@@ -124,10 +140,9 @@ class WeView extends View
       surface.pipe activityScrollview
       _activityScrollviewItems.push surface
 
-
+    ## --> Insights ##
     insightsView = new InsightsView()
 
-    ## SECTIONS ##
     sections = [
       { title: 'Who knows me the best?', renderable: insightsView }
       { title: 'Activities View', renderable: activityRenderNode }
@@ -136,6 +151,7 @@ class WeView extends View
     ]
     @sectionsContainer = new ContainerSurface
       size: [@bodyWidth * sections.length, @bodyHeight]
+      # proportions: [sections.length, bodyHeightRatio]
       properties:
         overflow: 'hidden'
     @sectionsContainerMod = new StateModifier
@@ -159,6 +175,7 @@ class WeView extends View
       else
         surface = new Surface
           size: [@bodyWidth, @bodyHeight]
+          # proportions: [1, bodyHeightRatio]
           content: view.title
           properties:
             textAlign: 'center'
