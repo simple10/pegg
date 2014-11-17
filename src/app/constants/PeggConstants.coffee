@@ -27,6 +27,7 @@ module.exports =
     PLAY_CONTINUE: null
     PLUG_IMAGE: null
     PREF_SUBMIT: null
+    FAVORITE_CARD: null
     PREV_PAGE: null
     SHOW_MESSAGE: null
     SINGLE_CARD_CARD_COMMENT: null

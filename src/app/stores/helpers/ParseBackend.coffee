@@ -12,6 +12,7 @@ Activity = Parse.Object.extend 'Activity'
 User = Parse.Object.extend 'User'
 UserMood = Parse.Object.extend 'UserMood'
 UserSetting = Parse.Object.extend 'UserSetting'
+Favorite = Parse.Object.extend 'Favorite'
 
 class ParseBackend
 
@@ -74,6 +75,18 @@ class ParseBackend
     activity.set 'card', (new Parse.Object 'Card').set 'id', cardId if cardId?
     activity.set 'ACL', newActivityAcl
     activity.save()
+
+  saveFavorite: (userId, cardId) ->
+    console.log "ParseBackend.saveFavorite(): ", userId, cardId
+    user = new Parse.Object 'User'
+    user.set 'id',  userId
+    newFavoriteAcl = new Parse.ACL user
+    newFavoriteAcl.setRoleReadAccess "#{userId}_Friends", true
+    favorite = new Parse.Object 'Favorite'
+    favorite.set 'user', user
+    favorite.set 'card', (new Parse.Object 'Card').set 'id', cardId if cardId?
+    favorite.set 'ACL', newFavoriteAcl
+    favorite.save()
 
   saveComment: (comment, cardId, peggeeId, userId, userImg) ->
     card = new Parse.Object 'Card'

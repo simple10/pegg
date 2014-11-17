@@ -22,6 +22,11 @@ PlayActions =
       choice: choice
       answer: answer
 
+  favorite: (cardId) ->
+    AppDispatcher.handleViewAction
+      actionType: Constants.FAVORITE_CARD
+      cardId: cardId
+
   plug: (card, full, thumb) ->
     AppDispatcher.handleViewAction
       actionType: Constants.PLUG_IMAGE

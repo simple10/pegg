@@ -187,8 +187,6 @@ class CardView extends View
       classes: @layout.heartButton.classes
     heartButtonMod = new StateModifier
       transform: @layout.heartButton.transform
-    @heartButton.on 'click', =>
-      @_eventOutput.emit 'showComments'
     @mainNode.add(heartButtonMod).add @heartButton
 
     @heartCount = new Surface
@@ -293,6 +291,8 @@ class CardView extends View
     @shareCount.setContent "(0)"
     #TODO: share count should be saved into parse on Card (or Pegg?)
 
+    @heartButton.on 'click', @favoriteCard
+
     @choicesView.load @card
     @choicesView.on 'choice', @pickAnswer
 
@@ -313,6 +313,10 @@ class CardView extends View
       @choicesViewRc.show(@choicesView)
       @_eventOutput.emit 'choices:showing', @
       @choiceShowing = true
+
+  favoriteCard: =>
+    @_eventOutput.emit 'favoriteCard',
+      cardId: @card.id
 
 
   pickAnswer: (id) =>

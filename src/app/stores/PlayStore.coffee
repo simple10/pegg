@@ -171,6 +171,11 @@ class PlayStore extends CardStore
         @_savePrefActivity cardId
         @emit Constants.stores.PREF_SAVED
 
+  _favorite: (cardId) ->
+    console.log cardId
+    DB.saveFavorite UserStore.getUser().id, cardId
+      .fail @_failHandler
+
   _saveMoodActivity: (moodId, moodText, moodUrl) ->
     message = "#{UserStore.getUser().get 'first_name'} is feeling #{moodText}"
     DB.saveActivity message, moodUrl, UserStore.getUser().id
@@ -245,6 +250,8 @@ AppDispatcher.register (payload) ->
       play._pegg action.peggeeId, action.card, action.choice, action.answer
     when Constants.actions.PREF_SUBMIT
       play._pref action.card, action.choice, action.plug, action.thumb
+    when Constants.actions.FAVORITE_CARD
+      play._favorite action.cardId
     when Constants.actions.PLUG_IMAGE
       play._plug action.card, action.full, action.thumb
     when Constants.actions.CARD_COMMENT
