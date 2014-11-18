@@ -88,6 +88,19 @@ class ParseBackend
     favorite.set 'ACL', newFavoriteAcl
     favorite.save()
 
+    cardQuery = new Parse.Query 'Card'
+    cardQuery.equalTo 'objectId', cardId
+    cardQuery.first()
+      .then (result) =>
+        if result?
+          favorites = result.get 'favorites'
+          if favorites?
+            favorites += 1
+          else
+            favorites = 1
+          result.set 'favorites', favorites
+          result.save()
+
   saveComment: (comment, cardId, peggeeId, userId, userImg) ->
     card = new Parse.Object 'Card'
     card.set 'id', cardId
@@ -329,6 +342,7 @@ class ParseBackend
             firstName: user.get 'first_name'
             pic: user.get 'avatar_url'
             question: pref.get 'question'
+            favorites: pref.get('favorites') or 0
           }
         if results? then cards else null
 
@@ -370,14 +384,15 @@ class ParseBackend
           cards[card.id] = {
             id: card.id
             peggeeId: peggee.id
-            firstName: peggee.get 'first_name' or ''
-            pic: peggee.get 'avatar_url' or ''
+            firstName: peggee.get('first_name') or ''
+            pic: peggee.get('avatar_url') or ''
             question: card.get('question') or ''
             answer:
               id: pref.get('answer').id
               text: pref.get('answer').get('text')
               plug: pref.get 'plug'
             hasPreffed: card.get 'hasPreffed'
+            favorites: card.get('favorites') or 0
           }
         if results? then cards else null
 
@@ -426,6 +441,7 @@ class ParseBackend
               id: pref.get('answer').id
               text: pref.get('answer').get('text')
               plug: pref.get 'plug'
+            favorites: card.get('favorites') or 0
           }
           cardObj
         else
@@ -465,6 +481,7 @@ class ParseBackend
               id: pref.get('answer').id
               text: pref.get('answer').get('text')
               plug: pref.get 'plug'
+            favorites: card.get('favorites') or 0
           }
           prefs[card.id] = cardObj
         if results? then prefs else null

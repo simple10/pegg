@@ -107,6 +107,13 @@ class CardStore extends EventHandler
         @_savePrefActivity cardId
         @emit Constants.stores.PREF_SAVED
 
+  _favorite: (cardId) ->
+    console.log cardId
+    DB.saveFavorite UserStore.getUser().id, cardId
+      .fail @_failHandler
+      .done =>
+        @emit Constants.stores.FAVORITE_SAVED
+
   getMessage: (status) ->
     switch status
       when 'win' then return "Good job!"

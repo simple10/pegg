@@ -74,6 +74,7 @@ class PlayCardView extends View
     @_store.on Constants.stores.CARD_CHANGE, @loadSingleCard
     @_store.on Constants.stores.CARD_FAIL, @cardFail
     @_store.on Constants.stores.CARD_WIN, @cardWin
+    @_store.on Constants.stores.FAVORITE_SAVED, @favoriteSaved
     @_store.on Constants.stores.PAGE_CHANGE, @loadPlay
     @_store.on Constants.stores.PREF_SAVED, @cardPref
     @_store.on Constants.stores.REQUIRE_LOGIN, @requireLogin
@@ -168,6 +169,16 @@ class PlayCardView extends View
       origin: @layout.points.origin
       transform: @layout.points.transform
     @add(@pointsMod).add @points
+
+    ## HEARTS ##
+    heart = new ImageSurface
+      size: @layout.heart.size
+      content: @layout.heart.content
+    @heartMod = new Modifier
+      align: @layout.heart.align
+      origin: @layout.heart.origin
+      transform: @layout.heart.transform
+    @add(@heartMod).add heart
 
   initGestures: ->
     GenericSync.register mouse: MouseSync
@@ -446,13 +457,20 @@ class PlayCardView extends View
     #@message.setContent @_store.getMessage('fail')
 
   cardWin: (points) =>
-    @showPoints points
+#    @showPoints points
     @showNumComments()
     @_canComment = true
 
   showPoints: (points) =>
     @points.setContent "+#{points}"
     Utils.animateAll @pointsMod, @layout.points.states
+
+  favoriteSaved: =>
+    @heartMod.setOpacity @layout.heart.states[0].opacity, @layout.heart.states[0].transition, =>
+      @heartMod.setTransform @layout.heart.states[1].transform, @layout.heart.states[1].transition, =>
+        @heartMod.setTransform @layout.heart.states[2].transform, @layout.heart.states[2].transition, =>
+          @heartMod.setOpacity @layout.heart.states[3].opacity, @layout.heart.states[3].transition, =>
+            @heartMod.setTransform @layout.heart.states[4].transform, @layout.heart.states[4].transition
 
   showNumComments: =>
     @numCommentsRc.show @numComments

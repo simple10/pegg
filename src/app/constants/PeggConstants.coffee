@@ -81,3 +81,4 @@ module.exports =
     BADGE_CHANGE: null
     GAME_LOADED: null
     INSIGHTS_LOADED: null
+    FAVORITE_SAVED: null

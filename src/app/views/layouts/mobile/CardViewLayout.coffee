@@ -119,7 +119,9 @@ module.exports = {
   heartButton:
     size: [35, 35]
     classes: ['card__back__heartButton']
-    content: 'images/heart-icon.svg'
+    content:
+      inactive: 'images/heart-icon.svg'
+      active: 'images/heart-icon-red.svg'
     transform: Transform.multiply(
       Transform.translate width / 7, height - 150, -3
       Transform.multiply(

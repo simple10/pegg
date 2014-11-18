@@ -160,6 +160,38 @@ module.exports =
         align: [0.5, 1.5]
         transition: {duration: 500, curve: Easing.outQuad}
       }
+    ]
+  heart:
+    origin: [0.5, 0.5]
+    align: [0.5, 0.5]
+#    transform: Transform.translate Utils.getViewportWidth()/2, Utils.getViewportHeight(), 0
+    transform: Transform.scale 0, 0, -10
+    size: [120, 120]
+    content: 'images/mood-flower.svg'
+    states: [
+      { # fade in
+        opacity: 1
+        transition: {duration: 0, curve: Easing.outQuad}
+      }
+      { # pop forward
+        transform: Transform.translate null, null, 550
+        transition: {duration: 400, curve: Easing.outQuad}
+      }
+      { # pop back a bit
+        transform: Transform.translate null, null, 50
+        transition: {duration: 400, curve: Easing.outQuad}
+      }
+      { # fade out
+        opacity: 0
+        transition: {duration: 500, curve: Easing.outQuad}
+      }
+      { # reset position
+        transform: Transform.translate null, null, -10
+        transition: {duration: 0, curve: Easing.outQuad}
+      }
+    ]
+
+
 
 # Can't get physics to work.
 #      # showing state
@@ -174,5 +206,4 @@ module.exports =
 #        transform: Transform.translate Utils.getViewportWidth()/2, Utils.getViewportHeight(), 0
 #        transition: {duration: 500, curve: Easing.outQuad}
 #      }
-    ]
 

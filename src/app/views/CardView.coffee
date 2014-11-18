@@ -183,7 +183,7 @@ class CardView extends View
 
     @heartButton = new ImageSurface
       size: @layout.heartButton.size
-      content: @layout.heartButton.content
+      content: @layout.heartButton.content.inactive
       classes: @layout.heartButton.classes
     heartButtonMod = new StateModifier
       transform: @layout.heartButton.transform
@@ -194,8 +194,6 @@ class CardView extends View
       classes: @layout.heartCount.classes
     heartCountMod = new StateModifier
       transform: @layout.heartCount.transform
-    @heartCount.on 'click', =>
-      @_eventOutput.emit 'showComments'
     @mainNode.add(heartCountMod).add @heartCount
 
     @shareButton = new ImageSurface
@@ -246,6 +244,7 @@ class CardView extends View
     @frontProfilePic.setContent ""
     @frontQuestion.setContent ""
 #    @addImageRenderer.hide @addImageButton
+    @heartButton.setContent @layout.heartButton.content.inactive
 
     # clear event listeners
     @front.removeListener 'click', @toggleChoices
@@ -286,12 +285,12 @@ class CardView extends View
       @currentSide = 0
 
     @commentCount.setContent "(#{card.comments.length})"
-    @heartCount.setContent "(0)"
-    #TODO: heart count should be saved into parse on Card (or Pegg?)
     @shareCount.setContent "(0)"
     #TODO: share count should be saved into parse on Card (or Pegg?)
+    @heartCount.setContent "(#{card.favorites})"
 
     @heartButton.on 'click', @favoriteCard
+    @heartCount.on 'click', @favoriteCard
 
     @choicesView.load @card
     @choicesView.on 'choice', @pickAnswer
@@ -315,8 +314,13 @@ class CardView extends View
       @choiceShowing = true
 
   favoriteCard: =>
+    @card.favorites++
+    @heartCount.setContent "(#{@card.favorites})"
+    @heartButton.setContent @layout.heartButton.content.active
     @_eventOutput.emit 'favoriteCard',
       cardId: @card.id
+
+  setNumFavorites: (num) =>
 
 
   pickAnswer: (id) =>

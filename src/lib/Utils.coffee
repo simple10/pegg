@@ -20,6 +20,8 @@ Utils =
           mod.setTransform Transform.scale(state.scale...), state.transition
         if state.transform?
           mod.setTransform state.transform, state.transition
+        if state.opacity?
+          mod.setOpacity state.opacity, state.transition
       ).bind(@, mod, state), state.delay
 
   animate: (mod, state, callback) ->

@@ -171,11 +171,6 @@ class PlayStore extends CardStore
         @_savePrefActivity cardId
         @emit Constants.stores.PREF_SAVED
 
-  _favorite: (cardId) ->
-    console.log cardId
-    DB.saveFavorite UserStore.getUser().id, cardId
-      .fail @_failHandler
-
   _saveMoodActivity: (moodId, moodText, moodUrl) ->
     message = "#{UserStore.getUser().get 'first_name'} is feeling #{moodText}"
     DB.saveActivity message, moodUrl, UserStore.getUser().id
