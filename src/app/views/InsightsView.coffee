@@ -76,7 +76,6 @@ class InsightsView extends View
     surface = new ImageSurface
       size: [50, 50]
       content: image
-      classes: ['ball']
       properties:
         borderRadius: '25px'
 
