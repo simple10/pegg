@@ -38,7 +38,7 @@ class WeView extends View
     @titleHeight = containerHeight * titleHeightRatio
     @bodyWidth   = containerWidth
     @bodyHeight  = containerHeight  * bodyHeightRatio
-    @ratio = @titleWidth / @bodyWidth
+    @titleRatio = @titleWidth / @bodyWidth
 
     ## TITLES ##
     @_titlesScrollviewItems = []
@@ -107,7 +107,6 @@ class WeView extends View
       titleContainer.titleMod = titleMod
       page = @_titlesScrollviewItems.length
       titleContainer.on 'click', do (page) => =>
-        console.log page
         @titlesScrollview.goToPage(page)
       @_titlesScrollviewItems.push titleContainer
 
@@ -162,6 +161,7 @@ class WeView extends View
     @add(@sectionsContainerMod).add @sectionsContainer
 
     @sectionsContainer.pipe @titlesScrollview
+
     insightsView.on 'start', =>
       @sectionsContainer.unpipe @titlesScrollview
     insightsView.on 'end', =>
@@ -193,8 +193,6 @@ class WeView extends View
     # @activityView.pipe @titlesScrollview
 
   initGestures: ->
-    # @titlesScrollview.sync.on 'end', =>
-    #   console.log @
 
     minOpacity = 0.5
     maxDistance = halfWidth = @titleWidth / 2
@@ -203,7 +201,7 @@ class WeView extends View
       absPosition = @titlesScrollview.getAbsolutePosition()
 
       # slide the sections container left/right
-      sectionsXTranslation = -absPosition / @ratio
+      sectionsXTranslation = -absPosition / @titleRatio
       @sectionsContainerMod.setTransform Transform.translate sectionsXTranslation, @titleHeight, 0
 
       # animate the title opacity
