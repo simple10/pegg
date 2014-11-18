@@ -12,10 +12,12 @@ Utility = require 'famous/src/utilities/Utility'
 View = require 'famous/src/core/View'
 
 # Pegg
-ActivityView = require 'views/ActivityView'
+ActivityItemView = require 'views/ActivityItemView'
+WeStore = require 'stores/WeStore'
 InsightsView = require 'views/InsightsView'
 LayoutManager = require 'views/layouts/LayoutManager'
 Utils = require 'lib/Utils'
+Constants = require 'constants/PeggConstants'
 
 class WeView extends View
 
@@ -25,8 +27,12 @@ class WeView extends View
     @layoutManager = new LayoutManager()
     @footerLayout = @layoutManager.getViewLayout 'FooterView'
 
+    @initListeners()
     @initRenderables()
     @initGestures()
+
+  initListeners: =>
+    WeStore.on Constants.stores.ACTIVITY_CHANGE, @loadActivity
 
   initRenderables: ->
     containerHeight = Utils.getViewportHeight() - @footerLayout.height
@@ -113,8 +119,8 @@ class WeView extends View
     ## SECTIONS ##
 
     ## --> Activity ##
-    _activityScrollviewItems = []
-    activityScrollview = new Scrollview
+    @_activityScrollviewItems = []
+    @activityScrollview = new Scrollview
       direction: Utility.Direction.Y
       paginated: true
     activityScrollviewMod = new StateModifier
@@ -122,22 +128,22 @@ class WeView extends View
       # proportions: [1, bodyHeightRatio]
       origin: [0.0, 0.0]
       align: [0.0, 0.0]
-    activityScrollview.sequenceFrom _activityScrollviewItems
-    activityRenderNode = new RenderNode().add(activityScrollviewMod).add(activityScrollview)
+    @activityScrollview.sequenceFrom @_activityScrollviewItems
+    activityRenderNode = new RenderNode().add(activityScrollviewMod).add(@activityScrollview)
 
-    for i in [1..3]
-      surface = new Surface
-        size: [@bodyWidth, @bodyHeight]
-        # proportions: [1, bodyHeightRatio]
-        content: "Activity ##{i}"
-        properties:
-          textAlign: 'center'
-          color: 'white'
-          fontSize: '20pt'
-          textTransform: 'uppercase'
-          paddingTop: '2em'
-      surface.pipe activityScrollview
-      _activityScrollviewItems.push surface
+#    for i in [1..3]
+#      surface = new Surface
+#        size: [@bodyWidth, @bodyHeight]
+#        # proportions: [1, bodyHeightRatio]
+#        content: "Activity ##{i}"
+#        properties:
+#          textAlign: 'center'
+#          color: 'white'
+#          fontSize: '20pt'
+#          textTransform: 'uppercase'
+#          paddingTop: '2em'
+#      surface.pipe activityScrollview
+#      _activityScrollviewItems.push surface
 
     ## --> Insights ##
     insightsView = new InsightsView()
@@ -215,5 +221,16 @@ class WeView extends View
 
     @titlesScrollview.sync.on 'update', update
     @titlesScrollview._particle.on 'update', update
+
+  loadActivity:  =>
+    @_activityScrollviewItems.length = 0
+    @items = WeStore.getActivity()
+    for item in @items
+      itemView = new ActivityItemView item
+      itemView.on 'scroll', =>
+        @_eventOutput.emit 'scroll'
+      itemView.pipe @activityScrollview
+      @_activityScrollviewItems.push itemView
+
 
 module.exports = WeView

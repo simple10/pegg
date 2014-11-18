@@ -55,7 +55,7 @@ class TabMenuItemView extends View
 
   createTitle: ->
     @title = new Surface
-      size: [@options.width, @options.height]
+      size: [@options.width-20, @options.height-20]
       content: @options.title
       classes: ['tabmenu__item__title']
     @titleState = new Modifier

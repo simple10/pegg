@@ -71,13 +71,14 @@ class InsightsView extends View
     @container.add @well
     @physics.addBody @well
 
-  createBall: (image) ->
-    circle = new Circle(radius: 25)
+  createBall: (image, size) ->
+    size = size % 50 + 50
+    circle = new Circle(radius: size)
     surface = new ImageSurface
-      size: [50, 50]
+      size: [size, size]
       content: image
       properties:
-        borderRadius: '25px'
+        borderRadius: "#{size}px"
 
     modifier = new Modifier
       align: [Math.random() * 0.5 + 0.25, Math.random() * 0.5 + 0.25]
@@ -123,7 +124,7 @@ class InsightsView extends View
       walls.sides = walls.components             # Patch for bug in Walls module.
 
       for insight in insights
-        ball = @createBall insight.pegger.get('avatar_url')
+        ball = @createBall insight.pegger.get('avatar_url'), insight.points
         balls.push ball
         circles.push ball.circle
         @container.add(ball.modifier).add ball.surface
@@ -132,7 +133,7 @@ class InsightsView extends View
         # @physics.attach @gravity, ball.circle, @well
 
       for ball in balls
-        repulsion = new Repulsion strength: -0.5
+        repulsion = new Repulsion strength: -0.0005
         spring = new Spring
           anchor: @well
           strength: 10,
@@ -141,11 +142,11 @@ class InsightsView extends View
           length: 100
         drag = new Drag strength: 0.0001, forceFunction: Drag.FORCE_FUNCTIONS.QUADRATIC
         friction = new Drag strength: 0.01, forceFunction: Drag.FORCE_FUNCTIONS.LINEAR
-        # @physics.attach repulsion, circles, ball.circle
+#        @physics.attach repulsion, circles, ball.circle
         # @physics.attach [drag, friction], ball.circle
         # @physics.attach friction, ball.circle
         # @physics.attach drag, ball.circle
-        # @physics.attach spring, circles, ball.circle
+#        @physics.attach spring, circles, ball.circle
         ball.circle.applyForce new Vector(Math.random() * 0.0005, Math.random() * 0.0005, 0)
         # ball.circle.applyForce new Vector(0, 0, 0)
 

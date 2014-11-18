@@ -25,7 +25,7 @@ class ActivityItemView extends View
 
   build: ->
     container = new ContainerSurface
-      size: [Utils.getViewportWidth(), @options.height]
+      size: [Utils.getViewportWidth()-20, @options.height]
       properties:
         overflow: 'hidden'
       classes: ['peggbox__item']

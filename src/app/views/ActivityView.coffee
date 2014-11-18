@@ -22,7 +22,7 @@ class ActivityView extends View
     @initSurfaces()
 
   initListeners: ->
-    WeStore.on Constants.stores.ACTIVITY_CHANGE, @loadActivity
+#    WeStore.on Constants.stores.ACTIVITY_CHANGE, @loadActivity
 
   initSurfaces: ->
     ## LEFT ARROW ##
