@@ -74,7 +74,7 @@ class WeView extends View
     @add(rainbowSurfaceMod).add(rainbowSurface)
 
     hrSurface = new Surface
-      size: [Utils.getViewportWidth() * ( 1 - marginX * 2), 0]
+      size: [@bodyWidth * ( 1 - marginX * 2), 0]
       # proportions: [1 - ( marginX * 2 ), 0.01]
       properties:
         borderBottom: '1px solid white'
@@ -85,7 +85,7 @@ class WeView extends View
     @add(hrSurfaceMod).add(hrSurface)
 
 
-    for title in ['Insights', 'Activities']
+    for title, i in ['Insights', 'Activities', 'Lorem Ip']
       titleSurface = new Surface
         size: [undefined, true]
         content: title
@@ -98,15 +98,15 @@ class WeView extends View
         # proportions: [titleWidthRatio, titleHeightRatio]
       titleMod = new StateModifier
         origin: [0.0, 1.0]
-        align: [marginX, 0.93]
-        transform: Transform.translate null, null, 2
+        align: [0.0, 0.93]
+        transform: Transform.translate marginX * @bodyWidth, null, 2
       titleSurface.pipe @titlesScrollview
       titleContainer.pipe @titlesScrollview
       titleContainer.add(titleMod).add(titleSurface)
       titleContainer.titleSurface = titleSurface
       titleContainer.titleMod = titleMod
       page = @_titlesScrollviewItems.length
-      titleContainer.on 'click', =>
+      titleContainer.on 'click', do (page) => =>
         console.log page
         @titlesScrollview.goToPage(page)
       @_titlesScrollviewItems.push titleContainer
@@ -143,10 +143,11 @@ class WeView extends View
     ## --> Insights ##
     insightsView = new InsightsView()
 
+    ## --> Sections ##
     sections = [
       { title: 'Who knows me the best?', renderable: insightsView }
       { title: 'Activities View', renderable: activityRenderNode }
-      # { title: 'Lorem Ipsum View', renderable: null }
+      { title: 'Lorem Ipsum View', renderable: null }
       # { title: 'blah blah', renderable: null }
     ]
     @sectionsContainer = new ContainerSurface
@@ -159,8 +160,8 @@ class WeView extends View
       origin: [0.0, 0.0]
       transform: Transform.translate 0, @titleHeight, 0
     @add(@sectionsContainerMod).add @sectionsContainer
-    @sectionsContainer.pipe @titlesScrollview
 
+    @sectionsContainer.pipe @titlesScrollview
     insightsView.on 'start', =>
       @sectionsContainer.unpipe @titlesScrollview
     insightsView.on 'end', =>
@@ -195,6 +196,9 @@ class WeView extends View
     # @titlesScrollview.sync.on 'end', =>
     #   console.log @
 
+    minOpacity = 0.5
+    maxDistance = halfWidth = @titleWidth / 2
+
     update = =>
       absPosition = @titlesScrollview.getAbsolutePosition()
 
@@ -204,35 +208,14 @@ class WeView extends View
 
       # animate the title opacity
       numItems = @_titlesScrollviewItems.length
-      titleScrollviewTotalWidth = numItems * @titleWidth
-      # nextTitleIndex = Math.ceil titleScrollviewTotalWidth / absPosition
-      nextTitleIndex = @titlesScrollview.getCurrentIndex() + 1
-      if nextTitleIndex < numItems
-        currentOffset = absPosition % @titleWidth
-        opacity = currentOffset / @titleWidth * 0.5 + 0.5
-        titleMod = @_titlesScrollviewItems[nextTitleIndex].titleMod
-        titleMod.setOpacity opacity
-
+      for item, i in @_titlesScrollviewItems
+        midpoint = @titleWidth * ( i + 1 / 2 )
+        distanceFromMidpoint = Math.abs(absPosition + halfWidth - midpoint)
+        distanceRatio = Math.min(maxDistance, distanceFromMidpoint) / maxDistance
+        opacity = 1 - distanceRatio + minOpacity
+        @_titlesScrollviewItems[i].titleMod.setOpacity opacity
 
     @titlesScrollview.sync.on 'update', update
-
     @titlesScrollview._particle.on 'update', update
-
-    #   offset = @titlesScrollview._scroller.getCumulativeSize(@titlesScrollview.getCurrentIndex())[0]
-    #   position = @titlesScrollview._particle.getPosition1D()
-    #   console.log offset, position
-    #   @sectionsScrollview._particle.setPosition1D offset + position
-
-    # @titlesScrollview.on 'settle', =>
-    #   page = @titlesScrollview.getCurrentIndex()
-    #   # console.log "going to page: ", page
-    #   @sectionsScrollview.goToNextPage()
-
-    # @titlesScrollview._eventOutput.on 'pageChange', (payload) =>
-    #   console.log "page change", payload
-    #   if payload.direction is -1
-    #     @sectionsScrollview.goToPreviousPage()
-    #   else if payload.direction is 1
-    #     @sectionsScrollview.goToNextPage()
 
 module.exports = WeView
