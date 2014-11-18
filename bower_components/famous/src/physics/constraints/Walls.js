@@ -33,7 +33,7 @@ define(function(require, exports, module) {
     function Walls(options) {
         this.options = Object.create(Walls.DEFAULT_OPTIONS);
         if (options) this.setOptions(options);
-        _createComponents.call(this, options.sides || this.options.sides);
+        _createComponents.call(this, this.options.sides);
 
         Constraint.call(this);
     }
