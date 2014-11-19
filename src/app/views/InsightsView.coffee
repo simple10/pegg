@@ -138,7 +138,7 @@ class InsightsView extends View
       for ball in balls
         repulsion = new Repulsion strength: 10
         spring = new Spring
-          anchor: new Vector innerWidth/2, innerHeight/2, 0
+          anchor: new Vector @options.size[0]/2, @options.size[1]/2, 0
           period: 1500
           dampingRatio: 0.4
           # forceFunction: Spring.FORCE_FUNCTIONS.FENE
