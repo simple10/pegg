@@ -22,8 +22,11 @@ class UserStore extends EventEmitter
     # http://stackoverflow.com/questions/16843116/facebook-oauth-unsupported-in-chrome-on-ios
     clientId = Config.facebook.appId
     redirectUri = Config.facebook.redirectUrl
-    permissionUrl = "https://m.facebook.com/dialog/oauth?client_id=#{clientId}&redirect_uri=#{redirectUri}&scope=email,public_profile&response_type=token"
-    window.location = permissionUrl
+    permissionUrl = "https://m.facebook.com/dialog/oauth?client_id=#{clientId}&redirect_uri=#{redirectUri}&scope=email,public_profile&response_type=token&output=embed"
+    if window.top
+      window.top.location = permissionUrl
+    else
+      window.location = permissionUrl
 
 
   auth: (res) ->
