@@ -146,7 +146,8 @@ class WeView extends View
 #      _activityScrollviewItems.push surface
 
     ## --> Insights ##
-    insightsView = new InsightsView()
+    insightsView = new InsightsView
+      size: [@bodyWidth, @bodyHeight]
 
     ## --> Sections ##
     sections = [

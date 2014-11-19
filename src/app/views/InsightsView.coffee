@@ -62,8 +62,8 @@ class InsightsView extends View
   initGravity: ->
     @well = new Body
       mass: 100
-      position: [0, 0, 0]
-     # position: [Utils.getViewportWidth()/2, Utils.getViewportHeight()/2, 0]
+      # position: [0, 0, 0]
+      position: [Utils.getViewportWidth()/2, Utils.getViewportHeight()/2, 0]
     @gravity = new Repulsion
       strength: -100
       # decayFunction: Repulsion.DECAY_FUNCTIONS.INVERSE
@@ -83,8 +83,8 @@ class InsightsView extends View
     modifier = new Modifier
       align: [Math.random() * 0.5 + 0.25, Math.random() * 0.5 + 0.25]
       origin: [0.5, 0.5]
-      transform: ->
-        circle.getTransform()
+      # transform: ->
+      #   circle.getTransform()
 
     sync = new GenericSync ['mouse', 'touch']
     surface.pipe sync
@@ -108,8 +108,8 @@ class InsightsView extends View
     # A wall with no options set assumes you want four walls,
     # one for each of the screen edges.
     new Walls
-      restitution: [0.001, 0.001, 0.001, 0.001]
-      slop: [0, 0, 0, 0]
+      # restitution: [0.001, 0.001, 0.001, 0.001]
+      # slop: [0, 0, 0, 0]
 
   load: =>
     console.log 'InsightsView.load...'
@@ -127,27 +127,30 @@ class InsightsView extends View
         ball = @createBall insight.pegger.get('avatar_url'), insight.points
         balls.push ball
         circles.push ball.circle
-        @container.add(ball.modifier).add ball.surface
         @physics.addBody ball.circle
-        @physics.attach walls, ball.circle
+        @container
+          .add ball.circle
+          .add ball.surface
         # @physics.attach @gravity, ball.circle, @well
 
+      # @physics.attach walls
+
       for ball in balls
-        repulsion = new Repulsion strength: -0.0005
+        repulsion = new Repulsion strength: 10
         spring = new Spring
-          anchor: @well
-          strength: 10,
-          dampingRatio: 0.4,
-          # forceFunction: Spring.FORCE_FUNCTIONS.FENE,
-          length: 100
+          anchor: new Vector @options.size[0]/2, @options.size[1]/2, 0
+          period: 1500
+          dampingRatio: 0.4
+          # forceFunction: Spring.FORCE_FUNCTIONS.FENE
+          length: 0
         drag = new Drag strength: 0.0001, forceFunction: Drag.FORCE_FUNCTIONS.QUADRATIC
         friction = new Drag strength: 0.01, forceFunction: Drag.FORCE_FUNCTIONS.LINEAR
-#        @physics.attach repulsion, circles, ball.circle
+        @physics.attach repulsion, circles, ball.circle
         # @physics.attach [drag, friction], ball.circle
         # @physics.attach friction, ball.circle
         # @physics.attach drag, ball.circle
-#        @physics.attach spring, circles, ball.circle
-        ball.circle.applyForce new Vector(Math.random() * 0.0005, Math.random() * 0.0005, 0)
+        @physics.attach spring, ball.circle#, @well
+        # ball.circle.applyForce new Vector(Math.random() * 0.0005, Math.random() * 0.0005, 0)
         # ball.circle.applyForce new Vector(0, 0, 0)
 
 module.exports = InsightsView
