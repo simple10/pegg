@@ -137,7 +137,7 @@ incorrect, try adding or removing blank lines to the test file and saving it
 to trigger cache busting.
 
 ## Utils in use
-* [Mocha](http://visionmedia.github.io/mocha/) – BDD/TDD test framework
+* [Mocha](http://mochajs.org/) – BDD/TDD test framework
 * [Karma](http://karma-runner.github.io/0.12/index.html) – test runner
 * [Chai](http://chaijs.com/) – assertion library
 * [Sinon.js](http://sinonjs.org/) – spies, stubs and mocks
